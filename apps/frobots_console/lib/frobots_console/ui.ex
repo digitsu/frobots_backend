@@ -2,7 +2,6 @@ defmodule FrobotsConsole.UI do
   require Logger
   alias Fubars.Arena
 
-  @explode_sprite " \u259a\u2590\u259e\n\u2591\u2593\u2588\u2592\u2591\n \u259e\u258c\u259a"
   @exp_line1 " \u259a\u2590\u259e"
   @exp_line2 "\u2591\u2593\u2588\u2592\u2591"
   @exp_line3 " \u259e\u258c\u259a"
