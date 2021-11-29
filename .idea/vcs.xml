@@ -3,6 +3,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/apps/fubars" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/apps/fubars/deps/luerl" vcs="Git" />
   </component>
 </project>
