@@ -24,3 +24,7 @@ frobots_console-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# IDE
+/.idea/
+
