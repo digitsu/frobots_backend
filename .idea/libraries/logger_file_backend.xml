@@ -1,0 +1,47 @@
+<component name="libraryTable">
+  <library name="logger_file_backend" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/consolidated" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/logger_file_backend/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/consolidated" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/logger_file_backend/lib" />
+      <root url="file://$PROJECT_DIR$/deps/logger_file_backend/lib" />
+      <root url="file://$PROJECT_DIR$/deps/logger_file_backend/lib" />
+      <root url="file://$PROJECT_DIR$/deps/logger_file_backend/lib" />
+      <root url="file://$PROJECT_DIR$/deps/logger_file_backend/lib" />
+      <root url="file://$PROJECT_DIR$/deps/logger_file_backend/lib" />
+      <root url="file://$PROJECT_DIR$/deps/logger_file_backend/lib" />
+      <root url="file://$PROJECT_DIR$/deps/logger_file_backend/lib" />
+    </SOURCES>
+  </library>
+</component>
