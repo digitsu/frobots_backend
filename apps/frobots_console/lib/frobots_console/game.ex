@@ -28,11 +28,11 @@ defmodule FrobotsConsole.Game do
   end
 
   def init_logger do
-    Logger.metadata(evt_type: :log)
-    Logger.configure(level: :info)
-    Logger.configure_backend(:console, level: :info)
-    # this will only pay attention to :ui evt_type
-    Logger.configure_backend({Fubars.LogBackend, :log_backend}, level: :info, game_pid: self())
+    Logger.metadata(evt_type: :log) # makes the default evt_type just to be :log (so that it doesn't trigger the log_backend)
+    Logger.configure(level: :info) # default level
+    Logger.configure_backend(:console, level: :warning) #console backend level
+    Logger.configure_backend({Fubars.LogBackend, :log_backend}, level: :info, game_pid: self()) #log backend level and save the listener pid
+    Logger.debug("in game module --init_logger")
   end
 
   def loop(%{game_over: true} = state) do
@@ -47,7 +47,7 @@ defmodule FrobotsConsole.Game do
           handle_key(state, key)
 
         {:ui, evt} ->
-          IO.puts "in process"
+          Logger.debug("#{IO.inspect evt}")
           process_ui(state, evt)
 
         :tick ->
@@ -56,7 +56,7 @@ defmodule FrobotsConsole.Game do
           |> schedule_next_tick()
 
         :cleanup ->
-          IO.puts "cleanup state"
+          Logger.debug("cleanup state")
           state
           |> do_cleanup()
       end
@@ -65,7 +65,7 @@ defmodule FrobotsConsole.Game do
   end
 
 
-  def init(state) do
+  defp init(state) do
     Arena.kill_all!(Arena)
     init_logger()
 
@@ -156,7 +156,6 @@ defmodule FrobotsConsole.Game do
 
   defp process_ui(state, evt) do
     # update the tank and missile screen states from the messages received
-    IO.inspect evt
     state_update =
       evt
       |> String.split("|")

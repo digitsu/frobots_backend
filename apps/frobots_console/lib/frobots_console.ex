@@ -24,7 +24,7 @@ defmodule FrobotsConsole do
   @doc """
   Play a game
   """
-  defdelegate run(), to: FrobotsConsole.Game
+  defdelegate run(), to: FrobotsConsole.Application
 
-  defdelegate test_run(), to: FrobotsConsole.Game
+  defdelegate test_run(), to: FrobotsConsole.Application
 end

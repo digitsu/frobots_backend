@@ -1,4 +1,5 @@
 defmodule FrobotsConsole.Application do
+  require Logger
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -7,6 +8,9 @@ defmodule FrobotsConsole.Application do
 
   @impl true
   def start(_type, _args) do
+
+    Logger.info("Starting Application...FROBOTS Console")
+
     children = [
       # Starts a worker by calling: FrobotsConsole.Worker.start_link(arg)
       # {FrobotsConsole.Worker, arg}
@@ -17,4 +21,13 @@ defmodule FrobotsConsole.Application do
     opts = [strategy: :one_for_one, name: FrobotsConsole.Supervisor]
     Supervisor.start_link(children, opts)
   end
+
+
+  @doc """
+  Play a game
+  """
+  defdelegate run(), to: FrobotsConsole.Game
+
+  defdelegate test_run(), to: FrobotsConsole.Game
+
 end

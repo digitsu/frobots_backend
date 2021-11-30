@@ -7,7 +7,7 @@ defmodule FrobotsConsole.UI do
   @exp_line3 " \u259e\u258c\u259a"
 
   def init(state) do
-    ExNcurses.initscr()
+    ExNcurses.initscr("/dev/ttys005")
     ExNcurses.n_begin()
     win = ExNcurses.newwin(state.height + 0, state.width + 1, 1, 0)
     ExNcurses.listen()
