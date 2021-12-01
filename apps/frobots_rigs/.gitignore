@@ -24,3 +24,7 @@ frobots_rigs-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+/operate/
+.bit
+/operate/.bit

@@ -31,8 +31,7 @@ defmodule FrobotsConsole.MixProject do
       # {:sibling_app_in_umbrella, in_umbrella: true}
       {:fubars, in_umbrella: true},
       {:ex_ncurses, "~> 0.3.1"},
-      {:operate, "~> 0.1.0-beta"},
-      {:luerl, github: "rvirding/luerl", branch: "develop", override: true},
+
       {:logger_file_backend, "~> 0.0.12"},
     ]
   end
