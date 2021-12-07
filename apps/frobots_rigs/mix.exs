@@ -29,7 +29,7 @@ defmodule FrobotsRigs.MixProject do
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       {:fubars, in_umbrella: true},
-      {:operate, "~> 0.1.0-beta"},
+      {:operate, "~> 0.1.0-beta.15"},
       {:luerl, github: "rvirding/luerl", branch: "develop", override: true},
 
     ]

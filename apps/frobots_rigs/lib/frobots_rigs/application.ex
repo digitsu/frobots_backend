@@ -7,9 +7,22 @@ defmodule FrobotsRigs.Application do
 
   @impl true
   def start(_type, _args) do
+    options = [
+      cache: Operate.Cache.ConCache,
+      tape_adapter: Operate.Adapter.Bob,
+      op_adapter: Operate.Adapter.Bob,
+      extensions: [FrobotsRigs.Extension],
+    ]
+
     children = [
       # Starts a worker by calling: FrobotsRigs.Worker.start_link(arg)
       # {FrobotsRigs.Worker, arg}
+      {Operate, options},
+      {ConCache, [
+        name: :operate,
+        ttl_check_interval: :timer.minutes(1),
+        global_ttl: :timer.minutes(10),
+        touch_on_read: true ]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

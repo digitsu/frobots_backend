@@ -15,9 +15,9 @@ return function(state, ...)
             'Invalid state. Must receive a table'
     )
 
-    local function sleep(n)
-        os.execute("sleep " .. tonumber(n))
-    end
+    --local function sleep(n)
+    --    os.execute("sleep " .. tonumber(n))
+    --end
 
     local function distance(x1,y1,x2,y2)
         local x = x1 -x2
@@ -65,11 +65,11 @@ return function(state, ...)
         local course = plot_course(dest_x, dest_y) --- heading
         drive(course,25);
         while distance(loc_x(), loc_y(), dest_x, dest_y) > 50 do
-            sleep(1)
+            x = true
         end
         drive(course, 0) -- stop
         while (speed() > 0) do
-            sleep(1)
+            x = true
         end
     end
 
