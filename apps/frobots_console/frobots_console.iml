@@ -141,5 +141,6 @@
     <orderEntry type="library" name="hpack" level="project" />
     <orderEntry type="library" name="stream_data" level="project" />
     <orderEntry type="module" module-name="fubars" />
+    <orderEntry type="module" module-name="frobots_rigs" />
   </component>
 </module>

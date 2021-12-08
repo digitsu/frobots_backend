@@ -21,13 +21,4 @@ defmodule FrobotsConsole.Application do
     opts = [strategy: :one_for_one, name: FrobotsConsole.Supervisor]
     Supervisor.start_link(children, opts)
   end
-
-
-  @doc """
-  Play a game
-  """
-  defdelegate run(), to: FrobotsConsole.Game
-
-  defdelegate test_run(), to: FrobotsConsole.Game
-
 end

@@ -1,4 +1,7 @@
 defmodule FrobotsConsole do
+  alias FrobotsConsole.Game
+  alias Fubars.Arena
+
   @moduledoc """
   Documentation for `FrobotsConsole`.
   """
@@ -24,7 +27,21 @@ defmodule FrobotsConsole do
   @doc """
   Play a game
   """
-  defdelegate run(), to: FrobotsConsole.Application
+  def run() do
+    Arena.kill_all!(Arena)
+    pid = FrobotsRigs.create_frobot(:rabbit_alpha, "apps/frobots_rigs/src/dummy.lua")
+    state = Frobot.get_state(pid)
+    vm = state.vm
+    vm |> Operate.VM.eval!(File.read!("apps/frobots_rigs/src/dummy.lua")) |> Operate.VM.exec_function!([])
 
-  defdelegate test_run(), to: FrobotsConsole.Application
+    #FrobotsConsole.Game.run([pid])
+  end
+
+  def test_run() do
+    Game.init_logger()
+    location = {:rand.uniform(1000), :rand.uniform(1000)}
+    Arena.create(Arena, :t1, :tank, loc: location)
+    FrobotsConsole.Game.run([])
+  end
+  #defdelegate test_run(), to: FrobotsConsole.Game
 end

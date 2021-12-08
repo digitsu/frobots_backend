@@ -3,6 +3,5 @@ defmodule FrobotsConsoleTest do
   doctest FrobotsConsole
 
   test "Run a game" do
-    assert FrobotsConsole.test_run()
   end
 end

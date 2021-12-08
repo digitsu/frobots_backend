@@ -8,7 +8,8 @@ defmodule Frobot do
   defstruct brain_path: nil,
             frobot_name: nil,
             vm: nil,
-            brain_cell: nil
+            brain_cell: nil,
+            tank_pid: nil
 
   use GenServer
 
@@ -25,26 +26,30 @@ defmodule Frobot do
   end
 
   defp place_tank(name) do
+    Logger.info( "placing tank" )
     args = [loc: {:rand.uniform(Arena.length()), :rand.uniform(Arena.height())}]
-    case Arena.create(Arena, name, :tank, args) do
-      {:ok, tank} -> Rig.go(tank) # Vroom Vroom!
+    tank = case Arena.create(Arena, name, :tank, args) do
+      {:ok, tank} -> Rig.go(tank)
+                     tank # Vroom Vroom!
       {:error, :bad_loc} -> place_tank(name)
+      {:error, :name_exists} -> place_tank(String.to_atom(Atom.to_string(name) <> "a"))
     end
+    tank
   end
 
   @impl true
-  def init(%__MODULE__{} = init_state) do
-    name = Map.fetch!(init_state, :frobot_name)
-    brain_path = Map.fetch!(init_state, :brain_path)
-
-    place_tank(name)
-
+  def init(%__MODULE__{} = state) do
+    name = Map.fetch!(state, :frobot_name)
+    brain_path = Map.fetch!(state, :brain_path)
+    tank = place_tank(name) # only place a tank if the above succeeded
+    name = Fubars.Rig.get_state(tank).name # get the name from the tank process as it may have been changed due to collision
     vm =  VM.init
           |> VM.set!("rig_name", name)
           |> VM.extend([FrobotsRigs.Extension])
-    state = init_state
+    state = state
             |> Map.put(:vm, vm)
             |> Map.put(:brain_cell, %Operate.Cell{op: File.read!(brain_path), params: []})
+            |> Map.put(:tank_pid, tank)
     {:ok, state}
   end
 
@@ -56,6 +61,7 @@ defmodule Frobot do
 
   @impl true
   def handle_cast(:start, state) do
+    #todo need to create a cycle loop and change lua brains to just run once and cycle again
     Operate.Cell.exec(state.brain_cell, state.vm) # the frobot will block here for its run
     {:noreply, state}
   end

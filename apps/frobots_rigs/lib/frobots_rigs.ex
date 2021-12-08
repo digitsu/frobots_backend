@@ -1,15 +1,11 @@
 defmodule FrobotsRigs do
-  alias Fubars.Arena
   alias Operate.VM
 
-  def test_frobot do
-    cell = %Operate.Cell{op: File.read!("src/rabbit.lua"), params: []}
-    {:ok, pid} =Arena.create(Arena, :test1, :tank)
-    Fubars.Rig.go(pid)
-    vm = Operate.VM.init([extensions: [FrobotsRigs.Extension]]) |> VM.set!("rig_name", :test1)
-    Operate.Cell.exec(cell, vm)
+  def create_frobot(name, brain_path) do
+    #todo this needs to be in a dynamic supervisor, so that it can hold a ref to the process
+    {:ok, pid} = GenServer.start_link(Frobot, %Frobot{frobot_name: name, brain_path: brain_path } )
+    pid
   end
-
 
   defmodule Extension do
     alias Fubars.Tank

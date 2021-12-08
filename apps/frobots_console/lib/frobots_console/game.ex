@@ -12,27 +12,44 @@ defmodule FrobotsConsole.Game do
             game_over: false,
             timer: nil,
             frobots: %{}, # a map of frobot name and value is a TankState or MissileState
-            missiles: %{}
+            missiles: %{},
+            tty: "/dev/ttys006",
+            pids: []
 
-  def run() do
+  def run(pids) do
     IO.puts("starting")
 
-    %FrobotsConsole.Game{}
+    %FrobotsConsole.Game{pids: pids}
     |> init()
     |> UI.draw_screen()
     |> schedule_next_tick()
+    |> start_pids()
     |> loop()
     |> fini()
 
     :ok
   end
 
+  defp init(state) do
+    init_logger()
+
+    state |> UI.init() |> test_place_tanks
+  end
+
   def init_logger do
     Logger.metadata(evt_type: :log) # makes the default evt_type just to be :log (so that it doesn't trigger the log_backend)
     Logger.configure(level: :info) # default level
-    Logger.configure_backend(:console, level: :warning) #console backend level
+    Logger.configure_backend(:console, level: :info) #console backend level
     Logger.configure_backend({Fubars.LogBackend, :log_backend}, level: :info, game_pid: self()) #log backend level and save the listener pid
     Logger.debug("in game module --init_logger")
+  end
+
+  def start_pids(state) do
+    for pid <- state.pids do
+      #eventually should randomize the start order
+      Frobot.start(pid)
+    end
+    state
   end
 
   def loop(%{game_over: true} = state) do
@@ -65,14 +82,6 @@ defmodule FrobotsConsole.Game do
   end
 
 
-  defp init(state) do
-    Arena.kill_all!(Arena)
-    init_logger()
-
-    state
-    |> UI.init()
-    |> place_tanks()
-  end
 
   defp fini(state) do
     IO.puts("in game fini")
@@ -257,7 +266,7 @@ defmodule FrobotsConsole.Game do
     %{state | timer: timer}
   end
 
-  def place_tanks(state) do
+  def test_place_tanks(state) do
     # create tanks for each frobot, place them randomly in the arena
     # and store their pids.
     # location = {:rand.uniform(state.width - 2), :rand.uniform(state.height - 3)}
@@ -278,9 +287,4 @@ defmodule FrobotsConsole.Game do
     state
   end
 
-  def test_run(state \\ %FrobotsConsole.Game{}) do
-    init_logger()
-    location = {:rand.uniform(state.width - 2), :rand.uniform(state.height - 3)}
-    Arena.create(Arena, :t1, :tank, loc: location)
-  end
 end

@@ -7,7 +7,7 @@ defmodule FrobotsConsole.UI do
   @exp_line3 " \u259e\u258c\u259a"
 
   def init(state) do
-    ExNcurses.initscr("/dev/ttys005")
+    ExNcurses.initscr(state.tty)
     ExNcurses.n_begin()
     win = ExNcurses.newwin(state.height + 0, state.width + 1, 1, 0)
     ExNcurses.listen()
@@ -21,7 +21,6 @@ defmodule FrobotsConsole.UI do
     ExNcurses.stop_listening()
     ExNcurses.n_end()
     ExNcurses.endwin()
-
     state
   end
 
@@ -33,6 +32,7 @@ defmodule FrobotsConsole.UI do
     receive do
       {:ex_ncurses, :key, _} -> state
     end
+    state
   end
 
   def dump_text(state, txt) do

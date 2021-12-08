@@ -62,8 +62,9 @@ return function(state, ...)
     end
 
     local function go(dest_x, dest_y)
-        local course = plot_course(dest_x, dest_y) --- heading
-        drive(course,25);
+        --local course = plot_course(dest_x, dest_y) --- heading
+        --drive(course,25);
+        drive( 300, 50)
         while distance(loc_x(), loc_y(), dest_x, dest_y) > 50 do
             x = true
         end
@@ -76,6 +77,6 @@ return function(state, ...)
     while true do
         go(math.random(1000), math.random(1000)) --- go somewhere in the grid
     end
-
+    --state.out = math.random(1000)
     return state
 end
