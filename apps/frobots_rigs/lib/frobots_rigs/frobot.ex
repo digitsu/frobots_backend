@@ -16,6 +16,14 @@ defmodule Frobot do
     GenServer.start_link(__MODULE__, %__MODULE__{}, opts)
   end
 
+  def get_state(frobot) do
+    GenServer.call(frobot, :get_state)
+  end
+
+  def start(frobot) do
+    GenServer.cast(frobot, :start)
+  end
+
   defp place_tank(name) do
     args = [loc: {:rand.uniform(Arena.length()), :rand.uniform(Arena.height())}]
     case Arena.create(Arena, name, :tank, args) do
@@ -31,21 +39,15 @@ defmodule Frobot do
 
     place_tank(name)
 
-    vm = VM.init([extensions: [FrobotsRigs.Extension]])
-         |> VM.set!("rig_name", name)
+    vm =  VM.init
+          |> VM.set!("rig_name", name)
+          |> VM.extend([FrobotsRigs.Extension])
     state = init_state
             |> Map.put(:vm, vm)
             |> Map.put(:brain_cell, %Operate.Cell{op: File.read!(brain_path), params: []})
     {:ok, state}
   end
 
-  def get_state(frobot) do
-    GenServer.call(frobot, :get_state)
-  end
-
-  def start(frobot) do
-    GenServer.cast(frobot, :start)
-  end
 
   @impl true
   def handle_call(:get_state, _from, state) do
