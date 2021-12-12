@@ -9,9 +9,13 @@ defmodule Frobot do
             frobot_name: nil,
             vm: nil,
             brain_cell: nil,
-            tank_pid: nil
+            tank_pid: nil,
+            loop_timer: nil,
+            brain_state: %{}
 
   use GenServer
+
+  @cycletime 250
 
   def start_link(%__MODULE__{}, opts) do
     GenServer.start_link(__MODULE__, %__MODULE__{}, opts)
@@ -21,8 +25,8 @@ defmodule Frobot do
     GenServer.call(frobot, :get_state)
   end
 
-  def start(frobot) do
-    GenServer.cast(frobot, :start)
+  def start(frobot, interval \\ @cycletime) do
+    GenServer.cast(frobot, {:start, interval})
   end
 
   defp place_tank(name) do
@@ -60,9 +64,24 @@ defmodule Frobot do
   end
 
   @impl true
-  def handle_cast(:start, state) do
-    #todo need to create a cycle loop and change lua brains to just run once and cycle again
-    Operate.Cell.exec(state.brain_cell, state.vm) # the frobot will block here for its run
+  def handle_cast({:start, interval}, state) do
+
+    state = case Operate.Cell.exec(state.brain_cell, state.vm, state: state.brain_state) do
+      {:ok, new_brain_state } ->
+        #IO.inspect new_brain_state
+        Map.put(state, :brain_state, new_brain_state)
+      {:error, _} ->
+        Map.put(state, :brain_state, state.brain_state)
+    end
+
+    timer_ref = Process.send_after(self(), {:loop, interval}, interval)
+    state = Map.put(state, :loop_timer, timer_ref)
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info({:loop, interval}, state) do
+    Frobot.start(self(), interval)
     {:noreply, state}
   end
 

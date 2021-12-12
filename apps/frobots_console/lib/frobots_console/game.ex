@@ -11,19 +11,19 @@ defmodule FrobotsConsole.Game do
             game_win: nil,
             game_over: false,
             timer: nil,
-            frobots: %{}, # a map of frobot name and value is a TankState or MissileState
+            rigs: %{}, # a map of frobot name and value is a TankState or MissileState
             missiles: %{},
-            tty: "/dev/ttys006",
-            pids: []
+            tty: "/dev/ttys003",
+            frobots: %{}
 
-  def run(pids) do
+  def run(frobots) do
     IO.puts("starting")
 
-    %FrobotsConsole.Game{pids: pids}
+    %FrobotsConsole.Game{frobots: frobots}
     |> init()
     |> UI.draw_screen()
     |> schedule_next_tick()
-    |> start_pids()
+    |> start_frobots()
     |> loop()
     |> fini()
 
@@ -33,7 +33,7 @@ defmodule FrobotsConsole.Game do
   defp init(state) do
     init_logger()
 
-    state |> UI.init() |> test_place_tanks
+    state |> UI.init()
   end
 
   def init_logger do
@@ -44,9 +44,10 @@ defmodule FrobotsConsole.Game do
     Logger.debug("in game module --init_logger")
   end
 
-  def start_pids(state) do
-    for pid <- state.pids do
+  def start_frobots(state) do
+    for {frobot_name, brain_path} <- state.frobots do
       #eventually should randomize the start order
+      pid = FrobotsRigs.create_frobot(frobot_name, brain_path)
       Frobot.start(pid)
     end
     state
@@ -101,7 +102,7 @@ defmodule FrobotsConsole.Game do
 
   defp handle_key(state, ?q) do
     #Arena.kill_all(Arena)
-    %{state | game_over: true, frobots: %{}, missiles: %{} }
+    %{state | game_over: true, rigs: %{}, missiles: %{} }
   end
 
   defp handle_key(state, _) do
@@ -157,7 +158,7 @@ defmodule FrobotsConsole.Game do
       # if we wanted to be pedantic we could call cancel_timer on all the other cleaned up structures on each call, but meh.
     state =
       state
-      |> Map.put(:frobots, clean_killed.(state, :frobots))
+      |> Map.put(:rigs, clean_killed.(state, :rigs))
       |> Map.put(:missiles, clean_killed.(state, :missiles))
 
     state
@@ -194,11 +195,15 @@ defmodule FrobotsConsole.Game do
           |> check_and_put.(:speed, f_state, :sp)
         %{:dm => _} ->
           old_state |> check_and_put.(:damage, f_state, :dm)
+        %{:cn => _} -> old_state
+        %{:xx => _} -> #disabled tank
+                        old_state
       end
       new_state
     end
 
     update_missile = fn old_state, f_state ->
+      IO.puts( inspect( f_state ))
       new_state = case f_state do
         %{:ex => _} ->
        #   IO.puts "in exploding"
@@ -210,6 +215,12 @@ defmodule FrobotsConsole.Game do
         %{:mv => _} ->
           old_state |> check_and_put.(:ploc, old_state, :loc)
           |> check_and_put.(:loc, f_state, :mv)
+        %{:ev => _} ->
+          old_state
+        %{:dt => _} ->
+          old_state
+        %{:rg => _} ->
+          old_state
       end
       new_state
     end
@@ -217,11 +228,11 @@ defmodule FrobotsConsole.Game do
     # its a message from arena.
     if frobot != "arena" do
       cond do
-        MapSet.member?(MapSet.new(Map.keys(state.frobots)), frobot) ->
+        MapSet.member?(MapSet.new(Map.keys(state.rigs)), frobot) ->
           Map.put(
             state,
-            :frobots,
-            Map.update(state.frobots, frobot, %FrobotsConsole.Tank{}, &update_frobot.(&1, f_state))
+            :rigs,
+            Map.update(state.rigs, frobot, %FrobotsConsole.Tank{}, &update_frobot.(&1, f_state))
           )
 
         MapSet.member?(MapSet.new(Map.keys(state.missiles)), frobot) ->
@@ -236,22 +247,24 @@ defmodule FrobotsConsole.Game do
       end
     else # this is an update from Arena (on the creation of a rig)
       if Map.get(f_state, :tt) do
-        id_tag = length(Map.keys(state.frobots)) + 1
+        id_tag = length(Map.keys(state.rigs)) + 1
         UI.draw_chr(state, f_state.lc, {0,0}, ~s|#{id_tag}|)
 
         Map.put(
           state,
-          :frobots,
-          Map.put_new(state.frobots, f_state.tt, %FrobotsConsole.Tank{id: id_tag, loc: f_state.lc})
+          :rigs,
+          Map.put_new(state.rigs, f_state.tt, %FrobotsConsole.Tank{id: id_tag, loc: f_state.lc})
         )
       else
-        UI.draw_chr(state, f_state.lc, {0,0}, "*")
-
-        Map.put(
-          state,
-          :missiles,
-          Map.put_new(state.missiles, f_state.mm, %FrobotsConsole.Missile{loc: f_state.lc})
-        )
+        if Map.get(f_state, :lc) do
+          Map.put(
+            state,
+            :missiles,
+            Map.put_new(state.missiles, f_state.mm, %FrobotsConsole.Missile{loc: f_state.lc})
+          )
+        else
+          state
+        end
       end
     end
   end

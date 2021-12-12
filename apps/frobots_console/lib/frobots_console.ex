@@ -29,12 +29,17 @@ defmodule FrobotsConsole do
   """
   def run() do
     Arena.kill_all!(Arena)
-    pid = FrobotsRigs.create_frobot(:rabbit_alpha, "apps/frobots_rigs/src/dummy.lua")
-    state = Frobot.get_state(pid)
-    vm = state.vm
-    vm |> Operate.VM.eval!(File.read!("apps/frobots_rigs/src/dummy.lua")) |> Operate.VM.exec_function!([])
-
-    #FrobotsConsole.Game.run([pid])
+    #normally should take these from the args
+    frobots = %{alpha: "apps/frobots_rigs/src/rabbit.lua"}
+    frobots = Map.put(frobots, :beta, "apps/frobots_rigs/src/rabbit.lua")
+    frobots = Map.put(frobots, :gamma, "apps/frobots_rigs/src/rabbit.lua")
+    frobots = Map.put(frobots, :delta, "apps/frobots_rigs/src/rabbit.lua")
+    #pid = FrobotsRigs.create_frobot(:rabbit_alpha, "apps/frobots_rigs/src/rabbit.lua")
+    #state = Frobot.get_state(pid)
+    #vm = state.vm
+    #vm |> Operate.VM.eval!(File.read!("apps/frobots_rigs/src/rabbit.lua")) |> Operate.VM.exec_function!([])
+    Arena.set_debug(Arena, true)
+    FrobotsConsole.Game.run(frobots)
   end
 
   def test_run() do

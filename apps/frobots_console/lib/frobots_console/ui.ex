@@ -63,7 +63,7 @@ defmodule FrobotsConsole.UI do
   end
 
   def draw_tanks(state) do
-    for tank_state <- Map.values(state.frobots) do
+    for tank_state <- Map.values(state.rigs) do
         draw_chr(state, tank_state.loc, tank_state.ploc, tank_state.id)
         #ExNcurses.refresh()
         #IO.inspect tank_state
@@ -110,7 +110,6 @@ defmodule FrobotsConsole.UI do
           :flying ->
             draw_chr(state, mis_state.loc, mis_state.ploc, "\u2666")
           :exploded ->
-            IO.puts "draw explode"
             draw_exp(state, mis_state.loc, mis_state.ploc )
           _ -> nil
         end

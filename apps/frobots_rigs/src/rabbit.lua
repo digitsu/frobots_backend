@@ -14,10 +14,8 @@ return function(state, ...)
             type(state) == 'table',
             'Invalid state. Must receive a table'
     )
-
-    --local function sleep(n)
-    --    os.execute("sleep " .. tonumber(n))
-    --end
+    math.randomseed( os.time() )
+    math.random(); math.random(); math.random()
 
     local function distance(x1,y1,x2,y2)
         local x = x1 -x2
@@ -28,55 +26,36 @@ return function(state, ...)
 
     local function plot_course(xx,yy)
         local d
-        local x,y
-        local curx, cury
-
-
-        curx = loc_x()
-        cury = loc_y()
-        x = curx - xx
-        y = cury - yy
+        local curx = loc_x()
+        local cury = loc_y()
+        local x = xx - curx
+        local y = yy - cury
 
         if x == 0 then
             if yy > cury then
-                d = 90
+                d = 90.0
             else
-                d = 270
+                d = 270.0
             end
         else
-            if yy < cury then
-                if xx > curx then
-                    d = 360 + math.atan(y, x)
-                else
-                    d = 180 + math.atan(y, x)
-                end
-            else
-                if xx > curx then
-                    d = math.atan(y, x)
-                else
-                    d = 180 + math.atan(y, x)
-                end
-            end
+            d = math.atan(y, x) * 180/math.pi
         end
         return d
     end
 
-    local function go(dest_x, dest_y)
-        --local course = plot_course(dest_x, dest_y) --- heading
-        --drive(course,25);
-        drive( 300, 50)
-        while distance(loc_x(), loc_y(), dest_x, dest_y) > 50 do
-            x = true
-        end
-        drive(course, 0) -- stop
-        while (speed() > 0) do
-            x = true
-        end
+    if state.dest == nil or state.dest == false then
+        state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
+        state.course = plot_course(state.dest[1], state.dest[2])
+        drive( state.course, 100)
     end
 
-    while true do
-        go(math.random(1000), math.random(1000)) --- go somewhere in the grid
+    if distance(loc_x(), loc_y(), state.dest[1], state.dest[2]) < 50 then
+        drive(state.course, 0)
+        state.course = 0
+        state.dest = false
+        cannon(math.random(350), math.random(700))
     end
-    --state.out = math.random(1000)
+    drive(state.course, 100)
+
     return state
 end

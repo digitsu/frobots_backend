@@ -2,49 +2,6 @@
 <module type="ELIXIR_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/lib" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/frobots_rigs" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-    </content>
-    <orderEntry type="jdk" jdkName="Elixir 1.12.3" jdkType="Elixir SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="fubars" />
-    <orderEntry type="library" name="operate" level="project" />
-    <orderEntry type="library" name="luerl" level="project" />
-    <orderEntry type="library" name="bsv" level="project" />
-    <orderEntry type="library" name="con_cache" level="project" />
-    <orderEntry type="library" name="ex_doc" level="project" />
-    <orderEntry type="library" name="jason" level="project" />
-    <orderEntry type="library" name="plug_cowboy" level="project" />
-    <orderEntry type="library" name="terminus" level="project" />
-    <orderEntry type="library" name="tesla" level="project" />
-    <orderEntry type="library" name="basefiftyeight" level="project" />
-    <orderEntry type="library" name="curvy" level="project" />
-    <orderEntry type="library" name="libsecp256k1" level="project" />
-    <orderEntry type="library" name="dialyxir" level="project" />
-    <orderEntry type="library" name="castore" level="project" />
-    <orderEntry type="library" name="gen_stage" level="project" />
-    <orderEntry type="library" name="mint" level="project" />
-    <orderEntry type="library" name="sse" level="project" />
-    <orderEntry type="library" name="mime" level="project" />
-    <orderEntry type="library" name="ibrowse" level="project" />
-    <orderEntry type="library" name="hackney" level="project" />
-    <orderEntry type="library" name="gun" level="project" />
-    <orderEntry type="library" name="finch" level="project" />
-    <orderEntry type="library" name="poison" level="project" />
-    <orderEntry type="library" name="exjsx" level="project" />
-    <orderEntry type="library" name="fuse" level="project" />
-    <orderEntry type="library" name="telemetry" level="project" />
-    <orderEntry type="library" name="excoveralls" level="project" />
-    <orderEntry type="library" name="httparrot" level="project" />
-    <orderEntry type="library" name="mix_test_watch" level="project" />
-    <orderEntry type="library" name="inch_ex" level="project" />
-    <orderEntry type="library" name="cowlib" level="project" />
-    <orderEntry type="library" name="ranch" level="project" />
-    <orderEntry type="library" name="benchee" level="project" />
-    <orderEntry type="library" name="hpack" level="project" />
-    <orderEntry type="library" name="stream_data" level="project" />
   </component>
 </module>
