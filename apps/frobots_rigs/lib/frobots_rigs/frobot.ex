@@ -68,7 +68,7 @@ defmodule Frobot do
 
     state = case Operate.Cell.exec(state.brain_cell, state.vm, state: state.brain_state) do
       {:ok, new_brain_state } ->
-        #IO.inspect new_brain_state
+        IO.inspect {state.frobot_name, new_brain_state}
         Map.put(state, :brain_state, new_brain_state)
       {:error, _} ->
         Map.put(state, :brain_state, state.brain_state)

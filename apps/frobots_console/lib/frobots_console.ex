@@ -28,6 +28,10 @@ defmodule FrobotsConsole do
   Play a game
   """
   def run() do
+    # load all the other needed apps, because in the test mode we set it not to load anything to avoid async testn issues
+    for app <- Application.spec(:fubars, :applications) do
+      Application.ensure_all_started(app)
+    end
     Arena.kill_all!(Arena)
     #normally should take these from the args
     frobots = %{alpha: "apps/frobots_rigs/src/rabbit.lua"}
@@ -48,5 +52,4 @@ defmodule FrobotsConsole do
     Arena.create(Arena, :t1, :tank, loc: location)
     FrobotsConsole.Game.run([])
   end
-  #defdelegate test_run(), to: FrobotsConsole.Game
 end
