@@ -5,7 +5,7 @@
 ---
 
 --- rabbit
---- rabbit runs aronud the field randomly
+--- rabbit runs around the field randomly
 --- and never fires anything, just a moving target
 
 return function(state, ...)
@@ -43,19 +43,35 @@ return function(state, ...)
         return d
     end
 
+    state.damage = damage()
+    state.locx = loc_x()
+    state.locy = loc_y()
+    state.speed = speed()
+
+    if state.damage == nil then
+        state.damage = damage()
+    end
+    if state.speed == nil or state.speed ~= speed() then
+        state.speed = speed()
+    end
+
     if state.dest == nil or state.dest == false then
         state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
         state.course = plot_course(state.dest[1], state.dest[2])
-        drive( state.course, 100)
     end
 
     if distance(loc_x(), loc_y(), state.dest[1], state.dest[2]) < 50 then
+        -- stop
         drive(state.course, 0)
         state.course = 0
         state.dest = false
-        cannon(math.random(350), math.random(700))
     end
-    drive(state.course, 100)
+    if state.damage ~= damage() then
+        drive(state.course, 0) -- stop!
+        state.dest = false
+    end
 
+    drive(state.course, math.random(100))
+    cannon(math.random(350), math.random(700))
     return state
 end

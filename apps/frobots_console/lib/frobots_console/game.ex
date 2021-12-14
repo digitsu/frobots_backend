@@ -13,7 +13,7 @@ defmodule FrobotsConsole.Game do
             timer: nil,
             rigs: %{}, # a map of frobot name and value is a TankState or MissileState
             missiles: %{},
-            tty: "/dev/ttys003",
+            tty: "/dev/ttys000",
             frobots: %{}
 
   def run(frobots) do
@@ -37,10 +37,10 @@ defmodule FrobotsConsole.Game do
   end
 
   def init_logger do
-    Logger.metadata(evt_type: :log) # makes the default evt_type just to be :log (so that it doesn't trigger the log_backend)
-    Logger.configure(level: :info) # default level
+    Logger.metadata(evt_type: :log) # makes the default evt_type just to be :log (so that it doesn't trigger the ui_event backend)
+    Logger.configure(level: :info) # default level this overrides ALL BACKENDS! (this must be the most permissive level)
     Logger.configure_backend(:console, level: :info) #console backend level
-    Logger.configure_backend({Fubars.LogBackend, :log_backend}, level: :info, game_pid: self()) #log backend level and save the listener pid
+    Logger.configure_backend({Fubars.LogBackend, :ui_event}, level: :info, game_pid: self()) #log backend level and save the listener pid
     Logger.debug("in game module --init_logger")
   end
 
@@ -184,6 +184,8 @@ defmodule FrobotsConsole.Game do
       end
     end
 
+    # these are checked for the first key that matches, so effectively only one of these messages can be
+    # processed per event. This also determines the order in which the messages can be processed.
     update_frobot = fn old_state, f_state ->
       new_state = case f_state do
         %{:kk => _} ->
@@ -202,6 +204,8 @@ defmodule FrobotsConsole.Game do
       new_state
     end
 
+    # these are checked in the order here, for the first match. 2 matches cases cannot be processed in the same
+    # message, so be careful.
     update_missile = fn old_state, f_state ->
       IO.puts( inspect( f_state ))
       new_state = case f_state do
@@ -225,10 +229,11 @@ defmodule FrobotsConsole.Game do
       new_state
     end
 
-    # its a message from arena.
+    # its a message from a rig or missile
     if frobot != "arena" do
       cond do
         MapSet.member?(MapSet.new(Map.keys(state.rigs)), frobot) ->
+          IO.inspect f_state
           Map.put(
             state,
             :rigs,
@@ -236,7 +241,7 @@ defmodule FrobotsConsole.Game do
           )
 
         MapSet.member?(MapSet.new(Map.keys(state.missiles)), frobot) ->
-          #IO.inspect state
+          IO.inspect f_state
           Map.put(
             state,
             :missiles,

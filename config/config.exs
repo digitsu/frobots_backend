@@ -20,9 +20,10 @@ import Config
 config :logger,
        backends: [
          :console,
-         {Fubars.LogBackend, :log_backend}
+         {Fubars.LogBackend, :ui_event},
+         {LoggerFileBackend, :file_log}
        ],
-       level: :warning,
+       level: :debug, # this is the most permissive level, no backend can be more inclusive than the level set here.
        compile_time_purge_matching: [
          [level_lower_than: :info]
        ]
@@ -32,9 +33,14 @@ config :logger,
 # format: {Fubars.LogFormatter, :format}
 # metadata: [:request_id]
 
-config :logger, :log_backend,
+config :logger, :ui_event,
        level: :info,
        metadata: :evt_type
+
+config :logger, :file_log,
+       path: "/tmp/frobotsLog.log",
+       level: :info
+
 
 # import_config "#{Mix.env}.exs"
 

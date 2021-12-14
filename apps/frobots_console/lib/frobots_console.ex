@@ -32,6 +32,7 @@ defmodule FrobotsConsole do
     for app <- Application.spec(:fubars, :applications) do
       Application.ensure_all_started(app)
     end
+    Arena.set_debug(Arena, true)
     Arena.kill_all!(Arena)
     #normally should take these from the args
     frobots = %{alpha: "apps/frobots_rigs/src/rabbit.lua"}
@@ -42,7 +43,6 @@ defmodule FrobotsConsole do
     #state = Frobot.get_state(pid)
     #vm = state.vm
     #vm |> Operate.VM.eval!(File.read!("apps/frobots_rigs/src/rabbit.lua")) |> Operate.VM.exec_function!([])
-    Arena.set_debug(Arena, true)
     FrobotsConsole.Game.run(frobots)
   end
 
