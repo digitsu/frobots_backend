@@ -66,6 +66,11 @@ defmodule Frobot do
   @impl true
   def handle_cast({:start, interval}, state) do
 
+    state = if Process.alive?(state.tank_pid) do
+      timer_ref = Process.send_after(self(), {:loop, interval}, interval)
+      Map.put(state, :loop_timer, timer_ref)
+    end
+
     state = case Operate.Cell.exec(state.brain_cell, state.vm, state: state.brain_state) do
       {:ok, new_brain_state } ->
         IO.inspect {state.frobot_name, new_brain_state}
@@ -74,8 +79,6 @@ defmodule Frobot do
         Map.put(state, :brain_state, state.brain_state)
     end
 
-    timer_ref = Process.send_after(self(), {:loop, interval}, interval)
-    state = Map.put(state, :loop_timer, timer_ref)
     {:noreply, state}
   end
 
