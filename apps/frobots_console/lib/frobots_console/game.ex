@@ -188,8 +188,8 @@ defmodule FrobotsConsole.Game do
     # processed per event. This also determines the order in which the messages can be processed.
     update_frobot = fn old_state, f_state ->
       new_state = case f_state do
-        %{:kk => _} ->
-          old_state |> Map.replace(:status, :killed) |> schedule_next_cleanup()
+        %{:xx => _} -> #tank destroyed, this should trigger any death animation
+          old_state |> Map.replace(:status, :destroyed)
         %{:mv => _} ->
           old_state |> check_and_put.(:ploc, old_state, :loc)
           |> check_and_put.(:loc, f_state, :mv)
@@ -197,9 +197,9 @@ defmodule FrobotsConsole.Game do
           |> check_and_put.(:speed, f_state, :sp)
         %{:dm => _} ->
           old_state |> check_and_put.(:damage, f_state, :dm)
+        %{:kk => _} ->
+          old_state |> Map.replace(:status, :killed) |> schedule_next_cleanup()
         %{:cn => _} -> old_state
-        %{:xx => _} -> #disabled tank
-                        old_state
       end
       new_state
     end
@@ -210,12 +210,11 @@ defmodule FrobotsConsole.Game do
       IO.puts( inspect( f_state ))
       new_state = case f_state do
         %{:ex => _} ->
-       #   IO.puts "in exploding"
           old_state
             |> Map.replace(:status, :exploded)
             |> check_and_put.(:loc, f_state, :ex)
         %{:kk => _} ->
-          old_state |> schedule_next_cleanup()
+          old_state |> Map.replace(:status, :killed) |> schedule_next_cleanup()
         %{:mv => _} ->
           old_state |> check_and_put.(:ploc, old_state, :loc)
           |> check_and_put.(:loc, f_state, :mv)
