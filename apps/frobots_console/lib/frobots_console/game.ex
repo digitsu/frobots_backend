@@ -143,7 +143,7 @@ defmodule FrobotsConsole.Game do
       Enum.reduce(Map.get(state, key), %{},
         fn {frobot, f_state}, acc ->
           case f_state.status do
-            :killed -> acc
+            :destroyed -> acc
             :exploded -> acc
             _ -> Map.put(acc, frobot, f_state)
           end
@@ -198,7 +198,7 @@ defmodule FrobotsConsole.Game do
         %{:dm => _} ->
           old_state |> check_and_put.(:damage, f_state, :dm)
         %{:kk => _} ->
-          old_state |> Map.replace(:status, :killed) |> schedule_next_cleanup()
+          old_state |> schedule_next_cleanup()
         %{:cn => _} -> old_state
       end
       new_state
@@ -214,7 +214,7 @@ defmodule FrobotsConsole.Game do
             |> Map.replace(:status, :exploded)
             |> check_and_put.(:loc, f_state, :ex)
         %{:kk => _} ->
-          old_state |> Map.replace(:status, :killed) |> schedule_next_cleanup()
+          old_state |> schedule_next_cleanup()
         %{:mv => _} ->
           old_state |> check_and_put.(:ploc, old_state, :loc)
           |> check_and_put.(:loc, f_state, :mv)

@@ -113,7 +113,7 @@ defmodule FrobotsConsole.UI do
             draw_exp(state, mis_state.loc, mis_state.ploc )
           _ -> nil
         end
-        #ExNcurses.refresh()
+        ExNcurses.refresh()
         #IO.inspect {mis_state, state}
 
     end

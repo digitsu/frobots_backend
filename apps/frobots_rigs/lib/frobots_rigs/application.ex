@@ -2,11 +2,13 @@ defmodule FrobotsRigs.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
+  require Logger
 
   use Application
 
   @impl true
   def start(_type, _args) do
+    Logger.info("Starting Application...FROBOTS Rigs")
     options = [
       cache: Operate.Cache.ConCache,
       tape_adapter: Operate.Adapter.Bob,
