@@ -1,6 +1,6 @@
 defmodule FrobotsConsole do
-  alias FrobotsConsole.Game
   alias Fubars.Arena
+  alias Fubars.Frobot
 
   @moduledoc """
   Documentation for `FrobotsConsole`.
@@ -28,28 +28,24 @@ defmodule FrobotsConsole do
   Play a game
   """
   def run() do
-    # load all the other needed apps, because in the test mode we set it not to load anything to avoid async testn issues
-    for app <- Application.spec(:fubars, :applications) do
-      Application.ensure_all_started(app)
-    end
-    Arena.set_debug(Arena, true)
+    Arena.set_debug(Arena, false)
     Arena.kill_all!(Arena)
     #normally should take these from the args
-    frobots = %{alpha: "apps/frobots_rigs/src/rabbit.lua"}
-    frobots = Map.put(frobots, :beta, "apps/frobots_rigs/src/rabbit.lua")
-    frobots = Map.put(frobots, :gamma, "apps/frobots_rigs/src/rabbit.lua")
-    frobots = Map.put(frobots, :delta, "apps/frobots_rigs/src/rabbit.lua")
-    #pid = FrobotsRigs.create_frobot(:rabbit_alpha, "apps/frobots_rigs/src/rabbit.lua")
-    #state = Frobot.get_state(pid)
-    #vm = state.vm
-    #vm |> Operate.VM.eval!(File.read!("apps/frobots_rigs/src/rabbit.lua")) |> Operate.VM.exec_function!([])
+    frobots = %{"alpha" => "apps/frobots_rigs/src/sniper.lua"}
+    frobots = Map.put(frobots, "beta", "apps/frobots_rigs/src/target.lua")
     FrobotsConsole.Game.run(frobots)
   end
 
-  def test_run() do
-    Game.init_logger()
-    location = {:rand.uniform(1000), :rand.uniform(1000)}
-    Arena.create(Arena, :t1, :tank, loc: location)
-    FrobotsConsole.Game.run([])
+  @doc """
+   Test with just one frobot
+  """
+  def run_test() do
+    Arena.set_debug(Arena, true)
+    Arena.kill_all!(Arena)
+    name = "rando"
+    brain_path = "apps/frobots_rigs/src/random.lua"
+    pid = Fubars.Registry.create(Fubars.Registry, name, :frobot, %Frobot{brain_path: brain_path } )
+    Fubars.Frobot.start(pid)
   end
+
 end

@@ -32,7 +32,6 @@ defmodule FrobotsConsole.MixProject do
       {:fubars, in_umbrella: true},
       {:frobots_rigs, in_umbrella: true},
       {:ex_ncurses, "~> 0.3.1"},
-
       {:logger_file_backend, "~> 0.0.12"},
     ]
   end

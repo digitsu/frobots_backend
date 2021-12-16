@@ -1,10 +1,10 @@
 defmodule FrobotsRigs do
   alias Operate.VM
+  alias Fubars.Frobot
 
   def create_frobot(name, brain_path) do
-    #todo this needs to be in a dynamic supervisor, so that it can hold a ref to the process
-    {:ok, pid} = GenServer.start_link(Frobot, %Frobot{frobot_name: name, brain_path: brain_path } )
-    pid
+    #GenServer.start_link(Frobot, %Frobot{frobot_name: name, brain_path: brain_path } )
+    Fubars.Registry.create(Fubars.Registry, name, :frobot, %Frobot{brain_path: brain_path } )
   end
 
   defmodule Extension do

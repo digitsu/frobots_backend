@@ -2,6 +2,7 @@ defmodule FrobotsConsole.Game do
   alias FrobotsConsole.UI
   alias Fubars.Arena
   require Logger
+  alias Fubars.Frobot
 
   @tick 200
   @cleanup_tick 500
@@ -45,15 +46,16 @@ defmodule FrobotsConsole.Game do
   end
 
   def start_frobots(state) do
-    for {frobot_name, brain_path} <- state.frobots do
+    for {name, brain_path} <- state.frobots do
       #eventually should randomize the start order
-      pid = FrobotsRigs.create_frobot(frobot_name, brain_path)
+      pid = FrobotsRigs.create_frobot(name, brain_path)
       Frobot.start(pid)
     end
     state
   end
 
   def loop(%{game_over: true} = state) do
+    Arena.kill_all(Arena) #maybe needed as UI seems to hang on a keypress
     UI.game_over(state)
   end
 
@@ -102,7 +104,7 @@ defmodule FrobotsConsole.Game do
 
   defp handle_key(state, ?q) do
     #Arena.kill_all(Arena)
-    %{state | game_over: true, rigs: %{}, missiles: %{} }
+    %{state | game_over: true }
   end
 
   defp handle_key(state, _) do
@@ -139,6 +141,15 @@ defmodule FrobotsConsole.Game do
   end
 
   defp do_cleanup(state) do
+
+    check_game_over = fn state ->
+      if length(Map.keys(state.rigs)) < 2 do
+        %{state | game_over: true }
+      else
+        state
+      end
+    end
+
     clean_killed = fn state, key ->
       Enum.reduce(Map.get(state, key), %{},
         fn {frobot, f_state}, acc ->
@@ -160,6 +171,7 @@ defmodule FrobotsConsole.Game do
       state
       |> Map.put(:rigs, clean_killed.(state, :rigs))
       |> Map.put(:missiles, clean_killed.(state, :missiles))
+      |> check_game_over.()
 
     state
   end
@@ -200,6 +212,7 @@ defmodule FrobotsConsole.Game do
         %{:kk => _} ->
           old_state |> schedule_next_cleanup()
         %{:cn => _} -> old_state
+        %{:sc => _} -> old_state
       end
       new_state
     end
@@ -207,7 +220,7 @@ defmodule FrobotsConsole.Game do
     # these are checked in the order here, for the first match. 2 matches cases cannot be processed in the same
     # message, so be careful.
     update_missile = fn old_state, f_state ->
-      IO.puts( inspect( f_state ))
+      #IO.puts( inspect( f_state ))
       new_state = case f_state do
         %{:ex => _} ->
           old_state
@@ -232,7 +245,7 @@ defmodule FrobotsConsole.Game do
     if frobot != "arena" do
       cond do
         MapSet.member?(MapSet.new(Map.keys(state.rigs)), frobot) ->
-          IO.inspect f_state
+          #IO.inspect f_state
           Map.put(
             state,
             :rigs,
@@ -240,7 +253,7 @@ defmodule FrobotsConsole.Game do
           )
 
         MapSet.member?(MapSet.new(Map.keys(state.missiles)), frobot) ->
-          IO.inspect f_state
+          #IO.inspect f_state
           Map.put(
             state,
             :missiles,
@@ -252,7 +265,7 @@ defmodule FrobotsConsole.Game do
     else # this is an update from Arena (on the creation of a rig)
       if Map.get(f_state, :tt) do
         id_tag = length(Map.keys(state.rigs)) + 1
-        UI.draw_chr(state, f_state.lc, {0,0}, ~s|#{id_tag}|)
+        #UI.draw_chr(state, f_state.lc, {0,0}, ~s|#{id_tag}|)
 
         Map.put(
           state,
@@ -281,27 +294,6 @@ defmodule FrobotsConsole.Game do
   defp schedule_next_cleanup(state) do
     timer = Process.send_after(self(), :cleanup, @cleanup_tick)
     %{state | timer: timer}
-  end
-
-  def test_place_tanks(state) do
-    # create tanks for each frobot, place them randomly in the arena
-    # and store their pids.
-    # location = {:rand.uniform(state.width - 2), :rand.uniform(state.height - 3)}
-    location = {700, 999}
-    {:ok, t1} = Arena.create(Arena, :demo1, :tank, loc: location)
-    Fubars.Rig.go(t1)
-    Fubars.Tank.drive(t1, 0, 100)
-    location = {999, 999}
-    {:ok, t2} = Arena.create(Arena, :demo2, :tank, loc: location)
-    Fubars.Rig.go(t2)
-    Fubars.Tank.drive(t2, 180, 100)
-    location = {200, 200}
-    {:ok, m1} = Arena.create(Arena, :mis1, :missile, loc: location, heading: 90)
-    Fubars.Rig.go(m1)
-    location = {600, 200}
-    {:ok, m2} = Arena.create(Arena, :mis2, :missile, loc: location, heading: 80)
-    Fubars.Rig.go(m2)
-    state
   end
 
 end

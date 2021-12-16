@@ -1,9 +1,10 @@
 defmodule FrobotsRigsTest do
   use ExUnit.Case
   doctest FrobotsRigs
+  alias Fubars.Frobot
 
   test "create a rabbit" do
-    assert {:ok, pid} = GenServer.start_link(Frobot, %Frobot{frobot_name: :rabbit1, brain_path: "src/rabbit.lua" } )
+    assert {:ok, pid} = GenServer.start_link(Frobot, %Frobot{name: :rabbit1, brain_path: "src/rabbit.lua" } )
     assert Process.alive?(pid)
     assert state = Frobot.get_state(pid)
     vm = state.vm

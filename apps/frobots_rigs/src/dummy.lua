@@ -3,96 +3,17 @@
 --- Created by digitsu.
 --- DateTime: 2021/12/06 12:27
 --- This frobot is an interface test jig
+---
+--- dummy frobot sits there until damaged, when he will run away in a random direction at half speed, until he hits an obstacle
 
 return function(state, ...)
     state = state or {}
-
-    local function plot_course(xx,yy)
-        local d
-        local x,y
-        local curx, cury
-
-
-        curx = loc_x()
-        cury = loc_y()
-        x = curx - xx
-        y = cury - yy
-
-        if x == 0 then
-            if yy > cury then
-                d = 90
-            else
-                d = 270
-            end
-        else
-            if yy < cury then
-                if xx > curx then
-                    d = 360 + math.atan(y, x)
-                else
-                    d = 180 + math.atan(y, x)
-                end
-            else
-                if xx > curx then
-                    d = math.atan(y, x)
-                else
-                    d = 180 + math.atan(y, x)
-                end
-            end
-        end
-        return d
+    state.type = "dummy"
+    if state.damage == nil or state.damage ~= damage() then
+        state.damage = damage()
+        state.course = math.random(359)
+        drive(state.course, 50)
     end
 
-
-
-    local function distance(x1,y1,x2,y2)
-        local x = x1 - x2
-        local y = y1 - y2
-        local d = math.sqrt((x*x) + (y*y))
-        return d
-    end
-
-    state.x = 984
-    state.y = 245
-    state.f = go
-    --drive(110, 50)
-    state.r1 = math.random(1000)
-    state.r2 = math.random(1000)
-    state.dist = distance( loc_x(), loc_y(), math.random(1000), math.random(1000))
-    if state.dist > 50 then
-        state.out = "above 50"
-    end
-    state.plotted = plot_course(state.r1,state.r2)
-    x = 0
-    while x < 10 do
-        x = x + 1
-        y = true
-    end
-    --go(state.plotted, state.r1, state.r2)
-    --state.new = state.plotted
-    local function test(course, xx, yy)
-        drive(course, 40)
-        x = distance(loc_x(),loc_y(),xx,yy)
-        while speed() > 0 do
-            drive(course, 0)
-        end
-        return x
-    end
-
-    local function go(course, dest_x, dest_y)
-        --local course = plot_course(dest_x, dest_y) --- heading
-        drive(course,25)
-        --drive( 300, 50)
-        while (distance(loc_x(), loc_y(), dest_x, dest_y) > 50) do
-            x = true
-        end
-        drive(course, 0) -- stop
-        while (speed() > 0) do
-            x = true
-        end
-    end
-    drive(state.plotted, 30)
-    state.speed = speed()
-    state.out = test(state.plotted, state.x, state.y)
-    --go(state.plotted, 200,200)
     return state
 end
