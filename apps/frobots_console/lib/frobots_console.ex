@@ -32,7 +32,11 @@ defmodule FrobotsConsole do
     Arena.kill_all!(Arena)
     #normally should take these from the args
     frobots = %{"alpha" => "apps/frobots_rigs/src/sniper.lua"}
-    frobots = Map.put(frobots, "beta", "apps/frobots_rigs/src/target.lua")
+    frobots = Map.put(frobots, "beta", "apps/frobots_rigs/src/sniper.lua")
+    frobots = Map.put(frobots, "gamma", "apps/frobots_rigs/src/random.lua")
+    frobots = Map.put(frobots, "delta", "apps/frobots_rigs/src/random.lua")
+    frobots = Map.put(frobots, "epsilon", "apps/frobots_rigs/src/sniper.lua")
+    frobots = Map.put(frobots, "mu", "apps/frobots_rigs/src/rabbit.lua")
     FrobotsConsole.Game.run(frobots)
   end
 

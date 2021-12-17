@@ -7,9 +7,9 @@ defmodule FrobotsConsole.UI do
   @exp_line3 " \u259e\u258c\u259a"
 
   def init(state) do
-    ExNcurses.initscr(state.tty)
+    ExNcurses.initscr("/dev/ttys001")
     ExNcurses.n_begin()
-    win = ExNcurses.newwin(state.height, state.width, 1, 20)
+    win = ExNcurses.newwin(state.height-1, state.width, 0, 20)
     ExNcurses.listen()
     ExNcurses.noecho()
     ExNcurses.keypad()
@@ -49,7 +49,7 @@ defmodule FrobotsConsole.UI do
   end
 
   def draw_screen(state) do
-    ExNcurses.clear()
+    #ExNcurses.clear()
     ExNcurses.mvaddstr(0, 2, "F.U.B.A.R.S.")
     ExNcurses.wclear(state.game_win)
     ExNcurses.wborder(state.game_win)
@@ -64,7 +64,7 @@ defmodule FrobotsConsole.UI do
   def draw_tanks(state) do
     for tank_state <- Map.values(state.rigs) do
         draw_chr(state, tank_state.loc, tank_state.ploc, tank_state.id)
-        ExNcurses.refresh()
+        ExNcurses.wborder(state.game_win)
         ExNcurses.wrefresh(state.game_win)
         #IO.inspect tank_state
     end
@@ -113,7 +113,8 @@ defmodule FrobotsConsole.UI do
             draw_exp(state, mis_state.loc, mis_state.ploc )
           _ -> nil
         end
-        ExNcurses.refresh()
+
+        ExNcurses.wborder(state.game_win)
         ExNcurses.wrefresh(state.game_win)
         #IO.inspect {mis_state, state}
 

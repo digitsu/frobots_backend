@@ -14,7 +14,8 @@ defmodule FrobotsConsole.Game do
             timer: nil,
             rigs: %{}, # a map of frobot name and value is a TankState or MissileState
             missiles: %{},
-            tty: "/dev/ttys000",
+            #tty: "/dev/ttys000",
+            tty: "",
             frobots: %{}
 
   def run(frobots) do
