@@ -4,8 +4,10 @@ defmodule FrobotsRigsTest do
   alias Fubars.Frobot
 
   test "create a rabbit" do
-    assert {:ok, pid} = GenServer.start_link(Frobot, %Frobot{name: :rabbit1, brain_path: "src/rabbit.lua" } )
+    assert {:ok, pid} = GenServer.start_link(Frobot, %Frobot{name: "rabbit1", brain_path: "src/rabbit.lua" } )
     assert Process.alive?(pid)
+
+    GenServer.call(pid, :init_tank)
     assert state = Frobot.get_state(pid)
     vm = state.vm
     damage = vm |> Operate.VM.eval!("return function() return damage() end") |> Operate.VM.exec_function!([])

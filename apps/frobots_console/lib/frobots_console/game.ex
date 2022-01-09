@@ -14,14 +14,13 @@ defmodule FrobotsConsole.Game do
             timer: nil,
             rigs: %{}, # a map of frobot name and value is a TankState or MissileState
             missiles: %{},
-            #tty: "/dev/ttys000",
             tty: "",
             frobots: %{}
 
-  def run(frobots) do
+  def run(args) do
     IO.puts("starting")
 
-    %FrobotsConsole.Game{frobots: frobots}
+    struct(FrobotsConsole.Game, args)
     |> init()
     |> UI.draw_screen()
     |> schedule_next_tick()

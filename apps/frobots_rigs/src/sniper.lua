@@ -24,6 +24,7 @@ return function(state, ...)
   c3x = 990; c3y = 990; s3 = 180;
   c4x = 990; c4y = 10; s4 = 90;
 
+
   local function distance(x1,y1,x2,y2)
     local x = x1 -x2
     local y = y1 -y2
