@@ -13,6 +13,7 @@ defmodule FrobotsConsole do
               ploc: {0, 0},
               loc: {0, 0},
               id: nil,
+              name: nil,
               timer: nil,
               status: :alive
   end

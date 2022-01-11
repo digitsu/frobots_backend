@@ -10,6 +10,7 @@ defmodule FrobotsConsole.Game do
   defstruct width: 60,
             height: 60,
             game_win: nil,
+            stat_win: nil,
             game_over: false,
             timer: nil,
             rigs: %{}, # a map of frobot name and value is a TankState or MissileState
@@ -68,7 +69,9 @@ defmodule FrobotsConsole.Game do
 
         {:ui, evt} ->
           Logger.debug("#{IO.inspect evt}")
-          process_ui(state, evt)
+          state
+          |> process_ui(evt)
+          |> UI.draw_stats_screen()
 
         :tick ->
           state
@@ -138,6 +141,7 @@ defmodule FrobotsConsole.Game do
     |> unmangle_int.(:sp)
     |> unmangle_int.(:dm)
     |> unmangle_tup.(:ex)
+    |> unmangle_tup.(:sc)
   end
 
   defp do_cleanup(state) do
@@ -212,7 +216,7 @@ defmodule FrobotsConsole.Game do
         %{:kk => _} ->
           old_state |> schedule_next_cleanup()
         %{:cn => _} -> old_state
-        %{:sc => _} -> old_state
+        %{:sc => _} -> old_state |> check_and_put.(:scan, f_state, :sc)
       end
       new_state
     end

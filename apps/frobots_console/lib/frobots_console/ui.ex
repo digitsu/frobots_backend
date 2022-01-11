@@ -6,15 +6,21 @@ defmodule FrobotsConsole.UI do
   @exp_line2 "\u2591\u2593\u2588\u2592\u2591"
   @exp_line3 " \u259e\u258c\u259a"
 
+
   def init(state) do
     ExNcurses.initscr(state.tty)
     ExNcurses.n_begin()
     win = ExNcurses.newwin(state.height-1, state.width, 0, 20)
+    stats = init_stats(state)
     ExNcurses.listen()
     ExNcurses.noecho()
     ExNcurses.keypad()
     ExNcurses.curs_set(0) #invisible cursor
-    %{state | game_win: win}
+    %{state | game_win: win, stat_win: stats}
+  end
+
+  def init_stats(state) do
+    ExNcurses.newwin(Enum.count(state.frobots)+3, 50, 0, 100)
   end
 
   def fini(state) do
@@ -58,6 +64,14 @@ defmodule FrobotsConsole.UI do
     draw_missiles(state)
     ExNcurses.refresh()
     ExNcurses.wrefresh(state.game_win)
+    state
+  end
+
+  def draw_stats_screen(state) do
+    ExNcurses.wborder(state.stat_win)
+    draw_stats(state)
+    ExNcurses.refresh()
+    ExNcurses.wrefresh(state.stat_win)
     state
   end
 
@@ -124,8 +138,26 @@ defmodule FrobotsConsole.UI do
   end
 
   def draw_stats(state) do
-    # ExNcurses.mvaddstr(0, state.width - 20, "Score: #{inspect(state)}")
+
+    Enum.each state.rigs, fn {frobot, tank_state} ->
+      case tank_state do
+        :destroyed ->
+          ExNcurses.wmove(state.stat_win, tank_state.id, 3)
+          ExNcurses.waddstr(state.stat_win, "#{inspect({tank_state.id, frobot})}")
+          ExNcurses.wmove(state.stat_win, tank_state.id, 20)
+          ExNcurses.waddstr(state.stat_win, "DEAD")
+        _ ->
+          ExNcurses.wmove(state.stat_win, tank_state.id, 3)
+          ExNcurses.waddstr(state.stat_win, "#{inspect({tank_state.id, frobot})}")
+          ExNcurses.wmove(state.stat_win, tank_state.id, 20)
+          ExNcurses.waddstr(state.stat_win, "SCAN: #{inspect(tank_state.scan)}")
+          ExNcurses.wmove(state.stat_win, tank_state.id, 40)
+          ExNcurses.waddstr(state.stat_win, "DMG: #{inspect(tank_state.damage)}")
+      end
+    end
+
     state
+
   end
 
   defp center_text(state, str) do

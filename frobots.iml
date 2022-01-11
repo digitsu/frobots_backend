@@ -40,8 +40,16 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/elixir_make" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/basefiftyeight" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/logger_file_backend" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/msgpax" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/scenic" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/scenic_driver_glfw" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/font_metrics" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/msgpax" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/scenic" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/scenic_driver_glfw" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/font_metrics" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Elixir 1.13.1" jdkType="Elixir SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="logger_file_backend" level="project" />
     <orderEntry type="library" name="credo" level="project" />
