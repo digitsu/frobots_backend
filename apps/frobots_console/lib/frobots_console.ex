@@ -13,7 +13,7 @@ defmodule FrobotsConsole do
               ploc: {0, 0},
               loc: {0, 0},
               id: nil,
-              name: nil,
+              # name: nil, # I believe this isn't used...
               timer: nil,
               status: :alive
   end
@@ -32,13 +32,13 @@ defmodule FrobotsConsole do
     Arena.set_debug(Arena, false)
     Arena.kill_all!(Arena)
     #normally should take these from the command args
-    tty = "/dev/ttys005"
-    frobots = %{"alpha" => "apps/frobots_rigs/src/sniper.lua"}
-    frobots = Map.put(frobots, "beta", "apps/frobots_rigs/src/sniper.lua")
-    frobots = Map.put(frobots, "gamma", "apps/frobots_rigs/src/random.lua")
-    frobots = Map.put(frobots, "delta", "apps/frobots_rigs/src/random.lua")
-    frobots = Map.put(frobots, "epsilon", "apps/frobots_rigs/src/sniper.lua")
-    frobots = Map.put(frobots, "mu", "apps/frobots_rigs/src/rabbit.lua")
+    tty = "/dev/ttys004"
+    frobots = %{"alpha" => "../frobots_rigs/src/sniper.lua"}
+    frobots = Map.put(frobots, "beta", "../frobots_rigs/src/sniper.lua")
+    frobots = Map.put(frobots, "gamma", "../frobots_rigs/src/random.lua")
+    frobots = Map.put(frobots, "delta", "../frobots_rigs/src/random.lua")
+    frobots = Map.put(frobots, "epsilon", "../frobots_rigs/src/sniper.lua")
+    frobots = Map.put(frobots, "mu", "../frobots_rigs/src/rabbit.lua")
     FrobotsConsole.Game.run(%{frobots: frobots, tty: tty})
   end
 

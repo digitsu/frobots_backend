@@ -191,6 +191,7 @@ defmodule FrobotsConsole.Game do
       end)
       |> unmangle_values
 
+      #remove the :nm value out of the update event, the rest can be interpreted as instructions f_state
     {frobot, f_state} = Map.pop(state_update, :nm)
 
     check_and_put = fn s1, k1, s2, k2 ->
@@ -274,6 +275,7 @@ defmodule FrobotsConsole.Game do
         Map.put(
           state,
           :rigs,
+          # note that f_state.tt is the name of the tank
           Map.put_new(state.rigs, f_state.tt, %FrobotsConsole.Tank{id: id_tag, loc: f_state.lc})
         )
       else
@@ -281,6 +283,7 @@ defmodule FrobotsConsole.Game do
           Map.put(
             state,
             :missiles,
+            # note that f_state.mm is the name of the missile
             Map.put_new(state.missiles, f_state.mm, %FrobotsConsole.Missile{loc: f_state.lc})
           )
         else

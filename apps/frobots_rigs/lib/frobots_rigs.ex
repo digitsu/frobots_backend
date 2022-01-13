@@ -23,7 +23,7 @@ defmodule FrobotsRigs do
       end
 
       rig_pid = fn vm ->
-        {:ok, tank_pid} = Registry.lookup(Registry, String.to_atom(rig_name.(vm)), :tank)
+        {:ok, tank_pid} = Registry.lookup(Registry, rig_name.(vm), :tank)
         tank_pid
       end
 

@@ -2,9 +2,59 @@ defmodule FrobotsScenic.Scene.Game do
   use Scenic.Scene
   alias Scenic.Graph
   alias Scenic.ViewPort
-  import Scenic.Primitives, only: [rrect: 3, text: 3, circle: 3]
+  import Scenic.Primitives, only: [rrect: 3, text: 3, circle: 3, update_opts: 2, rect: 3]
+  alias Fubars.Arena
+  alias Fubars.Frobot
+
+  #Constants
+  @name __MODULE__
+  @graph Graph.build(font: :roboto, font_size: 16)
+  @tank_size 10
+  @tank_radius 2
+  @miss_size 2
+  @frame_ms 50
+  @game_over_scene Snake.Scene.GameOver
+  @boom_width 40
+  @boom_height 40
+  @boom_radius 20
+  @boom_path :code.priv_dir(:frobots_scenic)
+             |> Path.join("/static/images/explode.png")
+  @boom_hash Scenic.Cache.Support.Hash.file!(@boom_path, :sha)
+  @animate_ms 30
+  @finish_delay_ms 500
+
+  # types
+  @type location :: {integer, integer}
+  @type miss_name :: String.t
+  @type tank_name :: String.t
+  @type tank_status :: :alive | :destroyed
+  @type miss_status :: :flying | :exploded
+  @type object_map :: %{tank: %{String.t => %@name.Tank{}},
+                        missile: %{String.t => %@name.Missile{}}}
+  @type t :: %{
+              viewport: pid,
+              tile_width: integer,
+              tile_height: integer,
+              graph: Scenic.Graph.t,
+              frame_count: integer,
+              frame_timer: reference,
+              score: integer,
+              frobots: map,
+              objects: object_map,
+             }
 
   defmodule Tank do
+    @type t :: %{
+                 scan: {integer,integer},
+                 damage: integer,
+                 speed: integer,
+                 heading: integer,
+                 ploc: FrobotsScenic.Scene.Game.location,
+                 loc: FrobotsScenic.Scene.Game.location,
+                 id: integer,
+                 name: String.t,
+                 status: FrobotsScenic.Scene.Game.tank_status
+               }
     defstruct scan: {0, 0},
               damage: 0,
               speed: 0,
@@ -13,37 +63,45 @@ defmodule FrobotsScenic.Scene.Game do
               loc: {0, 0},
               id: nil,
               name: nil,
+              timer: nil,
+              alpha: 0,
               status: :alive
   end
   defmodule Missile do
+    @type t :: %{
+                 ploc: FrobotsScenic.Scene.Game.location,
+                 loc: FrobotsScenic.Scene.Game.location,
+                 status: FrobotsScenic.Scene.Game.miss_status,
+                 name: String.t
+               }
     defstruct ploc: {0, 0},
               loc: {0, 0},
+              name: nil,
+              timer: nil,
+              alpha: 0,
               status: :flying
   end
-
-  #Constants
-  @name __MODULE__
-  @graph Graph.build(font: :roboto, font_size: 16)
-  @tank_size 10
-  @tank_radius 8
-  @miss_size 2
-  @frame_ms 100
-  @game_over_scene Snake.Scene.GameOver
 
   # Initialize the game scene
 
   def init(arg, opts) do
     viewport = opts[:viewport]
-    IO.inspect arg
     # calculate the transform that centers the snake in the viewport
     {:ok, %ViewPort.Status{size: {vp_width, vp_height}}} = ViewPort.info(viewport)
 
-    # how many tiles can the viewport hold in each diminesion
-
+    # load the explode texture into the cache
+    Scenic.Cache.Static.Texture.load(@boom_path, @boom_hash)
 
     # start a very simple animation timer
     {:ok, timer} = :timer.send_interval(@frame_ms, :frame)
 
+    # register my pid with the global state so that other GenServers can find the display Server
+    :global.register_name(Arena.display_process_name(), self())
+
+    # flush the Arena (as terminations of the game will try to re-add frobots to the arena)
+    Arena.kill_all!(Arena)
+
+    # init the game state
     # The entire game state will be held here
     state = %{
       viewport: viewport,
@@ -52,21 +110,31 @@ defmodule FrobotsScenic.Scene.Game do
       graph: @graph,
       frame_count: 1,
       frame_timer: timer,
-      score: 0,
       frobots: arg,
-      objects: %{tank:     %@name.Tank{},
-                 missile:  %@name.Missile{},
-                }
+      score: 0,
+      objects: %{tank: %{}, missile: %{}}
     }
 
-    # update the graph and push it to the rendered
+    state = start_frobots(state)
 
+    # update the graph and push it to the rendered
     graph =
       state.graph
       |> draw_score(state.score)
-#      |> draw_game_objects(state.objects)
+      |> draw_game_objects(state.objects)
 
     { :ok, state, push: graph }
+  end
+
+  @spec start_frobots( t ) :: t
+  def start_frobots(state) do
+    frobots = for {{name, brain_path},id} <- Enum.zip(state.frobots, 1..Enum.count(state.frobots)) do
+      pid = FrobotsRigs.create_frobot(name, brain_path)
+      Frobot.start(pid)
+      {name, %@name.Tank{name: name, id: id}}
+    end
+    Enum.reduce(frobots, state,
+      fn {name, object_data}, state -> put_in(state, [:objects, :tank, name], object_data) end)
   end
 
   # Draw the score HUD
@@ -78,41 +146,149 @@ defmodule FrobotsScenic.Scene.Game do
   # iterates over the object map, rendering each object.
   defp draw_game_objects(graph, object_map) do
     Enum.reduce(object_map, graph, fn {object_type, object_data}, graph ->
-      draw_object(graph, object_type, object_data)
-    end)
+      if Enum.any?(object_data) do
+        Enum.reduce( object_data, graph, fn {_name, object_struct}, graph -> draw_object(graph, object_type, object_struct) end )
+      else
+        graph
+      end
+    end )
   end
 
-  # snakes body is an array of coordinate pairs
-  defp draw_object(graph, :tank, %@name.Tank{loc: {x,y}, name: name, id: id}) do
-    draw_tank(graph, x,y, fill: :blue, id: id)
+  # draw tanks
+  defp draw_object(graph, :tank, %@name.Tank{loc: {x,y}, name: name, status: status}) when status in [:destroyed] do
+    draw_tank_destroy(graph, x, y, name, id: name )
   end
 
-  defp draw_object(graph, :missile, %@name.Missile{loc: {x,y}}) do
-    draw_missile(graph, x, y, fill: :yellow )
+  defp draw_object(graph, :tank, %@name.Tank{loc: {x,y}, name: name }) do
+    draw_tank(graph, x, y, fill: :lime, id: name)
   end
 
-  # draw tanks as rounded rectarngles
+  # draw missiles
+  defp draw_object(graph, :missile, %@name.Missile{loc: {x,y}, name: name, status: status}) when status in [:exploded] do
+    #draw_miss_explode(graph, x, y, name, id: name, fill: {:image, {@boom_hash, 256}} )
+    draw_miss_explode(graph, x, y, name, id: name, fill: :orange )
+  end
+
+  defp draw_object(graph, :missile, %@name.Missile{loc: {x,y}, name: name}) do
+    draw_missile(graph, x, y, fill: :yellow, id: name )
+  end
+
+  # draw tanks as rounded rectangles
   defp draw_tank(graph, x,y, opts) do
-    tile_opts = Keyword.merge([translate: {x * @tank_size, y * @tank_size}], opts)
+    tile_opts = Keyword.merge([translate: {x, y}], opts)
     graph |> rrect({@tank_size, @tank_size, @tank_radius}, tile_opts)
   end
 
   # draw missiles as circles
   defp draw_missile(graph, x,y, opts) do
-    tile_opts = Keyword.merge([translate: {x * @miss_size, y * @miss_size}], opts)
+    tile_opts = Keyword.merge([translate: {x, y}], opts)
     graph |> circle(@miss_size, tile_opts)
   end
 
+  defp draw_tank_destroy(graph, _x, _y, name, _opts) do
+    graph |> Graph.delete(name)
+  end
+
+  defp draw_miss_explode(graph, x,y, m_name, opts) do
+    tile_opts = Keyword.merge([translate: {x, y}], opts)
+    #delete the old primitive
+    graph
+    |> Graph.delete(m_name)
+    |> circle(@boom_radius, tile_opts )
+  end
+
+  defp update_loc(object_data, loc) do
+    if object_data do
+      object_data |> Map.put(:ploc, Map.get(object_data, loc)) |> Map.put(:loc, loc)
+    end
+  end
+
+  defp update_status(object_data, status) do
+    object_data |> Map.put(:status, status)
+  end
+
+  defp update_timer(object_data, timer ) do
+    object_data |> Map.put(:timer, timer)
+  end
+
+  defp update_alpha(object_data, alpha ) do
+    object_data |> Map.put(:alpha, alpha)
+  end
+
+  # this is the refresh loop of the display
+  @spec handle_info(:frame, %{frame_count: integer}) :: tuple
   def handle_info(:frame, %{frame_count: frame_count} = state) do
     graph = state.graph |> draw_game_objects(state.objects) |> draw_score(state.score)
     {:noreply, %{state | frame_count: frame_count + 1}, push: graph}
   end
 
-
-  defp add_score(state, amount) do
-    update_in(state, [:score], &(&1 + amount))
+  @spec handle_info( {:create_tank, tank_name, tuple}, t) :: tuple
+  def handle_info({:create_tank, frobot, loc}, state) do
+    # nop because tanks are created by the init, and we can ignore this message
+    # may use this if in future init does not place the tank at loc, and only gives it a name and id.
+    state = update_in(state, [:objects, :tank, frobot], &update_loc(&1, loc))
+    {:noreply, state}
   end
 
-  #key board controls
+  @spec handle_info( {:move_tank, tank_name, tuple}, t) :: tuple
+  def handle_info({:move_tank, frobot, loc}, state) do
+    state = update_in(state, [:objects, :tank, frobot], &update_loc(&1, loc))
+    {:noreply, state}
+  end
+
+  @spec handle_info({:kill_tank, tank_name }, t) :: tuple
+  def handle_info({:kill_tank, frobot }, state) do
+    state = update_in(state, [:objects, :tank, frobot], &update_status(&1, :destroyed))
+    {:noreply, state}
+  end
+
+  @spec handle_info( {:create_miss, miss_name, tuple}, t) :: tuple
+  def handle_info({:create_miss, m_name, loc}, state) do
+    state = put_in(state, [:objects, :missile, m_name], %@name.Missile{name: m_name, loc: loc})
+    {:noreply, state}
+  end
+
+  @spec handle_info( {:move_miss, miss_name, tuple}, t) :: tuple
+  def handle_info({:move_miss, m_name, loc}, state) do
+    state = update_in(state, [:objects, :missile, m_name], &update_loc(&1, loc))
+    {:noreply, state}
+  end
+
+  @spec handle_info( {:kill_miss, miss_name }, t) :: tuple
+  def handle_info({:kill_miss, m_name }, state) do
+    # start a very simple animation timer
+    {:ok, timer} = :timer.send_interval(@animate_ms, {:animate, m_name, :missile})
+    state = state |> update_in([:objects, :missile, m_name], &update_status(&1, :exploded))
+                  |> update_in([:objects, :missile, m_name], &update_timer(&1, timer))
+    {:noreply, state}
+  end
+
+  # this is each animation slice of the explosion
+  def handle_info({:animate, m_name, :missile}, %{graph: graph} = state) do
+    alpha = state.objects.missile[m_name].alpha
+    if alpha >= 1 do
+      graph =
+        Graph.modify(
+          graph,
+          m_name,
+          &update_opts(&1, fill: {:image, {@boom_hash, alpha}})
+        )
+      state = update_in(state, [:objects, :missile, m_name], &update_alpha(&1, alpha - 2))
+      {:noreply, %{state | graph: graph}, push: graph}
+    else
+      :timer.cancel(state.objects.missile[m_name].timer)
+      Process.send_after(self(), {:remove, m_name}, @finish_delay_ms)
+      {:noreply, state }
+    end
+  end
+
+  # this will remove the object both tanks and missiles
+  def handle_info({:remove, name}, state) do
+    state = state |> put_in([:objects, :missile], Map.delete(state.objects.missile, name))
+                  |> put_in([:objects, :tank], Map.delete(state.objects.tank, name))
+    {:noreply, state}
+  end
+
+  #keyboard controls
   def handle_input(_input, _context, state), do: {:noreply, state}
 end

@@ -41,6 +41,9 @@ config :logger, :file_log,
        path: "/tmp/frobotsLog.log",
        level: :info
 
+config :logger, :console,
+        level: :warning
+
 # Configure the main viewport for the Scenic application
 config :frobots_scenic, :viewport, %{
   name: :main_viewport,

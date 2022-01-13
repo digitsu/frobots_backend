@@ -8,9 +8,9 @@ defmodule FrobotsScenic.Scene.Start do
   import Scenic.Primitives
   import Scenic.Components
 
-  @frobot_paths %{rabbit: "apps/frobots_rigs/src/rabbit.lua",
-                  sniper: "apps/frobots_rigs/src/sniper.lua",
-                  random: "apps/frobots_rigs/src/random.lua" }
+  @frobot_paths %{rabbit: "../frobots_rigs/src/rabbit.lua",
+                  sniper: "../frobots_rigs/src/sniper.lua",
+                  random: "../frobots_rigs/src/random.lua" }
   @body_offset 60
 
   @header [
@@ -45,8 +45,24 @@ defmodule FrobotsScenic.Scene.Start do
               },
               id: :frobot3,
               translate: {200, 0}
+            ),
+            dropdown_spec(
+              {
+                [{"Rabbit", :rabbit}, {"Sniper", :sniper}, {"Random", :random}],
+                :rabbit
+              },
+              id: :frobot4,
+              translate: {300, 0}
+            ),
+            dropdown_spec(
+              {
+                [{"Rabbit", :rabbit}, {"Sniper", :sniper}, {"Random", :random}],
+                :rabbit
+              },
+              id: :frobot5,
+              translate: {400, 0}
             )
-  ]
+            ]
 
   ##
   # And build the final graph
