@@ -1,0 +1,7 @@
+FROBOTs logs the output of the simulation to IO stream logger, which can be then piped to I/O or picked up by a process listening to the specific logger events evt_type: :ui
+
+Alternatively, the simulator also will look for a GenServer by the name of Fubars.Arena.display_process_name() and send simulation events directly there via interprocess messaging.
+
+If you write a UI process or an adapter, you just need to register your name with :global.register_name(Arena.display_process_name(), self()) and you will receive all the events.
+this is the most performant way to run a GUI for the FUBARs.
+
