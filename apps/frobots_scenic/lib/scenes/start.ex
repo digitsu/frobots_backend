@@ -94,8 +94,9 @@ defmodule FrobotsScenic.Scene.Start do
     {:ok, state, push: @graph}
   end
 
+  @spec load_frobots( map() ) :: list()
   defp load_frobots(frobots) do
-    Map.new(Enum.map(frobots, fn {k,v} -> {Atom.to_string(k), @frobot_paths[v]} end))
+    Map.new(Enum.map(frobots, fn {name,type} -> {Atom.to_string(name), {Atom.to_string(type), @frobot_paths[type]}} end))
   end
 
   defp go_to_first_scene(%{viewport: vp, frobots: frobots}) do

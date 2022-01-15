@@ -8,7 +8,9 @@ defmodule FrobotsScenic.Scene.Game do
 
   #Constants
   @name __MODULE__
-  @graph Graph.build(font: :roboto, font_size: 16)
+  @font_size 20
+  @font_vert_space @font_size + 2
+  @graph Graph.build(font: :roboto, font_size: @font_size)
   @tank_size 10
   @tank_radius 2
   @miss_size 2
@@ -53,6 +55,8 @@ defmodule FrobotsScenic.Scene.Game do
                  loc: FrobotsScenic.Scene.Game.location,
                  id: integer,
                  name: String.t,
+                 timer: reference,
+                 alpha: integer,
                  status: FrobotsScenic.Scene.Game.tank_status
                }
     defstruct scan: {0, 0},
@@ -111,7 +115,6 @@ defmodule FrobotsScenic.Scene.Game do
       frame_count: 1,
       frame_timer: timer,
       frobots: arg,
-      score: 0,
       objects: %{tank: %{}, missile: %{}}
     }
 
@@ -120,27 +123,44 @@ defmodule FrobotsScenic.Scene.Game do
     # update the graph and push it to the rendered
     graph =
       state.graph
-      |> draw_score(state.score)
+      |> draw_status(state.objects)
       |> draw_game_objects(state.objects)
+
 
     { :ok, state, push: graph }
   end
 
   @spec start_frobots( t ) :: t
   def start_frobots(state) do
-    frobots = for {{name, brain_path},id} <- Enum.zip(state.frobots, 1..Enum.count(state.frobots)) do
+    frobots = for {{name, {brain_type, brain_path}},id} <- Enum.zip(state.frobots, 1..Enum.count(state.frobots)) do
+      # the notion of brain_type is not well defined, applies only to frobot archetypes. Not player created ones.
       pid = FrobotsRigs.create_frobot(name, brain_path)
       Frobot.start(pid)
-      {name, %@name.Tank{name: name, id: id}}
+      # for now just name them the braintype for simplicity, not real named frobots yet.
+      {name, %@name.Tank{name: ~s"#{brain_type}" <> Integer.to_string(id), id: id}}
     end
     Enum.reduce(frobots, state,
       fn {name, object_data}, state -> put_in(state, [:objects, :tank, name], object_data) end)
   end
 
+  defp draw_status(graph, object_map) do
+   Enum.reduce(object_map, graph,
+     fn {:tank, object_data}, graph ->
+        if Enum.any?(object_data) do
+          Enum.reduce( object_data, graph, fn {_name, object_struct}, graph -> draw_score(graph, object_struct) end)
+        else
+          graph
+        end
+        {_, _}, graph ->
+          graph
+     end )
+  end
+
   # Draw the score HUD
-  defp draw_score(graph, score) do
+  defp draw_score(graph, %@name.Tank{name: name, id: id, scan: {deg,res}, damage: damage}) do
     graph
-    |> text("Score: #{score}", fill: :white )
+    |> text("#{name} scan:#{deg}:#{res} dmg:#{damage}",
+         id: name, fill: :gray, translate: {10,10+(id*@font_vert_space)})
   end
 
   # iterates over the object map, rendering each object.
@@ -159,8 +179,8 @@ defmodule FrobotsScenic.Scene.Game do
     draw_tank_destroy(graph, x, y, name, id: name )
   end
 
-  defp draw_object(graph, :tank, %@name.Tank{loc: {x,y}, name: name }) do
-    draw_tank(graph, x, y, fill: :lime, id: name)
+  defp draw_object(graph, :tank, %@name.Tank{loc: {x,y}, name: name, id: id }) do
+    draw_tank(graph, x, y, id, fill: :lime, id: name)
   end
 
   # draw missiles
@@ -174,9 +194,9 @@ defmodule FrobotsScenic.Scene.Game do
   end
 
   # draw tanks as rounded rectangles
-  defp draw_tank(graph, x,y, opts) do
-    tile_opts = Keyword.merge([translate: {x, y}], opts)
-    graph |> rrect({@tank_size, @tank_size, @tank_radius}, tile_opts)
+  defp draw_tank(graph, x, y, id, opts) do
+    tile_opts = Keyword.merge([translate: {x - @tank_size/2, y - @tank_size/2}], opts)
+    graph |> rrect({@tank_size, @tank_size, @tank_radius}, tile_opts) |> text("#{id}", tile_opts ++ [fill: :white])
   end
 
   # draw missiles as circles
@@ -211,17 +231,29 @@ defmodule FrobotsScenic.Scene.Game do
     object_data |> Map.put(:timer, timer)
   end
 
-  defp update_alpha(object_data, alpha ) do
+  defp update_alpha(object_data, alpha) do
     object_data |> Map.put(:alpha, alpha)
   end
 
-  # this is the refresh loop of the display
-  @spec handle_info(:frame, %{frame_count: integer}) :: tuple
-  def handle_info(:frame, %{frame_count: frame_count} = state) do
-    graph = state.graph |> draw_game_objects(state.objects) |> draw_score(state.score)
-    {:noreply, %{state | frame_count: frame_count + 1}, push: graph}
+  defp update_damage(object_data, damage) do
+    object_data |> Map.put(:damage, damage)
   end
 
+  defp update_scan(object_data, deg, res) do
+    object_data |> Map.put(:scan, {deg, res})
+  end
+
+  @spec handle_info( {:scan, integer, integer }, t) :: tuple
+  def handle_info({:scan, frobot, deg, res}, state) do
+    state = update_in(state, [:objects, :tank, frobot], &update_scan(&1, deg, res))
+    {:noreply, state}
+  end
+
+  @spec handle_info( {:damage, integer}, t) :: tuple
+  def handle_info({:damage, frobot, damage}, state) do
+    state = update_in(state, [:objects, :tank, frobot], &update_damage(&1, damage))
+    {:noreply, state}
+  end
   @spec handle_info( {:create_tank, tank_name, tuple}, t) :: tuple
   def handle_info({:create_tank, frobot, loc}, state) do
     # nop because tanks are created by the init, and we can ignore this message
@@ -288,6 +320,14 @@ defmodule FrobotsScenic.Scene.Game do
                   |> put_in([:objects, :tank], Map.delete(state.objects.tank, name))
     {:noreply, state}
   end
+
+  # this is the refresh loop of the display
+  @spec handle_info(:frame, %{frame_count: integer}) :: tuple
+  def handle_info(:frame, %{frame_count: frame_count} = state) do
+    graph = state.graph |> draw_game_objects(state.objects) |> draw_status(state.objects)
+    {:noreply, %{state | frame_count: frame_count + 1}, push: graph}
+  end
+
 
   #keyboard controls
   def handle_input(_input, _context, state), do: {:noreply, state}
