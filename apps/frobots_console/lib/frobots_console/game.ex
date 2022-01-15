@@ -272,6 +272,7 @@ defmodule FrobotsConsole.Game do
         id_tag = length(Map.keys(state.rigs)) + 1
         #UI.draw_chr(state, f_state.lc, {0,0}, ~s|#{id_tag}|)
 
+
         Map.put(
           state,
           :rigs,
