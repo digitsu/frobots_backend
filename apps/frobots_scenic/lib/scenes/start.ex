@@ -10,9 +10,15 @@ defmodule FrobotsScenic.Scene.Start do
 
   @frobot_paths %{rabbit: "../frobots_rigs/src/rabbit.lua",
                   sniper: "../frobots_rigs/src/sniper.lua",
-                  random: "../frobots_rigs/src/random.lua" }
+                  random: "../frobots_rigs/src/random.lua",
+                  rook:   "../frobots_rigs/src/rook.lua",
+                }
   @body_offset 60
-
+  @frobot_types  [{"Rabbit", :rabbit},
+                  {"Sniper", :sniper},
+                  {"Random", :random},
+                  {"Rook", :rook },
+                  ]
   @header [
     text_spec("FUBARs", translate: {15, 20}),
     # this button will cause the scene to crash.
@@ -24,7 +30,7 @@ defmodule FrobotsScenic.Scene.Start do
   @dropdowns [
             dropdown_spec(
               {
-                [{"Rabbit", :rabbit}, {"Sniper", :sniper}, {"Random", :random}],
+                @frobot_types,
                 :rabbit
               },
               id: :frobot1,
@@ -32,7 +38,7 @@ defmodule FrobotsScenic.Scene.Start do
             ),
             dropdown_spec(
               {
-                [{"Rabbit", :rabbit}, {"Sniper", :sniper}, {"Random", :random}],
+               @frobot_types,
                 :rabbit
               },
               id: :frobot2,
@@ -40,7 +46,7 @@ defmodule FrobotsScenic.Scene.Start do
             ),
             dropdown_spec(
               {
-                [{"Rabbit", :rabbit}, {"Sniper", :sniper}, {"Random", :random}],
+                @frobot_types,
                 :rabbit
               },
               id: :frobot3,
@@ -48,7 +54,7 @@ defmodule FrobotsScenic.Scene.Start do
             ),
             dropdown_spec(
               {
-                [{"Rabbit", :rabbit}, {"Sniper", :sniper}, {"Random", :random}],
+                @frobot_types,
                 :rabbit
               },
               id: :frobot4,
@@ -56,7 +62,7 @@ defmodule FrobotsScenic.Scene.Start do
             ),
             dropdown_spec(
               {
-                [{"Rabbit", :rabbit}, {"Sniper", :sniper}, {"Random", :random}],
+                @frobot_types,
                 :rabbit
               },
               id: :frobot5,
@@ -88,7 +94,10 @@ defmodule FrobotsScenic.Scene.Start do
       graph: @graph,
       frobots:          %{frobot1: :rabbit,
                           frobot2: :rabbit,
-                          frobot3: :rabbit},
+                          frobot3: :rabbit,
+                          frobot4: :rabbit,
+                          frobot5: :rabbit,
+                          },
     }
 
     {:ok, state, push: @graph}

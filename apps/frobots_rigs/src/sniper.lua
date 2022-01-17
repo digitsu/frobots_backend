@@ -18,7 +18,7 @@ return function(state, ...)
   math.randomseed( os.time() )
   math.random(); math.random(); math.random()
   state.type = "sniper"
-  -- constants
+  -- constants {corner x, corner y, scan angle from that corner}
   c1x = 10; c1y = 10; s1 = 0;
   c2x = 10; c2y = 990; s2 = 270;
   c3x = 990; c3y = 990; s3 = 180;
@@ -79,13 +79,16 @@ return function(state, ...)
       y = c4y
       sc = s4
     end
-    angle = plot_course(x,y)
+    fudgex = -5 +math.random(10)
+    fudgey = -5 +math.random(10)
+    angle = plot_course(x + fudgex,y + fudgey)
     drive(angle, 100)
-    return {angle,x,y, sc}
+    return {angle,x,y,sc}
   end
 
   local function camp() -- this is the 'main' while loop
     while state.dir < state.dest[4] + 90 do    --scan through 90 degree range
+      state.d = damage()                  -- check for damage after each scan
       range = scan(state.dir, 1)          -- look at a direction
       if (range <= 700 and range > 0) then
         while (range > 0) do              -- keep firing while in range
@@ -94,6 +97,10 @@ return function(state, ...)
           range = scan(state.dir, 1)      -- check target again
           if (state.d + 15 > damage()) then -- sustained several hits
             range = 0                     -- goto new corner
+            state.status = "cornering"
+            state.dest = corner()
+            state.dir = state.dest[4]
+            break
           end
         end
         state.dir = state.dir - 10        -- back up scan just in case
@@ -123,12 +130,14 @@ return function(state, ...)
     state.closest = 9999;
     state.d = damage()
     state.dest = corner()
-    state.dir = state.dest[4]
+    state.dir = state.dest[4]             -- dir is the direction to start target scan
     state.status = "cornering"
   elseif state.status == "cornering" then
     if distance(loc_x(), loc_y(), state.dest[2],state.dest[3]) < 100 and speed() > 0 then
       state.status = "slowing"
       drive( state.dest[1], 20)
+    else
+      drive( state.dest[1], 100)
     end
   elseif state.status == "slowing" then
     if distance(loc_x(), loc_y(), state.dest[2],state.dest[3]) < 10 and speed() > 0 then
@@ -138,6 +147,5 @@ return function(state, ...)
   elseif state.status == "camping" then
     state = camp(state)
   end
-
   return state
 end

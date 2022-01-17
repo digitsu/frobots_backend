@@ -193,6 +193,10 @@ defmodule FrobotsScenic.Scene.Game do
     draw_missile(graph, x, y, fill: :yellow, id: name )
   end
 
+  defp draw_object(graph, :missile, nil ) do
+    graph
+  end
+
   # draw tanks as rounded rectangles
   defp draw_tank(graph, x, y, id, opts) do
     tile_opts = Keyword.merge([translate: {x - @tank_size/2, y - @tank_size/2}], opts)
