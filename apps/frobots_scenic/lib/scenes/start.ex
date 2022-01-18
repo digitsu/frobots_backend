@@ -9,15 +9,21 @@ defmodule FrobotsScenic.Scene.Start do
   import Scenic.Components
 
   @frobot_paths %{rabbit: "../frobots_rigs/src/rabbit.lua",
-                  sniper: "../frobots_rigs/src/sniper.lua",
-                  random: "../frobots_rigs/src/random.lua",
-                  rook:   "../frobots_rigs/src/rook.lua",
+                  sniper:   "../frobots_rigs/src/sniper.lua",
+                  random:   "../frobots_rigs/src/random.lua",
+                  rook:     "../frobots_rigs/src/rook.lua",
+                  counter:  "../frobots_rigs/src/counter.lua",
+                  dummy:    "../frobots_rigs/src/dummy.lua",
+                  target:   "../frobots_rigs/src/target.lua",
                 }
   @body_offset 60
   @frobot_types  [{"Rabbit", :rabbit},
                   {"Sniper", :sniper},
                   {"Random", :random},
                   {"Rook", :rook },
+                  {"Counter", :counter},
+                  {"Target", :target},
+                  {"Dummy", :dummy},
                   ]
   @header [
     text_spec("FUBARs", translate: {15, 20}),

@@ -19,10 +19,10 @@ return function(state, ...)
   math.random(); math.random(); math.random()
   state.type = "sniper"
   -- constants {corner x, corner y, scan angle from that corner}
-  c1x = 10; c1y = 10; s1 = 0;
-  c2x = 10; c2y = 990; s2 = 270;
-  c3x = 990; c3y = 990; s3 = 180;
-  c4x = 990; c4y = 10; s4 = 90;
+  c1x = 50; c1y = 50; s1 = 0;
+  c2x = 50; c2y = 950; s2 = 270;
+  c3x = 950; c3y = 950; s3 = 180;
+  c4x = 950; c4y = 50; s4 = 90;
 
 
   local function distance(x1,y1,x2,y2)
@@ -95,7 +95,7 @@ return function(state, ...)
           state.closest = range           -- set closest flag
           cannon(state.dir, range)        -- fire!
           range = scan(state.dir, 1)      -- check target again
-          if (state.d + 15 < damage()) then -- sustained several hits
+          if (state.d < damage()) then -- sustained several hits
             range = 0                     -- goto new corner
             state.status = "cornering"
             state.dest = corner()
@@ -107,7 +107,7 @@ return function(state, ...)
         state.dir = state.dir - 10        -- back up scan just in case
       end
       state.dir = state.dir + 2           -- increment scan
-      if (state.d + 15 < damage()) then       -- check for damage incurred
+      if (state.d < damage()) then       -- check for damage incurred
         state.status = "cornering"        -- we are hit move now
         state.dest = corner()
         state.d = damage()
@@ -124,6 +124,7 @@ return function(state, ...)
     else
       state.dir = state.dest[4]           -- targets in range, resume.
     end
+
     state.closest = 9999
   end
 
