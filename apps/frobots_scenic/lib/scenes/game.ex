@@ -14,7 +14,7 @@ defmodule FrobotsScenic.Scene.Game do
   @tank_size 10
   @tank_radius 2
   @miss_size 2
-  @frame_ms 50
+  @frame_ms 30
   @game_over_scene Snake.Scene.GameOver
   @boom_width 40
   @boom_height 40
@@ -22,7 +22,7 @@ defmodule FrobotsScenic.Scene.Game do
   @boom_path :code.priv_dir(:frobots_scenic)
              |> Path.join("/static/images/explode.png")
   @boom_hash Scenic.Cache.Support.Hash.file!(@boom_path, :sha)
-  @animate_ms 30
+  @animate_ms 100
   @finish_delay_ms 500
 
   # types
@@ -56,7 +56,6 @@ defmodule FrobotsScenic.Scene.Game do
                  id: integer,
                  name: String.t,
                  timer: reference,
-                 alpha: integer,
                  status: FrobotsScenic.Scene.Game.tank_status
                }
     defstruct scan: {0, 0},
@@ -68,7 +67,6 @@ defmodule FrobotsScenic.Scene.Game do
               id: nil,
               name: nil,
               timer: nil,
-              alpha: 0,
               status: :alive
   end
   defmodule Missile do
@@ -82,7 +80,6 @@ defmodule FrobotsScenic.Scene.Game do
               loc: {0, 0},
               name: nil,
               timer: nil,
-              alpha: 0,
               status: :flying
   end
 
@@ -157,9 +154,9 @@ defmodule FrobotsScenic.Scene.Game do
   end
 
   # Draw the score HUD
-  defp draw_score(graph, %@name.Tank{name: name, id: id, scan: {deg,res}, damage: damage}) do
+  defp draw_score(graph, %@name.Tank{name: name, id: id, scan: {deg,res}, damage: damage, heading: heading, speed: speed}) do
     graph
-    |> text("#{name} scan:#{deg}:#{res} dmg:#{damage}",
+    |> text("#{name}  dm:#{damage} sp:#{trunc(speed)} hd:#{heading} sc:#{deg}:#{res}",
          id: name, fill: :gray, translate: {10,10+(id*@font_vert_space)})
   end
 
@@ -247,34 +244,48 @@ defmodule FrobotsScenic.Scene.Game do
     object_data |> Map.put(:scan, {deg, res})
   end
 
-  @spec handle_info( {:scan, integer, integer }, t) :: tuple
+  defp update_heading_speed(object_data, heading, speed) do
+    object_data |> Map.put(:speed, speed) |> Map.put(:heading, heading)
+  end
+
+  defp update_in?(map, path, func) do
+    if get_in(map, path) do
+      update_in(map, path, func )
+    else
+      map
+    end
+  end
+
+  @spec handle_info( {:scan, tank_name, integer, integer }, t) :: tuple
   def handle_info({:scan, frobot, deg, res}, state) do
-    state = update_in(state, [:objects, :tank, frobot], &update_scan(&1, deg, res))
+    state = update_in?(state, [:objects, :tank, frobot], &update_scan(&1, deg, res))
     {:noreply, state}
   end
 
-  @spec handle_info( {:damage, integer}, t) :: tuple
+  @spec handle_info( {:damage, tank_name, integer}, t) :: tuple
   def handle_info({:damage, frobot, damage}, state) do
-    state = update_in(state, [:objects, :tank, frobot], &update_damage(&1, damage))
+    state = update_in?(state, [:objects, :tank, frobot], &update_damage(&1, damage))
     {:noreply, state}
   end
+
   @spec handle_info( {:create_tank, tank_name, tuple}, t) :: tuple
   def handle_info({:create_tank, frobot, loc}, state) do
     # nop because tanks are created by the init, and we can ignore this message
     # may use this if in future init does not place the tank at loc, and only gives it a name and id.
-    state = update_in(state, [:objects, :tank, frobot], &update_loc(&1, loc))
+    state = update_in?(state, [:objects, :tank, frobot], &update_loc(&1, loc))
     {:noreply, state}
   end
 
-  @spec handle_info( {:move_tank, tank_name, tuple}, t) :: tuple
-  def handle_info({:move_tank, frobot, loc}, state) do
-    state = update_in(state, [:objects, :tank, frobot], &update_loc(&1, loc))
+  @spec handle_info( {:move_tank, tank_name, tuple, integer, integer}, t) :: tuple
+  def handle_info({:move_tank, frobot, loc, heading, speed}, state) do
+    state = state |> update_in?([:objects, :tank, frobot], &update_loc(&1, loc))
+                  |> update_in?([:objects, :tank, frobot], &update_heading_speed(&1, heading, speed))
     {:noreply, state}
   end
 
   @spec handle_info({:kill_tank, tank_name }, t) :: tuple
   def handle_info({:kill_tank, frobot }, state) do
-    state = update_in(state, [:objects, :tank, frobot], &update_status(&1, :destroyed))
+    state = update_in?(state, [:objects, :tank, frobot], &update_status(&1, :destroyed))
     {:noreply, state}
   end
 
@@ -286,42 +297,28 @@ defmodule FrobotsScenic.Scene.Game do
 
   @spec handle_info( {:move_miss, miss_name, tuple}, t) :: tuple
   def handle_info({:move_miss, m_name, loc}, state) do
-    state = update_in(state, [:objects, :missile, m_name], &update_loc(&1, loc))
+    state = update_in?(state, [:objects, :missile, m_name], &update_loc(&1, loc))
     {:noreply, state}
   end
 
   @spec handle_info( {:kill_miss, miss_name }, t) :: tuple
   def handle_info({:kill_miss, m_name }, state) do
     # start a very simple animation timer
-    {:ok, timer} = :timer.send_interval(@animate_ms, {:animate, m_name, :missile})
-    state = state |> update_in([:objects, :missile, m_name], &update_status(&1, :exploded))
-                  |> update_in([:objects, :missile, m_name], &update_timer(&1, timer))
+    {:ok, timer} = :timer.send_after(@animate_ms, {:remove, m_name, :missile})
+    if timer == nil, do: raise RuntimeError
+    state = state |> update_in?([:objects, :missile, m_name], &update_status(&1, :exploded))
+            |> update_in?([:objects, :missile, m_name], &update_timer(&1, timer))
     {:noreply, state}
   end
 
-  # this is each animation slice of the explosion
-  def handle_info({:animate, m_name, :missile}, %{graph: graph} = state) do
-    alpha = state.objects.missile[m_name].alpha
-    if alpha >= 1 do
-      graph =
-        Graph.modify(
-          graph,
-          m_name,
-          &update_opts(&1, fill: {:image, {@boom_hash, alpha}})
-        )
-      state = update_in(state, [:objects, :missile, m_name], &update_alpha(&1, alpha - 2))
-      {:noreply, %{state | graph: graph}, push: graph}
-    else
-      :timer.cancel(state.objects.missile[m_name].timer)
-      Process.send_after(self(), {:remove, m_name}, @finish_delay_ms)
-      {:noreply, state }
-    end
+  # this will remove the object both tanks and missiles
+  def handle_info({:remove, name, :missile}, state) do
+    state = state |> put_in([:objects, :missile], Map.delete(state.objects.missile, name))
+    {:noreply, state}
   end
 
-  # this will remove the object both tanks and missiles
-  def handle_info({:remove, name}, state) do
-    state = state |> put_in([:objects, :missile], Map.delete(state.objects.missile, name))
-                  |> put_in([:objects, :tank], Map.delete(state.objects.tank, name))
+  def handle_info({:remove, name, :tank}, state) do
+    state = state |> put_in([:objects, :tank], Map.delete(state.objects.tank, name))
     {:noreply, state}
   end
 
@@ -331,8 +328,6 @@ defmodule FrobotsScenic.Scene.Game do
     graph = state.graph |> draw_game_objects(state.objects) |> draw_status(state.objects)
     {:noreply, %{state | frame_count: frame_count + 1}, push: graph}
   end
-
-
   #keyboard controls
   def handle_input(_input, _context, state), do: {:noreply, state}
 end
