@@ -89,29 +89,30 @@ return function(state, ...)
   local function camp() -- this is the 'main' while loop
     while state.dir < state.dest[4] + 90 do    --scan through 90 degree range
       state.d = damage()                  -- check for damage after each scan
-      range = scan(state.dir, 1)          -- look at a direction
+      range = scan(state.dir, 3)          -- look at a direction
       if (range <= 700 and range > 0) then
         while (range > 0) do              -- keep firing while in range
           state.closest = range           -- set closest flag
           cannon(state.dir, range)        -- fire!
           range = scan(state.dir, 1)      -- check target again
-          if (state.d + 15 > damage()) then -- sustained several hits
+          if (state.d + 15 < damage()) then -- sustained several hits
             range = 0                     -- goto new corner
             state.status = "cornering"
             state.dest = corner()
+            state.d = damage()
             state.dir = state.dest[4]
-            break
+            return state
           end
         end
         state.dir = state.dir - 10        -- back up scan just in case
       end
       state.dir = state.dir + 2           -- increment scan
-      if (state.d ~= damage()) then       -- check for damage incurred
+      if (state.d + 15 < damage()) then       -- check for damage incurred
         state.status = "cornering"        -- we are hit move now
         state.dest = corner()
         state.d = damage()
         state.dir = state.dest[4]
-        break
+        return state
       end
     end
 
@@ -132,6 +133,7 @@ return function(state, ...)
     state.dest = corner()
     state.dir = state.dest[4]             -- dir is the direction to start target scan
     state.status = "cornering"
+    return state
   elseif state.status == "cornering" then
     if distance(loc_x(), loc_y(), state.dest[2],state.dest[3]) < 100 and speed() > 0 then
       state.status = "slowing"
@@ -139,13 +141,16 @@ return function(state, ...)
     else
       drive( state.dest[1], 100)
     end
+    return state
   elseif state.status == "slowing" then
+    drive( state.desk[1], 20) -- just in case I bumped into someone and stopped
     if distance(loc_x(), loc_y(), state.dest[2],state.dest[3]) < 10 and speed() > 0 then
       state.status = "camping"
       drive( state.dest[1], 0)
     end
+    return state
   elseif state.status == "camping" then
-    state = camp(state)
+    camp(state)
   end
   return state
 end

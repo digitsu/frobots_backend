@@ -28,6 +28,7 @@ defmodule FrobotsRigs do
         tank_pid
       end
 
+
       vm
       |> VM.set_function!("scan",     fn vm,  args -> apply(Tank, :scan,      [rig_pid.(vm)] ++ args) end)
       |> VM.set_function!("cannon",   fn vm,  args -> apply(Tank, :cannon,    [rig_pid.(vm)] ++ args) end)
