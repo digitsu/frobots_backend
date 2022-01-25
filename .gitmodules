@@ -1,4 +1,4 @@
 [submodule "fubars"]
   path = apps/fubars
-  url = https://github.com/digitsu/fubars.git
+	url = https://github.com/Bittoku/fubars.git
   branch = umbrella
