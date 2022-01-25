@@ -24,3 +24,4 @@ erl_crash.dump
 /.idea/
 .DS_Store
 crash_logs/
+/deps/luerl/
