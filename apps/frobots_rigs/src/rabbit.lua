@@ -44,33 +44,33 @@ return function(state, ...)
         return d
     end
 
-    state.damage = damage()
-    state.locx = loc_x()
-    state.locy = loc_y()
-    state.speed = speed()
 
     if state.damage == nil then
         state.damage = damage()
-    end
-    if state.speed == nil or state.speed ~= speed() then
-        state.speed = speed()
+        return state
     end
 
-    if state.dest == nil or state.dest == false then
+    if state.dest == nil then
         state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
         state.course = plot_course(state.dest[1], state.dest[2])
+        drive(state.course, 95)
+        return state
     end
 
     if distance(loc_x(), loc_y(), state.dest[1], state.dest[2]) < 50 then
         -- stop
         drive(state.course, 0)
         state.course = 0
-        state.dest = false
+        state.dest = nil
+        return state
     end
     if state.damage ~= damage() then
+        state.damage = damage()
         state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
         state.course = plot_course(state.dest[1], state.dest[2])
+        drive(state.course, 100)
+        return state
     end
-    drive(state.course, 100)
+
     return state
 end

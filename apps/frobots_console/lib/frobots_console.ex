@@ -32,7 +32,7 @@ defmodule FrobotsConsole do
     Arena.set_debug(Arena, false)
     Arena.kill_all!(Arena)
     #normally should take these from the command args
-    tty = "/dev/ttys004"
+    tty = "/dev/ttys000"
     frobots = %{"alpha" => "../frobots_rigs/src/sniper.lua"}
     frobots = Map.put(frobots, "beta", "../frobots_rigs/src/sniper.lua")
     frobots = Map.put(frobots, "gamma", "../frobots_rigs/src/random.lua")
