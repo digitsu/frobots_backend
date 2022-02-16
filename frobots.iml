@@ -55,6 +55,9 @@
       <excludeFolder url="file://$MODULE_DIR$/_build" />
       <excludeFolder url="file://$MODULE_DIR$/crash_logs" />
       <excludeFolder url="file://$MODULE_DIR$/deps" />
+      <excludeFolder url="file://$MODULE_DIR$/projectFilesBackup1" />
+      <excludeFolder url="file://$MODULE_DIR$/projectFilesBackup2" />
+      <excludeFolder url="file://$MODULE_DIR$/projectFilesBackup3" />
     </content>
     <orderEntry type="jdk" jdkName="Elixir 1.13.1" jdkType="Elixir SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

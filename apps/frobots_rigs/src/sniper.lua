@@ -134,6 +134,7 @@ return function(state, ...)
     state.dest = corner()
     state.dir = state.dest[4]             -- dir is the direction to start target scan
     state.status = "cornering"
+    state.timer = 30
     return state
   elseif state.status == "cornering" then
     if distance(loc_x(), loc_y(), state.dest[2],state.dest[3]) < 100 and speed() > 0 then
@@ -144,8 +145,10 @@ return function(state, ...)
     end
     return state
   elseif state.status == "slowing" then
-    if distance(loc_x(), loc_y(), state.dest[2],state.dest[3]) < 10 and speed() > 0 then
+    state.timer = state.timer - 1
+    if distance(loc_x(), loc_y(), state.dest[2],state.dest[3]) < 10 and speed() > 0 or state.timer < 0 then
       drive(0, 0)
+      state.timer = 30
       state.status = "camping"
     end
     return state
