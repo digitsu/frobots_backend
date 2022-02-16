@@ -17,7 +17,6 @@ return function(state, ...)
     state.type = "rabbit"
     math.randomseed( os.time() )
     math.random(); math.random(); math.random()
-
     local function distance(x1,y1,x2,y2)
         local x = x1 -x2
         local y = y1 -y2
@@ -47,21 +46,24 @@ return function(state, ...)
 
     if state.damage == nil then
         state.damage = damage()
+        state.status = "idling"
         return state
     end
 
     if state.dest == nil then
         state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
         state.course = plot_course(state.dest[1], state.dest[2])
-        drive(state.course, 95)
+        drive(state.course, 50)
+        state.status = "wandering"
         return state
     end
 
     if distance(loc_x(), loc_y(), state.dest[1], state.dest[2]) < 50 then
         -- stop
-        drive(state.course, 0)
+        drive(0, 0)
         state.course = 0
         state.dest = nil
+        state.status = "eating"
         return state
     end
     if state.damage ~= damage() then
@@ -69,6 +71,7 @@ return function(state, ...)
         state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
         state.course = plot_course(state.dest[1], state.dest[2])
         drive(state.course, 100)
+        state.status = "running"
         return state
     end
 

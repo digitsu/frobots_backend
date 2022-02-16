@@ -56,7 +56,8 @@ defmodule FrobotsScenic.Scene.Game do
                  id: integer,
                  name: String.t,
                  timer: reference,
-                 status: FrobotsScenic.Scene.Game.tank_status
+                 status: FrobotsScenic.Scene.Game.tank_status,
+                 fsm_state: String.t
                }
     defstruct scan: {0, 0},
               damage: 0,
@@ -67,7 +68,8 @@ defmodule FrobotsScenic.Scene.Game do
               id: nil,
               name: nil,
               timer: nil,
-              status: :alive
+              status: :alive,
+              fsm_state: nil
   end
   defmodule Missile do
     @type t :: %{
@@ -154,10 +156,14 @@ defmodule FrobotsScenic.Scene.Game do
   end
 
   # Draw the score HUD
-  defp draw_score(graph, %@name.Tank{name: name, id: id, scan: {deg,res}, damage: damage, heading: heading, speed: speed}) do
+  defp draw_score(graph, %@name.Tank{name: name, id: id, scan: {deg,res}, damage: damage, heading: heading, speed: speed, fsm_state: fsm_state}) do
     graph
-    |> text("#{name}  dm:#{damage} sp:#{trunc(speed)} hd:#{heading} sc:#{deg}:#{res}",
-         id: name, fill: :gray, translate: {10,10+(id*@font_vert_space)})
+    |> text("#{name}", id: name, fill: :gray, translate: {10,10+(id*@font_vert_space)})
+    |> text("dm:#{damage}", fill: :gray, translate: {100, 10+(id*@font_vert_space)})
+    |> text("sp:#{trunc(speed)}", fill: :gray, translate: {160, 10+(id*@font_vert_space)})
+    |> text("hd:#{heading}", fill: :gray, translate: {220, 10+(id*@font_vert_space)})
+    |> text("sc:#{deg}:#{res}", fill: :gray, translate: {280, 10+(id*@font_vert_space)})
+    |> text("st:#{fsm_state}", fill: :gray, translate: {350, 10+(id*@font_vert_space)})
   end
 
   # iterates over the object map, rendering each object.
@@ -248,12 +254,22 @@ defmodule FrobotsScenic.Scene.Game do
     object_data |> Map.put(:speed, speed) |> Map.put(:heading, heading)
   end
 
+  defp update_fsm_state(object_data, fsm_state) do
+    object_data |> Map.put(:fsm_state, fsm_state)
+  end
+
   defp update_in?(map, path, func) do
     if get_in(map, path) do
       update_in(map, path, func )
     else
       map
     end
+  end
+
+  @spec handle_info( {:fsm_state, tank_name, string }, t) :: tuple
+  def handle_info({:fsm_state, frobot, fsm_state}, state) do
+    state = update_in?(state, [:objects, :tank, frobot], &update_fsm_state(&1, fsm_state))
+    {:noreply, state}
   end
 
   @spec handle_info( {:scan, tank_name, integer, integer }, t) :: tuple
@@ -307,7 +323,7 @@ defmodule FrobotsScenic.Scene.Game do
     {:ok, timer} = :timer.send_after(@animate_ms, {:remove, m_name, :missile})
     if timer == nil, do: raise RuntimeError
     state = state |> update_in?([:objects, :missile, m_name], &update_status(&1, :exploded))
-            |> update_in?([:objects, :missile, m_name], &update_timer(&1, timer))
+                  |> update_in?([:objects, :missile, m_name], &update_timer(&1, timer))
     {:noreply, state}
   end
 
@@ -328,6 +344,7 @@ defmodule FrobotsScenic.Scene.Game do
     graph = state.graph |> draw_game_objects(state.objects) |> draw_status(state.objects)
     {:noreply, %{state | frame_count: frame_count + 1}, push: graph}
   end
-  #keyboard controls
+
+  #keyboard controls (currently no controls)
   def handle_input(_input, _context, state), do: {:noreply, state}
 end

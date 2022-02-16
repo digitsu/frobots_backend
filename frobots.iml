@@ -48,6 +48,13 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/scenic" />
       <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/scenic_driver_glfw" />
       <excludeFolder url="file://$MODULE_DIR$/_build/test/lib/font_metrics" />
+      <excludeFolder url="file://$MODULE_DIR$/.elixir_ls/build" />
+      <excludeFolder url="file://$MODULE_DIR$/.elixir_ls/dialyzer_tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/frobots_scenic/_build" />
+      <excludeFolder url="file://$MODULE_DIR$/apps/frobots_scenic/deps" />
+      <excludeFolder url="file://$MODULE_DIR$/_build" />
+      <excludeFolder url="file://$MODULE_DIR$/crash_logs" />
+      <excludeFolder url="file://$MODULE_DIR$/deps" />
     </content>
     <orderEntry type="jdk" jdkName="Elixir 1.13.1" jdkType="Elixir SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -12,7 +12,7 @@ defmodule FrobotsScenic.Scene.Start do
                   sniper:   "../frobots_rigs/src/sniper.lua",
                   random:   "../frobots_rigs/src/random.lua",
                   rook:     "../frobots_rigs/src/rook.lua",
-                  counter:  "../frobots_rigs/src/counter.lua",
+                  tracker:  "../frobots_rigs/src/tracker.lua",
                   dummy:    "../frobots_rigs/src/dummy.lua",
                   target:   "../frobots_rigs/src/target.lua",
                 }
@@ -21,7 +21,7 @@ defmodule FrobotsScenic.Scene.Start do
                   {"Sniper", :sniper},
                   {"Random", :random},
                   {"Rook", :rook },
-                  {"Counter", :counter},
+                  {"Tracker", :tracker},
                   {"Target", :target},
                   {"Dummy", :dummy},
                   ]

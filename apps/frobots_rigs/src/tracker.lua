@@ -4,7 +4,7 @@
 --- DateTime: 2022/1/18 18:58
 ---
 
---- counter
+--- tracker
 --- scans in a counter clockwise fashion for targets
 ---
 ---
@@ -13,7 +13,7 @@
 return function(state, ...)
     state = state or {}
     math.randomseed( os.time() )
-    state.type = "counter"
+    state.type = "tracker"
 
     if state.status == nil then
         state.status = "scanning"
@@ -26,6 +26,8 @@ return function(state, ...)
         if state.d ~= damage() then
             state.status = "running"
             state.d = damage()
+            state.panic = 30
+            drive(state.angle + 180, 100)
             return state
         end
         state.range = scan(state.angle, state.res)
@@ -39,9 +41,12 @@ return function(state, ...)
             if state.d ~= damage() then
                 state.status = "running"
                 state.d = damage()
+                state.panic = 30
+                drive(state.angle + 180, 100)
                 return state
             end
         elseif state.range <= 700 and state.range > 0 then
+
             repeat
                 fired = cannon( state.angle, state.range )
             until fired == false
@@ -49,20 +54,25 @@ return function(state, ...)
             if state.d ~= damage() then
                 state.status = "running"
                 state.d = damage()
+                state.panic = 30
+                drive(state.angle + 180, 100)
                 return state
             end
+            state.status = "tracking"
             return state
         else
             if state.d ~= damage() then
                 state.status = "running"
                 state.d = damage()
+                state.panic = 30
+                drive(state.angle + 180, 100)
                 return state
             end
             state.angle = state.angle + state.res
             state.angle = state.angle % 360
             return state
         end
-    elseif state.status == "running" then
+    elseif state.status == "tracking" then
         state.x = loc_x()
         state.y = loc_y()
         local i = 0
@@ -104,9 +114,19 @@ return function(state, ...)
         if state.d ~= damage() then
             state.status = "running"
             state.d = damage()
+            state.panic = 30
+            drive(math.random(359), 100)
             return state
         end
         state.status = "scanning"
+        return state
+    elseif state.status == "running" then
+        state.panic = state.panic - 1
+        if state.panic < 0 then
+            drive(0,0) --- stop
+            state.status = nil
+        end
+        return state
     end
     return state
 end

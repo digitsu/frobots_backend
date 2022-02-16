@@ -144,14 +144,14 @@ return function(state, ...)
     end
     return state
   elseif state.status == "slowing" then
-    drive( state.desk[1], 20) -- just in case I bumped into someone and stopped
     if distance(loc_x(), loc_y(), state.dest[2],state.dest[3]) < 10 and speed() > 0 then
+      drive(0, 0)
       state.status = "camping"
-      drive( state.dest[1], 0)
     end
     return state
   elseif state.status == "camping" then
     camp(state)
+    return state
   end
   return state
 end
