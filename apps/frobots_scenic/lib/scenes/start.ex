@@ -39,7 +39,7 @@ defmodule FrobotsScenic.Scene.Start do
                 @frobot_types,
                 :rabbit
               },
-              id: :frobot1,
+              id: :frobot1, # this will be some unique NFT name eventually
               translate: {0, 0}
             ),
             dropdown_spec(

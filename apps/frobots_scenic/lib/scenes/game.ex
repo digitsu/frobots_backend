@@ -166,6 +166,14 @@ defmodule FrobotsScenic.Scene.Game do
     |> text("st:#{fsm_state}", fill: :gray, translate: {350, 10+(id*@font_vert_space)})
   end
 
+  defp draw_game_over(graph, name, vp_width, vp_height) do
+    position = {
+      vp_width / 2 - String.length(name) * @font_size / 2,
+      vp_height / 2 - @font_vert_space / 2
+    }
+    graph |> text("Winner: #{name}!", font_size: 32, fill: :yellow, translate: position)
+  end
+
   # iterates over the object map, rendering each object.
   defp draw_game_objects(graph, object_map) do
     Enum.reduce(object_map, graph, fn {object_type, object_data}, graph ->
@@ -343,6 +351,12 @@ defmodule FrobotsScenic.Scene.Game do
   def handle_info(:frame, %{frame_count: frame_count} = state) do
     graph = state.graph |> draw_game_objects(state.objects) |> draw_status(state.objects)
     {:noreply, %{state | frame_count: frame_count + 1}, push: graph}
+  end
+
+  def handle_info({:game_over, name}, state) do
+    {:ok, _} = :timer.cancel(state.frame_timer)
+    graph = state.graph |> draw_game_over(name, state.tile_width, state.tile_height)
+    {:noreply, state, push: graph}
   end
 
   #keyboard controls (currently no controls)

@@ -17,6 +17,7 @@ return function(state, ...)
     state.type = "rabbit"
     math.randomseed( os.time() )
     math.random(); math.random(); math.random()
+
     local function distance(x1,y1,x2,y2)
         local x = x1 -x2
         local y = y1 -y2
@@ -43,35 +44,49 @@ return function(state, ...)
         return d
     end
 
-
-    if state.damage == nil then
+    local wanderspeed = 20
+    local wandertimer = 20
+    --- initial conditions
+    if state.status == nil then
+        state.status = "wandering"
         state.damage = damage()
-        state.status = "idling"
-        return state
-    end
-
-    if state.dest == nil then
+        state.wander_lust = wandertimer
         state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
         state.course = plot_course(state.dest[1], state.dest[2])
-        drive(state.course, 50)
-        state.status = "wandering"
+        drive(state.course, wanderspeed)
         return state
     end
 
-    if distance(loc_x(), loc_y(), state.dest[1], state.dest[2]) < 50 then
-        -- stop
-        drive(0, 0)
-        state.course = 0
-        state.dest = nil
-        state.status = "eating"
-        return state
-    end
-    if state.damage ~= damage() then
+    if state.damage ~= damage() and state.status ~= "running" then
         state.damage = damage()
         state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
         state.course = plot_course(state.dest[1], state.dest[2])
         drive(state.course, 100)
         state.status = "running"
+        return state
+    end
+
+    if state.status == "wandering" or state.status == "running" then
+        if distance(loc_x(), loc_y(), state.dest[1], state.dest[2]) < 50 then
+            -- stop
+            drive(0, 0)
+            state.status = "eating"
+        end
+        state.wander_lust = state.wander_lust -1
+        return state
+    end
+
+    if (state.status == "wandering" or state.status == "eating") and state.wander_lust < 0 then
+        if state.status == "wandering" then
+            state.status = "eating"
+            drive(0,0)
+        elseif state.status == "eating" then
+            state.status = "wandering"
+            state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
+            state.course = plot_course(state.dest[1], state.dest[2])
+            drive(state.course, wanderspeed)
+        end
+        state.wander_lust = wandertimer
         return state
     end
 
