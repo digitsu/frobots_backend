@@ -133,7 +133,7 @@ defmodule FrobotsScenic.Scene.Game do
   def start_frobots(state) do
     frobots = for {{name, {brain_type, brain_path}},id} <- Enum.zip(state.frobots, 1..Enum.count(state.frobots)) do
       # the notion of brain_type is not well defined, applies only to frobot archetypes. Not player created ones.
-      pid = FrobotsRigs.create_frobot(name, brain_path)
+      pid = Frobot.create_frobot(name, brain_path)
       Frobot.start(pid)
       # for now just name them the braintype for simplicity, not real named frobots yet.
       {name, %@name.Tank{name: ~s"#{brain_type}" <> Integer.to_string(id), id: id}}

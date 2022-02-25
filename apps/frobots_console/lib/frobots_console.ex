@@ -33,12 +33,12 @@ defmodule FrobotsConsole do
     Arena.kill_all!(Arena)
     #normally should take these from the command args
     tty = "/dev/ttys000"
-    frobots = %{"alpha" => "../frobots_rigs/src/sniper.lua"}
-    frobots = Map.put(frobots, "beta", "../frobots_rigs/src/sniper.lua")
-    frobots = Map.put(frobots, "gamma", "../frobots_rigs/src/random.lua")
-    frobots = Map.put(frobots, "delta", "../frobots_rigs/src/random.lua")
-    frobots = Map.put(frobots, "epsilon", "../frobots_rigs/src/sniper.lua")
-    frobots = Map.put(frobots, "mu", "../frobots_rigs/src/rabbit.lua")
+    frobots = %{"alpha" => "../frobots/src/sniper.lua"}
+    frobots = Map.put(frobots, "beta", "../frobots/src/sniper.lua")
+    frobots = Map.put(frobots, "gamma", "../frobots/src/random.lua")
+    frobots = Map.put(frobots, "delta", "../frobots/src/random.lua")
+    frobots = Map.put(frobots, "epsilon", "../frobots/src/sniper.lua")
+    frobots = Map.put(frobots, "mu", "../frobots/src/rabbit.lua")
     FrobotsConsole.Game.run(%{frobots: frobots, tty: tty})
   end
 
@@ -49,7 +49,7 @@ defmodule FrobotsConsole do
     Arena.set_debug(Arena, true)
     Arena.kill_all!(Arena)
     name = "rando"
-    brain_path = "apps/frobots_rigs/src/random.lua"
+    brain_path = "apps/frobots/src/random.lua"
     pid = Fubars.Registry.create(Fubars.Registry, name, :frobot, %Frobot{brain_path: brain_path } )
     Fubars.Frobot.start(pid)
   end

@@ -49,7 +49,7 @@ defmodule FrobotsConsole.Game do
   def start_frobots(state) do
     for {name, brain_path} <- state.frobots do
       #eventually should randomize the start order
-      pid = FrobotsRigs.create_frobot(name, brain_path)
+      pid = Frobot.create_frobot(name, brain_path)
       Frobot.start(pid)
     end
     state

@@ -18,7 +18,7 @@ defmodule FrobotsConsole.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :fubars, :frobots_rigs],
+      extra_applications: [:logger, :fubars, :frobots_cpu],
       mod: {FrobotsConsole.Application, []}
     ]
   end
@@ -30,7 +30,7 @@ defmodule FrobotsConsole.MixProject do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true}
       {:fubars, in_umbrella: true},
-      {:frobots_rigs, in_umbrella: true},
+      {:frobots_cpu, in_umbrella: true},
       {:ex_ncurses, "~> 0.3.1"},
       {:logger_file_backend, "~> 0.0.12"},
     ]

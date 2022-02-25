@@ -20,7 +20,7 @@ defmodule FrobotsScenic.MixProject do
   def application do
     [
       mod: {FrobotsScenic, []},
-      extra_applications: [:crypto, :fubars, :frobots_rigs, :logger]
+      extra_applications: [:crypto, :fubars, :logger]
     ]
   end
 
@@ -28,7 +28,6 @@ defmodule FrobotsScenic.MixProject do
   defp deps do
     [
       {:fubars, in_umbrella: true},
-      {:frobots_rigs, in_umbrella: true},
       {:scenic, "~> 0.10"},
       {:scenic_driver_glfw, "~> 0.10", targets: :host},
     ]

@@ -1,6 +1,6 @@
-defmodule FrobotsRigsTest do
+defmodule FrobotsTest do
   use ExUnit.Case
-  doctest FrobotsRigs
+  doctest Frobots
   alias Fubars.Frobot
 
   test "create a rabbit" do

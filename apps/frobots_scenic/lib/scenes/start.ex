@@ -8,13 +8,13 @@ defmodule FrobotsScenic.Scene.Start do
   import Scenic.Primitives
   import Scenic.Components
 
-  @frobot_paths %{rabbit: "../frobots_rigs/src/rabbit.lua",
-                  sniper:   "../frobots_rigs/src/sniper.lua",
-                  random:   "../frobots_rigs/src/random.lua",
-                  rook:     "../frobots_rigs/src/rook.lua",
-                  tracker:  "../frobots_rigs/src/tracker.lua",
-                  dummy:    "../frobots_rigs/src/dummy.lua",
-                  target:   "../frobots_rigs/src/target.lua",
+  @frobot_paths %{rabbit: "../frobots/src/rabbit.lua",
+                  sniper:   "../frobots/src/sniper.lua",
+                  random:   "../frobots/src/random.lua",
+                  rook:     "../frobots/src/rook.lua",
+                  tracker:  "../frobots/src/tracker.lua",
+                  dummy:    "../frobots/src/dummy.lua",
+                  target:   "../frobots/src/target.lua",
                 }
   @body_offset 60
   @frobot_types  [{"Rabbit", :rabbit},
@@ -88,8 +88,6 @@ defmodule FrobotsScenic.Scene.Start do
             )
 
            # Nav and Notes are added last so that they draw on top
-
-  @event_str "Event received: "
 
   # ============================================================================
 
