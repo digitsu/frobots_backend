@@ -16,7 +16,7 @@ defmodule FrobotsRigsTest do
     y =  vm |> Operate.VM.eval!("return function() return loc_y() end") |> Operate.VM.exec_function!([])
     assert x > 0
     assert y > 0 # yeah maybe this test may fail due to the random nature of the loc, but meh
-    mod_info = vm |> Operate.VM.eval!("return function() return mod_info() end") |> Operate.VM.exec_function!([])
-    assert mod_info == %{"model" => "Tank mk1"}
+    rig_info = vm |> Operate.VM.eval!("return function() return rig_info() end") |> Operate.VM.exec_function!([])
+    assert rig_info == %{"model" => "Tank mk1"}
   end
 end

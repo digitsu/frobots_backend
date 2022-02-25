@@ -45,7 +45,7 @@ return function(state, ...)
     end
 
     local wanderspeed = 20
-    local wandertimer = 20
+    local wandertimer = 5
     --- initial conditions
     if state.status == nil then
         state.status = "wandering"
@@ -55,28 +55,24 @@ return function(state, ...)
         state.course = plot_course(state.dest[1], state.dest[2])
         drive(state.course, wanderspeed)
         return state
-    end
-
-    if state.damage ~= damage() and state.status ~= "running" then
+    elseif state.damage ~= damage() then
         state.damage = damage()
         state.dest = {math.random(1000), math.random(1000)} --- go somewhere in the grid
         state.course = plot_course(state.dest[1], state.dest[2])
         drive(state.course, 100)
         state.status = "running"
         return state
-    end
-
-    if state.status == "wandering" or state.status == "running" then
+    elseif state.status == "wandering" or state.status == "running" then
         if distance(loc_x(), loc_y(), state.dest[1], state.dest[2]) < 50 then
             -- stop
             drive(0, 0)
             state.status = "eating"
         end
+        return state
+    elseif state.status == "eating" and state.wander_lust > 0 then
         state.wander_lust = state.wander_lust -1
         return state
-    end
-
-    if (state.status == "wandering" or state.status == "eating") and state.wander_lust < 0 then
+    elseif (state.status == "wandering" or state.status == "eating") and state.wander_lust < 0 then
         if state.status == "wandering" then
             state.status = "eating"
             drive(0,0)
@@ -89,6 +85,5 @@ return function(state, ...)
         state.wander_lust = wandertimer
         return state
     end
-
     return state
 end
