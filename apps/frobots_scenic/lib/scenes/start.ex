@@ -8,13 +8,13 @@ defmodule FrobotsScenic.Scene.Start do
   import Scenic.Primitives
   import Scenic.Components
 
-  @frobot_paths %{rabbit: "../frobots/src/rabbit.lua",
-                  sniper:   "../frobots/src/sniper.lua",
-                  random:   "../frobots/src/random.lua",
-                  rook:     "../frobots/src/rook.lua",
-                  tracker:  "../frobots/src/tracker.lua",
-                  dummy:    "../frobots/src/dummy.lua",
-                  target:   "../frobots/src/target.lua",
+  @frobot_paths %{rabbit: "../frobots/templates/rabbit.lua",
+                  sniper:   "../frobots/templates/sniper.lua",
+                  random:   "../frobots/templates/random.lua",
+                  rook:     "../frobots/templates/rook.lua",
+                  tracker:  "../frobots/templates/tracker.lua",
+                  dummy:    "../frobots/templates/dummy.lua",
+                  target:   "../frobots/templates/target.lua",
                 }
   @body_offset 60
   @frobot_types  [{"Rabbit", :rabbit},

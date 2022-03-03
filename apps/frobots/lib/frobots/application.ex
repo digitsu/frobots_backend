@@ -2,20 +2,20 @@ defmodule Frobots.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
-  require Logger
 
   use Application
 
   @impl true
   def start(_type, _args) do
-    Logger.info("Starting Application...FROBOTS")
-
     children = [
+      # Start the Ecto repository
+      Frobots.Repo,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: Frobots.PubSub}
+      # Start a worker by calling: Frobots.Worker.start_link(arg)
+      # {Frobots.Worker, arg}
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Frobots.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(children, strategy: :one_for_one, name: Frobots.Supervisor)
   end
 end
