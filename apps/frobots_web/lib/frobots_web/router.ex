@@ -2,7 +2,7 @@ defmodule FrobotsWeb.Router do
   use FrobotsWeb, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
+    plug :accepts, ["html", "text"]
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, {FrobotsWeb.LayoutView, :root}
@@ -21,6 +21,7 @@ defmodule FrobotsWeb.Router do
     get "/", PageController, :index
     get "/garage", GarageController, :index
     get "/garage/:messenger", GarageController, :show
+    resources "/users", UserController
   end
 
   # Other scopes may use custom stacks.
