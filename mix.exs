@@ -1,4 +1,4 @@
-defmodule Frobots.MixProject do
+defmodule FrobotsUmbrella.MixProject do
   use Mix.Project
 
   def project do

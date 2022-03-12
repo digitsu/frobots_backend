@@ -10,8 +10,8 @@
 import Config
 
 config :frobots_web,
-  ecto_repos: [FrobotsWeb.Repo],
-  generators: [context_app: false]
+  ecto_repos: [Frobots.Repo],
+  generators: [context_app: :frobots]
 
 # Configures the endpoint
 config :frobots_web, FrobotsWeb.Endpoint,
@@ -46,21 +46,6 @@ config :frobots, Frobots.Mailer, adapter: Swoosh.Adapters.Local
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false
 
-# Configure Mix tasks and generators
-config :frobots,
-  ecto_repos: [Frobots.Repo]
-
-# Configures the mailer
-#
-# By default it uses the "Local" adapter which stores the emails
-# locally. You can see the emails in your browser, at "/dev/mailbox".
-#
-# For production it's recommended to configure a different adapter
-# at the `config/runtime.exs`.
-config :frobots, Frobots.Mailer, adapter: Swoosh.Adapters.Local
-
-# Swoosh API client is needed for adapters other than SMTP.
-config :swoosh, :api_client, false
 
 # Sample configuration:
 #
