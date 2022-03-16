@@ -1,0 +1,28 @@
+<h1>Show Frobot</h1>
+
+<ul>
+
+  <li>
+    <strong>Brain code:</strong>
+    <%= @frobot.brain_code %>
+  </li>
+
+  <li>
+    <strong>Class:</strong>
+    <%= @frobot.class %>
+  </li>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @frobot.name %>
+  </li>
+
+  <li>
+    <strong>Xp:</strong>
+    <%= @frobot.xp %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.frobot_path(@conn, :edit, @frobot) %></span> |
+<span><%= link "Back", to: Routes.frobot_path(@conn, :index) %></span>

@@ -62,10 +62,10 @@ config :logger,
     {LoggerFileBackend, :file_log}
   ],
   # this is the most permissive level, no backend can be more inclusive than the level set here.
-  level: :debug,
-  compile_time_purge_matching: [
-    [level_lower_than: :info]
-  ]
+  level: :debug
+#  compile_time_purge_matching: [
+#    [level_lower_than: :info]
+#  ]
 
 # Our Console Backend-specific configuration
 # config :logger, :console,
@@ -79,8 +79,6 @@ config :logger, :ui_event,
 config :logger, :file_log,
   path: "/tmp/frobotsLog.log",
   level: :info
-
-config :logger, :console, level: :warning
 
 # Configure the main viewport for the Scenic application
 config :frobots_scenic, :viewport, %{
@@ -101,7 +99,8 @@ config :frobots_scenic, :viewport, %{
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  metadata: [:request_id],
+  level: :debug
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

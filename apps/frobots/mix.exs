@@ -41,7 +41,7 @@ defmodule Frobots.MixProject do
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"},
-      {:swoosh, "~> 1.3"}
+      {:pbkdf2_elixir, "~> 1.0"},
     ]
   end
 

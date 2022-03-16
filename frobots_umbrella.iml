@@ -64,5 +64,21 @@
     <orderEntry type="library" name="logger_file_backend" level="project" />
     <orderEntry type="library" name="credo" level="project" />
     <orderEntry type="library" name="ex_doc" level="project" />
+    <orderEntry type="library" name="swoosh" level="project" />
+    <orderEntry type="library" name="mime" level="project" />
+    <orderEntry type="library" name="jason" level="project" />
+    <orderEntry type="library" name="telemetry" level="project" />
+    <orderEntry type="library" name="hackney" level="project" />
+    <orderEntry type="library" name="finch" level="project" />
+    <orderEntry type="library" name="mail" level="project" />
+    <orderEntry type="library" name="gen_smtp" level="project" />
+    <orderEntry type="library" name="cowboy" level="project" />
+    <orderEntry type="library" name="plug_cowboy" level="project" />
+    <orderEntry type="library" name="bypass" level="project" />
+    <orderEntry type="library" name="plug" level="project" />
+    <orderEntry type="library" name="cowboy_telemetry" level="project" />
+    <orderEntry type="library" name="kadabra" level="project" />
+    <orderEntry type="library" name="x509" level="project" />
+    <orderEntry type="library" name="plug_crypto" level="project" />
   </component>
 </module>

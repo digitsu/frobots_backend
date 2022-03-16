@@ -3,9 +3,6 @@ defmodule FrobotsWeb.PageController do
 
   def index(conn, _params) do
     conn
-    #|> put_root_layout("app.html")
-    |> put_flash(:info, "Welcome to Phoenix, from flash info!")
-    |> put_flash(:error, "Let's pretend we have an error.")
     |> render(:index)
   end
 
@@ -17,5 +14,4 @@ defmodule FrobotsWeb.PageController do
     |> send_resp(201, "")
   end
   '''
-
 end

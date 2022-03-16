@@ -1,0 +1,32 @@
+<h1>Listing Frobots</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Brain code</th>
+      <th>Class</th>
+      <th>Name</th>
+      <th>Xp</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for frobot <- @frobots do %>
+    <tr>
+      <td><%= frobot.brain_code %></td>
+      <td><%= frobot.class %></td>
+      <td><%= frobot.name %></td>
+      <td><%= frobot.xp %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.frobot_path(@conn, :show, frobot) %></span>
+        <span><%= link "Edit", to: Routes.frobot_path(@conn, :edit, frobot) %></span>
+        <span><%= link "Delete", to: Routes.frobot_path(@conn, :delete, frobot), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Frobot", to: Routes.frobot_path(@conn, :new) %></span>

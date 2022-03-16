@@ -9,6 +9,7 @@ defmodule FrobotsWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug FrobotsWeb.Plugs.Locale, "en"
+    plug FrobotsWeb.Auth
   end
 
   pipeline :api do
@@ -19,9 +20,9 @@ defmodule FrobotsWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/garage", GarageController, :index
-    get "/garage/:messenger", GarageController, :show
     resources "/users", UserController
+    resources "/frobots", FrobotController
+    resources "/sessions", SessionController, only: [:new, :create, :delete]
   end
 
   # Other scopes may use custom stacks.
