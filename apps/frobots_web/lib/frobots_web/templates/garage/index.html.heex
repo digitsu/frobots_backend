@@ -1,3 +1,41 @@
 <div class="phx-hero">
     <h2>Ready to build a FROBOT Hooman?</h2>
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+    <script> let toolbox = {
+        "kind": "flyoutToolbox",
+        "contents": [
+            {
+                "kind": "block",
+                "type": "controls_if"
+            },
+            {
+                "kind": "block",
+                "type": "controls_repeat_ext"
+            },
+            {
+                "kind": "block",
+                "type": "logic_compare"
+            },
+            {
+                "kind": "block",
+                "type": "math_number"
+            },
+            {
+                "kind": "block",
+                "type": "math_arithmetic"
+            },
+            {
+                "kind": "block",
+                "type": "text"
+            },
+            {
+                "kind": "block",
+                "type": "text_print"
+            },
+        ]
+    };
+
+    let workspace = Blockly.inject('blocklyDiv', {toolbox: toolbox});
+
+    </script>
 </div>
