@@ -15,7 +15,6 @@ defmodule FrobotsScenic.Scene.Game do
   @tank_radius 2
   @miss_size 2
   @frame_ms 30
-  @game_over_scene Snake.Scene.GameOver
   @boom_width 40
   @boom_height 40
   @boom_radius 20

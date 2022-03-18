@@ -1,41 +1,57 @@
 <div class="phx-hero">
-    <h2>Ready to build a FROBOT Hooman?</h2>
+    <main>
+        <div class="codespace">
+            <div id="blocklyDiv" style="height: 500px; width: 600px;"></div>
+          <label for="generatedCode">codearea</label><textarea id="generatedCode">Code Here</textarea>
+        </div>
+    </main>
     <script src="https://unpkg.com/blockly/blockly.min.js"></script>
-    <script> let toolbox = {
-        "kind": "flyoutToolbox",
-        "contents": [
-            {
-                "kind": "block",
-                "type": "controls_if"
-            },
-            {
-                "kind": "block",
-                "type": "controls_repeat_ext"
-            },
-            {
-                "kind": "block",
-                "type": "logic_compare"
-            },
-            {
-                "kind": "block",
-                "type": "math_number"
-            },
-            {
-                "kind": "block",
-                "type": "math_arithmetic"
-            },
-            {
-                "kind": "block",
-                "type": "text"
-            },
-            {
-                "kind": "block",
-                "type": "text_print"
-            },
-        ]
-    };
+    <script src="https://unpkg.com/blockly/lua_compressed.js"></script>
+  <script>
 
-    let workspace = Blockly.inject('blocklyDiv', {toolbox: toolbox});
+      var toolbox = {
+          "kind": "flyoutToolbox",
+          "contents": [
+              {
+                  "kind": "block",
+                  "type": "controls_if"
+              },
+              {
+                  "kind": "block",
+                  "type": "controls_repeat_ext"
+              },
+              {
+                  "kind": "block",
+                  "type": "logic_compare"
+              },
+              {
+                  "kind": "block",
+                  "type": "math_number"
+              },
+              {
+                  "kind": "block",
+                  "type": "math_arithmetic"
+              },
+              {
+                  "kind": "block",
+                  "type": "text"
+              },
+              {
+                  "kind": "block",
+                  "type": "text_print"
+              },
+          ]
+      }
 
-    </script>
+      var workspace = Blockly.inject('blocklyDiv', {toolbox: toolbox});
+
+      function myUpdateFunction(_event) {
+          document.getElementById('generatedCode').value = Blockly.Lua.workspaceToCode(workspace);
+      }
+
+      workspace.addChangeListener(myUpdateFunction);
+
+
+
+  </script>
 </div>

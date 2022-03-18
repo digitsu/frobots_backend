@@ -23,6 +23,7 @@ defmodule FrobotsWeb.Router do
     resources "/users", UserController
     resources "/frobots", FrobotController
     resources "/sessions", SessionController, only: [:new, :create, :delete]
+    get "/garage", GarageController, :index
   end
 
   # Other scopes may use custom stacks.

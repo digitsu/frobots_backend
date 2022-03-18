@@ -27,4 +27,5 @@ frobots_console-*.tar
 
 # IDE
 /.idea/
+_build/
 

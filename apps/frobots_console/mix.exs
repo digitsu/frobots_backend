@@ -18,7 +18,7 @@ defmodule FrobotsConsole.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :fubars, :frobots_cpu],
+      extra_applications: [:logger, :fubars ],
       mod: {FrobotsConsole.Application, []}
     ]
   end
