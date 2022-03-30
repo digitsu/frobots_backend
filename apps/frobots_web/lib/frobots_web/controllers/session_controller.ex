@@ -28,5 +28,4 @@ defmodule FrobotsWeb.SessionController do
     |> FrobotsWeb.Auth.logout()
     |> redirect(to: Routes.page_path(conn, :index))
   end
-
 end

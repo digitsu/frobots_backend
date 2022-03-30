@@ -11,12 +11,13 @@ defmodule Frobots.AccountsFixtures do
     {:ok, user} =
       attrs
       |> Enum.into(%{
-        email: "some email",
         name: "some name",
-        username: "some username"
+        username: "some@username.com",
+        password: attrs[:password] || "supersecret"
       })
-      |> Frobots.Accounts.create_user()
+      |> Frobots.Accounts.register_user()
 
-    user
+    # return a copy with the password nilified
+    Map.put(user, :password, nil)
   end
 end

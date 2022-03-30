@@ -9,3 +9,33 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias Frobots.Assets
+alias Frobots
+alias Frobots.Accounts
+alias Frobots.Repo
+
+if Mix.env() == :dev do
+  Repo.delete_all(Accounts.User)
+  Repo.delete_all(Assets.Frobot)
+
+  # todo decide which user to always create the template frobots under and put into config or runtime instead of in code.
+  {:ok, user} =
+    Accounts.register_user(%{
+      name: "god",
+      username: "god@frobots.io",
+      password: "SecretMonkey666"
+    })
+
+  for {name, brain_path} <- Frobots.frobot_paths() do
+    frobot = %{
+      "brain_code" => File.read!(brain_path),
+      # template
+      "class" => "T",
+      "name" => ~s/#{name}"/,
+      "xp" => 0
+    }
+
+    Assets.create_frobot!(user, frobot)
+  end
+end

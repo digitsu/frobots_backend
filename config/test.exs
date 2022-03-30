@@ -20,15 +20,4 @@ config :frobots, Frobots.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 
-# Configure your database
-#
-# The MIX_TEST_PARTITION environment variable can be used
-# to provide built-in test partitioning in CI environment.
-# Run `mix help test` for more information.
-config :frobots, Frobots.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "frobots_test#{System.get_env("MIX_TEST_PARTITION")}",
-  pool: Ecto.Adapters.SQL.Sandbox,
-  pool_size: 10
+config :pbkdf2_elixir, :rounds, 1

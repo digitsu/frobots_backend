@@ -12,7 +12,7 @@
     <%= error_tag f, :name %>
 </div>
 <div>
-    <%= text_input f, :username, placeholder: "Username" %>
+    <%= text_input f, :username, placeholder: "user@email.com" %>
     <%= error_tag f, :username %>
 </div>
 <div>
@@ -20,10 +20,6 @@
     <%= error_tag f, :password %>
 </div>
 
-<div>
-    <%= text_input f, :email, placeholder: "example@email.com" %>
-    <%= error_tag f, :email %>
-</div>
 
 <%= submit "Create User" %>
 <% end %>

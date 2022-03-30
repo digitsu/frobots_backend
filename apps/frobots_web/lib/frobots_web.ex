@@ -23,6 +23,8 @@ defmodule FrobotsWeb do
 
       import Plug.Conn
       import FrobotsWeb.Gettext
+      # new import
+      import FrobotsWeb.Auth, only: [authenticate_user: 2]
       alias FrobotsWeb.Router.Helpers, as: Routes
     end
   end
@@ -73,6 +75,8 @@ defmodule FrobotsWeb do
 
       import Plug.Conn
       import Phoenix.Controller
+      # new import
+      import FrobotsWeb.Auth, only: [authenticate_user: 2]
       import Phoenix.LiveView.Router
     end
   end

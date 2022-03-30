@@ -21,9 +21,12 @@ defmodule FrobotsWeb.Router do
 
     get "/", PageController, :index
     resources "/users", UserController
-    resources "/frobots", FrobotController
     resources "/sessions", SessionController, only: [:new, :create, :delete]
-    get "/garage", GarageController, :index
+  end
+
+  scope "/manage", FrobotsWeb do
+    pipe_through [:browser, :authenticate_user]
+    resources "/frobots", FrobotController
   end
 
   # Other scopes may use custom stacks.

@@ -52,7 +52,7 @@ defmodule FrobotsWeb.MixProject do
       {:fubars, in_umbrella: true},
       {:frobots, in_umbrella: true},
       {:swoosh, "~> 1.3"},
-      {:plug_cowboy, "~> 2.5"},
+      {:plug_cowboy, "~> 2.5"}
     ]
   end
 

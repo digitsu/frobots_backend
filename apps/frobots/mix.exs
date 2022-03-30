@@ -42,7 +42,7 @@ defmodule Frobots.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"},
       {:pbkdf2_elixir, "~> 1.0"},
-      {:swoosh, "~> 1.3"},
+      {:swoosh, "~> 1.3"}
     ]
   end
 

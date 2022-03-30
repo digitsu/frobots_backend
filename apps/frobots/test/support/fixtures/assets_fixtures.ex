@@ -3,20 +3,21 @@ defmodule Frobots.AssetsFixtures do
   This module defines test helpers for creating
   entities via the `Frobots.Assets` context.
   """
+  alias Frobots.Accounts
 
   @doc """
   Generate a frobot.
   """
-  def frobot_fixture(attrs \\ %{}) do
-    {:ok, frobot} =
-      attrs
-      |> Enum.into(%{
+  def frobot_fixture(%Accounts.User{} = user, attrs \\ %{}) do
+    attrs =
+      Enum.into(attrs, %{
         brain_code: "some brain_code",
         class: "some class",
         name: "some name",
         xp: 42
       })
-      |> Frobots.Assets.create_frobot()
+
+    {:ok, frobot} = Frobots.Assets.create_frobot(user, attrs)
 
     frobot
   end

@@ -36,6 +36,7 @@ defmodule Frobots.Accounts do
 
   """
   def get_user!(id), do: Repo.get!(User, id)
+  def get_user(id), do: Repo.get(User, id)
 
   @doc """
   Creates a user.
@@ -118,10 +119,13 @@ defmodule Frobots.Accounts do
     cond do
       user && Pbkdf2.verify_pass(given_pass, user.password_hash) ->
         {:ok, user}
+
       user ->
         {:error, :unauthorized}
+
       true ->
-        Pbkdf2.no_user_verify() #simulate a user password check timing. (comeonin)
+        # simulate a user password check timing. (comeonin)
+        Pbkdf2.no_user_verify()
         {:error, :not_found}
     end
   end

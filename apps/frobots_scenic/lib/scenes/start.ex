@@ -7,24 +7,11 @@ defmodule FrobotsScenic.Scene.Start do
   alias Scenic.ViewPort
   import Scenic.Primitives
   import Scenic.Components
+  alias Frobots
 
-  @frobot_paths %{rabbit: "../frobots/templates/rabbit.lua",
-                  sniper:   "../frobots/templates/sniper.lua",
-                  random:   "../frobots/templates/random.lua",
-                  rook:     "../frobots/templates/rook.lua",
-                  tracker:  "../frobots/templates/tracker.lua",
-                  dummy:    "../frobots/templates/dummy.lua",
-                  target:   "../frobots/templates/target.lua",
-                }
+  @frobot_paths Frobots.frobot_paths()
   @body_offset 60
-  @frobot_types  [{"Rabbit", :rabbit},
-                  {"Sniper", :sniper},
-                  {"Random", :random},
-                  {"Rook", :rook },
-                  {"Tracker", :tracker},
-                  {"Target", :target},
-                  {"Dummy", :dummy},
-                  ]
+  @frobot_types Frobots.frobot_types()
   @header [
     text_spec("FUBARs", translate: {15, 20}),
     # this button will cause the scene to crash.

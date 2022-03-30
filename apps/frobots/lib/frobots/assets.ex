@@ -7,6 +7,23 @@ defmodule Frobots.Assets do
   alias Frobots.Repo
 
   alias Frobots.Assets.Frobot
+  alias Frobots.Accounts
+
+  def list_user_frobots(%Accounts.User{} = user) do
+    Frobot
+    |> user_frobots_query(user)
+    |> Repo.all()
+  end
+
+  def get_user_frobot!(%Accounts.User{} = user, id) do
+    Frobot
+    |> user_frobots_query(user)
+    |> Repo.get!(id)
+  end
+
+  defp user_frobots_query(query, %Accounts.User{id: user_id}) do
+    from(v in query, where: v.user_id == ^user_id)
+  end
 
   @doc """
   Returns the list of frobots.
@@ -49,10 +66,18 @@ defmodule Frobots.Assets do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_frobot(attrs \\ %{}) do
+  def create_frobot(%Accounts.User{} = user, attrs \\ %{}) do
     %Frobot{}
     |> Frobot.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
     |> Repo.insert()
+  end
+
+  def create_frobot!(%Accounts.User{} = user, attrs \\ %{}) do
+    %Frobot{}
+    |> Frobot.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
+    |> Repo.insert!()
   end
 
   @doc """

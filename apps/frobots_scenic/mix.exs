@@ -28,6 +28,7 @@ defmodule FrobotsScenic.MixProject do
   defp deps do
     [
       {:fubars, in_umbrella: true},
+      {:frobots, in_umbrella: true},
       {:scenic, "~> 0.10"},
       {:scenic_driver_glfw, "~> 0.10", targets: :host},
     ]

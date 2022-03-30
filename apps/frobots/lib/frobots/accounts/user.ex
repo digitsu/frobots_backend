@@ -3,7 +3,6 @@ defmodule Frobots.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
-    field :email, :string
     field :name, :string
     field :username, :string
     field :password, :string, virtual: true
@@ -15,10 +14,11 @@ defmodule Frobots.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :username, :email])
-    |> validate_required([:name, :username, :email])
-    |> validate_length(:username, min: 1, max: 20)
-    |> unique_constraint([:username, :email] )
+    |> cast(attrs, [:name, :username])
+    |> validate_required([:name, :username])
+    # todo also need to validate has @ and a valid email
+    |> validate_length(:username, min: 1, max: 320)
+    |> unique_constraint([:username])
   end
 
   def registration_changeset(user, params) do
@@ -34,6 +34,7 @@ defmodule Frobots.Accounts.User do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
         put_change(changeset, :password_hash, Pbkdf2.hash_pwd_salt(pass))
+
       _ ->
         changeset
     end

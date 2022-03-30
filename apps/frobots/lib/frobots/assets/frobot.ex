@@ -16,6 +16,6 @@ defmodule Frobots.Assets.Frobot do
   def changeset(frobot, attrs) do
     frobot
     |> cast(attrs, [:brain_code, :class, :name, :xp])
-    |> validate_required([:brain_code, :name ])
+    |> validate_required([:brain_code, :name])
   end
 end

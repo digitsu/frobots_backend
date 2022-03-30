@@ -24,6 +24,8 @@ defmodule Frobots.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Frobots.DataCase
+      import Frobots.AccountsFixtures
+      import Frobots.AssetsFixtures
     end
   end
 
