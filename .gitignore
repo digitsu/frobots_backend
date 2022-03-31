@@ -32,3 +32,8 @@ erl_crash.dump
 # Crash logs
 crash_logs/
 
+# local envs
+.env
+
+# Web static build artifacts
+/apps/frobots_web/priv/static/
