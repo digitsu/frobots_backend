@@ -21,25 +21,14 @@ erl_crash.dump
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# IDE stuff
 /.idea/
+*.iml
+
+# Files system stuff
 .DS_Store
+
+# Crash logs
 crash_logs/
-/deps/luerl/
-/deps/luerl/.fetch
-/projectFilesBackup/
-/projectFilesBackup1/
-/projectFilesBackup2/
-/projectFilesBackup3/
-/projectFilesBackup4/
-/projectFilesBackup1/frobots.iml
-/projectFilesBackup2/frobots.iml
-/projectFilesBackup3/frobots.iml
-/projectFilesBackup1/apps/frobots_console/frobots_console.iml
-/projectFilesBackup2/apps/frobots_console/frobots_console.iml
-/projectFilesBackup3/apps/frobots_console/frobots_console.iml
-/projectFilesBackup1/apps/frobots_rigs/frobots_rigs.iml
-/projectFilesBackup2/apps/frobots_rigs/frobots_rigs.iml
-/projectFilesBackup3/apps/frobots_rigs/frobots_rigs.iml
-/projectFilesBackup1/apps/fubars/fubars.iml
-/projectFilesBackup2/apps/fubars/fubars.iml
-/projectFilesBackup3/apps/fubars/fubars.iml
+
