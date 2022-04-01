@@ -1,52 +1,26 @@
-mix deps.get --only prod
-MIX_ENV=prod mix compile
-MIX_ENV=prod mix assets.deploy
-cd apps
-cd frobots_web
-MIX_ENV=prod mix assets.deploy
+# This script builds a docker image for frobots_web, and instructs how to run it alongside a postgres db container
 
-# run the server to test
-source ../../.env
-MIX_ENV=prod mix phx.server
-
-# uncomment this line in the runtime.exs
-config :frobots_web, FrobotsWeb.Endpoint, server: true
-
-MIX_ENV=prod mix release
-
-# start a prod postgres
-psql -U postgres -h localhost
-psql (13.4)
-Type "help" for help.
-
-postgres=# CREATE DATABASE frobots_prod;
-CREATE DATABASE
-
-# change the .env to point to it
-export DATABASE_URL=ecto://postgres:postgres@localhost/frobots_prod
-source ../../.env
-
-# run migrations
-_build/prod/rel/frobots_web/bin/frobots_web eval "FrobotsWeb.Release.migrate"
-
-# start the app
-_build/prod/rel/frobots_web/bin/frobots_web start
-
-
-#build docker from frobots_web dir (the dir with the Dockerfile)
+#build docker from frobots_backend dir (the dir with the Dockerfile)
 docker image build -t elixir/frobots_web .
-
 
 # start up a postgres container
 docker run -d --network frobots-network --network-alias postgres-server -e POSTGRES_PASSWORD=supersecret postgres
 
-# check it running
+# check it running (make note of the ID to be used below)
 docker ps
 
-# connect to the postgres container (change to the container ID appropriate)
+# connect to the postgres container (change to the container ID appropriate), and create the database
 docker exec -it 8281f722c845 psql -U postgres
 
-# export the remainder of the envvars in .env for secrets etc etc at this time in the terminal that we will run the elixir app container
+psql (14.0 (Debian 14.0-1.pgdg110+1))
+Type "help" for help.
+
+postgres=# CREATE DATABASE frobots_prod;
+CREATE DATABASE
+postgres=# \q
+
+
+# export the env vars in .env for secrets etc etc at this time in the terminal that we will run the elixir app container
 source .env
 
 # set the env var to point to the postgres container version (the default in .env is a local instance)
@@ -55,5 +29,5 @@ export DATABASE_URL=ecto://postgres:supersecret@postgres-server/frobots_prod
 # run the elixir app container
 docker container run -dp $PORT:$PORT -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE --network frobots-network  --name frobots_web elixir/frobots_web
 
-# run the migrations (this tests that the backend can talk to the postgres
+# run the migrations (this tests that the backend can talk to the postgres)
 docker exec -it frobots_web bin/frobots_web eval "FrobotsWeb.Release.migrate"

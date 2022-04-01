@@ -1,0 +1,35 @@
+# this is the build instructions to build the server from local sources to run locally (and you have to have postgres running separately)
+
+mix deps.get --only prod
+MIX_ENV=prod mix compile
+cd apps
+cd frobots_web
+MIX_ENV=prod mix assets.deploy
+
+# run the server to test
+source ../../.env
+MIX_ENV=prod mix phx.server
+
+# uncomment this line in the runtime.exs
+config :frobots_web, FrobotsWeb.Endpoint, server: true
+
+# from the frobots_backend root dir
+MIX_ENV=prod mix release
+
+# start a prod postgres
+psql -U postgres -h localhost
+psql (13.4)
+Type "help" for help.
+
+postgres=# CREATE DATABASE frobots_prod;
+CREATE DATABASE
+
+# change the .env to point to it
+export DATABASE_URL=ecto://postgres:postgres@localhost/frobots_prod
+source ../../.env
+
+# run migrations (connects to the db)
+_build/prod/rel/frobots_web/bin/frobots_web eval "FrobotsWeb.Release.migrate"
+
+# start the app
+_build/prod/rel/frobots_web/bin/frobots_web start
