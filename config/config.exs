@@ -46,7 +46,6 @@ config :frobots, Frobots.Mailer, adapter: Swoosh.Adapters.Local
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false
 
-
 # Sample configuration:
 #
 #     config :logger, :console,
@@ -63,6 +62,7 @@ config :logger,
   ],
   # this is the most permissive level, no backend can be more inclusive than the level set here.
   level: :debug
+
 #  compile_time_purge_matching: [
 #    [level_lower_than: :info]
 #  ]
@@ -79,20 +79,6 @@ config :logger, :ui_event,
 config :logger, :file_log,
   path: "/tmp/frobotsLog.log",
   level: :info
-
-# Configure the main viewport for the Scenic application
-config :frobots_scenic, :viewport, %{
-  name: :main_viewport,
-  size: {1000, 1000},
-  default_scene: {FrobotsScenic.Scene.Start, nil},
-  drivers: [
-    %{
-      module: Scenic.Driver.Glfw,
-      name: :glfw,
-      opts: [resizeable: false, title: "frobots_scenic"]
-    }
-  ]
-}
 
 # import_config "#{Mix.env}.exs"
 

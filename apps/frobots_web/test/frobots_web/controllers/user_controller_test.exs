@@ -18,22 +18,26 @@ defmodule FrobotsWeb.UserControllerTest do
         [
           get(conn, Routes.user_path(conn, :new)),
           get(conn, Routes.user_path(conn, :edit, user_id, user: @update_attrs)),
-          post(conn, Routes.user_path(conn, :create, user: %{name: "new name", username: "new email"})),
+          post(
+            conn,
+            Routes.user_path(conn, :create, user: %{name: "new name", username: "new email"})
+          )
         ],
         fn conn ->
           assert html_response(conn, 200)
         end
       )
+
       Enum.each(
         [
           get(conn, Routes.user_path(conn, :index)),
-          get(conn, Routes.user_path(conn, :show, user_id )),
+          get(conn, Routes.user_path(conn, :show, user_id)),
           put(conn, Routes.user_path(conn, :update, user_id, user: @update_attrs)),
           delete(conn, Routes.user_path(conn, :delete, user_id))
         ],
         fn conn ->
           assert html_response(conn, 302)
-          #assert conn.halted
+          # assert conn.halted
         end
       )
     end
@@ -117,17 +121,17 @@ defmodule FrobotsWeb.UserControllerTest do
   end
 
   defp create_user(%{conn: conn}) do
-      {:ok, user} =
-        %{}
-        |> Enum.into(%{
-          name: "singleton",
-          username: "singleton@user.com",
-          password: "supersecretmega"
-        })
-        |> Frobots.Accounts.register_user()
+    {:ok, user} =
+      %{}
+      |> Enum.into(%{
+        name: "singleton",
+        username: "singleton@user.com",
+        password: "supersecretmega"
+      })
+      |> Frobots.Accounts.register_user()
 
-      # return a copy with the password nilified
-      Map.put(user, :password, nil)
+    # return a copy with the password nilified
+    Map.put(user, :password, nil)
     %{conn: conn, user_id: user.id}
   end
 

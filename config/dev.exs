@@ -63,8 +63,6 @@ config :frobots, Frobots.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-
-
 # print debug messages in dev
 config :logger, level: :debug
 
