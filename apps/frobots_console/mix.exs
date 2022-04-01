@@ -18,7 +18,7 @@ defmodule FrobotsConsole.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :fubars ],
+      extra_applications: [:logger, :fubars],
       mod: {FrobotsConsole.Application, []}
     ]
   end
@@ -31,7 +31,7 @@ defmodule FrobotsConsole.MixProject do
       # {:sibling_app_in_umbrella, in_umbrella: true}
       {:fubars, in_umbrella: true},
       {:ex_ncurses, "~> 0.3.1"},
-      {:logger_file_backend, "~> 0.0.12"},
+      {:logger_file_backend, "~> 0.0.12"}
     ]
   end
 end

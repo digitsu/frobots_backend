@@ -7,7 +7,9 @@ defmodule FrobotsUmbrella.MixProject do
       version: "0.1.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: aliases()
+      elixir: "~> 1.9",
+      aliases: aliases(),
+      releases: releases()
     ]
   end
 
@@ -19,12 +21,22 @@ defmodule FrobotsUmbrella.MixProject do
   defp deps do
     [
       {:logger_file_backend, "~> 0.0.12"},
+      {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
+      {:phoenix, "~> 1.6.5"}
     ]
   end
 
   defp aliases do
     [
       "phx.routes": "phx.routes FrobotsWeb.Router"
+    ]
+  end
+
+  defp releases do
+    [
+      web: [
+        applications: [frobots_web: :permanent]
+      ]
     ]
   end
 end

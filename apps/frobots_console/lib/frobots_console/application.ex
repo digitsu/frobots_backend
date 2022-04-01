@@ -8,7 +8,6 @@ defmodule FrobotsConsole.Application do
 
   @impl true
   def start(_type, _args) do
-
     Logger.info("Starting Application...FROBOTS Console")
 
     children = [

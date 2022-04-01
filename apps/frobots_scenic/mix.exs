@@ -12,7 +12,7 @@ defmodule FrobotsScenic.MixProject do
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
-      lockfile: "../../mix.lock",
+      lockfile: "../../mix.lock"
     ]
   end
 
@@ -30,7 +30,7 @@ defmodule FrobotsScenic.MixProject do
       {:fubars, in_umbrella: true},
       {:frobots, in_umbrella: true},
       {:scenic, "~> 0.10"},
-      {:scenic_driver_glfw, "~> 0.10", targets: :host},
+      {:scenic_driver_glfw, "~> 0.10", targets: :host}
     ]
   end
 end

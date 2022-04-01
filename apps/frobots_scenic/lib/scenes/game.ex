@@ -6,7 +6,7 @@ defmodule FrobotsScenic.Scene.Game do
   alias Fubars.Arena
   alias Fubars.Frobot
 
-  #Constants
+  # Constants
   @name __MODULE__
   @font_size 20
   @font_vert_space @font_size + 2
@@ -26,38 +26,40 @@ defmodule FrobotsScenic.Scene.Game do
 
   # types
   @type location :: {integer, integer}
-  @type miss_name :: String.t
-  @type tank_name :: String.t
+  @type miss_name :: String.t()
+  @type tank_name :: String.t()
   @type tank_status :: :alive | :destroyed
   @type miss_status :: :flying | :exploded
-  @type object_map :: %{tank: %{String.t => %@name.Tank{}},
-                        missile: %{String.t => %@name.Missile{}}}
+  @type object_map :: %{
+          tank: %{String.t() => %@name.Tank{}},
+          missile: %{String.t() => %@name.Missile{}}
+        }
   @type t :: %{
-              viewport: pid,
-              tile_width: integer,
-              tile_height: integer,
-              graph: Scenic.Graph.t,
-              frame_count: integer,
-              frame_timer: reference,
-              score: integer,
-              frobots: map,
-              objects: object_map,
-             }
+          viewport: pid,
+          tile_width: integer,
+          tile_height: integer,
+          graph: Scenic.Graph.t(),
+          frame_count: integer,
+          frame_timer: reference,
+          score: integer,
+          frobots: map,
+          objects: object_map
+        }
 
   defmodule Tank do
     @type t :: %{
-                 scan: {integer,integer},
-                 damage: integer,
-                 speed: integer,
-                 heading: integer,
-                 ploc: FrobotsScenic.Scene.Game.location,
-                 loc: FrobotsScenic.Scene.Game.location,
-                 id: integer,
-                 name: String.t,
-                 timer: reference,
-                 status: FrobotsScenic.Scene.Game.tank_status,
-                 fsm_state: String.t
-               }
+            scan: {integer, integer},
+            damage: integer,
+            speed: integer,
+            heading: integer,
+            ploc: FrobotsScenic.Scene.Game.location(),
+            loc: FrobotsScenic.Scene.Game.location(),
+            id: integer,
+            name: String.t(),
+            timer: reference,
+            status: FrobotsScenic.Scene.Game.tank_status(),
+            fsm_state: String.t()
+          }
     defstruct scan: {0, 0},
               damage: 0,
               speed: 0,
@@ -70,13 +72,14 @@ defmodule FrobotsScenic.Scene.Game do
               status: :alive,
               fsm_state: nil
   end
+
   defmodule Missile do
     @type t :: %{
-                 ploc: FrobotsScenic.Scene.Game.location,
-                 loc: FrobotsScenic.Scene.Game.location,
-                 status: FrobotsScenic.Scene.Game.miss_status,
-                 name: String.t
-               }
+            ploc: FrobotsScenic.Scene.Game.location(),
+            loc: FrobotsScenic.Scene.Game.location(),
+            status: FrobotsScenic.Scene.Game.miss_status(),
+            name: String.t()
+          }
     defstruct ploc: {0, 0},
               loc: {0, 0},
               name: nil,
@@ -124,45 +127,59 @@ defmodule FrobotsScenic.Scene.Game do
       |> draw_status(state.objects)
       |> draw_game_objects(state.objects)
 
-
-    { :ok, state, push: graph }
+    {:ok, state, push: graph}
   end
 
-  @spec start_frobots( t ) :: t
+  @spec start_frobots(t) :: t
   def start_frobots(state) do
-    frobots = for {{name, {brain_type, brain_path}},id} <- Enum.zip(state.frobots, 1..Enum.count(state.frobots)) do
-      # the notion of brain_type is not well defined, applies only to frobot archetypes. Not player created ones.
-      pid = Frobot.create_frobot(name, brain_path)
-      Frobot.start(pid)
-      # for now just name them the braintype for simplicity, not real named frobots yet.
-      {name, %@name.Tank{name: ~s"#{brain_type}" <> Integer.to_string(id), id: id}}
-    end
-    Enum.reduce(frobots, state,
-      fn {name, object_data}, state -> put_in(state, [:objects, :tank, name], object_data) end)
+    frobots =
+      for {{name, {brain_type, brain_path}}, id} <-
+            Enum.zip(state.frobots, 1..Enum.count(state.frobots)) do
+        # the notion of brain_type is not well defined, applies only to frobot archetypes. Not player created ones.
+        pid = Frobot.create_frobot(name, brain_path)
+        Frobot.start(pid)
+        # for now just name them the braintype for simplicity, not real named frobots yet.
+        {name, %@name.Tank{name: ~s"#{brain_type}" <> Integer.to_string(id), id: id}}
+      end
+
+    Enum.reduce(frobots, state, fn {name, object_data}, state ->
+      put_in(state, [:objects, :tank, name], object_data)
+    end)
   end
 
   defp draw_status(graph, object_map) do
-   Enum.reduce(object_map, graph,
-     fn {:tank, object_data}, graph ->
+    Enum.reduce(object_map, graph, fn
+      {:tank, object_data}, graph ->
         if Enum.any?(object_data) do
-          Enum.reduce( object_data, graph, fn {_name, object_struct}, graph -> draw_score(graph, object_struct) end)
+          Enum.reduce(object_data, graph, fn {_name, object_struct}, graph ->
+            draw_score(graph, object_struct)
+          end)
         else
           graph
         end
-        {_, _}, graph ->
-          graph
-     end )
+
+      {_, _}, graph ->
+        graph
+    end)
   end
 
   # Draw the score HUD
-  defp draw_score(graph, %@name.Tank{name: name, id: id, scan: {deg,res}, damage: damage, heading: heading, speed: speed, fsm_state: fsm_state}) do
+  defp draw_score(graph, %@name.Tank{
+         name: name,
+         id: id,
+         scan: {deg, res},
+         damage: damage,
+         heading: heading,
+         speed: speed,
+         fsm_state: fsm_state
+       }) do
     graph
-    |> text("#{name}", id: name, fill: :gray, translate: {10,10+(id*@font_vert_space)})
-    |> text("dm:#{damage}", fill: :gray, translate: {100, 10+(id*@font_vert_space)})
-    |> text("sp:#{trunc(speed)}", fill: :gray, translate: {160, 10+(id*@font_vert_space)})
-    |> text("hd:#{heading}", fill: :gray, translate: {220, 10+(id*@font_vert_space)})
-    |> text("sc:#{deg}:#{res}", fill: :gray, translate: {280, 10+(id*@font_vert_space)})
-    |> text("st:#{fsm_state}", fill: :gray, translate: {350, 10+(id*@font_vert_space)})
+    |> text("#{name}", id: name, fill: :gray, translate: {10, 10 + id * @font_vert_space})
+    |> text("dm:#{damage}", fill: :gray, translate: {100, 10 + id * @font_vert_space})
+    |> text("sp:#{trunc(speed)}", fill: :gray, translate: {160, 10 + id * @font_vert_space})
+    |> text("hd:#{heading}", fill: :gray, translate: {220, 10 + id * @font_vert_space})
+    |> text("sc:#{deg}:#{res}", fill: :gray, translate: {280, 10 + id * @font_vert_space})
+    |> text("st:#{fsm_state}", fill: :gray, translate: {350, 10 + id * @font_vert_space})
   end
 
   defp draw_game_over(graph, name, vp_width, vp_height) do
@@ -170,6 +187,7 @@ defmodule FrobotsScenic.Scene.Game do
       vp_width / 2 - String.length(name) * @font_size / 2,
       vp_height / 2 - @font_vert_space / 2
     }
+
     graph |> text("Winner: #{name}!", font_size: 32, fill: :yellow, translate: position)
   end
 
@@ -177,44 +195,51 @@ defmodule FrobotsScenic.Scene.Game do
   defp draw_game_objects(graph, object_map) do
     Enum.reduce(object_map, graph, fn {object_type, object_data}, graph ->
       if Enum.any?(object_data) do
-        Enum.reduce( object_data, graph, fn {_name, object_struct}, graph -> draw_object(graph, object_type, object_struct) end )
+        Enum.reduce(object_data, graph, fn {_name, object_struct}, graph ->
+          draw_object(graph, object_type, object_struct)
+        end)
       else
         graph
       end
-    end )
+    end)
   end
 
   # draw tanks
-  defp draw_object(graph, :tank, %@name.Tank{loc: {x,y}, name: name, status: status}) when status in [:destroyed] do
-    draw_tank_destroy(graph, x, y, name, id: name )
+  defp draw_object(graph, :tank, %@name.Tank{loc: {x, y}, name: name, status: status})
+       when status in [:destroyed] do
+    draw_tank_destroy(graph, x, y, name, id: name)
   end
 
-  defp draw_object(graph, :tank, %@name.Tank{loc: {x,y}, name: name, id: id }) do
+  defp draw_object(graph, :tank, %@name.Tank{loc: {x, y}, name: name, id: id}) do
     draw_tank(graph, x, y, id, fill: :lime, id: name)
   end
 
   # draw missiles
-  defp draw_object(graph, :missile, %@name.Missile{loc: {x,y}, name: name, status: status}) when status in [:exploded] do
-    #draw_miss_explode(graph, x, y, name, id: name, fill: {:image, {@boom_hash, 256}} )
-    draw_miss_explode(graph, x, y, name, id: name, fill: :orange )
+  defp draw_object(graph, :missile, %@name.Missile{loc: {x, y}, name: name, status: status})
+       when status in [:exploded] do
+    # draw_miss_explode(graph, x, y, name, id: name, fill: {:image, {@boom_hash, 256}} )
+    draw_miss_explode(graph, x, y, name, id: name, fill: :orange)
   end
 
-  defp draw_object(graph, :missile, %@name.Missile{loc: {x,y}, name: name}) do
-    draw_missile(graph, x, y, fill: :yellow, id: name )
+  defp draw_object(graph, :missile, %@name.Missile{loc: {x, y}, name: name}) do
+    draw_missile(graph, x, y, fill: :yellow, id: name)
   end
 
-  defp draw_object(graph, :missile, nil ) do
+  defp draw_object(graph, :missile, nil) do
     graph
   end
 
   # draw tanks as rounded rectangles
   defp draw_tank(graph, x, y, id, opts) do
-    tile_opts = Keyword.merge([translate: {x - @tank_size/2, y - @tank_size/2}], opts)
-    graph |> rrect({@tank_size, @tank_size, @tank_radius}, tile_opts) |> text("#{id}", tile_opts ++ [fill: :white])
+    tile_opts = Keyword.merge([translate: {x - @tank_size / 2, y - @tank_size / 2}], opts)
+
+    graph
+    |> rrect({@tank_size, @tank_size, @tank_radius}, tile_opts)
+    |> text("#{id}", tile_opts ++ [fill: :white])
   end
 
   # draw missiles as circles
-  defp draw_missile(graph, x,y, opts) do
+  defp draw_missile(graph, x, y, opts) do
     tile_opts = Keyword.merge([translate: {x, y}], opts)
     graph |> circle(@miss_size, tile_opts)
   end
@@ -223,12 +248,12 @@ defmodule FrobotsScenic.Scene.Game do
     graph |> Graph.delete(name)
   end
 
-  defp draw_miss_explode(graph, x,y, m_name, opts) do
+  defp draw_miss_explode(graph, x, y, m_name, opts) do
     tile_opts = Keyword.merge([translate: {x, y}], opts)
-    #delete the old primitive
+    # delete the old primitive
     graph
     |> Graph.delete(m_name)
-    |> circle(@boom_radius, tile_opts )
+    |> circle(@boom_radius, tile_opts)
   end
 
   defp update_loc(object_data, loc) do
@@ -241,7 +266,7 @@ defmodule FrobotsScenic.Scene.Game do
     object_data |> Map.put(:status, status)
   end
 
-  defp update_timer(object_data, timer ) do
+  defp update_timer(object_data, timer) do
     object_data |> Map.put(:timer, timer)
   end
 
@@ -267,31 +292,31 @@ defmodule FrobotsScenic.Scene.Game do
 
   defp update_in?(map, path, func) do
     if get_in(map, path) do
-      update_in(map, path, func )
+      update_in(map, path, func)
     else
       map
     end
   end
 
-  @spec handle_info( {:fsm_state, tank_name, string }, t) :: tuple
+  @spec handle_info({:fsm_state, tank_name, string}, t) :: tuple
   def handle_info({:fsm_state, frobot, fsm_state}, state) do
     state = update_in?(state, [:objects, :tank, frobot], &update_fsm_state(&1, fsm_state))
     {:noreply, state}
   end
 
-  @spec handle_info( {:scan, tank_name, integer, integer }, t) :: tuple
+  @spec handle_info({:scan, tank_name, integer, integer}, t) :: tuple
   def handle_info({:scan, frobot, deg, res}, state) do
     state = update_in?(state, [:objects, :tank, frobot], &update_scan(&1, deg, res))
     {:noreply, state}
   end
 
-  @spec handle_info( {:damage, tank_name, integer}, t) :: tuple
+  @spec handle_info({:damage, tank_name, integer}, t) :: tuple
   def handle_info({:damage, frobot, damage}, state) do
     state = update_in?(state, [:objects, :tank, frobot], &update_damage(&1, damage))
     {:noreply, state}
   end
 
-  @spec handle_info( {:create_tank, tank_name, tuple}, t) :: tuple
+  @spec handle_info({:create_tank, tank_name, tuple}, t) :: tuple
   def handle_info({:create_tank, frobot, loc}, state) do
     # nop because tanks are created by the init, and we can ignore this message
     # may use this if in future init does not place the tank at loc, and only gives it a name and id.
@@ -299,38 +324,45 @@ defmodule FrobotsScenic.Scene.Game do
     {:noreply, state}
   end
 
-  @spec handle_info( {:move_tank, tank_name, tuple, integer, integer}, t) :: tuple
+  @spec handle_info({:move_tank, tank_name, tuple, integer, integer}, t) :: tuple
   def handle_info({:move_tank, frobot, loc, heading, speed}, state) do
-    state = state |> update_in?([:objects, :tank, frobot], &update_loc(&1, loc))
-                  |> update_in?([:objects, :tank, frobot], &update_heading_speed(&1, heading, speed))
+    state =
+      state
+      |> update_in?([:objects, :tank, frobot], &update_loc(&1, loc))
+      |> update_in?([:objects, :tank, frobot], &update_heading_speed(&1, heading, speed))
+
     {:noreply, state}
   end
 
-  @spec handle_info({:kill_tank, tank_name }, t) :: tuple
-  def handle_info({:kill_tank, frobot }, state) do
+  @spec handle_info({:kill_tank, tank_name}, t) :: tuple
+  def handle_info({:kill_tank, frobot}, state) do
     state = update_in?(state, [:objects, :tank, frobot], &update_status(&1, :destroyed))
     {:noreply, state}
   end
 
-  @spec handle_info( {:create_miss, miss_name, tuple}, t) :: tuple
+  @spec handle_info({:create_miss, miss_name, tuple}, t) :: tuple
   def handle_info({:create_miss, m_name, loc}, state) do
     state = put_in(state, [:objects, :missile, m_name], %@name.Missile{name: m_name, loc: loc})
     {:noreply, state}
   end
 
-  @spec handle_info( {:move_miss, miss_name, tuple}, t) :: tuple
+  @spec handle_info({:move_miss, miss_name, tuple}, t) :: tuple
   def handle_info({:move_miss, m_name, loc}, state) do
     state = update_in?(state, [:objects, :missile, m_name], &update_loc(&1, loc))
     {:noreply, state}
   end
 
-  @spec handle_info( {:kill_miss, miss_name }, t) :: tuple
-  def handle_info({:kill_miss, m_name }, state) do
+  @spec handle_info({:kill_miss, miss_name}, t) :: tuple
+  def handle_info({:kill_miss, m_name}, state) do
     # start a very simple animation timer
     {:ok, timer} = :timer.send_after(@animate_ms, {:remove, m_name, :missile})
-    if timer == nil, do: raise RuntimeError
-    state = state |> update_in?([:objects, :missile, m_name], &update_status(&1, :exploded))
-                  |> update_in?([:objects, :missile, m_name], &update_timer(&1, timer))
+    if timer == nil, do: raise(RuntimeError)
+
+    state =
+      state
+      |> update_in?([:objects, :missile, m_name], &update_status(&1, :exploded))
+      |> update_in?([:objects, :missile, m_name], &update_timer(&1, timer))
+
     {:noreply, state}
   end
 
@@ -358,6 +390,6 @@ defmodule FrobotsScenic.Scene.Game do
     {:noreply, state, push: graph}
   end
 
-  #keyboard controls (currently no controls)
+  # keyboard controls (currently no controls)
   def handle_input(_input, _context, state), do: {:noreply, state}
 end

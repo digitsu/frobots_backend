@@ -13,7 +13,8 @@ defmodule FrobotsConsole.Game do
             stat_win: nil,
             game_over: false,
             timer: nil,
-            rigs: %{}, # a map of frobot name and value is a TankState or MissileState
+            # a map of frobot name and value is a TankState or MissileState
+            rigs: %{},
             missiles: %{},
             tty: "",
             frobots: %{}
@@ -39,24 +40,30 @@ defmodule FrobotsConsole.Game do
   end
 
   def init_logger do
-    Logger.metadata(evt_type: :log) # makes the default evt_type just to be :log (so that it doesn't trigger the ui_event backend)
-    Logger.configure(level: :info) # default level this overrides ALL BACKENDS! (this must be the most permissive level)
-    Logger.configure_backend(:console, level: :info) #console backend level
-    Logger.configure_backend({Fubars.LogBackend, :ui_event}, level: :info, game_pid: self()) #log backend level and save the listener pid
+    # makes the default evt_type just to be :log (so that it doesn't trigger the ui_event backend)
+    Logger.metadata(evt_type: :log)
+    # default level this overrides ALL BACKENDS! (this must be the most permissive level)
+    Logger.configure(level: :info)
+    # console backend level
+    Logger.configure_backend(:console, level: :info)
+    # log backend level and save the listener pid
+    Logger.configure_backend({Fubars.LogBackend, :ui_event}, level: :info, game_pid: self())
     Logger.debug("in game module --init_logger")
   end
 
   def start_frobots(state) do
     for {name, brain_path} <- state.frobots do
-      #eventually should randomize the start order
+      # eventually should randomize the start order
       pid = Frobot.create_frobot(name, brain_path)
       Frobot.start(pid)
     end
+
     state
   end
 
   def loop(%{game_over: true} = state) do
-    Arena.kill_all(Arena) #maybe needed as UI seems to hang on a keypress
+    # maybe needed as UI seems to hang on a keypress
+    Arena.kill_all(Arena)
     UI.game_over(state)
   end
 
@@ -68,7 +75,8 @@ defmodule FrobotsConsole.Game do
           handle_key(state, key)
 
         {:ui, evt} ->
-          Logger.debug("#{IO.inspect evt}")
+          Logger.debug("#{IO.inspect(evt)}")
+
           state
           |> process_ui(evt)
           |> UI.draw_stats_screen()
@@ -80,14 +88,13 @@ defmodule FrobotsConsole.Game do
 
         :cleanup ->
           Logger.debug("cleanup state")
+
           state
           |> do_cleanup()
       end
 
     loop(next_state)
   end
-
-
 
   defp fini(state) do
     IO.puts("in game fini")
@@ -106,8 +113,8 @@ defmodule FrobotsConsole.Game do
   end
 
   defp handle_key(state, ?q) do
-    #Arena.kill_all(Arena)
-    %{state | game_over: true }
+    # Arena.kill_all(Arena)
+    %{state | game_over: true}
   end
 
   defp handle_key(state, _) do
@@ -145,32 +152,29 @@ defmodule FrobotsConsole.Game do
   end
 
   defp do_cleanup(state) do
-
     check_game_over = fn state ->
       if length(Map.keys(state.rigs)) < 2 do
-        %{state | game_over: true }
+        %{state | game_over: true}
       else
         state
       end
     end
 
     clean_killed = fn state, key ->
-      Enum.reduce(Map.get(state, key), %{},
-        fn {frobot, f_state}, acc ->
-          case f_state.status do
-            :destroyed -> acc
-            :exploded -> acc
-            _ -> Map.put(acc, frobot, f_state)
-          end
-        end)
+      Enum.reduce(Map.get(state, key), %{}, fn {frobot, f_state}, acc ->
+        case f_state.status do
+          :destroyed -> acc
+          :exploded -> acc
+          _ -> Map.put(acc, frobot, f_state)
+        end
+      end)
+    end
 
-      end
-
-      # notice that we don't bother to clean up the timer: key in the f_state, because we are going to end up removing
-      # the whole f_state all together.
-      # However this does have the side effect of having several simultaneous rigs with scheduled cleanups, all being
-      # cleaned up by the first timer that triggers. The rest of the cleanup events are made redundant
-      # if we wanted to be pedantic we could call cancel_timer on all the other cleaned up structures on each call, but meh.
+    # notice that we don't bother to clean up the timer: key in the f_state, because we are going to end up removing
+    # the whole f_state all together.
+    # However this does have the side effect of having several simultaneous rigs with scheduled cleanups, all being
+    # cleaned up by the first timer that triggers. The rest of the cleanup events are made redundant
+    # if we wanted to be pedantic we could call cancel_timer on all the other cleaned up structures on each call, but meh.
     state =
       state
       |> Map.put(:rigs, clean_killed.(state, :rigs))
@@ -191,7 +195,7 @@ defmodule FrobotsConsole.Game do
       end)
       |> unmangle_values
 
-      #remove the :nm value out of the update event, the rest can be interpreted as instructions f_state
+    # remove the :nm value out of the update event, the rest can be interpreted as instructions f_state
     {frobot, f_state} = Map.pop(state_update, :nm)
 
     check_and_put = fn s1, k1, s2, k2 ->
@@ -204,53 +208,73 @@ defmodule FrobotsConsole.Game do
     # these are checked for the first key that matches, so effectively only one of these messages can be
     # processed per event. This also determines the order in which the messages can be processed.
     update_frobot = fn old_state, f_state ->
-      new_state = case f_state do
-        %{:xx => _} -> #tank destroyed, this should trigger any death animation
-          old_state |> Map.replace(:status, :destroyed)
-        %{:mv => _} ->
-          old_state |> check_and_put.(:ploc, old_state, :loc)
-          |> check_and_put.(:loc, f_state, :mv)
-          |> check_and_put.(:heading, f_state, :hd)
-          |> check_and_put.(:speed, f_state, :sp)
-        %{:dm => _} ->
-          old_state |> check_and_put.(:damage, f_state, :dm)
-        %{:kk => _} ->
-          old_state |> schedule_next_cleanup()
-        %{:cn => _} -> old_state
-        %{:sc => _} -> old_state |> check_and_put.(:scan, f_state, :sc)
-      end
+      new_state =
+        case f_state do
+          # tank destroyed, this should trigger any death animation
+          %{:xx => _} ->
+            old_state |> Map.replace(:status, :destroyed)
+
+          %{:mv => _} ->
+            old_state
+            |> check_and_put.(:ploc, old_state, :loc)
+            |> check_and_put.(:loc, f_state, :mv)
+            |> check_and_put.(:heading, f_state, :hd)
+            |> check_and_put.(:speed, f_state, :sp)
+
+          %{:dm => _} ->
+            old_state |> check_and_put.(:damage, f_state, :dm)
+
+          %{:kk => _} ->
+            old_state |> schedule_next_cleanup()
+
+          %{:cn => _} ->
+            old_state
+
+          %{:sc => _} ->
+            old_state |> check_and_put.(:scan, f_state, :sc)
+        end
+
       new_state
     end
 
     # these are checked in the order here, for the first match. 2 matches cases cannot be processed in the same
     # message, so be careful.
     update_missile = fn old_state, f_state ->
-      #IO.puts( inspect( f_state ))
-      new_state = case f_state do
-        %{:ex => _} ->
-          old_state
+      # IO.puts( inspect( f_state ))
+      new_state =
+        case f_state do
+          %{:ex => _} ->
+            old_state
             |> Map.replace(:status, :exploded)
             |> check_and_put.(:loc, f_state, :ex)
-        %{:kk => _} ->
-          old_state |> schedule_next_cleanup()
-        %{:mv => _} ->
-          old_state |> check_and_put.(:ploc, old_state, :loc)
-          |> check_and_put.(:loc, f_state, :mv)
-        %{:ev => _} ->
-          old_state
-        %{:dt => _} ->
-          old_state
-        %{:rg => _} ->
-          old_state
-      end
+
+          %{:kk => _} ->
+            old_state |> schedule_next_cleanup()
+
+          %{:mv => _} ->
+            old_state
+            |> check_and_put.(:ploc, old_state, :loc)
+            |> check_and_put.(:loc, f_state, :mv)
+
+          %{:ev => _} ->
+            old_state
+
+          %{:dt => _} ->
+            old_state
+
+          %{:rg => _} ->
+            old_state
+        end
+
       new_state
     end
 
     # its a message from a rig or missile
+    # this is an update from Arena (on the creation of a rig)
     if frobot != "arena" do
       cond do
         MapSet.member?(MapSet.new(Map.keys(state.rigs)), frobot) ->
-          #IO.inspect f_state
+          # IO.inspect f_state
           Map.put(
             state,
             :rigs,
@@ -258,20 +282,25 @@ defmodule FrobotsConsole.Game do
           )
 
         MapSet.member?(MapSet.new(Map.keys(state.missiles)), frobot) ->
-          #IO.inspect f_state
+          # IO.inspect f_state
           Map.put(
             state,
             :missiles,
-            Map.update(state.missiles, frobot, %FrobotsConsole.Missile{}, &update_missile.(&1, f_state))
+            Map.update(
+              state.missiles,
+              frobot,
+              %FrobotsConsole.Missile{},
+              &update_missile.(&1, f_state)
+            )
           )
 
-        true -> state
+        true ->
+          state
       end
-    else # this is an update from Arena (on the creation of a rig)
+    else
       if Map.get(f_state, :tt) do
         id_tag = length(Map.keys(state.rigs)) + 1
-        #UI.draw_chr(state, f_state.lc, {0,0}, ~s|#{id_tag}|)
-
+        # UI.draw_chr(state, f_state.lc, {0,0}, ~s|#{id_tag}|)
 
         Map.put(
           state,
@@ -303,5 +332,4 @@ defmodule FrobotsConsole.Game do
     timer = Process.send_after(self(), :cleanup, @cleanup_tick)
     %{state | timer: timer}
   end
-
 end

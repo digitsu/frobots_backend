@@ -31,7 +31,7 @@ defmodule FrobotsConsole do
   def run() do
     Arena.set_debug(Arena, false)
     Arena.kill_all!(Arena)
-    #normally should take these from the command args
+    # normally should take these from the command args
     tty = "/dev/ttys000"
     frobots = %{"alpha" => "../frobots/templates/sniper.lua"}
     frobots = Map.put(frobots, "beta", "../frobots/templates/sniper.lua")
@@ -50,8 +50,7 @@ defmodule FrobotsConsole do
     Arena.kill_all!(Arena)
     name = "rando"
     brain_path = "apps/frobots/templates/random.lua"
-    pid = Fubars.Registry.create(Fubars.Registry, name, :frobot, %Frobot{brain_path: brain_path } )
+    pid = Fubars.Registry.create(Fubars.Registry, name, :frobot, %Frobot{brain_path: brain_path})
     Fubars.Frobot.start(pid)
   end
-
 end

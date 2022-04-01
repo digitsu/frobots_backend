@@ -46,7 +46,6 @@ config :frobots, Frobots.Mailer, adapter: Swoosh.Adapters.Local
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false
 
-
 # Sample configuration:
 #
 #     config :logger, :console,
@@ -63,6 +62,7 @@ config :logger,
   ],
   # this is the most permissive level, no backend can be more inclusive than the level set here.
   level: :debug
+
 #  compile_time_purge_matching: [
 #    [level_lower_than: :info]
 #  ]

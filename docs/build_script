@@ -31,3 +31,33 @@ _build/prod/rel/frobots_web/bin/frobots_web eval "FrobotsWeb.Release.migrate"
 
 # start the app
 _build/prod/rel/frobots_web/bin/frobots_web start
+
+
+#build docker from frobots_web dir (the dir with the Dockerfile)
+docker image build -t elixir/frobots_web .
+
+
+# start up a postgres container
+docker run -d --network frobots-network --network-alias postgres-server -e POSTGRES_PASSWORD=supersecret postgres
+
+# check it running
+docker ps
+
+# connect to the postgres container (change to the container ID appropriate)
+docker exec -it 8281f722c845 psql -U postgres
+
+# set the env var to point to the postgres container
+export DATABASE_URL=ecto://postgres:supersecret@postgres-server/frobots_prod
+
+# export the remainder of the envvars in .env for secrets etc etc at this time in the terminal that we will run the elixir app container
+
+# run the elixir app container
+docker container run -dp $PORT:$PORT -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE --network frobots-network  --name frobots_web elixir/frobots_web
+docker container run -p $PORT:$PORT -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE --network frobots-network  --name frobots_web elixir/frobots_web
+
+# run the migrations
+docker exec -it frobots_web bin/frobots_web eval "FrobotsWeb.Release.migrate"
+
+
+1) need to split up the project.
+2) need to try an image that doesn't have the openSSL problem

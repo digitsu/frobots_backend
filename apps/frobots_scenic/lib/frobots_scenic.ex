@@ -14,5 +14,4 @@ defmodule FrobotsScenic do
 
     Supervisor.start_link(children, strategy: :one_for_one)
   end
-
 end
