@@ -31,3 +31,4 @@ docker container run -dp $PORT:$PORT -e POOL_SIZE -e PORT -e DATABASE_URL -e SEC
 
 # run the migrations (this tests that the backend can talk to the postgres)
 docker exec -it frobots_web bin/frobots_web eval "FrobotsWeb.Release.migrate"
+docker exec -it frobots_web bin/frobots_web eval 'FrobotsWeb.Release.Seeder.seed(Elixir.Frobots.Repo, "seeds.exs")'

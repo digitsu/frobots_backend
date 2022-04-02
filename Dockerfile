@@ -78,6 +78,7 @@ USER "${USER}"
 
 # copy release executables
 COPY --from=build --chown="${USER}":"${USER}" /app/_build/"${MIX_ENV}"/rel/frobots_web ./
+COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots/priv/templates /app/_build/prod/lib/frobots/priv/templates/
 
 ENTRYPOINT ["bin/frobots_web"]
 
