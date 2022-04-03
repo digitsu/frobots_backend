@@ -14,6 +14,9 @@ defmodule FrobotsWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+    plug :protect_from_forgery
+    plug FrobotsWeb.Auth
   end
 
   scope "/", FrobotsWeb do
@@ -27,6 +30,11 @@ defmodule FrobotsWeb.Router do
   scope "/manage", FrobotsWeb do
     pipe_through [:browser, :authenticate_user]
     resources "/frobots", FrobotController
+  end
+
+  scope "/api/v1", FrobotsWeb, as: :api do
+    pipe_through [:api, :authenticate_api]
+    resources "/frobots", Api.FrobotController, except: [:new, :edit]
   end
 
   # Other scopes may use custom stacks.

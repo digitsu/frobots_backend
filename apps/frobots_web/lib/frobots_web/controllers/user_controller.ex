@@ -63,14 +63,7 @@ defmodule FrobotsWeb.UserController do
   end
 
   # the authenticate controller PLUG
-  defp authenticate(conn, _opts) do
-    if conn.assigns.current_user do
-      conn
-    else
-      conn
-      |> put_flash(:error, "You must be logged in to access that page")
-      |> redirect(to: Routes.page_path(conn, :index))
-      |> halt()
-    end
+  defp authenticate(conn, opts) do
+    authenticate_user(conn, opts)
   end
 end
