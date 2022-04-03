@@ -4,7 +4,7 @@
 docker image build -t elixir/frobots_web .
 
 # start up a postgres container
-docker run -d --network frobots-network --network-alias postgres-server -e POSTGRES_PASSWORD=supersecret postgres
+docker run -d --network frobots-network --network-alias postgres-server -e POSTGRES_PASSWORD=supersecret --name postgres postgres
 
 # check it running (make note of the ID to be used below)
 docker ps
