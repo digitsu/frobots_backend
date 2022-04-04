@@ -79,7 +79,9 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
 
     @tag login_as: "god"
     test "renders frobot when data is valid", %{conn: conn, frobot: %Frobot{id: id} = frobot} do
-      update_conn = put(conn, Routes.api_frobot_path(conn, :update, frobot), frobot: @update_attrs)
+      update_conn =
+        put(conn, Routes.api_frobot_path(conn, :update, frobot), frobot: @update_attrs)
+
       assert %{"id" => ^id} = json_response(update_conn, 200)["data"]
 
       conn = get(conn, Routes.api_frobot_path(conn, :show, id))
@@ -120,8 +122,12 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
   end
 
   defp login(%{conn: conn, login_as: username}) do
-    user = user_fixture(username: username)
-    conn = assign(conn, :current_user, user)
+    user = user_fixture(username: username) #this creates the user in the db
+    token = FrobotsWeb.Api.Auth.generate_token(user.username)
+    conn =
+      conn
+      |> assign(:current_user, user) #this assigns to the connection
+      |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
     %{conn: conn, user: user}
   end
 end

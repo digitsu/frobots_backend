@@ -6,6 +6,7 @@ defmodule FrobotsWeb.Router do
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, {FrobotsWeb.LayoutView, :root}
+    # include this if you use session
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug FrobotsWeb.Plugs.Locale, "en"
@@ -14,9 +15,7 @@ defmodule FrobotsWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug :fetch_session
-    plug :protect_from_forgery
-    plug FrobotsWeb.Auth
+    plug FrobotsWeb.Api.Auth
   end
 
   scope "/", FrobotsWeb do
@@ -33,7 +32,7 @@ defmodule FrobotsWeb.Router do
   end
 
   scope "/api/v1", FrobotsWeb, as: :api do
-    pipe_through [:api, :authenticate_api]
+    pipe_through [:api, :authenticate_api_user]
     resources "/frobots", Api.FrobotController, except: [:new, :edit]
   end
 

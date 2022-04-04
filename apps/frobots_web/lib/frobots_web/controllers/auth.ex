@@ -46,21 +46,4 @@ defmodule FrobotsWeb.Auth do
     end
   end
 
-  def authenticate_api(conn, _opts) do
-    if conn.assigns.current_user do
-      conn
-    else
-      conn
-      |> auth_error({"Unauthorized", "Need to log in first"})
-      |> halt()
-    end
-  end
-
-  defp auth_error(conn, {type, _reason}) do
-    body = Poison.encode!(%{error: to_string(type)})
-
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(401, body)
-  end
 end

@@ -5,9 +5,8 @@
 
 Build instructions are in docs/build_script
 
-Dockerfile builds a image which will run the service
+Dockerfile builds an image which will run the service
 
 needed envvars examples given in .env
 
-**TODO build the API pipeline**
-
+run `mix test` from the root dir to run built in tests
