@@ -15,8 +15,8 @@ alias Frobots
 alias Frobots.Accounts
 alias Frobots.Repo
 
-Repo.delete_all(Accounts.User)
 Repo.delete_all(Assets.Frobot)
+Repo.delete_all(Accounts.User)
 
 {:ok, user} =
   Accounts.register_user(%{
@@ -29,8 +29,8 @@ for {name, brain_path} <- Frobots.frobot_paths() do
   frobot = %{
     "brain_code" => File.read!(brain_path),
     # template
-    "class" => "T",
-    "name" => ~s/#{name}"/,
+    "class" => "nulla", # I, II, IV, IX, etc
+    "name" => ~s/#{name}/,
     "xp" => 0
   }
 
