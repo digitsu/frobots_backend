@@ -13,11 +13,16 @@ defmodule FrobotsWeb.UserControllerTest do
   describe "not logged-in" do
     setup [:create_user]
 
-    test "requires user authentication on all actions", %{conn: conn, user_id: user_id} do
+    @tag username: "newaccount@test.me"
+    test "requires user authentication on all but new/edit/create actions", %{
+      conn: conn,
+      user: user
+    } do
+      # currently these are allowed even without login. Because otherwise there is no way to create users!
       Enum.each(
         [
           get(conn, Routes.user_path(conn, :new)),
-          get(conn, Routes.user_path(conn, :edit, user_id, user: @update_attrs)),
+          get(conn, Routes.user_path(conn, :edit, user.id, user: @update_attrs)),
           post(
             conn,
             Routes.user_path(conn, :create, user: %{name: "new name", username: "new email"})
@@ -25,19 +30,20 @@ defmodule FrobotsWeb.UserControllerTest do
         ],
         fn conn ->
           assert html_response(conn, 200)
+          refute conn.halted
         end
       )
-
+      # these are not allowed if not logged in, controller should redirect, show a flash, and halt connection processing
       Enum.each(
         [
           get(conn, Routes.user_path(conn, :index)),
-          get(conn, Routes.user_path(conn, :show, user_id)),
-          put(conn, Routes.user_path(conn, :update, user_id, user: @update_attrs)),
-          delete(conn, Routes.user_path(conn, :delete, user_id))
+          get(conn, Routes.user_path(conn, :show, user.id)),
+          put(conn, Routes.user_path(conn, :update, user.id, user: @update_attrs)),
+          delete(conn, Routes.user_path(conn, :delete, user.id)),
         ],
         fn conn ->
           assert html_response(conn, 302)
-          # assert conn.halted
+          assert conn.halted
         end
       )
     end
@@ -120,19 +126,9 @@ defmodule FrobotsWeb.UserControllerTest do
     end
   end
 
-  defp create_user(%{conn: conn}) do
-    {:ok, user} =
-      %{}
-      |> Enum.into(%{
-        name: "singleton",
-        username: "singleton@user.com",
-        password: "supersecretmega"
-      })
-      |> Frobots.Accounts.register_user()
-
-    # return a copy with the password nilified
-    Map.put(user, :password, nil)
-    %{conn: conn, user_id: user.id}
+  defp create_user(attrs \\ @create_attrs) do
+    user = user_fixture(attrs)
+    %{user: user}
   end
 
   defp login(%{conn: conn, login_as: username}) do

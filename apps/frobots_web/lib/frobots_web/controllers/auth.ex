@@ -45,5 +45,4 @@ defmodule FrobotsWeb.Auth do
       |> halt()
     end
   end
-
 end
