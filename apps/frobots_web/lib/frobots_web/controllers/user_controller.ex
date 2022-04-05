@@ -3,7 +3,7 @@ defmodule FrobotsWeb.UserController do
 
   alias Frobots.Accounts
   alias Frobots.Accounts.User
-  plug :authenticate when action in [:index, :show]
+  plug :authenticate when action in [:index, :show, :update, :delete]
 
   def index(conn, _params) do
     users = Accounts.list_users()

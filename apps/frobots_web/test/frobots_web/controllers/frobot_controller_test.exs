@@ -110,8 +110,10 @@ defmodule FrobotsWeb.FrobotControllerTest do
 
     @tag login_as: "max"
     test "redirects when data is valid", %{conn: conn, frobot: frobot} do
-      update_conn = put(conn, Routes.frobot_path(conn, :update, frobot), frobot: @update_attrs)
-      assert redirected_to(update_conn) == Routes.frobot_path(update_conn, :show, frobot)
+      redirected_conn =
+        put(conn, Routes.frobot_path(conn, :update, frobot), frobot: @update_attrs)
+
+      assert redirected_to(redirected_conn) == Routes.frobot_path(redirected_conn, :show, frobot)
 
       conn = get(conn, Routes.frobot_path(conn, :show, frobot))
       assert html_response(conn, 200) =~ "some updated brain_code"
@@ -125,8 +127,8 @@ defmodule FrobotsWeb.FrobotControllerTest do
 
     @tag login_as: "max"
     test "deletes chosen frobot", %{conn: conn, frobot: frobot} do
-      delete_conn = delete(conn, Routes.frobot_path(conn, :delete, frobot))
-      assert redirected_to(delete_conn) == Routes.frobot_path(delete_conn, :index)
+      redirected_conn = delete(conn, Routes.frobot_path(conn, :delete, frobot))
+      assert redirected_to(redirected_conn) == Routes.frobot_path(redirected_conn, :index)
 
       assert_error_sent 404, fn ->
         get(conn, Routes.frobot_path(conn, :show, frobot))

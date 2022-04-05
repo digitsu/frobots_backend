@@ -11,14 +11,13 @@ defmodule Frobots do
   @templates_dir "templates"
 
   @frobot_paths %{
-    rabbit:   Path.join([@priv_dir, @templates_dir, "rabbit.lua"]),
-    sniper:   Path.join([@priv_dir, @templates_dir, "sniper.lua"]),
-    random:   Path.join([@priv_dir, @templates_dir, "random.lua"]),
-    rook:     Path.join([@priv_dir, @templates_dir, "rook.lua"]),
-    tracker:  Path.join([@priv_dir, @templates_dir, "tracker.lua"]),
-    dummy:    Path.join([@priv_dir, @templates_dir, "dummy.lua"]),
-    target:   Path.join([@priv_dir, @templates_dir, "target.lua"])
-
+    rabbit: Path.join([@priv_dir, @templates_dir, "rabbit.lua"]),
+    sniper: Path.join([@priv_dir, @templates_dir, "sniper.lua"]),
+    random: Path.join([@priv_dir, @templates_dir, "random.lua"]),
+    rook: Path.join([@priv_dir, @templates_dir, "rook.lua"]),
+    tracker: Path.join([@priv_dir, @templates_dir, "tracker.lua"]),
+    dummy: Path.join([@priv_dir, @templates_dir, "dummy.lua"]),
+    target: Path.join([@priv_dir, @templates_dir, "target.lua"])
   }
   @frobot_types [
     {"Rabbit", :rabbit},

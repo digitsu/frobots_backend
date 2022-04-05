@@ -14,7 +14,8 @@ defmodule FrobotsWeb.Api.Auth do
     |> get_token()
     |> verify_token()
     |> case do
-      {:ok, user_id} -> assign(conn, :current_user, Accounts.get_user_by(username: user_id)) # we can safely assume that if token is valid, it must have been created by a valid user in the db.
+      # we can safely assume that if token is valid, it must have been created by a valid user in the db.
+      {:ok, user_id} -> assign(conn, :current_user, Accounts.get_user_by(username: user_id))
       _unauthorized -> assign(conn, :current_user, nil)
     end
   end
@@ -86,12 +87,12 @@ defmodule FrobotsWeb.Api.Auth do
   def verify_token(token) do
     one_month = 30 * 24 * 60 * 60
 
-           Phoenix.Token.verify(
-             FrobotsWeb.Endpoint,
-             inspect(__MODULE__),
-             token,
-             max_age: one_month
-           )
+    Phoenix.Token.verify(
+      FrobotsWeb.Endpoint,
+      inspect(__MODULE__),
+      token,
+      max_age: one_month
+    )
   end
 
   @spec get_token(Plug.Conn.t()) :: nil | binary

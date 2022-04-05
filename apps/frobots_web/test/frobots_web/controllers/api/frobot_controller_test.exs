@@ -53,8 +53,8 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
 
     @tag login_as: "god"
     test "renders frobot when data is valid", %{conn: conn} do
-      create_conn = post(conn, Routes.api_frobot_path(conn, :create), frobot: @create_attrs)
-      assert %{"id" => id} = json_response(create_conn, 201)["data"]
+      conn = post(conn, Routes.api_frobot_path(conn, :create), frobot: @create_attrs)
+      assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.api_frobot_path(conn, :show, id))
 
@@ -79,10 +79,9 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
 
     @tag login_as: "god"
     test "renders frobot when data is valid", %{conn: conn, frobot: %Frobot{id: id} = frobot} do
-      update_conn =
-        put(conn, Routes.api_frobot_path(conn, :update, frobot), frobot: @update_attrs)
+      conn = put(conn, Routes.api_frobot_path(conn, :update, frobot), frobot: @update_attrs)
 
-      assert %{"id" => ^id} = json_response(update_conn, 200)["data"]
+      assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.api_frobot_path(conn, :show, id))
 
@@ -107,8 +106,8 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
 
     @tag login_as: "god"
     test "deletes chosen frobot", %{conn: conn, frobot: frobot} do
-      delete_conn = delete(conn, Routes.api_frobot_path(conn, :delete, frobot))
-      assert response(delete_conn, 204)
+      conn = delete(conn, Routes.api_frobot_path(conn, :delete, frobot))
+      assert response(conn, 204)
 
       assert_error_sent 404, fn ->
         get(conn, Routes.api_frobot_path(conn, :show, frobot))
@@ -117,17 +116,21 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
   end
 
   defp create_frobot(%{conn: conn}) do
-    frobot = frobot_fixture(conn.assigns.current_user)
+    frobot = frobot_fixture(conn.assigns.current_user, @create_attrs)
     %{conn: conn, frobot: frobot}
   end
 
   defp login(%{conn: conn, login_as: username}) do
-    user = user_fixture(username: username) #this creates the user in the db
+    # this creates the user in the db
+    user = user_fixture(username: username)
     token = FrobotsWeb.Api.Auth.generate_token(user.username)
+
     conn =
       conn
-      |> assign(:current_user, user) #this assigns to the connection
+      # this assigns to the connection
+      |> assign(:current_user, user)
       |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
+
     %{conn: conn, user: user}
   end
 end
