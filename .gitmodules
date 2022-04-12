@@ -1,7 +1,7 @@
 [submodule "fubars"]
-  path = apps/fubars
-	url = https://github.com/Bittoku/fubars.git
-  branch = umbrella
+  	path = apps/fubars
+	url = git@github.com:Bittoku/fubars.git
+  	branch = umbrella
 [submodule "apps/frobots"]
 	path = apps/frobots
 	url = git@github.com:Bittoku/frobots.git
