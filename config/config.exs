@@ -9,6 +9,8 @@
 # move said applications out of the umbrella.
 import Config
 
+config :frobots, display_process_name: :arena_gui
+
 config :frobots_web,
   ecto_repos: [Frobots.Repo],
   generators: [context_app: :frobots]

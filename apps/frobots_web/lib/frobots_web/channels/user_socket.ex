@@ -9,6 +9,7 @@ defmodule FrobotsWeb.UserSocket do
   ## Channels
 
   channel "arena:*", FrobotsWeb.ArenaChannel
+  channel "match:*", FrobotsWeb.MatchChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
