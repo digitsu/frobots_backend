@@ -64,7 +64,7 @@ defmodule FrobotsWeb.ArenaChannel do
     %{"event" => "event_name", "args" => [ arg1, arg2, arg3, [arg4, arg5] ... ] }
 
   """
-  defp encode_event(evt_tuple) do
+  def encode_event(evt_tuple) do
     [evt | args] = Tuple.to_list(evt_tuple)
     %{event: evt, args: args}
   end
