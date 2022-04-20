@@ -1,6 +1,16 @@
 defmodule FrobotsWeb.ArenaChannel do
   use FrobotsWeb, :channel
 
+  @match_registry Application.get_env(:fubars, :registry_name)
+
+  @type degree :: 0..359
+  @type damage :: 0..100
+  @type speed :: 1..100
+  @type location :: {integer, integer}
+
+  # get the name from the match registry
+  defp via_tuple(name), do: {:via, Registry, {@match_registry, name}}
+
   defmodule TupleEncoder do
     alias Jason.Encoder
 
@@ -70,24 +80,28 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
+  @spec handle_info({atom, String.t, String.t }, Phoenix.Socket.t) :: tuple
   def handle_info({:fsm_state, _frobot, _fsm_state} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
+  @spec handle_info({atom, String.t, degree, integer }, Phoenix.Socket.t) :: tuple
   def handle_info({:scan, _frobot, _deg, _res} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
+  @spec handle_info({atom, String.t, damage }, Phoenix.Socket.t) :: tuple
   def handle_info({:damage, _frobot, _damage} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
+  @spec handle_info({atom, String.t, location }, Phoenix.Socket.t) :: tuple
   def handle_info({:create_tank, _frobot, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     # nop because tanks are created by the init, and we can ignore this message
@@ -96,6 +110,7 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
+  @spec handle_info({atom, String.t, location, degree, speed }, Phoenix.Socket.t) :: tuple
   def handle_info({:move_tank, frobot, loc, heading, speed} = msg, socket) do
     inspect [:move_tank, frobot, loc, heading, speed]
     broadcast(socket, "arena_event", encode_event(msg))
@@ -103,31 +118,36 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
+  @spec handle_info({atom, String.t }, Phoenix.Socket.t) :: tuple
   def handle_info({:kill_tank, _frobot} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
+  @spec handle_info({atom, String.t, location }, Phoenix.Socket.t) :: tuple
   def handle_info({:create_miss, _m_name, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
+  @spec handle_info({atom, String.t, location }, Phoenix.Socket.t) :: tuple
   def handle_info({:move_miss, _m_name, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
+  @spec handle_info({atom, String.t }, Phoenix.Socket.t) :: tuple
   def handle_info({:kill_miss, _m_name} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  def handle_info({:game_over, _name} = msg, socket) do
+  @spec handle_info({atom, String.t }, Phoenix.Socket.t) :: tuple
+  def handle_info({:game_over, _winner} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
