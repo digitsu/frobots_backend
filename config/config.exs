@@ -11,6 +11,8 @@ import Config
 
 config :frobots, display_process_name: :arena_gui
 
+config :fubars, registry_name: :match_registry
+
 config :frobots_web,
   ecto_repos: [Frobots.Repo],
   generators: [context_app: :frobots]

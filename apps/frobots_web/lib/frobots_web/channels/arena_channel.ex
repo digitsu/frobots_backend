@@ -38,6 +38,9 @@ defmodule FrobotsWeb.ArenaChannel do
       socket =
         socket
         |> assign(:match_id, match_id)
+
+      {:ok, sup_name, reg_name, are_name} = Fubars.MatchSupervisior.start_match(match_id)
+      assign(socket, :arena, are_name)
       {:ok, socket}
       else
       {:error, %{reason: "unauthorized"}}
