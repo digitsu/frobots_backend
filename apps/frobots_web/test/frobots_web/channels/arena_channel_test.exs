@@ -10,7 +10,7 @@ defmodule FrobotsWeb.ArenaChannelTest do
     %{socket: socket}
   end
 
-  #todo need to add a test for start_match
+  # todo need to add a test for start_match
 
   test "broadcasts are pushed to the client", %{socket: socket} do
     broadcast_from!(socket, "broadcast", %{"some" => "data"})

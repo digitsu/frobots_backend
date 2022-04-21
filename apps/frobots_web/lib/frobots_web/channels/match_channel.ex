@@ -1,7 +1,6 @@
 defmodule FrobotsWeb.MatchChannel do
   use FrobotsWeb, :channel
 
-
   @impl true
   def join("match:lobby", payload, socket) do
     if authorized?(payload) do
@@ -25,8 +24,6 @@ defmodule FrobotsWeb.MatchChannel do
     broadcast(socket, "shout", payload)
     {:noreply, socket}
   end
-
-
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do

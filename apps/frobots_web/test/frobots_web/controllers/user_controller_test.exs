@@ -33,13 +33,14 @@ defmodule FrobotsWeb.UserControllerTest do
           refute conn.halted
         end
       )
+
       # these are not allowed if not logged in, controller should redirect, show a flash, and halt connection processing
       Enum.each(
         [
           get(conn, Routes.user_path(conn, :index)),
           get(conn, Routes.user_path(conn, :show, user.id)),
           put(conn, Routes.user_path(conn, :update, user.id, user: @update_attrs)),
-          delete(conn, Routes.user_path(conn, :delete, user.id)),
+          delete(conn, Routes.user_path(conn, :delete, user.id))
         ],
         fn conn ->
           assert html_response(conn, 302)
@@ -126,7 +127,7 @@ defmodule FrobotsWeb.UserControllerTest do
     end
   end
 
-  defp create_user(attrs \\ @create_attrs) do
+  defp create_user(attrs) do
     user = user_fixture(attrs)
     %{user: user}
   end

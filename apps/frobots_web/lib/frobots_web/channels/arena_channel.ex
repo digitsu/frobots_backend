@@ -35,22 +35,24 @@ defmodule FrobotsWeb.ArenaChannel do
   @impl true
   def join("arena:" <> match_id, payload, socket) do
     if authorized?(payload) do
+      {:ok, _super_name, _registry_name, arena_name, match_name} =
+        Fubars.Match.Supervisor.init_match(match_id, self())
+
       socket =
         socket
         |> assign(:match_id, match_id)
+        |> assign(:arena, arena_name)
+        |> assign(:match, match_name)
 
-      {:ok, sup_name, reg_name, are_name} = Fubars.MatchSupervisior.start_match(match_id)
-      assign(socket, :arena, are_name)
       {:ok, socket}
-      else
+    else
       {:error, %{reason: "unauthorized"}}
     end
   end
 
   @impl true
   def handle_in("start_match", frobots, socket) do
-
-    frobots_map = Frobots.start_match(frobots)
+    frobots_map = Fubars.Match.start_match(via_tuple(Map.get(socket.assigns, :match)), frobots)
 
     {:reply, {:ok, frobots_map}, socket}
   end
@@ -60,7 +62,7 @@ defmodule FrobotsWeb.ArenaChannel do
     true
   end
 
-# -----------------------------------------------------------
+  # -----------------------------------------------------------
 
   @doc """
 
@@ -83,28 +85,28 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  @spec handle_info({atom, String.t, String.t }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t(), String.t()}, Phoenix.Socket.t()) :: tuple
   def handle_info({:fsm_state, _frobot, _fsm_state} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t, degree, integer }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t(), degree, integer}, Phoenix.Socket.t()) :: tuple
   def handle_info({:scan, _frobot, _deg, _res} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t, damage }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t(), damage}, Phoenix.Socket.t()) :: tuple
   def handle_info({:damage, _frobot, _damage} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t, location }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t(), location}, Phoenix.Socket.t()) :: tuple
   def handle_info({:create_tank, _frobot, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     # nop because tanks are created by the init, and we can ignore this message
@@ -113,46 +115,45 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  @spec handle_info({atom, String.t, location, degree, speed }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t(), location, degree, speed}, Phoenix.Socket.t()) :: tuple
   def handle_info({:move_tank, frobot, loc, heading, speed} = msg, socket) do
-    inspect [:move_tank, frobot, loc, heading, speed]
+    inspect([:move_tank, frobot, loc, heading, speed])
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t()}, Phoenix.Socket.t()) :: tuple
   def handle_info({:kill_tank, _frobot} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t, location }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t(), location}, Phoenix.Socket.t()) :: tuple
   def handle_info({:create_miss, _m_name, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t, location }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t(), location}, Phoenix.Socket.t()) :: tuple
   def handle_info({:move_miss, _m_name, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t()}, Phoenix.Socket.t()) :: tuple
   def handle_info({:kill_miss, _m_name} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t }, Phoenix.Socket.t) :: tuple
+  @spec handle_info({atom, String.t()}, Phoenix.Socket.t()) :: tuple
   def handle_info({:game_over, _winner} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
-
 end
