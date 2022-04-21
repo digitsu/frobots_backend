@@ -5,3 +5,4 @@
 [submodule "apps/frobots"]
 	path = apps/frobots
 	url = git@github.com:Bittoku/frobots.git
+	branch = umbrella
