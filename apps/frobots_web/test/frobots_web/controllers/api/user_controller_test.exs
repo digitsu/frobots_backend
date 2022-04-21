@@ -135,7 +135,7 @@ defmodule FrobotsWeb.Api.UserControllerTest do
     end
   end
 
-  defp create_user(attrs \\ @create_attrs) do
+  defp create_user(attrs) do
     user = user_fixture(attrs)
     %{user: user}
   end
