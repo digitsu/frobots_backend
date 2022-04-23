@@ -21,3 +21,5 @@ config :frobots, Frobots.Repo,
   pool_size: 10
 
 config :pbkdf2_elixir, :rounds, 1
+
+config :fubars, registry_name: :test_match_registry
