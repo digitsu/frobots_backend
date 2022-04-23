@@ -33,15 +33,9 @@ defmodule FrobotsWeb.ArenaChannel do
   @impl true
   def join("arena:" <> match_id, payload, socket) do
     if authorized?(payload) do
-      {:ok, _super_name, _registry_name, arena_name, match_name} =
-        Fubars.Match.Supervisor.init_match(match_id, self())
-
       socket =
         socket
         |> assign(:match_id, match_id)
-        |> assign(:arena, arena_name)
-        |> assign(:match, match_name)
-
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
@@ -50,7 +44,10 @@ defmodule FrobotsWeb.ArenaChannel do
 
   @impl true
   def handle_in("start_match", frobots, socket) do
-    frobots_map = Fubars.Match.start_match(via_tuple(Map.get(socket.assigns, :match)), frobots)
+    {:ok, _super_name, _registry_name, arena_name, match_name} =
+      Fubars.Match.Supervisor.init_match(Map.get(socket.assigns, :match_id), self())
+
+    frobots_map = Fubars.Match.start_match(via_tuple(match_name), frobots)
 
     {:reply, {:ok, frobots_map}, socket}
   end
