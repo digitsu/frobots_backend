@@ -1,15 +1,13 @@
 defmodule FrobotsWeb.ArenaChannel do
   use FrobotsWeb, :channel
 
-  @match_registry Application.get_env(:fubars, :registry_name)
-
   @type degree :: 0..359
   @type damage :: 0..100
   @type speed :: 1..100
   @type location :: {integer, integer}
 
   # get the name from the match registry
-  defp via_tuple(name), do: {:via, Registry, {@match_registry, name}}
+  defp via_tuple(name), do: {:via, Registry, {Fubars.match_registry(), name}}
 
   defmodule TupleEncoder do
     alias Jason.Encoder
