@@ -21,6 +21,21 @@ defmodule FrobotsWeb.ArenaChannel do
     end
   end
 
+  defp load_one_frobot_from_db(%{"name" => name, "type" => type}) do
+    case Frobots.Assets.get_frobot!(name) do
+      %Frobots.Assets.Frobot{brain_code: brain_code} ->
+        %{name: name, type: type, brain_code: brain_code}
+
+      # todo handle load errors by not starting the match.
+      nil ->
+        %{name: name, type: "load failed"}
+    end
+  end
+
+  defp load_frobots_from_db(frobots) do
+    Enum.map(frobots, fn frobot -> load_one_frobot_from_db(frobot) end)
+  end
+
   @impl true
   def join("arena:lobby", payload, socket) do
     if authorized?(payload) do
@@ -36,6 +51,7 @@ defmodule FrobotsWeb.ArenaChannel do
       socket =
         socket
         |> assign(:match_id, match_id)
+
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
@@ -44,9 +60,10 @@ defmodule FrobotsWeb.ArenaChannel do
 
   @impl true
   def handle_in("start_match", frobots, socket) do
-    {:ok, _super_name, _registry_name, arena_name, match_name} =
+    {:ok, _super_name, _registry_name, _arena_name, match_name} =
       Fubars.Match.Supervisor.init_match(Map.get(socket.assigns, :match_id), self())
 
+    frobots = load_frobots_from_db(frobots)
     frobots_map = Fubars.Match.start_match(via_tuple(match_name), frobots)
 
     {:reply, {:ok, frobots_map}, socket}
