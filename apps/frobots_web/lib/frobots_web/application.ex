@@ -16,6 +16,9 @@ defmodule FrobotsWeb.Application do
       # {FrobotsWeb.Worker, arg}
     ]
 
+    # update all templates from source code
+    Frobots.update_all_templates()
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: FrobotsWeb.Supervisor]

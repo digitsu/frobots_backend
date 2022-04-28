@@ -63,8 +63,7 @@ defmodule FrobotsWeb.ArenaChannel do
     {:ok, _super_name, _registry_name, _arena_name, match_name} =
       Fubars.Match.Supervisor.init_match(Map.get(socket.assigns, :match_id), self())
 
-    frobots = load_frobots_from_db(frobots)
-    frobots_map = Fubars.Match.start_match(via_tuple(match_name), frobots)
+    frobots_map = Fubars.Match.start_match(via_tuple(match_name), load_frobots_from_db(frobots))
 
     {:reply, {:ok, frobots_map}, socket}
   end
