@@ -17,7 +17,7 @@ defmodule FrobotsWeb.Application do
     ]
 
     # update all templates from source code
-    #Frobots.update_all_templates()
+    # Frobots.update_all_templates()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

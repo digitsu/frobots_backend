@@ -45,4 +45,9 @@ defmodule FrobotsWeb.Api.FrobotController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def templates(conn, _params, _current_user) do
+    frobots = Assets.list_template_frobots()
+    render(conn, "index.json", frobots: frobots)
+  end
 end

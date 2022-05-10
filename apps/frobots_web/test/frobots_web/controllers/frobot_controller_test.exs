@@ -80,8 +80,10 @@ defmodule FrobotsWeb.FrobotControllerTest do
       create_conn = post conn, Routes.frobot_path(conn, :create), frobot: @create_attrs
 
       assert %{id: id} = redirected_params(create_conn)
+
       assert redirected_to(create_conn) ==
                Routes.frobot_path(create_conn, :show, id)
+
       conn = get(conn, Routes.frobot_path(conn, :show, id))
       assert html_response(conn, 200) =~ "Show Frobot"
       assert frobot = Assets.get_frobot!(String.to_integer(id))

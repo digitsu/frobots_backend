@@ -33,6 +33,7 @@ defmodule FrobotsWeb.Router do
 
   scope "/api/v1", FrobotsWeb, as: :api do
     pipe_through [:api, :authenticate_api_user]
+    get "/frobots/templates", Api.FrobotController, :templates
     resources "/frobots", Api.FrobotController, except: [:new, :edit]
     resources "/users", Api.UserController, except: [:new, :edit]
   end
