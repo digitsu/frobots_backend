@@ -46,11 +46,14 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  def join("arena:" <> match_id, payload, socket) do
-    if authorized?(payload) do
+  def join("arena:" <> match_id, token, socket) do
+    if authorized?(token) do
+      num_clients = Map.get(socket.assigns, :listeners, 0)
+
       socket =
         socket
-        |> assign(:match_id, match_id)
+        |> assign(:listeners, num_clients + 1)
+        |> assign(:match_id, String.to_integer(match_id))
 
       {:ok, socket}
     else
@@ -61,11 +64,31 @@ defmodule FrobotsWeb.ArenaChannel do
   @impl true
   def handle_in("start_match", frobots, socket) do
     {:ok, _super_name, _registry_name, _arena_name, match_name} =
-      Fubars.Match.Supervisor.init_match(Map.get(socket.assigns, :match_id), self())
+      Fubars.Match.Supervisor.init_match(
+        Integer.to_string(Map.get(socket.assigns, :match_id)),
+        self()
+      )
 
     frobots_map = Fubars.Match.start_match(via_tuple(match_name), load_frobots_from_db(frobots))
 
     {:reply, {:ok, frobots_map}, socket}
+  end
+
+  @impl true
+  def handle_in("request_match", _, socket) do
+    match_id =
+      case ConCache.get(:frobots_web, :match_count) do
+        nil ->
+          ConCache.put(:frobots_web, :match_count, 1)
+          1
+
+        x ->
+          ConCache.put(:frobots_web, :match_count, x + 1)
+          x + 1
+      end
+
+    IO.puts(~s"assigning match #{match_id}")
+    {:reply, {:ok, match_id}, socket}
   end
 
   # Add authorization logic here as required.

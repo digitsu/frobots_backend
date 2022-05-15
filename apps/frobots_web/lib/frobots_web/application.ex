@@ -11,9 +11,16 @@ defmodule FrobotsWeb.Application do
       # Start the Telemetry supervisor
       FrobotsWeb.Telemetry,
       # Start the Endpoint (http/https)
-      FrobotsWeb.Endpoint
+      FrobotsWeb.Endpoint,
       # Start a worker by calling: FrobotsWeb.Worker.start_link(arg)
       # {FrobotsWeb.Worker, arg}
+      {ConCache,
+       [
+         name: :frobots_web,
+         ttl_check_interval: :timer.minutes(1),
+         global_ttl: :timer.minutes(10),
+         touch_on_read: true
+       ]}
     ]
 
     # update all templates from source code
