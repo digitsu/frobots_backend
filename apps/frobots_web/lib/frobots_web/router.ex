@@ -1,5 +1,6 @@
 defmodule FrobotsWeb.Router do
   use FrobotsWeb, :router
+  import Plug.BasicAuth
 
   pipeline :browser do
     plug :accepts, ["html", "text"]
@@ -17,6 +18,11 @@ defmodule FrobotsWeb.Router do
     plug :accepts, ["json"]
     plug FrobotsWeb.Api.Auth
   end
+
+  pipeline :admins_only do
+    plug :basic_auth, Application.compile_env(:frobots_web, :basic_auth)
+  end
+
 
   scope "/", FrobotsWeb do
     pipe_through :browser
@@ -50,11 +56,11 @@ defmodule FrobotsWeb.Router do
   # If your application does not have an admins-only section yet,
   # you can use Plug.BasicAuth to set up some basic authentication
   # as long as you are also using SSL (which you should anyway).
-  if Mix.env() in [:dev, :test] do
+  if Mix.env() in [:dev, :test, :prod] do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
+      pipe_through [:browser, :admins_only]
 
       live_dashboard "/dashboard", metrics: FrobotsWeb.Telemetry
     end
