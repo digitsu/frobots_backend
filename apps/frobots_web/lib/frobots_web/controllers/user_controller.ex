@@ -10,9 +10,10 @@ defmodule FrobotsWeb.UserController do
     apply(__MODULE__, action_name(conn), args)
   end
 
-  def index(conn, _params, _current_user) do
+  def index(conn, _params, current_user) do
     users = Accounts.list_users()
-    render(conn, "index.html", users: users)
+    displayable_users = Enum.filter(users, fn user -> Accounts.user_is_admin?(current_user) or user.username == current_user.username end )
+    render(conn, "index.html", users: displayable_users)
   end
 
   def new(conn, _params, _current_user) do
