@@ -23,7 +23,7 @@ erl_crash.dump
 /tmp/
 
 # IDE stuff
-/.idea/
+.idea/
 *.iml
 
 # Files system stuff
