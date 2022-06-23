@@ -12,7 +12,12 @@ defmodule FrobotsWeb.UserController do
 
   def index(conn, _params, current_user) do
     users = Accounts.list_users()
-    displayable_users = Enum.filter(users, fn user -> Accounts.user_is_admin?(current_user) or user.username == current_user.username end )
+
+    displayable_users =
+      Enum.filter(users, fn user ->
+        Accounts.user_is_admin?(current_user) or user.username == current_user.username
+      end)
+
     render(conn, "index.html", users: displayable_users)
   end
 
@@ -36,21 +41,23 @@ defmodule FrobotsWeb.UserController do
 
   def show(conn, %{"id" => id}, current_user) do
     user = Accounts.get_user!(id)
-    if user.username == current_user.username do
+
+    if allowed_access_to(current_user, user) do
       token = FrobotsWeb.Api.Auth.generate_token(user.username)
       render(conn, "show.html", user: user, token: token)
     else
-      redirect(conn, to: Routes.user_path(conn, :index))
+      conn |> redirect(to: Routes.user_path(conn, :index)) |> halt()
     end
   end
 
   def edit(conn, %{"id" => id}, current_user) do
     user = Accounts.get_user!(id)
-    if user.username == current_user.username do
+
+    if allowed_access_to(current_user, user) do
       changeset = Accounts.change_user(user)
       render(conn, "edit.html", user: user, changeset: changeset)
     else
-      redirect(conn, to: Routes.user_path(conn, :index))
+      conn |> redirect(to: Routes.user_path(conn, :index)) |> halt()
     end
   end
 
@@ -70,18 +77,25 @@ defmodule FrobotsWeb.UserController do
 
   def delete(conn, %{"id" => id}, current_user) do
     user = Accounts.get_user!(id)
-    if user.username == current_user.username do
+
+    if allowed_access_to(current_user, user) do
       {:ok, _user} = Accounts.delete_user(user)
+
       conn
       |> put_flash(:info, "User deleted successfully.")
       |> redirect(to: Routes.user_path(conn, :index))
     else
-      redirect(conn, to: Routes.user_path(conn, :index))
+      conn |> redirect(to: Routes.user_path(conn, :index)) |> halt()
     end
   end
 
   # the authenticate controller PLUG
   defp authenticate(conn, opts) do
     authenticate_user(conn, opts)
+  end
+
+  defp allowed_access_to(current_user, user) do
+    current_user &&
+      (user.username == current_user.username or Accounts.user_is_admin?(current_user))
   end
 end

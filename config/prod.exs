@@ -26,7 +26,6 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
-
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

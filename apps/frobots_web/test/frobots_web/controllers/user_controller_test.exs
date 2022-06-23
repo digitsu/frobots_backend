@@ -3,7 +3,12 @@ defmodule FrobotsWeb.UserControllerTest do
 
   import Frobots.AccountsFixtures
 
-  @create_attrs %{name: "some name", username: "some username", password: "somesecret"}
+  @create_attrs %{
+    name: "some name",
+    username: "some username",
+    password: "somesecret",
+    admin: false
+  }
   @update_attrs %{
     name: "some updated name",
     username: "some updated username"
@@ -14,7 +19,7 @@ defmodule FrobotsWeb.UserControllerTest do
     setup [:create_user]
 
     @tag username: "newaccount@test.me"
-    test "requires user authentication on all but new/edit/create actions", %{
+    test "requires user authentication on all but new/create actions", %{
       conn: conn,
       user: user
     } do
@@ -22,7 +27,6 @@ defmodule FrobotsWeb.UserControllerTest do
       Enum.each(
         [
           get(conn, Routes.user_path(conn, :new)),
-          get(conn, Routes.user_path(conn, :edit, user.id, user: @update_attrs)),
           post(
             conn,
             Routes.user_path(conn, :create, user: %{name: "new name", username: "new email"})
@@ -39,11 +43,12 @@ defmodule FrobotsWeb.UserControllerTest do
         [
           get(conn, Routes.user_path(conn, :index)),
           get(conn, Routes.user_path(conn, :show, user.id)),
+          get(conn, Routes.user_path(conn, :edit, user.id, user: @update_attrs)),
           put(conn, Routes.user_path(conn, :update, user.id, user: @update_attrs)),
           delete(conn, Routes.user_path(conn, :delete, user.id))
         ],
         fn conn ->
-          assert html_response(conn, 302)
+          assert IO.inspect(html_response(conn, 302))
           assert conn.halted
         end
       )
@@ -133,7 +138,12 @@ defmodule FrobotsWeb.UserControllerTest do
   end
 
   defp login(%{conn: conn, login_as: username}) do
-    user = user_fixture(username: username)
+    user =
+      case username do
+        "admin" -> user_fixture(username: username, admin: true)
+        _ -> user_fixture(username: username)
+      end
+
     conn = assign(conn, :current_user, user)
     %{conn: conn, user: user}
   end

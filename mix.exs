@@ -9,7 +9,14 @@ defmodule FrobotsUmbrella.MixProject do
       deps: deps(),
       elixir: "~> 1.9",
       aliases: aliases(),
-      releases: releases()
+      releases: releases(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -22,7 +29,8 @@ defmodule FrobotsUmbrella.MixProject do
     [
       {:logger_file_backend, "~> 0.0.12"},
       {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
-      {:phoenix, "~> 1.6.5"}
+      {:phoenix, "~> 1.6.5"},
+      {:excoveralls, "~> 0.5.5", only: :test}
     ]
   end
 

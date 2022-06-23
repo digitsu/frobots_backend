@@ -24,7 +24,7 @@ defmodule FrobotsWeb.MixProject do
   def application do
     [
       mod: {FrobotsWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools, :os_mon]
+      extra_applications: [:logger, :runtime_tools ]
     ]
   end
 
@@ -53,7 +53,7 @@ defmodule FrobotsWeb.MixProject do
       {:frobots, in_umbrella: true},
       {:swoosh, "~> 1.3"},
       {:plug_cowboy, "~> 2.5"},
-      {:ecto_psql_extras, "~> 0.6"},
+      {:ecto_psql_extras, "~> 0.6"}
     ]
   end
 

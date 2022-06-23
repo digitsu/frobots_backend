@@ -23,7 +23,6 @@ defmodule FrobotsWeb.Router do
     plug :basic_auth, Application.compile_env(:frobots_web, :basic_auth)
   end
 
-
   scope "/", FrobotsWeb do
     pipe_through :browser
 
