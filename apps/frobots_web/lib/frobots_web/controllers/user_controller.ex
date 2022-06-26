@@ -21,9 +21,16 @@ defmodule FrobotsWeb.UserController do
     render(conn, "index.html", users: displayable_users)
   end
 
-  def new(conn, _params, _current_user) do
-    changeset = Accounts.change_registration(%User{}, %{})
-    render(conn, "new.html", changeset: changeset)
+  def new(conn, _params, current_user) do
+    case current_user != nil and Accounts.user_is_admin?(current_user) do
+      true ->
+        changeset = Accounts.change_registration(%User{}, %{})
+        render(conn, "new.html", changeset: changeset)
+      false ->
+        conn
+        |> put_flash(:info, "Admin only")
+        |> halt()
+    end
   end
 
   def create(conn, %{"user" => user_params}, _current_user) do

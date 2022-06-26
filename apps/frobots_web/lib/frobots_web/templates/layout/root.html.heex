@@ -21,8 +21,10 @@
               to: Routes.session_path(@conn, :delete, @current_user),
               method: "delete" %>
             </li>
+              <%= if Accounts.user_is_admin?(@current_user) do %>
+                <li><%= link "Register", to: Routes.user_path(@conn, :new) %></li>
+              <% end %>
             <% else %>
-            <li><%= link "Register", to: Routes.user_path(@conn, :new) %></li>
             <li><%= link "Log in", to: Routes.session_path(@conn, :new) %></li>
             <% end %>
           </ul>
