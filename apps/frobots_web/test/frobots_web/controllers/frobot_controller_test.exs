@@ -136,14 +136,5 @@ defmodule FrobotsWeb.FrobotControllerTest do
     end
   end
 
-  defp create_frobot(%{conn: conn}) do
-    frobot = frobot_fixture(conn.assigns.current_user)
-    %{conn: conn, frobot: frobot}
-  end
 
-  defp login(%{conn: conn, login_as: username}) do
-    user = user_fixture(username: username)
-    conn = assign(conn, :current_user, user)
-    %{conn: conn, user: user}
-  end
 end

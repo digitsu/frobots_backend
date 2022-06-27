@@ -25,6 +25,7 @@ defmodule FrobotsWeb.ConnCase do
       import FrobotsWeb.ConnCase
       import Frobots.AssetsFixtures
       import Frobots.AccountsFixtures
+      import Frobots.TestHelpers
 
       alias FrobotsWeb.Router.Helpers, as: Routes
 

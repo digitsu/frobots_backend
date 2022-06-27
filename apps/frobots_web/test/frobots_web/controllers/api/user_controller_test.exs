@@ -1,8 +1,6 @@
 defmodule FrobotsWeb.Api.UserControllerTest do
   use FrobotsWeb.ConnCase
 
-  import Frobots.AccountsFixtures
-
   alias Frobots.Accounts.User
 
   @create_attrs %{
@@ -44,7 +42,7 @@ defmodule FrobotsWeb.Api.UserControllerTest do
   end
 
   describe "index" do
-    setup [:login]
+    setup [:api_login]
 
     @tag login_as: "admin"
     test "lists all users", %{conn: conn, user: user} do
@@ -62,7 +60,7 @@ defmodule FrobotsWeb.Api.UserControllerTest do
   end
 
   describe "create user" do
-    setup [:login]
+    setup [:api_login]
 
     @tag login_as: "admin"
     test "renders user when data is valid", %{conn: conn} do
@@ -87,7 +85,7 @@ defmodule FrobotsWeb.Api.UserControllerTest do
 
   describe "update user" do
     # login as admin first, then create the user that we will update
-    setup [:login, :create_user]
+    setup [:api_login, :create_user]
 
     @tag login_as: "admin"
     test "renders user when data is valid", %{conn: conn, user: %User{id: id} = user} do
@@ -122,7 +120,7 @@ defmodule FrobotsWeb.Api.UserControllerTest do
   end
 
   describe "delete user" do
-    setup [:login, :create_user]
+    setup [:api_login, :create_user]
 
     @tag login_as: "admin"
     test "deletes chosen user", %{conn: conn, user: user} do
@@ -135,22 +133,5 @@ defmodule FrobotsWeb.Api.UserControllerTest do
     end
   end
 
-  defp create_user(attrs) do
-    user = user_fixture(attrs)
-    %{user: user}
-  end
 
-  defp login(%{conn: conn, login_as: username}) do
-    # this creates the user in the db
-    user = user_fixture(username: username)
-    token = FrobotsWeb.Api.Auth.generate_token(user.username)
-
-    conn =
-      conn
-      # this assigns to the connection
-      |> assign(:current_user, user)
-      |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
-
-    %{conn: conn, user: user}
-  end
 end

@@ -26,23 +26,34 @@ defmodule FrobotsWeb.UserController do
       true ->
         changeset = Accounts.change_registration(%User{}, %{})
         render(conn, "new.html", changeset: changeset)
+
       false ->
         conn
         |> put_flash(:info, "Admin only")
+        |> redirect(to: Routes.page_path(conn, :index))
         |> halt()
     end
   end
 
-  def create(conn, %{"user" => user_params}, _current_user) do
-    case Accounts.register_user(user_params) do
-      {:ok, user} ->
-        conn
-        |> FrobotsWeb.Auth.login(user)
-        |> put_flash(:info, "#{user.name} created successfully.")
-        |> redirect(to: Routes.user_path(conn, :index))
+  def create(conn, %{"user" => user_params}, current_user) do
+    case current_user != nil and Accounts.user_is_admin?(current_user) do
+      true ->
+        case Accounts.register_user(user_params) do
+          {:ok, user} ->
+            conn
+            |> FrobotsWeb.Auth.login(user)
+            |> put_flash(:info, "#{user.name} created successfully.")
+            |> redirect(to: Routes.user_path(conn, :index))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+          {:error, %Ecto.Changeset{} = changeset} ->
+            render(conn, "new.html", changeset: changeset)
+        end
+
+      false ->
+        conn
+        |> put_flash(:info, "Admin only")
+        |> redirect(to: Routes.page_path(conn, :index))
+        |> halt()
     end
   end
 

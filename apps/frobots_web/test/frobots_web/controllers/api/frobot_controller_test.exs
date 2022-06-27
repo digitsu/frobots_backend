@@ -1,8 +1,6 @@
 defmodule FrobotsWeb.Api.FrobotControllerTest do
   use FrobotsWeb.ConnCase, async: true
 
-  import Frobots.AssetsFixtures
-
   alias Frobots.Assets.Frobot
 
   @create_attrs %{
@@ -40,8 +38,8 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
   end
 
   describe "index" do
-    setup [:login]
-    @tag login_as: "god"
+    setup [:api_login]
+    @tag login_as: "admin"
     test "lists all frobots", %{conn: conn} do
       conn = get(conn, Routes.api_frobot_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
@@ -49,9 +47,9 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
   end
 
   describe "create frobot" do
-    setup [:login]
+    setup [:api_login]
 
-    @tag login_as: "god"
+    @tag login_as: "admin"
     test "renders frobot when data is valid", %{conn: conn} do
       conn = post(conn, Routes.api_frobot_path(conn, :create), frobot: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -67,7 +65,7 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    @tag login_as: "god"
+    @tag login_as: "admin"
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.api_frobot_path(conn, :create), frobot: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
@@ -75,9 +73,9 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
   end
 
   describe "update frobot" do
-    setup [:login, :create_frobot]
+    setup [:api_login, :create_frobot]
 
-    @tag login_as: "god"
+    @tag login_as: "admin"
     test "renders frobot when data is valid", %{conn: conn, frobot: %Frobot{id: id} = frobot} do
       conn = put(conn, Routes.api_frobot_path(conn, :update, frobot), frobot: @update_attrs)
 
@@ -94,7 +92,7 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    @tag login_as: "god"
+    @tag login_as: "admin"
     test "renders errors when data is invalid", %{conn: conn, frobot: frobot} do
       conn = put(conn, Routes.api_frobot_path(conn, :update, frobot), frobot: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
@@ -102,9 +100,9 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
   end
 
   describe "delete frobot" do
-    setup [:login, :create_frobot]
+    setup [:api_login, :create_frobot]
 
-    @tag login_as: "god"
+    @tag login_as: "admin"
     test "deletes chosen frobot", %{conn: conn, frobot: frobot} do
       conn = delete(conn, Routes.api_frobot_path(conn, :delete, frobot))
       assert response(conn, 204)
@@ -115,22 +113,5 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
     end
   end
 
-  defp create_frobot(%{conn: conn}) do
-    frobot = frobot_fixture(conn.assigns.current_user, @create_attrs)
-    %{conn: conn, frobot: frobot}
-  end
 
-  defp login(%{conn: conn, login_as: username}) do
-    # this creates the user in the db
-    user = user_fixture(username: username)
-    token = FrobotsWeb.Api.Auth.generate_token(user.username)
-
-    conn =
-      conn
-      # this assigns to the connection
-      |> assign(:current_user, user)
-      |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
-
-    %{conn: conn, user: user}
-  end
 end

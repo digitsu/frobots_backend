@@ -1,8 +1,6 @@
 defmodule FrobotsWeb.UserControllerTest do
   use FrobotsWeb.ConnCase
 
-  import Frobots.AccountsFixtures
-
   @create_attrs %{
     name: "some name",
     username: "some username",
@@ -26,11 +24,7 @@ defmodule FrobotsWeb.UserControllerTest do
       # currently these are allowed even without login. Because otherwise there is no way to create users!
       Enum.each(
         [
-          get(conn, Routes.user_path(conn, :new)),
-          post(
-            conn,
-            Routes.user_path(conn, :create, user: %{name: "new name", username: "new email"})
-          )
+          # put a request here that is allowed without a login.
         ],
         fn conn ->
           assert html_response(conn, 200)
@@ -45,7 +39,12 @@ defmodule FrobotsWeb.UserControllerTest do
           get(conn, Routes.user_path(conn, :show, user.id)),
           get(conn, Routes.user_path(conn, :edit, user.id, user: @update_attrs)),
           put(conn, Routes.user_path(conn, :update, user.id, user: @update_attrs)),
-          delete(conn, Routes.user_path(conn, :delete, user.id))
+          delete(conn, Routes.user_path(conn, :delete, user.id)),
+          post(
+            conn,
+            Routes.user_path(conn, :create, user: %{name: "new name", username: "new email"})
+          ),
+          get(conn, Routes.user_path(conn, :new))
         ],
         fn conn ->
           assert IO.inspect(html_response(conn, 302))
@@ -65,14 +64,17 @@ defmodule FrobotsWeb.UserControllerTest do
     end
   end
 
-  describe "new user" do
+  describe "new user from unauthorized login" do
     test "renders form", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :new))
-      assert html_response(conn, 200) =~ "New User"
+      assert html_response(conn, 302) =~ "redirected"
     end
   end
 
   describe "create user" do
+    setup [:login]
+
+    @tag login_as: "admin"
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
 
@@ -83,6 +85,7 @@ defmodule FrobotsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Show User"
     end
 
+    @tag login_as: "admin"
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
       assert html_response(conn, 200) =~ "New User"
@@ -132,19 +135,5 @@ defmodule FrobotsWeb.UserControllerTest do
     end
   end
 
-  defp create_user(attrs) do
-    user = user_fixture(attrs)
-    %{user: user}
-  end
 
-  defp login(%{conn: conn, login_as: username}) do
-    user =
-      case username do
-        "admin" -> user_fixture(username: username, admin: true)
-        _ -> user_fixture(username: username)
-      end
-
-    conn = assign(conn, :current_user, user)
-    %{conn: conn, user: user}
-  end
 end
