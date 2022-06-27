@@ -10,9 +10,11 @@
       <li>
         <a href="/manage/frobots">My Frobots</a>
       </li>
+      <%= if Accounts.user_is_admin?(@current_user) do %>
       <li>
         <a href="/dashboard">Dashboard</a>
       </li>
+      <% end %>
       <li>
         <a href="/users">Users</a>
       </li>
