@@ -24,13 +24,13 @@ defmodule FrobotsWeb.FrobotViewTest do
   end
 
   test "renders new.html", %{conn: conn} do
-    _owner = %Frobots.Accounts.User{}
+    owner = %Frobots.Accounts.User{}
     changeset = Frobots.Assets.change_frobot(%Frobots.Assets.Frobot{})
-
     content =
       render_to_string(FrobotsWeb.FrobotView, "new.html",
         conn: conn,
-        changeset: changeset
+        changeset: changeset,
+        current_user: owner
       )
 
     assert String.contains?(content, "New Frobot")

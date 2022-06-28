@@ -5,22 +5,23 @@
     </div>
   <% end %>
 
-  <%= label f, :brain_code %>
-  <%= text_input f, :brain_code %>
-  <%= error_tag f, :brain_code %>
-
-  <%= label f, :class %>
-  <%= text_input f, :class %>
-  <%= error_tag f, :class %>
-
   <%= label f, :name %>
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
 
-  <%= label f, :xp %>
-  <%= number_input f, :xp %>
-  <%= error_tag f, :xp %>
+  <%= label f, :brain_code %>
+  <%= text_input f, :brain_code %>
+  <%= error_tag f, :brain_code %>
 
+  <%= if Accounts.user_is_admin?(@current_user) do %>
+    <%= label f, :class %>
+    <%= text_input f, :class %>
+    <%= error_tag f, :class %>
+
+    <%= label f, :xp %>
+    <%= number_input f, :xp %>
+    <%= error_tag f, :xp %>
+  <% end %>
   <div>
     <%= submit "Save" %>
   </div>

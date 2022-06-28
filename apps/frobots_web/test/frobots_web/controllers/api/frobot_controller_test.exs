@@ -112,6 +112,4 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
       end
     end
   end
-
-
 end

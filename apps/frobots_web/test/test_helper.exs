@@ -21,13 +21,13 @@ defmodule Frobots.TestHelpers do
     %{conn: conn, user: user}
   end
 
-
   def api_login(%{conn: conn, login_as: username}) do
     # this creates the user in the db
-    user = case username do
-      "admin" -> user_fixture(username: username, admin: true)
-      _ -> user_fixture(username: username)
-    end
+    user =
+      case username do
+        "admin" -> user_fixture(username: username, admin: true)
+        _ -> user_fixture(username: username)
+      end
 
     token = FrobotsWeb.Api.Auth.generate_token(user.username)
 
@@ -44,5 +44,4 @@ defmodule Frobots.TestHelpers do
     frobot = frobot_fixture(conn.assigns.current_user)
     %{conn: conn, frobot: frobot}
   end
-
 end

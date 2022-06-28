@@ -132,6 +132,4 @@ defmodule FrobotsWeb.Api.UserControllerTest do
       end
     end
   end
-
-
 end

@@ -82,7 +82,15 @@ defmodule FrobotsWeb.UserController do
   def update(conn, %{"id" => id, "user" => user_params}, _current_user) do
     user = Accounts.get_user!(id)
 
-    case Accounts.update_user(user, user_params) do
+    # update the registration if password was changed, else just update the other fields of user
+    updated_user =
+      case Map.get(user_params, "password") do
+        "" -> Accounts.update_user(user, user_params)
+        nil -> Accounts.update_user(user, user_params)
+        _ -> Accounts.update_registration(user, user_params)
+      end
+
+    case updated_user do
       {:ok, user} ->
         conn
         |> put_flash(:info, "User updated successfully.")

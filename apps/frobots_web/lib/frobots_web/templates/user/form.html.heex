@@ -9,10 +9,16 @@
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
 
-  <%= label f, :username %>
-  <%= text_input f, :username %>
-  <%= error_tag f, :username %>
 
+  <%= label f, :password %>
+  <%= password_input f, :password %>
+  <%= error_tag f, :password %>
+
+  <%= if Accounts.user_is_admin?(@current_user) do %>
+    <%= label f, :admin %>
+    <%= checkbox f, :admin %>
+    <%= error_tag f, :admin %>
+  <% end %>
   <div>
     <%= submit "Save" %>
   </div>

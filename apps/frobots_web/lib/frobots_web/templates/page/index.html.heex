@@ -7,17 +7,25 @@
   <article class="column">
     <h2>Resources</h2>
     <ul>
-      <li>
-        <a href="/manage/frobots">My Frobots</a>
-      </li>
       <%= if Accounts.user_is_admin?(@current_user) do %>
+      <li>
+        <a href="/manage/frobots">Frobots List</a>
+      </li>
+      <li>
+        <a href="/users">Users List</a>
+      </li>
       <li>
         <a href="/dashboard">Dashboard</a>
       </li>
       <% end %>
+      <%= if @current_user && Accounts.user_is_admin?(@current_user) == false do %>
       <li>
-        <a href="/users">Users</a>
+        <a href="/users">My Profile</a>
       </li>
+      <li>
+        <a href="/manage/frobots">My Frobots</a>
+      </li>
+      <% end %>
     </ul>
   </article>
   <article class="column">

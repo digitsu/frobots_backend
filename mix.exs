@@ -43,7 +43,8 @@ defmodule FrobotsUmbrella.MixProject do
   defp releases do
     [
       frobots_web: [
-        applications: [frobots_web: :permanent, frobots: :permanent]
+        applications: [frobots_web: :permanent, frobots: :permanent],
+        cookie: "weknoweachother_frobotsnode"
       ]
     ]
   end
