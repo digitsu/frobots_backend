@@ -91,7 +91,7 @@ defmodule FrobotsWeb.Api.Auth do
       FrobotsWeb.Endpoint,
       inspect(__MODULE__),
       token,
-      max_age: one_month
+      max_age: 2 * one_month
     )
   end
 
