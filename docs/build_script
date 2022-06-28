@@ -3,8 +3,12 @@
 #build docker from frobots_backend dir (the dir with the Dockerfile)
 docker image build -t elixir/frobots_web .
 
-# or build locally and push to host
-docker save elixir/frobots_web | ssh jerry@ec2-13-231-63-178.ap-northeast-1.compute.amazonaws.com docker load
+# push to host
+# aws
+# docker save elixir/frobots_web | ssh jerry@ec2-13-231-63-178.ap-northeast-1.compute.amazonaws.com docker load
+# linode
+docker save elixir/frobots_web | ssh jerry@172.105.215.192 docker load
+
 
 # LOGIN TO HOST
 ssh jerry@ec2-13-231-63-178.ap-northeast-1.compute.amazonaws.com
@@ -21,7 +25,7 @@ docker run -d --network frobots-network --network-alias postgres-server -e POSTG
 docker ps
 
 # connect to the postgres container (change to the container ID appropriate), and create the database
-docker exec -it 8281f722c845 psql -U postgres
+docker exec -it <container id> psql -U postgres
 
 psql (14.0 (Debian 14.0-1.pgdg110+1))
 Type "help" for help.
@@ -41,7 +45,7 @@ source .env
 export DATABASE_URL=ecto://postgres:supersecret@postgres-server/frobots_prod
 
 # run the elixir app container
-docker container run -dp $PORT:$PORT -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE --network frobots-network  --name frobots_web elixir/frobots_web
+docker run --rm=true -dp $PORT:$PORT -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE --network frobots-network  --name frobots_web elixir/frobots_web
 
 # run the migrations (this tests that the backend can talk to the postgres)
 docker exec -it frobots_web bin/frobots_web eval "FrobotsWeb.Release.migrate"

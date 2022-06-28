@@ -4,7 +4,7 @@ ARG MIX_ENV="prod"
 FROM elixir:alpine AS build
 
 # install build dependencies
-RUN apk add --no-cache build-base git python3 curl
+RUN apk add --no-cache build-base git python3 curl openssh
 
 # sets work dir
 WORKDIR /app
@@ -55,7 +55,7 @@ FROM alpine AS app
 ARG MIX_ENV
 
 # install runtime dependencies
-RUN apk add --no-cache libstdc++ openssl ncurses-libs
+RUN apk add --no-cache libstdc++ openssl ncurses-libs bash
 
 ENV USER="elixir"
 

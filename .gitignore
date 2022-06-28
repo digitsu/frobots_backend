@@ -34,3 +34,6 @@ crash_logs/
 
 # Web static build artifacts
 /apps/frobots_web/priv/static/
+
+# any csv
+*.csv
