@@ -78,11 +78,8 @@ defmodule FrobotsWeb.UserControllerTest do
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
 
-      id = get_session(conn, :user_id)
       assert redirected_to(conn) == Routes.user_path(conn, :index)
-
-      conn = get(conn, Routes.user_path(conn, :show, id))
-      assert html_response(conn, 200) =~ "Show User"
+      assert html_response(conn, 302) =~ "redirected"
     end
 
     @tag login_as: "admin"

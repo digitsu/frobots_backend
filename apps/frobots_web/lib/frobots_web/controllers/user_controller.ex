@@ -41,7 +41,6 @@ defmodule FrobotsWeb.UserController do
         case Accounts.register_user(user_params) do
           {:ok, user} ->
             conn
-            |> FrobotsWeb.Auth.login(user)
             |> put_flash(:info, "#{user.name} created successfully.")
             |> redirect(to: Routes.user_path(conn, :index))
 
