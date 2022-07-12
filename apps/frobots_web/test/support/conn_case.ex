@@ -23,9 +23,10 @@ defmodule FrobotsWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import FrobotsWeb.ConnCase
-      import Frobots.AssetsFixtures
+      import FrobotsWeb.TestHelpers
       import Frobots.AccountsFixtures
-      import Frobots.TestHelpers
+      import Frobots.AssetsFixtures
+      import Frobots.EventsFixtures
 
       alias FrobotsWeb.Router.Helpers, as: Routes
 

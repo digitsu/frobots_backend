@@ -16,7 +16,7 @@ defmodule FrobotsWeb.Api.Auth do
     |> case do
       # we can safely assume that if token is valid, it must have been created by a valid user in the db.
       {:ok, user_id} -> assign(conn, :current_user, Accounts.get_user_by(username: user_id))
-      _unauthorized -> assign(conn, :current_user, %{})
+      _unauthorized -> assign(conn, :current_user, nil)
     end
   end
 
@@ -34,8 +34,13 @@ defmodule FrobotsWeb.Api.Auth do
 
   """
 
+  def local_endpoint?() do
+    # determine if we are running a local backend in which case we should allow API access that isn't the frontend server
+    FrobotsWeb.Endpoint.host == "localhost"
+  end
+
   def authenticate_api_user(conn, _opts) do
-    if Map.get(conn.assigns, :current_user, %{}) |> Accounts.user_is_admin?() do
+    if Map.get(conn.assigns, :current_user, nil) |> Accounts.user_is_admin?() do
       conn
     else
       conn
