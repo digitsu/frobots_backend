@@ -12,6 +12,18 @@ if config_env() == :prod do
       environment variable SECRET_KEY_BASE is missing.
       You can generate one by calling: mix phx.gen.secret
       """
+  admin_user =
+    System.get_env("ADMIN_USER") ||
+      raise """
+      environment variable ADMIN_USER is missing.
+      Did you forget to source env vars?
+      """
+  admin_pass =
+    System.get_env("ADMIN_PASS") ||
+      raise """
+      environment variable ADMIN_PASS is missing.
+      Did you forget to source env vars?
+      """
 
   config :frobots_web, FrobotsWeb.Endpoint,
     http: [
@@ -21,6 +33,9 @@ if config_env() == :prod do
       port: String.to_integer(System.get_env("PORT") || "4000")
     ],
     secret_key_base: secret_key_base
+
+  # configures the dashboard admin password -- make sure to use SSL when we open up the server to public as inputs are exposed in transit via basic_auth
+  config :frobots_web, :basic_auth, username: admin_user, password: admin_pass
 
   # ## Using releases
   #

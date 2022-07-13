@@ -17,9 +17,6 @@ config :frobots_web,
   ecto_repos: [Frobots.Repo],
   generators: [context_app: :frobots]
 
-# configures the dashboard admin password -- make sure to use SSL when we open up the server to public as inputs are exposed in transit via basic_auth
-config :frobots_web, :basic_auth, username: "iamadmin667", password: "noobsAway555"
-
 # Configures the endpoint
 config :frobots_web, FrobotsWeb.Endpoint,
   url: [host: "localhost"],

@@ -36,7 +36,10 @@ defmodule FrobotsUmbrella.MixProject do
 
   defp aliases do
     [
-      "phx.routes": "phx.routes FrobotsWeb.Router"
+      "phx.routes": "phx.routes FrobotsWeb.Router",
+      test: ["cmd ./loadenv.sh", "test"],
+      run: ["cmd ./loadenv.sh", "run"],
+      compile: ["cmd ./loadenv.sh", "compile"]
     ]
   end
 
