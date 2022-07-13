@@ -37,3 +37,6 @@ crash_logs/
 
 # any csv
 *.csv
+
+# do not keep the env secrets in repo
+.env
