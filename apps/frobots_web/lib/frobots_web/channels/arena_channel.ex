@@ -77,8 +77,11 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   # Add authorization logic here as required.
-  defp authorized?(_payload) do
-    true
+  defp authorized?(payload) do
+    case payload do
+      nil -> false
+      _ -> true
+    end
   end
 
   # -----------------------------------------------------------
@@ -111,21 +114,21 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  @spec handle_info({atom, String.t(), degree, integer}, Phoenix.Socket.t()) :: tuple
+  @spec handle_info({:scan, String.t(), degree, integer}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_info({:scan, _frobot, _deg, _res} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t(), damage}, Phoenix.Socket.t()) :: tuple
+  @spec handle_info({:damage, String.t(), damage}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_info({:damage, _frobot, _damage} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t(), location}, Phoenix.Socket.t()) :: tuple
+  @spec handle_info({:create_tank, String.t(), location}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_info({:create_tank, _frobot, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     # nop because tanks are created by the init, and we can ignore this message
@@ -134,7 +137,7 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  @spec handle_info({atom, String.t(), location, degree, speed}, Phoenix.Socket.t()) :: tuple
+  @spec handle_info({:move_tank, String.t(), location, degree, speed}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_info({:move_tank, frobot, loc, heading, speed} = msg, socket) do
     inspect([:move_tank, frobot, loc, heading, speed])
     broadcast(socket, "arena_event", encode_event(msg))
@@ -142,35 +145,35 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  @spec handle_info({atom, String.t()}, Phoenix.Socket.t()) :: tuple
+  @spec handle_info({:kill_tank, String.t()}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_info({:kill_tank, _frobot} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t(), location}, Phoenix.Socket.t()) :: tuple
+  @spec handle_info({:create_miss, String.t(), location}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_info({:create_miss, _m_name, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t(), location}, Phoenix.Socket.t()) :: tuple
+  @spec handle_info({:move_miss, String.t(), location}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_info({:move_miss, _m_name, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t()}, Phoenix.Socket.t()) :: tuple
+  @spec handle_info({:kill_miss, String.t()}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_info({:kill_miss, _m_name} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t()}, Phoenix.Socket.t()) :: tuple
+  @spec handle_info({:game_over, String.t()}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
   def handle_info({:game_over, _winner} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
