@@ -46,17 +46,33 @@ defmodule FrobotsWeb.ArenaChannel do
     end
   end
 
+  defp start_cluster(socket) do
+    case Fubars.Match.Supervisor.init_match(
+           Integer.to_string(Map.get(socket.assigns, :match_id)),
+           self()
+         ) do
+      {:ok, _super_name, _registry_name, _arena_name, match_name} -> {:ok, match_name}
+      {:error, error} -> {:error, error}
+    end
+  end
+
   @impl true
-  def handle_in("start_match", frobots, socket) do
-    {:ok, _super_name, _registry_name, _arena_name, match_name} =
-      Fubars.Match.Supervisor.init_match(
-        Integer.to_string(Map.get(socket.assigns, :match_id)),
-        self()
-      )
+  def handle_in("start_match", match_data, socket) do
+    # create a FUBARS cluster
+    with {:ok, match_name} <- start_cluster(socket) do
+      # now pass the match service the frobots and the match_template
+      case Fubars.Match.start_match(
+             via_tuple(match_name),
+             match_data |> Map.get("frobots", nil) |> Frobots.Assets.load_frobots_from_db(),
+             match_data
+           ) do
+        {:ok, frobots_map} ->
+          {:reply, {:ok, frobots_map}, socket}
 
-    frobots_map = Fubars.Match.start_match(via_tuple(match_name), Frobots.Assets.load_frobots_from_db(frobots))
-
-    {:reply, {:ok, frobots_map}, socket}
+        {:error, error} ->
+          {:reply, {:error, error}, socket}
+      end
+    end
   end
 
   @impl true
@@ -114,21 +130,24 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  @spec handle_info({:scan, String.t(), degree, integer}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  @spec handle_info({:scan, String.t(), degree, integer}, Phoenix.Socket.t()) ::
+          {:noreply, Phoenix.Socket.t()}
   def handle_info({:scan, _frobot, _deg, _res} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({:damage, String.t(), damage}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  @spec handle_info({:damage, String.t(), damage}, Phoenix.Socket.t()) ::
+          {:noreply, Phoenix.Socket.t()}
   def handle_info({:damage, _frobot, _damage} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({:create_tank, String.t(), location}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  @spec handle_info({:create_tank, String.t(), location}, Phoenix.Socket.t()) ::
+          {:noreply, Phoenix.Socket.t()}
   def handle_info({:create_tank, _frobot, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     # nop because tanks are created by the init, and we can ignore this message
@@ -137,7 +156,8 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  @spec handle_info({:move_tank, String.t(), location, degree, speed}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  @spec handle_info({:move_tank, String.t(), location, degree, speed}, Phoenix.Socket.t()) ::
+          {:noreply, Phoenix.Socket.t()}
   def handle_info({:move_tank, frobot, loc, heading, speed} = msg, socket) do
     inspect([:move_tank, frobot, loc, heading, speed])
     broadcast(socket, "arena_event", encode_event(msg))
@@ -145,36 +165,40 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  @spec handle_info({:kill_tank, String.t()}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  @spec handle_info({:kill_tank, String.t()}, Phoenix.Socket.t()) ::
+          {:noreply, Phoenix.Socket.t()}
   def handle_info({:kill_tank, _frobot} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({:create_miss, String.t(), location}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  @spec handle_info({:create_miss, String.t(), location}, Phoenix.Socket.t()) ::
+          {:noreply, Phoenix.Socket.t()}
   def handle_info({:create_miss, _m_name, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({:move_miss, String.t(), location}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  @spec handle_info({:move_miss, String.t(), location}, Phoenix.Socket.t()) ::
+          {:noreply, Phoenix.Socket.t()}
   def handle_info({:move_miss, _m_name, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({:kill_miss, String.t()}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  @spec handle_info({:kill_miss, String.t()}, Phoenix.Socket.t()) ::
+          {:noreply, Phoenix.Socket.t()}
   def handle_info({:kill_miss, _m_name} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({:game_over, String.t()}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
-  def handle_info({:game_over, _winner} = msg, socket) do
+  @spec handle_info({:game_over, List.t()}, Phoenix.Socket.t()) :: {:noreply, Phoenix.Socket.t()}
+  def handle_info({:game_over, _winners} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end

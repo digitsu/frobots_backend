@@ -26,6 +26,7 @@ defmodule FrobotsWeb.FrobotViewTest do
   test "renders new.html", %{conn: conn} do
     owner = %Frobots.Accounts.User{}
     changeset = Frobots.Assets.change_frobot(%Frobots.Assets.Frobot{})
+
     content =
       render_to_string(FrobotsWeb.FrobotView, "new.html",
         conn: conn,

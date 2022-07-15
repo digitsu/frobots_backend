@@ -61,7 +61,6 @@ config :swoosh, :api_client, false
 config :logger,
   backends: [
     :console,
-    {Fubars.LogBackend, :ui_event},
     {LoggerFileBackend, :file_log}
   ],
   # this is the most permissive level, no backend can be more inclusive than the level set here.

@@ -36,7 +36,7 @@ defmodule FrobotsWeb.Api.Auth do
 
   def local_endpoint?() do
     # determine if we are running a local backend in which case we should allow API access that isn't the frontend server
-    FrobotsWeb.Endpoint.host == "localhost"
+    FrobotsWeb.Endpoint.host() == "localhost"
   end
 
   def authenticate_api_user(conn, _opts) do

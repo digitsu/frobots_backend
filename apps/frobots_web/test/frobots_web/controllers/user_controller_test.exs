@@ -47,7 +47,7 @@ defmodule FrobotsWeb.UserControllerTest do
           get(conn, Routes.user_path(conn, :new))
         ],
         fn conn ->
-          assert IO.inspect(html_response(conn, 302))
+          assert html_response(conn, 302)
           assert conn.halted
         end
       )
@@ -106,6 +106,7 @@ defmodule FrobotsWeb.UserControllerTest do
     test "redirects to show updated user when data is valid", %{conn: conn, user: user} do
       updated_conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
       assert redirected_to(updated_conn) == Routes.user_path(updated_conn, :show, user)
+
       # note: we shouldn't allow edits to the username... as this changes how they log in, but maybe it may work.
       assert html_response(updated_conn, 302) =~ "redirected"
     end

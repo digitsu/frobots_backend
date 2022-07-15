@@ -12,12 +12,14 @@ if config_env() == :prod do
       environment variable SECRET_KEY_BASE is missing.
       You can generate one by calling: mix phx.gen.secret
       """
+
   admin_user =
     System.get_env("ADMIN_USER") ||
       raise """
       environment variable ADMIN_USER is missing.
       Did you forget to source env vars?
       """
+
   admin_pass =
     System.get_env("ADMIN_PASS") ||
       raise """

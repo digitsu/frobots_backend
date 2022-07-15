@@ -4,7 +4,7 @@ defmodule FrobotsUmbrella.MixProject do
   def project do
     [
       apps_path: "apps",
-      version: "0.1.0",
+      version: "0.1.1",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       elixir: "~> 1.9",
@@ -36,10 +36,7 @@ defmodule FrobotsUmbrella.MixProject do
 
   defp aliases do
     [
-      "phx.routes": "phx.routes FrobotsWeb.Router",
-      test: ["cmd ./loadenv.sh", "test"],
-      run: ["cmd ./loadenv.sh", "run"],
-      compile: ["cmd ./loadenv.sh", "compile"]
+      "phx.routes": "phx.routes FrobotsWeb.Router"
     ]
   end
 

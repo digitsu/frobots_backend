@@ -4,7 +4,6 @@ Ecto.Adapters.SQL.Sandbox.mode(Frobots.Repo, :manual)
 defmodule FrobotsWeb.TestHelpers do
   import Frobots.AccountsFixtures
   import Frobots.AssetsFixtures
-  import Frobots.EventsFixtures
 
   def create_user(attrs) do
     user = user_fixture(attrs)

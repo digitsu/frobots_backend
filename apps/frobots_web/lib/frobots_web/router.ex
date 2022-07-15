@@ -62,7 +62,6 @@ defmodule FrobotsWeb.Router do
     Plug.BasicAuth.basic_auth(conn, username: admin_user, password: admin_pass)
   end
 
-
   if Mix.env() in [:dev, :test, :prod] do
     import Phoenix.LiveDashboard.Router
 
