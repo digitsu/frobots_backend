@@ -1,5 +1,6 @@
 defmodule FrobotsWeb.ArenaChannel do
   use FrobotsWeb, :channel
+  alias Fubars.Match
 
   @type degree :: 0..359
   @type damage :: 0..100
