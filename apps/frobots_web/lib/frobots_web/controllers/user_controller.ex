@@ -3,6 +3,7 @@ defmodule FrobotsWeb.UserController do
 
   alias Frobots.Accounts
   alias Frobots.Accounts.User
+  alias FrobotsWeb.Auth
   plug :authenticate when action in [:index, :show, :update, :delete]
 
   def action(conn, _) do
@@ -59,7 +60,7 @@ defmodule FrobotsWeb.UserController do
   def show(conn, %{"id" => id}, current_user) do
     user = Accounts.get_user!(id)
 
-    if allowed_access_to(current_user, user) do
+    if Auth.allowed_access_to(current_user, user) do
       token = FrobotsWeb.Api.Auth.generate_token(user.username)
       render(conn, "show.html", user: user, token: token)
     else
@@ -70,7 +71,7 @@ defmodule FrobotsWeb.UserController do
   def edit(conn, %{"id" => id}, current_user) do
     user = Accounts.get_user!(id)
 
-    if allowed_access_to(current_user, user) do
+    if Auth.allowed_access_to(current_user, user) do
       changeset = Accounts.change_user(user)
       render(conn, "edit.html", user: user, changeset: changeset)
     else
@@ -78,32 +79,36 @@ defmodule FrobotsWeb.UserController do
     end
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}, _current_user) do
+  def update(conn, %{"id" => id, "user" => user_params}, current_user) do
     user = Accounts.get_user!(id)
 
-    # update the registration if password was changed, else just update the other fields of user
-    updated_user =
-      case Map.get(user_params, "password") do
-        "" -> Accounts.update_user(user, user_params)
-        nil -> Accounts.update_user(user, user_params)
-        _ -> Accounts.update_registration(user, user_params)
+    if Auth.allowed_access_to(current_user, user) do
+      # update the registration if password was changed, else just update the other fields of user
+      updated_user =
+        case Map.get(user_params, "password") do
+          "" -> Accounts.update_user(user, user_params)
+          nil -> Accounts.update_user(user, user_params)
+          _ -> Accounts.update_registration(user, user_params)
+        end
+
+      case updated_user do
+        {:ok, user} ->
+          conn
+          |> put_flash(:info, "User updated successfully.")
+          |> redirect(to: Routes.user_path(conn, :show, user))
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          render(conn, "edit.html", user: user, changeset: changeset)
       end
-
-    case updated_user do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: Routes.user_path(conn, :show, user))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", user: user, changeset: changeset)
+    else
+      conn |> redirect(to: Routes.user_path(conn, :index)) |> halt()
     end
   end
 
   def delete(conn, %{"id" => id}, current_user) do
     user = Accounts.get_user!(id)
 
-    if allowed_access_to(current_user, user) do
+    if Auth.allowed_access_to(current_user, user) do
       {:ok, _user} = Accounts.delete_user(user)
 
       conn
@@ -117,10 +122,5 @@ defmodule FrobotsWeb.UserController do
   # the authenticate controller PLUG
   defp authenticate(conn, opts) do
     authenticate_user(conn, opts)
-  end
-
-  defp allowed_access_to(current_user, user) do
-    current_user &&
-      (user.username == current_user.username or Accounts.user_is_admin?(current_user))
   end
 end

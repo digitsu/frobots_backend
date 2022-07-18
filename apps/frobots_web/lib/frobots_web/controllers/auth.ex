@@ -2,6 +2,7 @@ defmodule FrobotsWeb.Auth do
   import Plug.Conn
 
   import Phoenix.Controller
+  alias Frobots.Accounts
   alias FrobotsWeb.Router.Helpers, as: Routes
 
   def init(opts), do: opts
@@ -14,7 +15,7 @@ defmodule FrobotsWeb.Auth do
       conn.assigns[:current_user] ->
         conn
 
-      user = user_id && Frobots.Accounts.get_user(user_id) ->
+      user = user_id && Accounts.get_user(user_id) ->
         assign(conn, :current_user, user)
 
       true ->
@@ -44,5 +45,12 @@ defmodule FrobotsWeb.Auth do
       |> redirect(to: Routes.page_path(conn, :index))
       |> halt()
     end
+  end
+
+  # this fn is not unique to the non-api authorization. its a general fn used by all authorization pipelines.
+  # this ensures that the user doing the editing is doing it on themselves, or is an admin
+  def allowed_access_to(current_user, user) do
+    current_user &&
+      (user.username == current_user.username or Accounts.user_is_admin?(current_user))
   end
 end

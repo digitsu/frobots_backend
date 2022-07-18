@@ -21,6 +21,27 @@ defmodule FrobotsWeb.TestHelpers do
     %{conn: conn, user: user}
   end
 
+  def basic_auth_login(%{conn: conn, login_as: username}) do
+    # this creates the user in the db
+    password = "supersecret"
+
+    user =
+      case username do
+        "admin" -> user_fixture(username: username, password: password, admin: true)
+        _ -> user_fixture(username: username, password: password)
+      end
+
+    token = ~s/#{user.username}:#{password}/ |> Base.encode64()
+
+    conn =
+      conn
+      # this assigns to the connection
+      |> Plug.Conn.assign(:current_user, user)
+      |> Plug.Conn.put_req_header("authorization", "Basic " <> token)
+
+    %{conn: conn, user: user}
+  end
+
   def api_login(%{conn: conn, login_as: username}) do
     # this creates the user in the db
     user =
@@ -38,6 +59,16 @@ defmodule FrobotsWeb.TestHelpers do
       |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
 
     %{conn: conn, user: user}
+  end
+
+  def other_user(%{conn: conn, other: username}) do
+    user =
+      case username do
+        "admin" -> user_fixture(username: username, admin: true)
+        _ -> user_fixture(username: username)
+      end
+
+    %{conn: conn, other: user}
   end
 
   def create_frobot(%{conn: conn}) do

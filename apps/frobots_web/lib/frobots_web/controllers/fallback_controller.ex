@@ -20,4 +20,11 @@ defmodule FrobotsWeb.FallbackController do
     |> put_view(FrobotsWeb.ErrorView)
     |> render(:"404")
   end
+
+  def call(conn, _other) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(FrobotsWeb.ErrorView)
+    |> render(:"400")
+  end
 end
