@@ -43,6 +43,14 @@ defmodule FrobotsWeb.Router do
     resources "/users", Api.UserController, except: [:new, :edit]
   end
 
+  # unprotected route to get leaderboard entries
+  scope "/api/v1", FrobotsWeb, as: :api do
+    pipe_through [:api]
+    get "/leaderboard", Api.LeaderboardController, :index
+
+  end
+
+
   # Other scopes may use custom stacks.
   # scope "/api", FrobotsWeb do
   #   pipe_through :api
