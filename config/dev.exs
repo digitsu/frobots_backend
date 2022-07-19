@@ -56,13 +56,12 @@ config :frobots_web, FrobotsWeb.Endpoint,
 
 # Configure your database
 config :frobots, Frobots.Repo,
-  username: "sriramkota",
-  password: "",
+  username: "postgres",
+  password: "postgres",
   hostname: "localhost",
   database: "frobots_dev",
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10,
-  port: 5433
+  pool_size: 10
 
 # print debug messages in dev
 config :logger, level: :debug
