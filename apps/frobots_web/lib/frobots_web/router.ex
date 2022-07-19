@@ -18,6 +18,11 @@ defmodule FrobotsWeb.Router do
     plug FrobotsWeb.Api.Auth
   end
 
+  pipeline :api_login do
+    plug :accepts, ["json"]
+    plug FrobotsWeb.Api.Login
+  end
+
   pipeline :admins_only do
     plug :admin_basic_auth
   end
@@ -50,6 +55,10 @@ defmodule FrobotsWeb.Router do
 
   end
 
+  scope "/token", FrobotsWeb, as: :api do
+    pipe_through [:api_login]
+    get "/generate", Api.TokenController, :gen_token
+  end
 
   # Other scopes may use custom stacks.
   # scope "/api", FrobotsWeb do

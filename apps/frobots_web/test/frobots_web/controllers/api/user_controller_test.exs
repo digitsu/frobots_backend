@@ -17,21 +17,19 @@ defmodule FrobotsWeb.Api.UserControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  describe "not logged-in" do
-    setup [:create_user]
+  describe "Invalid users" do
+    setup [:api_login, :other_user]
 
-    @tag username: "newaccount@test.me"
-    test "requires user authentication on all actions", %{conn: conn, user: user} do
+    @tag login_as: "Jimmy", other: "Bob"
+    test "requires admin authentication on all actions", %{conn: conn, other: otheruser} do
       Enum.each(
         [
-          get(conn, Routes.api_user_path(conn, :index)),
-          get(conn, Routes.api_user_path(conn, :show, user.id)),
+          # get(conn, Routes.api_user_path(conn, :show, user.id)),
           post(
             conn,
             Routes.api_user_path(conn, :create, user: %{name: "new name", username: "new email"})
           ),
-          put(conn, Routes.api_user_path(conn, :update, user.id, user: @update_attrs)),
-          delete(conn, Routes.api_user_path(conn, :delete, user.id))
+          delete(conn, Routes.api_user_path(conn, :delete, otheruser.id))
         ],
         fn conn ->
           assert json_response(conn, 401)
@@ -59,6 +57,22 @@ defmodule FrobotsWeb.Api.UserControllerTest do
     end
   end
 
+  describe "show user" do
+    setup [:api_login, :other_user]
+
+    @tag login_as: "Jimmy", other: "Billy"
+    test "normal user cannot show details of another user", %{conn: conn, other: user} do
+      conn = get(conn, Routes.api_user_path(conn, :show, user.id))
+      assert response(conn, 401)
+    end
+
+    @tag login_as: "admin", other: "Billy"
+    test "Admin user can show details of another user", %{conn: conn, other: user} do
+      conn = get(conn, Routes.api_user_path(conn, :show, user.id))
+      assert response(conn, 200)
+    end
+  end
+
   describe "create user" do
     setup [:api_login]
 
@@ -81,13 +95,25 @@ defmodule FrobotsWeb.Api.UserControllerTest do
       conn = post(conn, Routes.api_user_path(conn, :create), user: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
+
+    @tag login_as: "Jimmy"
+    test "normal user cannot create a user with good inputs", %{conn: conn} do
+      conn = post(conn, Routes.api_user_path(conn, :create), user: @create_attrs)
+      assert response(conn, 401)
+    end
+
+    @tag login_as: "Jimmy"
+    test "normal user cannot create a user with bad inputs", %{conn: conn} do
+      conn = post(conn, Routes.api_user_path(conn, :create), user: @invalid_attrs)
+      assert response(conn, 401)
+    end
   end
 
   describe "update user" do
     # login as admin first, then create the user that we will update
-    setup [:api_login, :create_user]
+    setup [:api_login, :create_user, :other_user]
 
-    @tag login_as: "admin"
+    @tag login_as: "admin", other: "Billy"
     test "renders user when data is valid", %{conn: conn, user: %User{id: id} = user} do
       conn = put(conn, Routes.api_user_path(conn, :update, user), user: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
@@ -101,13 +127,13 @@ defmodule FrobotsWeb.Api.UserControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    @tag login_as: "admin"
-    test "renders errors when data is invalid", %{conn: conn, user: user} do
+    @tag login_as: "admin", other: "Billy"
+    test "renders errors when data is invalid", %{conn: conn, other: user} do
       conn = put(conn, Routes.api_user_path(conn, :update, user), user: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
 
-    @tag login_as: "admin"
+    @tag login_as: "admin", other: "Billy"
     test "make sure admin user and the user being updated are not the same", %{
       conn: conn,
       user: %User{id: id} = user
@@ -117,19 +143,31 @@ defmodule FrobotsWeb.Api.UserControllerTest do
       # this is actually the original fixture username
       assert user.username == "some@username.com"
     end
+
+    @tag login_as: "Jimmy", other: "Billy"
+    test "One user cannot change the details of another user", %{conn: conn, other: user} do
+      conn = put(conn, Routes.api_user_path(conn, :update, user), user: @update_attrs)
+      assert response(conn, 401)
+    end
   end
 
   describe "delete user" do
-    setup [:api_login, :create_user]
+    setup [:api_login, :other_user]
 
-    @tag login_as: "admin"
-    test "deletes chosen user", %{conn: conn, user: user} do
+    @tag login_as: "admin", other: "Billy"
+    test "admin deletes chosen user", %{conn: conn, other: user} do
       conn = delete(conn, Routes.api_user_path(conn, :delete, user))
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
         get(conn, Routes.api_user_path(conn, :show, user))
       end
+    end
+
+    @tag login_as: "Jimmy", other: "Billy"
+    test "One user can't delete another user", %{conn: conn, other: user} do
+      conn = delete(conn, Routes.api_user_path(conn, :delete, user))
+      assert response(conn, 401)
     end
   end
 end

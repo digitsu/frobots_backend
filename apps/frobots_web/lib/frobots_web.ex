@@ -77,7 +77,7 @@ defmodule FrobotsWeb do
       import Phoenix.Controller
       # new import
       import FrobotsWeb.Auth, only: [authenticate_user: 2]
-      import FrobotsWeb.Api.Auth, only: [authenticate_api_user: 2]
+      import FrobotsWeb.Api.Auth, only: [authenticate_api_user: 2, authenticate_api_admin_user: 2]
       import Phoenix.LiveView.Router
     end
   end

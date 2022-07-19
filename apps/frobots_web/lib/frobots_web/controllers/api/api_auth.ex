@@ -7,19 +7,6 @@ defmodule FrobotsWeb.Api.Auth do
   import Phoenix.Controller
   alias Frobots.Accounts
 
-  def init(opts), do: opts
-
-  def call(conn, _opts) do
-    conn
-    |> get_token()
-    |> verify_token()
-    |> case do
-      # we can safely assume that if token is valid, it must have been created by a valid user in the db.
-      {:ok, user_id} -> assign(conn, :current_user, Accounts.get_user_by(username: user_id))
-      _unauthorized -> assign(conn, :current_user, nil)
-    end
-  end
-
   @doc """
 
     A function plug that ensures that `:current_user` value is present.
@@ -33,14 +20,40 @@ defmodule FrobotsWeb.Api.Auth do
       plug :authenticate_api_user when action in [:index, :create]
 
   """
+  def init(opts), do: opts
+
+  def call(conn, _opts) do
+    conn
+    |> get_token()
+    |> verify_token()
+    |> case do
+      # we can safely assume that if token is valid, it must have been created by a valid user in the db.
+      {:ok, username} -> assign(conn, :current_user, Accounts.get_user_by(username: username))
+      # or{:error, :invalid}
+      _unauthorized -> assign(conn, :current_user, nil)
+    end
+  end
 
   def local_endpoint?() do
     # determine if we are running a local backend in which case we should allow API access that isn't the frontend server
     FrobotsWeb.Endpoint.host() == "localhost"
   end
 
-  def authenticate_api_user(conn, _opts) do
+  def authenticate_api_admin_user(conn, _opts) do
     if Map.get(conn.assigns, :current_user, nil) |> Accounts.user_is_admin?() do
+      conn
+    else
+      conn
+      |> put_status(:unauthorized)
+      |> put_view(FrobotsWeb.ErrorView)
+      |> render(:"401")
+      # Stop any downstream transformations.
+      |> halt()
+    end
+  end
+
+  def authenticate_api_user(conn, _opts) do
+    if Map.get(conn.assigns, :current_user, nil) do
       conn
     else
       conn
