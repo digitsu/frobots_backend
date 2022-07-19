@@ -28,7 +28,8 @@ defmodule FrobotsWeb.Api.Auth do
     |> verify_token()
     |> case do
       # we can safely assume that if token is valid, it must have been created by a valid user in the db.
-      {:ok, username} -> assign(conn, :current_user, Accounts.get_user_by(username: username))
+      {:ok, user_id} when is_integer(user_id) -> assign(conn, :current_user, Accounts.get_user_by(id: user_id))
+      {:ok, username} when is_binary(username) -> assign(conn, :current_user, Accounts.get_user_by(username: username))
       # or{:error, :invalid}
       _unauthorized -> assign(conn, :current_user, nil)
     end
