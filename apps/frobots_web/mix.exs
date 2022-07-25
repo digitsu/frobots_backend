@@ -53,7 +53,8 @@ defmodule FrobotsWeb.MixProject do
       {:frobots, in_umbrella: true},
       {:swoosh, "~> 1.3"},
       {:plug_cowboy, "~> 2.5"},
-      {:ecto_psql_extras, "~> 0.6"}
+      {:ecto_psql_extras, "~> 0.6"},
+      {:sobelow, "~> 0.8", only: :dev}
     ]
   end
 

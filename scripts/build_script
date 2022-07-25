@@ -13,9 +13,6 @@ docker image build -t elixir/frobots_web .
 docker save elixir/frobots_web | ssh jerry@172.105.215.192 docker load
 
 
-# LOGIN TO HOST
-ssh jerry@ec2-13-231-63-178.ap-northeast-1.compute.amazonaws.com
-
 # IF you haven't created the docker internal network yet ---------------------
 # create a docker network
 docker network create frobots-network
