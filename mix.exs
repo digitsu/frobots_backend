@@ -44,7 +44,9 @@ defmodule FrobotsUmbrella.MixProject do
     [
       frobots_web: [
         applications: [frobots_web: :permanent, frobots: :permanent],
-        cookie: "weknoweachother_frobotsnode"
+        cookie: "weknoweachother_frobotsnode",
+        include_executables_for: [:unix],
+        steps: [:assemble, :tar]
       ]
     ]
   end
