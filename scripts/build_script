@@ -4,13 +4,13 @@
 source .env
 
 #build docker from frobots_backend dir (the dir with the Dockerfile)
-docker image build -t elixir/frobots_web .
+docker image build -t elixir/frobots_backend .
 
 # push to host
 # aws
 # docker save elixir/frobots_web | ssh jerry@ec2-13-231-63-178.ap-northeast-1.compute.amazonaws.com docker load
 # linode
-docker save elixir/frobots_web | ssh jerry@172.105.215.192 docker load
+docker save elixir/frobots_backend | ssh jerry@172.105.215.192 docker load
 
 
 # IF you haven't created the docker internal network yet ---------------------
@@ -48,11 +48,11 @@ ssh -N -L '/tmp/docker.sock':'/var/run/docker.sock' -f <user>@<IP HOST>
 export DOCKER_HOST=unix:///tmp/docker.sock
 
 # run the elixir app container
-docker run --rm -dp $PORT:$PORT -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network frobots-network --name frobots_web elixir/frobots_web
+docker run --rm -dp $PORT:$PORT -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network frobots-network --name frobots_backend elixir/frobots_backend
 
 # MIGRATIONS AND SEEDS -----------------------------------------------------------------
 # run the migrations (this tests that the backend can talk to the postgres)
-docker exec -it frobots_web bin/frobots_web eval "FrobotsWeb.Release.migrate"
+docker exec -it frobots_backend bin/frobots_backend eval "FrobotsWeb.Release.migrate"
 
 # IF you want to start the database from scratch and load the templates from source
-docker exec -it frobots_web bin/frobots_web eval 'FrobotsWeb.Release.Seeder.seed(Elixir.Frobots.Repo, "seeds.exs")'
+docker exec -it frobots_backend bin/frobots_backend eval 'FrobotsWeb.Release.Seeder.seed(Elixir.Frobots.Repo, "seeds.exs")'
