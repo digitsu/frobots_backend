@@ -4,7 +4,7 @@ defmodule FrobotsUmbrella.MixProject do
   def project do
     [
       apps_path: "apps",
-      version: "0.2.0",
+      version: "0.2.1",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       elixir: "~> 1.9",
@@ -42,7 +42,7 @@ defmodule FrobotsUmbrella.MixProject do
 
   defp releases do
     [
-      frobots_backend: [
+      frobots_backend_mac_12.4: [
         applications: [frobots_web: :permanent, frobots: :permanent],
         cookie: "weknoweachother_frobotsnode",
         include_executables_for: [:unix],
