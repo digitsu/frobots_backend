@@ -42,7 +42,7 @@ defmodule FrobotsUmbrella.MixProject do
 
   defp releases do
     [
-      frobots_backend_mac_12.4: [
+      frobots_backend_macos12_4: [
         applications: [frobots_web: :permanent, frobots: :permanent],
         cookie: "weknoweachother_frobotsnode",
         include_executables_for: [:unix],
