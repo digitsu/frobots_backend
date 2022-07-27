@@ -52,7 +52,6 @@ defmodule FrobotsWeb.Router do
   scope "/api/v1", FrobotsWeb, as: :api do
     pipe_through [:api]
     get "/leaderboard", Api.LeaderboardController, :index
-
   end
 
   scope "/token", FrobotsWeb, as: :api do

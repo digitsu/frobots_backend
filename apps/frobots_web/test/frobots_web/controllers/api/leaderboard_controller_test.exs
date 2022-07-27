@@ -7,5 +7,4 @@ defmodule FrobotsWeb.Api.LeaderboardControllerTest do
       assert json_response(conn, 200)
     end
   end
-
 end
