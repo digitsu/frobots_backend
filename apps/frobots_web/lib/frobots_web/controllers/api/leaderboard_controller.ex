@@ -6,12 +6,14 @@ defmodule FrobotsWeb.Api.LeaderboardController do
 
   def index(conn, _params) do
     # populate agent
-    Events.prep_leaderboard_entries()
-    # read processed data from agent
-    entries = Events.send_leaderboard_entries()
-
-    conn
-    |> put_status(200)
-    |> json(entries)
+    check_all = fn res ->
+      Enum.all?(res, & (:ok == &1))
+    end
+    case check_all.(Events.prep_leaderboard_entries()) do
+      true -> entries = Events.send_leaderboard_entries()
+        conn |> put_status(200) |> json(entries)
+      false ->
+        conn |> put_status(500) |> halt()
+    end
   end
 end
