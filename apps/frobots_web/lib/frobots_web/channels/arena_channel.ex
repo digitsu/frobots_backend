@@ -130,6 +130,13 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
+  @spec handle_info({atom, String.t(), String.t()}, Phoenix.Socket.t()) :: tuple
+  def handle_info({:fsm_debug, _frobot, _fsm_state} = msg, socket) do
+    broadcast(socket, "arena_event", encode_event(msg))
+    {:noreply, socket}
+  end
+
+  @impl true
   @spec handle_info({:scan, String.t(), degree, integer}, Phoenix.Socket.t()) ::
           {:noreply, Phoenix.Socket.t()}
   def handle_info({:scan, _frobot, _deg, _res} = msg, socket) do
