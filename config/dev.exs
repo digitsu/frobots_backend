@@ -56,10 +56,10 @@ config :frobots_web, FrobotsWeb.Endpoint,
 
 # Configure your database
 config :frobots, Frobots.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "frobots_dev",
+  username: System.get_env("POSTGRES_USER") or "postgres",
+  password: System.get_env("POSTGRES_PASS") or "postgres",
+  hostname: System.get_env("POSTGRES_HOST") or "localhost",
+  database: System.get_env("POSTGRES_DB") or "frobots_dev",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

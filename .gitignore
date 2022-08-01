@@ -41,7 +41,3 @@ crash_logs/
 # do not keep the env secrets in repo
 .env
 loadenv.sh
-
-# keep dev and test config out of version control
-config/dev.exs
-config/test.exs
