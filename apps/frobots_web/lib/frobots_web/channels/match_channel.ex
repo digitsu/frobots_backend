@@ -1,4 +1,4 @@
-defmodule FrobotsWeb.ArenaChannel do
+defmodule FrobotsWeb.MatchChannel do
   use FrobotsWeb, :channel
 
   @type degree :: 0..359
@@ -22,7 +22,7 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  def join("arena:lobby", payload, socket) do
+  def join("match:lobby", payload, socket) do
     if authorized?(payload) do
       {:ok, socket}
     else
@@ -31,7 +31,7 @@ defmodule FrobotsWeb.ArenaChannel do
   end
 
   @impl true
-  def join("arena:" <> match_id, token, socket) do
+  def join("match:" <> match_id, token, socket) do
     if authorized?(token) do
       num_clients = Map.get(socket.assigns, :listeners, 0)
 

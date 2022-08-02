@@ -1,11 +1,11 @@
-defmodule FrobotsWeb.ArenaChannelTest do
+defmodule FrobotsWeb.MatchChannelTest do
   use FrobotsWeb.ChannelCase
 
   setup do
     {:ok, _, socket} =
       FrobotsWeb.UserSocket
       |> socket("user_id", %{some: :assign})
-      |> subscribe_and_join(FrobotsWeb.ArenaChannel, "arena:lobby")
+      |> subscribe_and_join(FrobotsWeb.MatchChannel, "match:lobby")
 
     %{socket: socket}
   end
