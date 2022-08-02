@@ -30,29 +30,33 @@ COPY apps/frobots_web/mix.exs /app/apps/frobots_web/
 # copy ALL
 COPY . /app/
 #RUN /app/wrapper.pl mix deps.get --only $MIX_ENV
-RUN /bin/sh -c 'source /app/.env; mix deps.get --only $MIX_ENV'
+#RUN /bin/sh -c 'source /app/.env; mix deps.get --only $MIX_ENV'
 #RUN mix deps.get --only $MIX_ENV
+RUN mix deps.get --only $MIX_ENV
 
 # compile dependencies
-RUN /bin/sh -c 'source /app/.env; mix deps.compile'
+#RUN /bin/sh -c 'source /app/.env; mix deps.compile'
 #RUN /app/wrapper.pl mix deps.compile
-
+RUN mix deps.compile
 
 WORKDIR /app/apps/frobots_web
 
 # Compile assets
-RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
+#RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
 #RUN /app/wrapper.pl mix assets.deploy
+RUN mix assets.deploy
 
 
 WORKDIR /app
 
 # compile
-RUN /bin/sh -c 'source /app/.env; mix compile'
+#RUN /bin/sh -c 'source /app/.env; mix compile'
 #RUN /app/wrapper.pl mix compile
+RUN mix compile
 
-RUN /bin/sh -c 'source /app/.env; mix release'
+#RUN /bin/sh -c 'source /app/.env; mix release'
 #RUN /app/wrapper.pl mix release
+RUN mix release
 
 
 # app stage
