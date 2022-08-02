@@ -81,7 +81,7 @@ config :logger, :ui_event,
 
 config :logger, :file_log,
   path: "/tmp/frobotsLog.log",
-  level: :info
+  level: :debug
 
 # import_config "#{Mix.env}.exs"
 
