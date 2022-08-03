@@ -17,6 +17,9 @@ services:
 #  - redis:latest
 #  - postgres:latest
 
+variables:
+  GIT_SUBMODULE_STRATEGY: normal
+
 before_script:
   - mix local.rebar --force
   - mix local.hex --force
