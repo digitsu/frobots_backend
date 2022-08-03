@@ -7,32 +7,33 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Elixir.gitlab-ci.yml
 
-image: elixir:latest
+build-job:
+  stage: build
+  image: elixir:latest
 
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
 # Check out: https://docs.gitlab.com/ee/ci/services/index.html
-services:
-#  - mysql:latest
-#  - redis:latest
-  - postgres:14.4
+  services:
+  #  - mysql:latest
+  #  - redis:latest
+    - postgres:latest
 
-variables:
-  POSTGRES_DB: frobots_test1
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: postgres
-  MIX_TEST_PARTITION: 1
-  GIT_SUBMODULE_STRATEGY: normal
-  POSTGRES_HOST: postgres
-  MIX_ENV: test
+  variables:
+    POSTGRES_DB: frobots_test1
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    MIX_TEST_PARTITION: 1
+    GIT_SUBMODULE_STRATEGY: normal
+    POSTGRES_HOST: postgres
 
-before_script:
-  - mix local.rebar --force
-  - mix local.hex --force
-  - mix deps.get
+  before_script:
+    - mix local.rebar --force
+    - mix local.hex --force
+    - mix deps.get
 
-mix:
-  script:
-    - mix test || true
-    - echo "Done"
+  mix:
+    script:
+      - mix test
+      - echo "Done"
     
