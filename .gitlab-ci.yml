@@ -15,9 +15,13 @@ image: elixir:latest
 services:
 #  - mysql:latest
 #  - redis:latest
-  - postgres:latest
+  - postgres:14.4
 
 variables:
+  POSTGRES_DB: frobots_test1
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  MIX_TEST_PARTITION: 1
   GIT_SUBMODULE_STRATEGY: normal
 
 before_script:
