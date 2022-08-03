@@ -23,6 +23,7 @@ variables:
   POSTGRES_PASSWORD: postgres
   MIX_TEST_PARTITION: 1
   GIT_SUBMODULE_STRATEGY: normal
+  POSTGRES_HOST: postgres
 
 before_script:
   - mix local.rebar --force
