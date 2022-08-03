@@ -15,7 +15,7 @@ config :frobots_web, FrobotsWeb.Endpoint,
 config :frobots, Frobots.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
+  hostname: System.get_env("POSTGRES_HOST") || "localhost",
   database: "frobots_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
