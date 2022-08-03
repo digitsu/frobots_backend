@@ -33,3 +33,4 @@ before_script:
 mix:
   script:
     - mix test
+    - echo "Done"
