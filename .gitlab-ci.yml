@@ -32,8 +32,8 @@ build-job:
     - mix local.hex --force
     - mix deps.get
 
-  mix:
-    script:
-      - mix test
-      - echo "Done"
+  
+  script:
+    - mix test
+    - echo "Done"
     
