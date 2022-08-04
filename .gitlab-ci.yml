@@ -77,3 +77,11 @@ deploy-job:
   script:
     - mix release
     - ./contrib/build.sh
+  rules:
+    - if: $CI_COMMIT_BRANCH == "eouoeu"
+
+test_variable:
+  stage: test
+  script:
+    - echo "$CI_JOB_STAGE"  # calls a predefined variable
+    - echo "$DATABASE_URL"
