@@ -32,6 +32,7 @@ stages:
     POSTGRES_PASSWORD: postgres
     GIT_SUBMODULE_STRATEGY: normal
     POSTGRES_HOST: postgres
+    TERM: xterm-256color
 
 lint:elixir:
   extends: .elixir
