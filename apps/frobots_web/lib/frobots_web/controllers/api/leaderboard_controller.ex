@@ -4,11 +4,11 @@ defmodule FrobotsWeb.Api.LeaderboardController do
 
   action_fallback FrobotsWeb.FallbackController
 
-  @dummy_response [
-    %{"attempts" => 213, "points" => 0, "username" => "god"},
-    %{"attempts" => 7, "points" => 0, "username" => "bob"},
-    %{"attempts" => 5, "points" => 0, "username" => "jerry"}
-  ]
+  # @dummy_response [
+  #   %{"attempts" => 213, "points" => 0, "username" => "god"},
+  #   %{"attempts" => 7, "points" => 0, "username" => "bob"},
+  #   %{"attempts" => 5, "points" => 0, "username" => "jerry"}
+  # ]
 
   def index(conn, _params) do
     # populate agent
