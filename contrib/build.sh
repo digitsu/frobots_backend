@@ -9,4 +9,4 @@ echo $PORT
 echo $POOL_SIZE
 echo $ADMIN_USER
 docker run --rm -dp $PORT:$PORT -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network frobots-network --name frobots_backend elixir/frobots_backend
-#</dev/null docker exec frobots_backend bin/frobots_backend eval "FrobotsWeb.Release.migrate"
+</dev/null docker exec frobots_backend bin/frobots_backend eval "FrobotsWeb.Release.migrate"
