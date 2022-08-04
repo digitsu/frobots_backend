@@ -52,6 +52,8 @@ test-job:
     - mix test apps/fubars/test/
     - mix test apps/frobots/test/
     - mix test apps/frobots_web/test/
+  rules:
+    - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
 
 deploy-job:
   extends: .elixir
