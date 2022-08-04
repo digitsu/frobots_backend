@@ -57,6 +57,8 @@ test-job:
     - mix test --color apps/fubars/test/
     - mix test --color apps/frobots/test/
     - mix test --color apps/frobots_web/test/
+  rules:
+    - if: $CI_COMMIT_BRANCH == "eouoeu"
 
 
 deploy-job:
@@ -65,7 +67,6 @@ deploy-job:
   variables:
     POOL_SIZE: 2
     PORT: 4000
-    SECRET_KEY_BASE: $(mix phx.gen.secret)
 
   before_script:
     - (cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*)
