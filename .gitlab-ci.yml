@@ -57,6 +57,8 @@ test-job:
     - mix test --color apps/fubars/test/
     - mix test --color apps/frobots/test/
     - mix test --color apps/frobots_web/test/
+  rules:
+    - if: $CI_COMMIT_BRANCH == "eouoeu"
 
 
 deploy-job:
