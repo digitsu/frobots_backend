@@ -50,9 +50,9 @@ test-job:
   variables: 
     MIX_ENV: test
   script:
-    - mix test apps/fubars/test/
-    - mix test apps/frobots/test/
-    - mix test apps/frobots_web/test/
+    - mix test --color apps/fubars/test/
+    - mix test --color apps/frobots/test/
+    - mix test --color apps/frobots_web/test/
   rules:
     - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
 
