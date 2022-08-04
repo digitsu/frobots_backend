@@ -70,6 +70,9 @@ deploy-job:
 
   before_script:
     - (cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*)
+    - mix local.hex --force
+    - mix local.rebar --force
+    - mix deps.get --only $MIX_ENV
   
   script:
     - mix release
