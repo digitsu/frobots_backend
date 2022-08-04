@@ -33,6 +33,7 @@ stages:
     GIT_SUBMODULE_STRATEGY: normal
     POSTGRES_HOST: postgres
     TERM: xterm-256color
+    
 
 lint:elixir:
   extends: .elixir
@@ -43,6 +44,8 @@ lint:elixir:
   script:
     - mix compile --warnings-as-errors --force
     - mix format --check-formatted
+  rules:
+    - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
     
 test-job:
   extends: .elixir
@@ -57,12 +60,15 @@ test-job:
     - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
 
 deploy-job:
-  extends: .elixir
+  image: elixir:latest
   stage: deploy
   variables:
     POOL_SIZE: 2
     PORT: 4000
     SECRET_KEY_BASE: $(mix phx.gen.secret)
+
+  before_script:
+    - cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*
 
   script:
     - mix release
