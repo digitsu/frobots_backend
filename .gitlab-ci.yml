@@ -11,7 +11,7 @@ stages:
   - test
   - deploy
 
-.elixir: &elixir
+.elixir:
   image: elixir:latest
   # Pick zero or more services to be used on all builds.
   # Only needed when using a docker container to run your tests in.
@@ -40,17 +40,17 @@ test_variable:
     - echo "$CI_JOB_STAGE"  # calls a predefined variable
     - echo "$CI_COMMIT_BRANCH"     
 
-lint:elixir:
+lint-job:
   extends: .elixir
   stage: test
   variables:
     MIX_ENV: test
-  allow_failure: true
+  allow_failure: false
   script:
     - mix compile --warnings-as-errors --force
     - mix format --check-formatted
-  rules:
-    - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
+  # rules:
+  #   - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
     
 test-job:
   extends: .elixir
@@ -62,8 +62,8 @@ test-job:
     - mix test --color apps/fubars/test/
     - mix test --color apps/frobots/test/
     - mix test --color apps/frobots_web/test/
-  rules:
-    - if: $CI_COMMIT_BRANCH == "eouoeu"
+  # rules:
+  #   - if: $CI_COMMIT_BRANCH == "eouoeu"
 
 deploy-job:
   image: elixir:latest
