@@ -77,5 +77,4 @@ deploy-job:
     
 
   script:
-    - mix release
     - ./contrib/build.sh
