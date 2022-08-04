@@ -62,7 +62,7 @@ test-job:
 
 
 deploy-job:
-  image: elixir:latest
+  extends: .elixir
   stage: deploy
   variables:
     POOL_SIZE: 2
