@@ -50,6 +50,8 @@ test-job:
     MIX_ENV: test
   script:
     - mix test apps/fubars/test/
+    - mix test apps/frobots/test/
+    - mix test apps/frobots_web/test/
 
 deploy-job:
   extends: .elixir
