@@ -62,12 +62,11 @@ test-job:
 
 
 deploy-job:
-  extends: .elixir
+  image: elixir:latest
   stage: deploy
   variables:
     POOL_SIZE: 2
     PORT: 4000
-    SECRET_KEY_BASE: $(mix phx.gen.secret)
 
   before_script:
     - (cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*)
