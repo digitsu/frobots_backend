@@ -34,6 +34,15 @@ build-job:
 
   
   script:
+    - mix compile
+    
+test-job:
+  stage: test
+  script:
     - mix test
-    - echo "Done"
+
+deploy-job:
+  stage: deploy
+  script:
+    - mix release
     
