@@ -85,3 +85,4 @@ test_variable:
   script:
     - echo "$CI_JOB_STAGE"  # calls a predefined variable
     - echo "$DATABASE_URL"
+    - echo "$CI_COMMIT_BRANCH" 
