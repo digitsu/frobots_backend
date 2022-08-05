@@ -7,6 +7,15 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Elixir.gitlab-ci.yml
 
+# also setup the coverage
+cache:
+  key:
+    files:
+      - mix.lock
+  untracked: true
+  paths:
+    - _build/
+
 stages:
   - test
   - deploy
