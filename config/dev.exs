@@ -61,7 +61,7 @@ config :frobots, Frobots.Repo,
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   database: System.get_env("POSTGRES_DB") || "frobots_dev",
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10,
+  pool_size: 10
 
 
 # print debug messages in dev
