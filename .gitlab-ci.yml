@@ -7,7 +7,18 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Elixir.gitlab-ci.yml
 
+# also setup the coverage
+cache:
+  key:
+    files:
+      - mix.lock
+  untracked: true
+  paths:
+    - _build/
+    - deps/
+
 stages:
+  - build
   - test
   - deploy
 
@@ -33,16 +44,11 @@ stages:
     GIT_SUBMODULE_STRATEGY: normal
     POSTGRES_HOST: postgres
     TERM: xterm-256color
-
-test_variable:
-  stage: test
-  script:
-    - echo "$CI_JOB_STAGE"  # calls a predefined variable
-    - echo "$CI_COMMIT_BRANCH"     
+   
 
 lint-job:
   extends: .elixir
-  stage: test
+  stage: build
   variables:
     MIX_ENV: test
   allow_failure: false
