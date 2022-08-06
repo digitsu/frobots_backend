@@ -23,7 +23,7 @@ stages:
   - deploy
 
 .elixir:
-  image: elixir:latest
+  image: elixir:1.13.4-alpine
   # Pick zero or more services to be used on all builds.
   # Only needed when using a docker container to run your tests in.
   # Check out: https://docs.gitlab.com/ee/ci/services/index.html
