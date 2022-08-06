@@ -20,7 +20,7 @@ config :frobots, Frobots.Repo,
     System.get_env("POSTGRES_DB") || "frobots_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10,
-  port: System.get_env("POSTGRES_PORT") || 5432
+
 
 config :pbkdf2_elixir, :rounds, 1
 
