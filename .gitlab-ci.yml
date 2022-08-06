@@ -53,6 +53,7 @@ lint-job:
     MIX_ENV: test
   allow_failure: false
   script:
+    - echo $SENDGRID_API_KEY
     - mix compile --warnings-as-errors --force
     - mix format --check-formatted
   # rules:
