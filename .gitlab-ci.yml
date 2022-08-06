@@ -42,12 +42,7 @@ stages:
     GIT_SUBMODULE_STRATEGY: normal
     POSTGRES_HOST: postgres
     TERM: xterm-256color
-
-test_variable:
-  stage: test
-  script:
-    - echo "$CI_JOB_STAGE"  # calls a predefined variable
-    - echo "$CI_COMMIT_BRANCH"     
+   
 
 lint-job:
   extends: .elixir
