@@ -62,7 +62,7 @@ config :frobots, Frobots.Repo,
   database: System.get_env("POSTGRES_DB") || "frobots_dev",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10,
-  port:   System.get_env("POSTGRES_PORT") || 5432
+  port: System.get_env("POSTGRES_PORT") || 5432
 
 # print debug messages in dev
 config :logger, level: :debug
