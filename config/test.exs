@@ -21,7 +21,6 @@ config :frobots, Frobots.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 
-
 config :pbkdf2_elixir, :rounds, 1
 
 config :fubars, registry_name: :test_match_registry
