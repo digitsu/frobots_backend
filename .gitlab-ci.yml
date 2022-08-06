@@ -15,8 +15,10 @@ cache:
   untracked: true
   paths:
     - _build/
+    - deps/
 
 stages:
+  - build
   - test
   - deploy
 
@@ -46,7 +48,7 @@ stages:
 
 lint-job:
   extends: .elixir
-  stage: test
+  stage: build
   variables:
     MIX_ENV: test
   allow_failure: false
