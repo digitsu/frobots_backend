@@ -21,6 +21,7 @@ stages:
   - build
   - test
   - deploy
+  - smoke
 
 .elixir:
   image: elixir:1.13.4
@@ -90,6 +91,7 @@ deploy-job:
     - if: $CI_COMMIT_BRANCH == "main"
 
 server-test:
+  stage: smoke
   needs: ["deploy-job"]
   script:
     - ./contrib/test_server.sh
