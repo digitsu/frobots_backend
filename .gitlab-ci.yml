@@ -89,4 +89,10 @@ deploy-job:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 
+server-test:
+  needs: ["deploy-job"]
+  script:
+    - ./contrib/test_server.sh
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
  
