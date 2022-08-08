@@ -60,7 +60,7 @@ test-job:
   extends: .elixir
   stage: test
   variables: 
-    MIX_ENV: dev
+    MIX_ENV: test
 
   script:
     - mix test --color apps/fubars/test/
