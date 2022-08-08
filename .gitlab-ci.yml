@@ -48,7 +48,7 @@ lint-job:
   extends: .elixir
   stage: build
   variables:
-    MIX_ENV: prod
+    MIX_ENV: dev
   allow_failure: false
   script:
     - mix compile --warnings-as-errors --force
@@ -60,7 +60,7 @@ test-job:
   extends: .elixir
   stage: test
   variables: 
-    MIX_ENV: prod
+    MIX_ENV: dev
 
   script:
     - mix test --color apps/fubars/test/
