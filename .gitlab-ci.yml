@@ -40,6 +40,13 @@ stages:
   variables:
     GIT_SUBMODULE_STRATEGY: normal
     POSTGRES_HOST: postgres
+    POSTGRES_PASSWORD: postgres
+
+print-vars:
+  stage: build
+  script:
+    - echo $CI_COMMIT_REF_NAME
+    - echo $CI_COMMIT_BRANCH
 
 lint-job:
   extends: .elixir
@@ -79,5 +86,7 @@ deploy-job:
   
   script:
     - ./contrib/build.sh
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
 
  
