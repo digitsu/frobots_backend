@@ -41,6 +41,11 @@ stages:
     GIT_SUBMODULE_STRATEGY: normal
   #  POSTGRES_HOST: postgres
 
+print-vars:
+  script:
+    - echo $CI_COMMIT_REF_NAME
+    - echo $CI_COMMIT_BRANCH
+
 lint-job:
   extends: .elixir
   stage: build
