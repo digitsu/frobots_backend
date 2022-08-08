@@ -38,7 +38,7 @@ stages:
     - mix deps.get --only $MIX_ENV
 
   variables:
-    POSTGRES_DB: frobots_test
+    POSTGRES_DB: frobots_dev
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
     GIT_SUBMODULE_STRATEGY: normal
