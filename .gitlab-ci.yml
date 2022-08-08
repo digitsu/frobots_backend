@@ -30,7 +30,7 @@ stages:
   services:
   #  - mysql:latest
   #  - redis:latest
-  #  - postgres:latest
+    - postgres:latest
 
   before_script:
     - mix local.hex --force
@@ -39,7 +39,8 @@ stages:
 
   variables:
     GIT_SUBMODULE_STRATEGY: normal
-  #  POSTGRES_HOST: postgres
+    POSTGRES_HOST: postgres
+    POSTGRES_PASSWORD: postgres
 
 print-vars:
   script:
