@@ -45,7 +45,7 @@ config :frobots,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :frobots, Frobots.Mailer, adapter: Swoosh.Adapters.Local
+config :frobots, FrobotsWeb.Mailer, adapter: Swoosh.Adapters.Local
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, Swoosh.ApiClient.Hackney
@@ -53,7 +53,7 @@ config :swoosh, :api_client, Swoosh.ApiClient.Hackney
 sendgrid_api_key =
   System.get_env("SENDGRID_API_KEY") || "environment variable SENDGRID_API_KEY is missing"
 
-config :frobots, Frobots.Mailer,
+config :frobots, FrobotsWeb.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
   api_key: sendgrid_api_key
 
