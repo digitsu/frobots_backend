@@ -17,7 +17,6 @@ defmodule FrobotsUmbrella.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ]
-
     ]
   end
 
@@ -28,7 +27,6 @@ defmodule FrobotsUmbrella.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-
       {:logger_file_backend, "~> 0.0.12"},
       {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
       {:phoenix, "~> 1.6.5"},
