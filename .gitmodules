@@ -1,10 +1,8 @@
-[submodule "fubars"]
-  	path = apps/fubars
-	url = ../../frobots/fubars.git
-  	branch = umbrella
+[submodule "apps/fubars"]
+        path = apps/fubars
+        url = ../../frobots/fubars.git
+        branch = umbrella
 [submodule "apps/frobots"]
 	path = apps/frobots
 	url = ../../frobots/frobots.git
 	branch = umbrella
-[submodule "apps/fubars"]
-	url = ../../frobots/fubars.git
