@@ -34,6 +34,7 @@ stages:
     - postgres:latest
 
   before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - mix local.hex --force
     - mix local.rebar --force
     - mix deps.get --only $MIX_ENV
@@ -87,7 +88,7 @@ test-job:
         - _build/test/lib/fubars/test-junit-report.xml 
 
 deploy-job:
-  image: elixir:latest
+  image: $CI_REGISTRY/frobots/builder-main:main
   stage: deploy
   variables:
     POOL_SIZE: 2
