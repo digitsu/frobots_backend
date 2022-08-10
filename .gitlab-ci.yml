@@ -34,7 +34,7 @@ stages:
     - postgres:latest
 
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    #- docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - mix local.hex --force
     - mix local.rebar --force
     - mix deps.get --only $MIX_ENV
