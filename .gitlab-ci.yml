@@ -72,20 +72,18 @@ test-job:
     #- mix test --color apps/fubars/test/
     #- mix test --color apps/frobots/test/
     #- mix test --color apps/frobots_web/test/
-    - mix coveralls --umbrella || true
-    - mix test
-  # rules:
-  #   - if: $CI_COMMIT_BRANCH == "eouoeu"
+    - mix coveralls --umbrella
+    - mix --color test
+
   artifacts:
     paths:
       - _build/test/lib/frobots/test-junit-report.xml
-      #- _build/test/lib/frobots_web/test-junit-report.xml
-      #- _build/test/lib/fubars/test-junit-report.xml
-      
+      - _build/test/lib/frobots_web/test-junit-report.xml
+      - _build/test/lib/fubars/test-junit-report.xml
     reports:
       junit: _build/test/lib/frobots/test-junit-report.xml
-      #junit: _build/test/lib/frobots_web/test-junit-report.xml
-      #junit: _build/test/lib/fubars/test-junit-report.xml 
+      junit: _build/test/lib/frobots_web/test-junit-report.xml
+      junit: _build/test/lib/fubars/test-junit-report.xml 
 
 deploy-job:
   image: elixir:latest
