@@ -73,7 +73,7 @@ test-job:
     #- mix test --color apps/frobots/test/
     #- mix test --color apps/frobots_web/test/
     - mix coveralls --umbrella || true
-    - mix --color test
+    - mix test --color
 
   artifacts:
     paths:
