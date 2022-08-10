@@ -81,9 +81,10 @@ test-job:
       - _build/test/lib/frobots_web/test-junit-report.xml
       - _build/test/lib/fubars/test-junit-report.xml
     reports:
-      junit: _build/test/lib/frobots/test-junit-report.xml
-      junit: _build/test/lib/frobots_web/test-junit-report.xml
-      junit: _build/test/lib/fubars/test-junit-report.xml 
+      junit: 
+        - _build/test/lib/frobots/test-junit-report.xml
+        - _build/test/lib/frobots_web/test-junit-report.xml
+        - _build/test/lib/fubars/test-junit-report.xml 
 
 deploy-job:
   image: elixir:latest
