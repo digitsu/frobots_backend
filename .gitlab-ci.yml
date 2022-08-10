@@ -72,7 +72,7 @@ test-job:
     #- mix test --color apps/fubars/test/
     #- mix test --color apps/frobots/test/
     #- mix test --color apps/frobots_web/test/
-    - mix coveralls --umbrella
+    - mix coveralls --umbrella || true
     - mix --color test
 
   artifacts:
