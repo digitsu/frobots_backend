@@ -67,7 +67,7 @@ test-job:
   variables: 
     MIX_ENV: test
 
-  coverage: \d+.\d+\%\s+\|\s+Total
+  coverage: "\d+.\d+\%\s+\|\s+Total"
   script:
     #- mix test --color apps/fubars/test/
     #- mix test --color apps/frobots/test/
