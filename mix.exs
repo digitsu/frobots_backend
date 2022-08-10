@@ -30,7 +30,8 @@ defmodule FrobotsUmbrella.MixProject do
       {:logger_file_backend, "~> 0.0.12"},
       {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
       {:phoenix, "~> 1.6.5"},
-      {:excoveralls, "~> 0.5.5", only: :test}
+      {:excoveralls, "~> 0.5.5", only: :test},
+      {:junit_formatter, "~> 3.3", only: [:test]}
     ]
   end
 
