@@ -102,6 +102,7 @@ deploy-job:
     - ./contrib/build.sh
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "dev"
 
 server-test:
   stage: smoke
