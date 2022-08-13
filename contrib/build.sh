@@ -3,9 +3,9 @@
 export DOCKER_HOST=unix:///tmp/docker.sock
 chmod 0600 $SSH_KEY
 
-if [[ $CI_COMMIT_BRANCH == "main" ]]
+if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     ip=172.105.215.192
-elif [[ $CI_COMMIT_BRANCH == "dev" ]]
+elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     ip=172.104.73.245
 else
     ip='not a valid branch'
