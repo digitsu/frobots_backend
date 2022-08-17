@@ -25,7 +25,6 @@ erl_crash.dump
 # IDE stuff
 .idea/
 *.iml
-.tool-versions
 
 # Files system stuff
 .DS_Store
