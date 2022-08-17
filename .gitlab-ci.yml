@@ -46,8 +46,8 @@ stages:
     POSTGRES_PASSWORD: postgres
 
 print-vars:
-  tags: ["dev"]
-  stage: debug
+  tags: ["dev", "prod"]
+  stage: .pre
   script:
     - echo $CI_COMMIT_REF_NAME
     - echo $CI_COMMIT_BRANCH
