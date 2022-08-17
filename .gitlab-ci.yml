@@ -46,6 +46,7 @@ stages:
     POSTGRES_PASSWORD: postgres
 
 print-vars:
+  tags: ["dev"]
   stage: build
   script:
     - echo $CI_COMMIT_REF_NAME
