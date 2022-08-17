@@ -47,7 +47,7 @@ stages:
 
 print-vars:
   tags: ["dev"]
-  stage: build
+  stage: debug
   script:
     - echo $CI_COMMIT_REF_NAME
     - echo $CI_COMMIT_BRANCH
