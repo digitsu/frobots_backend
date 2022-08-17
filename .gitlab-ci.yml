@@ -23,6 +23,7 @@ stages:
   - deploy
   - smoke
 
+
 .elixir:
   image: elixir:1.13.4
   # Pick zero or more services to be used on all builds.
@@ -51,6 +52,7 @@ print-vars:
     - echo $CI_COMMIT_BRANCH
 
 lint-job:
+  tags: ["dev", "prod"]
   extends: .elixir
   stage: build
   variables:
@@ -63,6 +65,7 @@ lint-job:
   #   - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
     
 test-job:
+  tags: ["dev", "prod"]
   extends: .elixir
   stage: test
   variables: 
@@ -88,6 +91,7 @@ test-job:
         - _build/test/lib/fubars/test-junit-report.xml 
 
 deploy-job:
+  tags: ["dev", "prod"]
   image: $CI_REGISTRY/frobots/builder-main:main
   stage: deploy
   variables:
@@ -105,6 +109,7 @@ deploy-job:
     - if: $CI_COMMIT_BRANCH == "dev"
 
 server-test:
+  tags: ["prod"]
   stage: smoke
   needs: ["deploy-job"]
   script:
