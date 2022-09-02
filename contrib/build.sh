@@ -6,7 +6,7 @@ chmod 0600 /tmp/.ssh.key
 
 if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     ip=172.105.215.192
-    export DATABASE_URL=$DATABASE_URL
+    export DATABASE_URL=$DATABASE_URL_STAGING
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     ip=172.104.73.245
     export DATABASE_URL=$DATABASE_URL_STAGING
