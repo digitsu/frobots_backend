@@ -10,7 +10,6 @@ defmodule FrobotsWeb.Api.UserControllerTest do
   @update_attrs %{
     name: "some updated name",
     username: "some updated username"
-
   }
   @update_password_attrs %{
     password: "updated password"
@@ -157,17 +156,19 @@ defmodule FrobotsWeb.Api.UserControllerTest do
     end
 
     @tag login_as: "Jimmy", other: "Jimmy"
-    test "User changes their OWN password", %{conn: conn, other: %User{id: id} = user } do
+    test "User changes their OWN password", %{conn: conn, other: %User{id: id} = user} do
       conn = put(conn, Routes.api_user_path(conn, :update, user), user: @update_password_attrs)
       assert %{"id" => id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.api_user_path(conn, :show, id))
+
       assert %{
                "id" => ^id,
-               "name" => "Jimmy", "username" => "Jimmy"}  # when you update your user data, you just get name and username back
-             = json_response(conn, 200)["data"]
+               # when you update your user data, you just get name and username back
+               "name" => "Jimmy",
+               "username" => "Jimmy"
+             } = json_response(conn, 200)["data"]
     end
-
   end
 
   describe "delete user" do
