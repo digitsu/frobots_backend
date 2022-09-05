@@ -11,6 +11,10 @@ defmodule FrobotsWeb.Api.UserControllerTest do
     name: "some updated name",
     username: "some updated username"
   }
+  @update_password_attrs %{
+    password: "updated password"
+  }
+
   @invalid_attrs %{name: nil, username: nil}
 
   setup %{conn: conn} do
@@ -116,6 +120,7 @@ defmodule FrobotsWeb.Api.UserControllerTest do
     @tag login_as: "admin", other: "Billy"
     test "renders user when data is valid", %{conn: conn, user: %User{id: id} = user} do
       conn = put(conn, Routes.api_user_path(conn, :update, user), user: @update_attrs)
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.api_user_path(conn, :show, id))
@@ -148,6 +153,21 @@ defmodule FrobotsWeb.Api.UserControllerTest do
     test "One user cannot change the details of another user", %{conn: conn, other: user} do
       conn = put(conn, Routes.api_user_path(conn, :update, user), user: @update_attrs)
       assert response(conn, 401)
+    end
+
+    @tag login_as: "Jimmy", other: "Jimmy"
+    test "User changes their OWN password", %{conn: conn, other: %User{id: id} = user} do
+      conn = put(conn, Routes.api_user_path(conn, :update, user), user: @update_password_attrs)
+      assert %{"id" => id} = json_response(conn, 200)["data"]
+
+      conn = get(conn, Routes.api_user_path(conn, :show, id))
+
+      assert %{
+               "id" => ^id,
+               # when you update your user data, you just get name and username back
+               "name" => "Jimmy",
+               "username" => "Jimmy"
+             } = json_response(conn, 200)["data"]
     end
   end
 
