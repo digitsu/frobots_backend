@@ -1,5 +1,6 @@
 defmodule FrobotsWeb.MatchChannel do
   use FrobotsWeb, :channel
+  require Logger
 
   @type degree :: 0..359
   @type damage :: 0..100
@@ -59,19 +60,28 @@ defmodule FrobotsWeb.MatchChannel do
   @impl true
   def handle_in("start_match", match_data, socket) do
     # create a FUBARS cluster
-    with {:ok, match_name} <- start_cluster(socket) do
-      # now pass the match service the frobots and the match_template
-      case Fubars.Match.start_match(
-             via_tuple(match_name),
-             match_data |> Map.get("frobots", nil) |> Frobots.Assets.load_frobots_from_db(),
-             match_data
-           ) do
-        {:ok, frobots_map} ->
-          {:reply, {:ok, frobots_map}, socket}
+    # with {:ok, match_name} <- start_cluster(socket) do
+    case start_cluster(socket) do
+      {:ok, match_name} ->
+        # now pass the match service the frobots and the match_template
+        case Fubars.Match.start_match(
+               via_tuple(match_name),
+               match_data |> Map.get("frobots", nil) |> Frobots.Assets.load_frobots_from_db(),
+               match_data
+             ) do
+          {:ok, frobots_map} ->
+            {:reply, {:ok, frobots_map}, socket}
 
-        {:error, error} ->
-          {:reply, {:error, error}, socket}
-      end
+          {:error, error} ->
+            IO.puts(error)
+            Logger.error(error)
+            {:reply, :error, socket}
+        end
+
+      {:error, error} ->
+        IO.puts(error)
+        Logger.error(error)
+        {:reply, :error, socket}
     end
   end
 
