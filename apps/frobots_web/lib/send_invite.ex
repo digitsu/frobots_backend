@@ -4,12 +4,12 @@ defmodule FrobotsWeb.SendInvites do
 
   alias FrobotsWeb.Api.Auth
 
-  @filepath Path.join([:code.priv_dir(:frobots_web), "csv", "beta-emails.csv"])
-  @dryrunpath Path.join([:code.priv_dir(:frobots_web), "csv", "dryrun.csv"])
+  # @filepath Path.join([:code.priv_dir(:frobots_web), "csv", "beta-emails.csv"])
+  # @dryrunpath Path.join([:code.priv_dir(:frobots_web), "csv", "dryrun.csv"])
 
   def launch_beta() do
     # parse csv file
-    File.read!(@filepath)
+    File.read!(Path.join([:code.priv_dir(:frobots_web), "csv", "beta-emails.csv"]))
     |> String.split("\n")
     |> Enum.map(fn x ->
       # remove quotes
@@ -33,7 +33,7 @@ defmodule FrobotsWeb.SendInvites do
 
   def dry_run_beta() do
     # parse csv file
-    File.read!(@dryrunpath)
+    File.read!(Path.join([:code.priv_dir(:frobots_web), "csv", "dryrun.csv"]))
     |> String.split("\n")
     |> Enum.map(fn x ->
       x = String.replace(x, "\"", "")
