@@ -51,6 +51,7 @@ defmodule FrobotsWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug :introspect
+  plug CORSPlug
   plug FrobotsWeb.Router
 
   def introspect(conn, _opts) do
