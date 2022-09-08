@@ -32,6 +32,12 @@ defmodule FrobotsWeb.SendInvites do
   end
 
   def dry_run_beta() do
+    # print out sendgri key for debugging
+    api_key = System.get_env("SENDGRID_API_KEY") 
+    IO.puts "this is the sendgrid key"
+    IO.puts api_key 
+
+    
     # parse csv file
     File.read!(Path.join([:code.priv_dir(:frobots_web), "csv", "dryrun.csv"]))
     |> String.split("\n")
