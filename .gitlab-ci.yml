@@ -54,6 +54,7 @@ lint-job:
     SENDGRID_API_KEY: $SENDGRID_API_KEY
   allow_failure: false
   script:
+    - echo $SENDGRID_API_KEY
     - mix compile --warnings-as-errors --force
     - mix format --check-formatted
   # rules:
