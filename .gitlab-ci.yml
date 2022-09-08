@@ -51,7 +51,7 @@ lint-job:
   stage: build
   variables:
     MIX_ENV: dev
-    SENDGRID_API_KEY: $SENDGRID_API_KEY
+    SENDGRID_API_KEY: ${SENDGRID_API_KEY}
   allow_failure: false
   script:
     - echo $SENDGRID_API_KEY
