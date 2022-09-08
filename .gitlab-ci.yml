@@ -35,6 +35,7 @@ stages:
     GIT_SUBMODULE_STRATEGY: normal
     POSTGRES_HOST: postgres
     POSTGRES_PASSWORD: postgres
+    SENDGRID_API_KEY: $SENDGRID_API_KEY
 
 print-vars:
   tags: ["dev", "prod"]
@@ -50,7 +51,6 @@ lint-job:
   stage: build
   variables:
     MIX_ENV: dev
-    SENDGRID_API_KEY: $SENDGRID_API_KEY
   allow_failure: false
   script:
     - mix compile --warnings-as-errors --force
