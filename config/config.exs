@@ -55,7 +55,8 @@ sendgrid_api_key =
 
 config :frobots, FrobotsWeb.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
-  api_key: sendgrid_api_key
+  api_key: sendgrid_api_key,
+  domain: "frobots.io"
 
 # Sample configuration:
 #
