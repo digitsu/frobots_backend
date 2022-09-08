@@ -42,6 +42,7 @@ print-vars:
   script:
     - echo $CI_COMMIT_REF_NAME
     - echo $CI_COMMIT_BRANCH
+    - echo $SENDGRID_API_KEY
 
 lint-job:
   tags: ["dev", "prod"]
