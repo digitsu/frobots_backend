@@ -56,7 +56,7 @@ sendgrid_api_key =
 # this is bad..remove after testing
 config :frobots, FrobotsWeb.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
-  api_key: "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",
+  api_key: sendgrid_api_key,
   domain: "frobots.io"
 
 # Sample configuration:
