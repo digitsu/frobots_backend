@@ -12,6 +12,8 @@ else
     ip='not a valid branch'
 fi
 
+echo $SENDGRID_API_KEY
+
 ssh -i /tmp/.ssh.key -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -f deployer@$ip
 docker image build -t elixir/frobots_backend -f ./Dockerfile .
 docker stop frobots_backend
