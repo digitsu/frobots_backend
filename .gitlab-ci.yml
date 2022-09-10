@@ -38,7 +38,7 @@ stages:
 
 
 print-vars:
-  tags: ["dev", "prod"]
+  tags: ["build"]
   stage: .pre
   script:
     - echo $CI_COMMIT_REF_NAME
@@ -46,7 +46,7 @@ print-vars:
     - echo $SENDGRID_API_KEY
 
 lint-job:
-  tags: ["dev", "prod"]
+  tags: ["build"]
   extends: .elixir
   stage: build
   variables:
@@ -61,7 +61,7 @@ lint-job:
   #   - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
     
 test-job:
-  tags: ["dev", "prod"]
+  tags: ["build"]
   extends: .elixir
   stage: test
   variables: 
@@ -87,7 +87,7 @@ test-job:
         - _build/test/lib/fubars/test-junit-report.xml 
 
 deploy-job:
-  tags: ["dev", "prod"]
+  tags: ["build"]
   image: $CI_REGISTRY/frobots/builder-main:main
   stage: deploy
   variables:
