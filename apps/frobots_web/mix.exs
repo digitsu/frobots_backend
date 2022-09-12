@@ -54,7 +54,8 @@ defmodule FrobotsWeb.MixProject do
       {:swoosh, "~> 1.3"},
       {:plug_cowboy, "~> 2.5"},
       {:ecto_psql_extras, "~> 0.6"},
-      {:sobelow, "~> 0.8", only: :dev}
+      {:sobelow, "~> 0.8", only: :dev},
+      {:cors_plug, "~> 3.0"}
     ]
   end
 

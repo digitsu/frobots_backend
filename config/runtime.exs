@@ -36,8 +36,25 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  # config swoosh sendgrid
+  config :swoosh, :api_client, Swoosh.ApiClient.Hackney
+
+  config :frobots, FrobotsWeb.Mailer,
+    adapter: Swoosh.Adapters.Sendgrid,
+    api_key: System.get_env("SENDGRID_API_KEY"),
+    domain: "frobots.io"
+
   # configures the dashboard admin password -- make sure to use SSL when we open up the server to public as inputs are exposed in transit via basic_auth
   config :frobots_web, :basic_auth, username: admin_user, password: admin_pass
+
+  # config swoosh sendgrid
+  config :swoosh, :api_client, Swoosh.ApiClient.Hackney
+
+  # read api key from env
+  config :frobots, FrobotsWeb.Mailer,
+    adapter: Swoosh.Adapters.Sendgrid,
+    api_key: System.get_env("SENDGRID_API_KEY"),
+    domain: "frobots.io"
 
   # ## Using releases
   #

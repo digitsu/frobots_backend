@@ -53,9 +53,11 @@ config :swoosh, :api_client, Swoosh.ApiClient.Hackney
 sendgrid_api_key =
   System.get_env("SENDGRID_API_KEY") || "environment variable SENDGRID_API_KEY is missing"
 
+# this is bad..remove after testing
 config :frobots, FrobotsWeb.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
-  api_key: sendgrid_api_key
+  api_key: sendgrid_api_key,
+  domain: "frobots.io"
 
 # Sample configuration:
 #

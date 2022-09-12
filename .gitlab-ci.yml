@@ -13,6 +13,7 @@ stages:
   - test
   - deploy
   - smoke
+  - release
 
 
 .elixir:
@@ -36,28 +37,32 @@ stages:
     POSTGRES_HOST: postgres
     POSTGRES_PASSWORD: postgres
 
+
 print-vars:
-  tags: ["dev", "prod"]
+  tags: ["build"]
   stage: .pre
   script:
     - echo $CI_COMMIT_REF_NAME
     - echo $CI_COMMIT_BRANCH
+    - echo $SENDGRID_API_KEY
 
 lint-job:
-  tags: ["dev", "prod"]
+  tags: ["build"]
   extends: .elixir
   stage: build
   variables:
     MIX_ENV: dev
+    SENDGRID_API_KEY: ${SENDGRID_API_KEY}
   allow_failure: false
   script:
+    - echo $SENDGRID_API_KEY
     - mix compile --warnings-as-errors --force
     - mix format --check-formatted
   # rules:
   #   - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
     
 test-job:
-  tags: ["dev", "prod"]
+  tags: ["build"]
   extends: .elixir
   stage: test
   variables: 
@@ -83,7 +88,7 @@ test-job:
         - _build/test/lib/fubars/test-junit-report.xml 
 
 deploy-job:
-  tags: ["dev", "prod"]
+  tags: ["build"]
   image: $CI_REGISTRY/frobots/builder-main:main
   stage: deploy
   variables:
@@ -110,3 +115,17 @@ server-test:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
  
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG                 # Run this job when a tag is created
+  script:
+    - echo $CI_COMMIT_TAG
+    - echo $CI_BRANCH_TAG
+    - echo $CI_PIPELINE_ID
+    - echo $CI_PIPELINE_IID
+    - echo "running release_job"
+  release:                               # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+    tag_name: '$CI_COMMIT_TAG'
+    description: '$CI_COMMIT_TAG'

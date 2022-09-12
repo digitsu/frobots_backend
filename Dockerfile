@@ -63,6 +63,9 @@ RUN mix release
 FROM alpine AS app
 
 ARG MIX_ENV
+#pass this to the final app binary
+ENV SENDGRID_API_KEY="${SENDGRID_API_KEY}"
+
 
 # install runtime dependencies
 RUN apk add --no-cache libstdc++ openssl ncurses-libs bash
