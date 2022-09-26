@@ -62,7 +62,7 @@ defmodule FrobotsWeb.SendInvites do
   def build_mail(name, email, uid, token) do
     template =
       MailTemplates.beta_mail_template()
-      |> String.replace("#welcome_url", "https://frobots.io?token=#{token}&uid=#{uid}")
+      |> String.replace("#welcome_url", "https://dashboard.frobots.io?token=#{token}&uid=#{uid}")
 
     BetaMailer.welcome(%{name: name, email: email}, template)
   end
