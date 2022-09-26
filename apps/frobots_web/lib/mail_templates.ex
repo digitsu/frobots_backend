@@ -83,7 +83,7 @@ defmodule FrobotsWeb.MailTemplates do
                             <p style="margin:0;font-size:20px;line-height:16px;color:#000;">
                                 <a href="https://discord.gg/dSn3JzFExu" style="display: inline-block;width:150px !important;padding:8px;color:#000 !important;background-color:#70ff00 !important;border-width:1px !important;border-style:solid !important;border-color:#70ff00 !important;text-align:center;outline:none;text-decoration:none !important;}">Join on Discord</a> |
                                 <a href="https://dashboard.frobots.io/download/" style="display: inline-block;width:150px;padding:8px;color:#000 !important;background-color:#70ff00 !important;border-width:1px !important;border-style:solid !important;border-color:#70ff00 !important;text-align:center;outline:none;text-decoration:none !important;}">Download client</a> |
-                                <a href="https://dashboard.frobots.io/" style="display: inline-block;width:150px;padding:8px;color:#000 !important;background-color:#70ff00 !important;border-width:1px !important;border-style:solid !important;border-color:#70ff00 !important;text-align:center;outline:none;text-decoration:none !important;}">Go to dashboard</a>
+                                <a href="#welcome_url" style="display: inline-block;width:150px;padding:8px;color:#000 !important;background-color:#70ff00 !important;border-width:1px !important;border-style:solid !important;border-color:#70ff00 !important;text-align:center;outline:none;text-decoration:none !important;}">Go to dashboard</a>
                             </p>
                           </td>
                         </tr>
