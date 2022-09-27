@@ -23,6 +23,22 @@ defmodule FrobotsWeb.MailTemplates do
                       <img src="https://www.frobots.io/images/Frobots-logo.png" alt="" width="500" style="height:auto;display:block;" />
                     </td>
                   </tr>
+
+                  <tr>
+                    <td style="margin-top: 40px; padding:20px; background:#000;">
+                      <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;">
+                        <tr>
+                          <td style="padding:0;width:100%;" align="center">
+                            <p style="margin:0;font-size:20px;line-height:16px;color:#000;">
+                                <a href="https://discord.gg/dSn3JzFExu" style="display: inline-block;width:150px !important;padding:8px;color:#000 !important;background-color:#70ff00 !important;border-width:1px !important;border-style:solid !important;border-color:#70ff00 !important;text-align:center;outline:none;text-decoration:none !important;}">Join on Discord</a> |
+                                <a href="https://dashboard.frobots.io/download/" style="display: inline-block;width:150px;padding:8px;color:#000 !important;background-color:#70ff00 !important;border-width:1px !important;border-style:solid !important;border-color:#70ff00 !important;text-align:center;outline:none;text-decoration:none !important;}">Download client</a> |
+                                <a href="#welcome_url" style="display: inline-block;width:150px;padding:8px;color:#000 !important;background-color:#70ff00 !important;border-width:1px !important;border-style:solid !important;border-color:#70ff00 !important;text-align:center;outline:none;text-decoration:none !important;}">Go to dashboard</a>
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
                   <tr>
                     <td style="padding:36px 30px 0 30px;">
                       <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
