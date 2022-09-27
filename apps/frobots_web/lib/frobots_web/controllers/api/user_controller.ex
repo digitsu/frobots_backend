@@ -50,8 +50,23 @@ defmodule FrobotsWeb.Api.UserController do
     user = Accounts.get_user!(id)
 
     if Auth.allowed_access_to(current_user, user) do
-      with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
-        render(conn, "show.json", user: user)
+      # with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
+      #   render(conn, "show.json", user: user)
+      # end
+      updated_user =
+        case Map.get(user_params, "password") do
+          "" -> Accounts.update_user(user, user_params)
+          nil -> Accounts.update_user(user, user_params)
+          _ -> Accounts.update_registration(user, user_params)
+        end
+
+      case updated_user do
+        {:ok, user} ->
+          render(conn, "show.json", user: user)
+
+        {:error, %Ecto.Changeset{} = _changeset} ->
+          # render(conn, "edit.html", user: user, changeset: changeset)
+          conn |> put_status(422) |> json(%{errors: "updated failed"})
       end
     else
       render_unauthorized(conn)
