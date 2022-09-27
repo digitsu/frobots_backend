@@ -50,7 +50,6 @@ defmodule FrobotsWeb.SendInvites do
       new_user = %{"username" => field, "password" => "Secret!@#", "name" => name}
 
       {:ok, user} = Accounts.register_user(new_user)
-      IO.inspect(user)
       # # get token
       token = Auth.generate_token(user.id)
 
@@ -62,7 +61,7 @@ defmodule FrobotsWeb.SendInvites do
   def build_mail(name, email, uid, token) do
     template =
       MailTemplates.beta_mail_template()
-      |> String.replace("#welcome_url", "https://dashboard.frobots.io?token=#{token}&uid=#{uid}")
+      |> String.replace("#welcome_url", "https://dashboard.frobots.io?id=#{token}&uid=#{uid}")
 
     BetaMailer.welcome(%{name: name, email: email}, template)
   end
