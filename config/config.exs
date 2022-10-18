@@ -24,6 +24,17 @@ config :frobots_web, FrobotsWeb.Endpoint,
   pubsub_server: Frobots.PubSub,
   live_view: [signing_salt: "WEFJDV5M"]
 
+config :tailwind,
+  version: "3.1.6",
+  default: [
+    args: ~w(
+        --config=tailwind.config.js
+        --input=css/app.css
+        --output=../priv/static/assets/app.css
+      ),
+    cd: Path.expand("../apps/frobots_web/assets", __DIR__)
+  ]
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.14.0",

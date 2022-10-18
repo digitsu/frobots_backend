@@ -52,6 +52,9 @@ config :frobots_web, FrobotsWeb.Endpoint,
       ~r"lib/frobots_web/(live|views)/.*(ex)$",
       ~r"lib/frobots_web/templates/.*(eex)$"
     ]
+  ],
+  watchers: [
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # Configure your database
@@ -61,7 +64,8 @@ config :frobots, Frobots.Repo,
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   database: System.get_env("POSTGRES_DB") || "frobots_dev",
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  pool_size: 10,
+  port: 5433
 
 # print debug messages in dev
 config :logger, level: :debug
