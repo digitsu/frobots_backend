@@ -20,7 +20,7 @@ defmodule FrobotsWeb.SendgridApi do
     {{:ok, emails}, dryrun}
   end
 
-  defp process_response({:ok, %HTTPoison.Response{status_code: status_code}}, dryrun) do
+  defp process_response({:ok, %HTTPoison.Response{status_code: status_code}}, _dryrun) do
     {:error, {:status, status_code}}
   end
 
