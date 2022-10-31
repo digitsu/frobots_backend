@@ -3,59 +3,50 @@ defmodule FrobotsWeb.SendInvites do
   alias Frobots.Accounts
 
   alias FrobotsWeb.Api.Auth
+  alias FrobotsWeb.SendgridApi
 
-  # @filepath Path.join([:code.priv_dir(:frobots_web), "csv", "beta-emails.csv"])
-  # @dryrunpath Path.join([:code.priv_dir(:frobots_web), "csv", "dryrun.csv"])
-
-  def launch_beta() do
-    # parse csv file
-    File.read!(Path.join([:code.priv_dir(:frobots_web), "csv", "beta-emails.csv"]))
-    |> String.split("\n")
-    |> Enum.map(fn x ->
-      # remove quotes
-      x = String.replace(x, "\"", "")
-      fields = String.split(x, ",")
-      field = Enum.at(fields, 0)
-
-      name = String.split(field, "@") |> Enum.at(0)
-
-      # insert user
-      new_user = %{"username" => field, "password" => "Secret!@#", "name" => name}
-      {:ok, user} = Accounts.register_user(new_user)
-
-      # # get token
-      token = Auth.generate_token(user.id)
-
-      build_mail(user.name, user.username, user.id, token)
-      |> Mailer.deliver()
-    end)
+  def existing_user?(username) do
+    # check database to see if username exists
+    params = [username: username]
+    Accounts.get_user_by(params)
   end
 
-  def dry_run_beta() do
-    # print out sendgrid key for debugging
-    # api_key = System.get_env("SENDGRID_API_KEY")
-    # IO.puts("this is the sendgrid key")
-    # IO.puts(api_key)
+  # launch_beta will be called from a genserver.
+  # when dryrun is true emails will not be sent
+  def launch_beta(dryrun) do
+    SendgridApi.get_contacts(dryrun)
+    |> process_response(dryrun)
+  end
 
-    # parse csv file
-    File.read!(Path.join([:code.priv_dir(:frobots_web), "csv", "dryrun.csv"]))
-    |> String.split("\n")
-    |> Enum.map(fn x ->
-      x = String.replace(x, "\"", "")
-      fields = String.split(x, ",")
-      field = Enum.at(fields, 0)
+  def process_response({:ok, emails}, dryrun) when is_list(emails) do
+    send_email(dryrun, emails)
+  end
 
-      name = String.split(field, "@") |> Enum.at(0)
+  def process_response({:error, {:status, status_code}}, _dryrun) do
+    # write to logger
+    IO.inspect(status_code)
+  end
 
-      new_user = %{"username" => field, "password" => "Secret!@#", "name" => name}
+  def send_email(dryrun, emails) do
+    for email <- emails do
+      if existing_user?(email) == nil do
+        name = String.split(email, "@") |> Enum.at(0)
 
-      {:ok, user} = Accounts.register_user(new_user)
-      # # get token
-      token = Auth.generate_token(user.id)
-
-      build_mail(user.name, user.username, user.id, token)
-      |> Mailer.deliver()
-    end)
+        new_user = %{"username" => email, "password" => "Secret!@#", "name" => name}
+        {:ok, user} = Accounts.register_user(new_user)
+        # get token
+        token = Auth.generate_token(user.id)
+        # dryrun = true  -- we are testing
+        if dryrun == true do
+          # just a dry run. No emails are sent.
+          IO.puts(email)
+        else
+          # dryrun = false  -- we are sending emails
+          build_mail(user.name, user.username, user.id, token)
+          |> Mailer.deliver()
+        end
+      end
+    end
   end
 
   def build_mail(name, email, uid, token) do
