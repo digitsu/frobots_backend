@@ -21,7 +21,7 @@ defmodule FrobotsWeb.GarageLive.Index do
     ## Request Match & Join Match ID Channel
     assigns = socket.assigns()
     {:ok, match_id} = Simulator.request_match(assigns.simulator)
-    {:noreply, socket |> assign(:match_id, match_id)}
+    {:noreply, socket |> assign(:match_id, match_id) |> push_event(:match, %{id: match_id})}
   end
 
   @impl Phoenix.LiveView
