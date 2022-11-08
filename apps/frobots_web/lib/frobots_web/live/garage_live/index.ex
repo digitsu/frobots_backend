@@ -3,6 +3,7 @@ defmodule FrobotsWeb.GarageLive.Index do
   use FrobotsWeb, :live_view
 
   alias FrobotsWeb.Simulator
+  require Logger
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
@@ -21,7 +22,7 @@ defmodule FrobotsWeb.GarageLive.Index do
     ## Request Match & Join Match ID Channel
     assigns = socket.assigns()
     {:ok, match_id} = Simulator.request_match(assigns.simulator)
-    {:noreply, socket |> assign(:match_id, match_id) |> push_event(:match, %{id: match_id})}
+    {:noreply, socket |> assign(:match_id, match_id)}
   end
 
   @impl Phoenix.LiveView
@@ -30,7 +31,7 @@ defmodule FrobotsWeb.GarageLive.Index do
     assigns = socket.assigns()
 
     ## Have to get this from FE
-    match_data = %{
+    _match_data = %{
       commission_rate: 10,
       entry_fee: 100,
       frobots: [%{name: "dummy"}, %{name: "random"}],
@@ -40,14 +41,15 @@ defmodule FrobotsWeb.GarageLive.Index do
       payout_map: 'd'
     }
 
-    case Simulator.start_match(assigns.simulator, match_data) do
-      {:ok, frobots_map} ->
-        {:noreply, socket |> assign(:frobots_map, frobots_map)}
+    {:noreply, socket |> push_event(:match, %{id: assigns.match_id})}
+    # case Simulator.start_match(assigns.simulator, match_data) do
+    #   {:ok, frobots_map} ->
+    #     {:noreply, socket |> assign(:frobots_map, frobots_map) |> push_event(:match, %{id: assigns.match_id})}
 
-      {:error, error} ->
-        Logger.error("Error in starting the match #{error}")
-        {:noreply, socket}
-    end
+    #   {:error, error} ->
+    #     Logger.error("Error in starting the match #{error}")
+    #     {:noreply, socket}
+    # end
   end
 
   @impl true

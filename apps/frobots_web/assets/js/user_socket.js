@@ -3,7 +3,49 @@
 
 // Bring in Phoenix channels client library:
 import {Socket} from "phoenix"
+// import { Application } from '@pixi/app'
+// import * as PIXI from 'pixi.js';
 
+import {Game} from "./game.js"
+// The application will create a renderer using WebGL, if possible,
+// with a fallback to a canvas render. It will also setup the ticker
+// and the root stage PIXI.Container
+// const app = new PIXI.Application({
+//   width: 250, height: 250, backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1,
+// });
+// document.body.appendChild(app.view);
+
+// const container = new PIXI.Container();
+// app.stage.addChild(container);
+
+// // Create a new texture
+// const texture = PIXI.Texture.from('images/bullet.png');
+
+// // Create a 5x5 grid of bunnies
+// for (let i = 0; i < 25; i++) {
+//   const bunny = new PIXI.Sprite(texture);
+//   bunny.anchor.set(0.5);
+//   bunny.x = (i % 5) * 40;
+//   bunny.y = Math.floor(i / 5) * 40;
+//   container.addChild(bunny);
+// }
+
+// // Move container to the center
+// container.x = app.screen.width / 2;
+// container.y = app.screen.height / 2;
+
+// // Center bunny sprite in local container coordinates
+// container.pivot.x = container.width / 2;
+// container.pivot.y = container.height / 2;
+
+// // Listen for animate update
+// app.ticker.add((delta) => {
+//   // rotate the container!
+//   // use delta to create frame-independent transform
+//   container.rotation -= 0.01 * delta;
+// });
+
+//Add the canvas that Pixi automatically created for you to the HTML document
 // And connect to the path in "lib/frobots_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
 
@@ -52,6 +94,9 @@ import {Socket} from "phoenix"
 //
 // Finally, connect to the socket:
 
+const game = new Game();
+console.log("Game Is -", game)
+game.header()
 
 function connectToSocket(match_id) {
   // connects to the socket endpoint
@@ -60,12 +105,15 @@ function connectToSocket(match_id) {
   let channel = socket.channel("match:" + match_id, {})
   // joins the channel
   channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
-
-  channel.on("arena_event", payload => {
-    console.log(payload)
+  .receive("ok", resp => { 
+    //Create a Pixi Application
+    
   })
+  .receive("error", resp => { console.log("Unable to join", resp) })
+  //
+  // channel.on("arena_event", payload => {
+  //   console.log(payload)
+  // })
 }
 
 export {connectToSocket}
