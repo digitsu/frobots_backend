@@ -3,6 +3,8 @@ import * as PIXI from 'pixi.js';
 export class Game {
     constructor() {
         this.app = new PIXI.Application({ backgroundColor: 0x1099bb });
+        this.tank = null;
+        this.missile = null;
     }
 
     header() {
