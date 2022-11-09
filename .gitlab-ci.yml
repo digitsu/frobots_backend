@@ -45,6 +45,7 @@ print-vars:
     - echo $CI_COMMIT_REF_NAME
     - echo $CI_COMMIT_BRANCH
     - echo $SENDGRID_API_KEY
+    - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
 
 lint-job:
   tags: ["build"]
@@ -53,9 +54,11 @@ lint-job:
   variables:
     MIX_ENV: dev
     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+    SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
   allow_failure: false
   script:
     - echo $SENDGRID_API_KEY
+    - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
     - mix compile --warnings-as-errors --force
     - mix format --check-formatted
   # rules:
