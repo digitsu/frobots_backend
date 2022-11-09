@@ -62,7 +62,7 @@ defmodule FrobotsWeb.SendgridApiTestCowboy do
 
     sendgrid_data = {:ok, ["test1@mail.com", "test2@mail.com"]}
 
-    assert {{:ok, body}, true} = FrobotsWeb.SendgridApi.get_contacts(test_server_url, dryrun)
+    assert {:ok, body} = FrobotsWeb.SendgridApi.get_contacts(test_server_url, dryrun)
 
     assert {:ok, body} == sendgrid_data
   end
