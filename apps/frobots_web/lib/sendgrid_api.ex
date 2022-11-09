@@ -11,13 +11,13 @@ defmodule FrobotsWeb.SendgridApi do
     |> process_response(dryrun)
   end
 
-  defp process_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}, dryrun) do
+  defp process_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}, _dryrun) do
     parsed_body = body |> Jason.decode!()
     IO.inspect(parsed_body)
 
     emails = parsed_body["result"] |> Enum.map(fn x -> x["email"] end)
 
-    {{:ok, emails}, dryrun}
+    {:ok, emails}
   end
 
   defp process_response({:ok, %HTTPoison.Response{status_code: status_code}}, _dryrun) do
