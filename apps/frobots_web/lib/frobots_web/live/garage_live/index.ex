@@ -31,7 +31,7 @@ defmodule FrobotsWeb.GarageLive.Index do
     assigns = socket.assigns()
 
     ## Have to get this from FE
-    _match_data = %{
+    match_data = %{
       commission_rate: 10,
       entry_fee: 100,
       frobots: [%{name: "dummy"}, %{name: "random"}],
@@ -41,15 +41,22 @@ defmodule FrobotsWeb.GarageLive.Index do
       payout_map: 'd'
     }
 
-    {:noreply, socket |> push_event(:match, %{id: assigns.match_id})}
-    # case Simulator.start_match(assigns.simulator, match_data) do
-    #   {:ok, frobots_map} ->
-    #     {:noreply, socket |> assign(:frobots_map, frobots_map) |> push_event(:match, %{id: assigns.match_id})}
+    # {:noreply, socket |> push_event(:match, %{id: assigns.match_id})}
 
-    #   {:error, error} ->
-    #     Logger.error("Error in starting the match #{error}")
-    #     {:noreply, socket}
-    # end
+    ## TODO :: SEND Frobots DATA so the game will be constructed based on that
+    case Simulator.start_match(assigns.simulator, match_data) do
+      {:ok, frobots_data} ->
+        IO.inspect(frobots_data, label: "Frobots Data")
+
+        {:noreply,
+         socket
+         |> assign(:frobots_data, frobots_data)
+         |> push_event(:match, %{id: assigns.match_id})}
+
+      {:error, error} ->
+        Logger.error("Error in starting the match #{error}")
+        {:noreply, socket}
+    end
   end
 
   @impl true
@@ -57,7 +64,7 @@ defmodule FrobotsWeb.GarageLive.Index do
     ## Cancel the Match
     assigns = socket.assigns()
     :ok = Simulator.cancel_match(assigns.simulator)
-    {:noreply, socket |> assign(:match_id, nil) |> assign(:frobots_map, %{})}
+    {:noreply, socket |> assign(:match_id, nil) |> assign(:frobots_data, %{})}
   end
 
   # add additional handle param events as needed to handle button clicks etc

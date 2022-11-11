@@ -107,8 +107,6 @@ defmodule FrobotsWeb.MatchChannel do
 
     IO.puts(~s"assigning match #{match_id}")
     {:reply, {:ok, match_id}, socket}
-
-
   end
 
   # Add authorization logic here as required.

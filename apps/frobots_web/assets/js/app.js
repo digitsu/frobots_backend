@@ -45,7 +45,7 @@ window.liveSocket = liveSocket
 
 window.addEventListener(`phx:match`, (e) => {
     let match_id = e.detail.id
-    console.log(match_id)
+    console.log("MAtch ID:" , match_id)
     if(match_id) {
       connectToSocket(match_id)
     }

@@ -1,8 +1,8 @@
 export class Missile {
-    constructor() {
+    constructor(missile_name, x, y) {
         this.ploc = [0, 0];
-        this.loc = [0, 0];
-        this.name = null;
+        this.loc = [x, y];
+        this.name = missile_name;
         this.timer = null;
         this.status = "flying";
     }
