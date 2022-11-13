@@ -6,4 +6,8 @@ export class Missile {
         this.timer = null;
         this.status = "flying";
     }
+
+    update(x, y) {
+        this.loc = [x, y];
+    }
 }

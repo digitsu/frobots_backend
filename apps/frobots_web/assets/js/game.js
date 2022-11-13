@@ -2,6 +2,50 @@ import * as PIXI from 'pixi.js';
 import {Tank} from "./tank.js"
 import {Missile} from "./missile.js"
 
+const blue1 = PIXI.Sprite.from('images/blue1.png');
+const blue2 = PIXI.Sprite.from('images/blue2.png');
+const blue3 = PIXI.Sprite.from('images/blue3.png');
+const blue4 = PIXI.Sprite.from('images/blue4.png');
+const blue5 = PIXI.Sprite.from('images/blue5.png');
+const blue6 = PIXI.Sprite.from('images/blue6.png');
+const blue7 = PIXI.Sprite.from('images/blue7.png');
+const blue8 = PIXI.Sprite.from('images/blue8.png');
+const blue9 = PIXI.Sprite.from('images/blue9.png');
+const red1 = PIXI.Sprite.from('images/red1.png');
+const red2 = PIXI.Sprite.from('images/red2.png');
+const red3 = PIXI.Sprite.from('images/red3.png');
+const red4 = PIXI.Sprite.from('images/red4.png');
+const red5 = PIXI.Sprite.from('images/red5.png');
+const red6 = PIXI.Sprite.from('images/red6.png');
+const red7 = PIXI.Sprite.from('images/red7.png');
+const yellow1 = PIXI.Sprite.from('images/yellow1.png');
+const yellow2 = PIXI.Sprite.from('images/yellow2.png');
+const rabbit = PIXI.Sprite.from('images/rabbit.png');
+
+// // Add the assets to load
+// PIXI.Assets.add('blue1', 'images/blue1.png');
+// PIXI.Assets.add('blue2', 'images/blue2.png');
+// PIXI.Assets.add('blue3', 'images/blue3.png');
+// PIXI.Assets.add('blue4', 'images/blue4.png');
+// PIXI.Assets.add('blue5', 'images/blue5.png');
+// PIXI.Assets.add('blue6', 'images/blue6.png');
+// PIXI.Assets.add('blue7', 'images/blue7.png');
+// PIXI.Assets.add('blue8', 'images/blue8.png');
+// PIXI.Assets.add('blue9', 'images/blue9.png');
+// PIXI.Assets.add('red1', 'images/red1.png');
+// PIXI.Assets.add('red2', 'images/red2.png');
+// PIXI.Assets.add('red3', 'images/red3.png');
+// PIXI.Assets.add('red4', 'images/red4.png');
+// PIXI.Assets.add('red5', 'images/red5.png');
+// PIXI.Assets.add('red6', 'images/red6.png');
+// PIXI.Assets.add('red7', 'images/red7.png');
+// PIXI.Assets.add('yellow1', 'images/yellow1.png');
+// PIXI.Assets.add('yellow2', 'images/yellow2.png');
+// PIXI.Assets.add('rabbit', 'images/rabbit.png');
+
+// // Allow the assets to load in the background
+// PIXI.Assets.backgroundLoad(['blue1','blue2','blue3','blue4','blue5','blue6','blue7','blue8','blue9','red1','red2','red3','red4','red5','red6','red7','yellow1','yellow2','rabbit']);
+
 export class Game {
     constructor() {
         this.app = new PIXI.Application({ backgroundColor: 0x1099bb });
@@ -14,7 +58,7 @@ export class Game {
         // Scale mode for all textures, will retain pixelation
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
         // Update with the cancel button
-        const sprite = PIXI.Sprite.from('images/bullet.png');
+        const sprite = PIXI.Sprite.from('images/explode.png');
 
         // Set the initial position
         sprite.anchor.set(0.5);
@@ -34,7 +78,7 @@ export class Game {
 
     event(payload) {
         var { args, event } = payload;
-        console.log("Args", args);
+        console.log("ARGS IS :", args);
         // get the create_tank separarted
         if (event == "create_tank" || event == "move_tank") {
           var tank_name = args[0];
@@ -55,34 +99,57 @@ export class Game {
   
       moveTank(tank_name, x, y, heading, speed) {
         console.log(this)
-        console.log("Move Tank", tank_name, x, y, heading, speed);
-        var tank_index = this.tanks.findIndex(tank => tank.name == tank_name);
+        console.log("MOVE TANK IS :", tank_name, x, y, heading, speed);
+        var tank_index = this.tanks.findIndex(tank => tank && tank.name == tank_name);
         if (tank_index == -1) {
             this.createTank(tank_name, x, y, heading, speed)
         } else {
-           old_tank = this.tanks[tank_index]
-           var new_tank = tank.update(x, y, heading, speed)
+           var old_tank = this.tanks[tank_index]
+           var new_tank = old_tank.update(x, y, heading, speed)
            this.tanks[tank_index] = new_tank
         }
         
       }
 
       moveMissile(missile_name, x, y) {
-        console.log("Move Missle", missile_name, x, y);
+        console.log(this)
+        console.log("MOVE MISSILE IS :", missile_name, x, y);
         var missile_index = this.missiles.findIndex(missile => missile.name == missile_name);
-        old_missile = this.missiles[missile_index]
-        var new_missile = missile.update(x, y, heading, speed)
+        var old_missile = this.missiles[missile_index]
+        var new_missile = old_missile.update(x, y)
         this.missiles[missile_index] = new_missile
       }
 
       createTank(tank_name, x, y, heading, speed) {
         var new_tank = new Tank(tank_name, x, y, heading, speed);
+        var assets = ['blue1','blue2','blue3','blue4','blue5','blue6','blue7','blue8','blue9','red1','red2','red3','red4','red5','red6','red7','yellow1','yellow2','rabbit'];
+        var asset = assets[Math.floor(Math.random()*19)];
+        this.drawObject(asset, x, y)
         this.tanks.push(new_tank)
       }
 
       createMissile(missile_name, x, y) {
         var new_missile = new Missile(missile_name, x, y);
         this.missiles.push(new_missile)
+      }
+
+      drawObject(asset, x, y) {
+        console.log("DRAW OBJECT :", asset)
+        blue1.anchor.set(0.5);
+        // Set the initial position
+        blue1.x = x;
+        blue1.y = y;
+        this.app.stage.addChild(blue1);
+
+        // PIXI.Assets.load(asset_name).then((texture) => {
+        //     console.log("LOADING......")
+        //     // create a new Sprite from the resolved loaded texture
+        //     const character = new PIXI.Sprite(texture);
+        //     character.anchor.set(0.5);
+        //     character.x = x;
+        //     character.y = y;
+        //     this.app.stage.addChild(character);
+        // });
       }
 
   
