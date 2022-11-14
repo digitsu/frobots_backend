@@ -22,6 +22,13 @@ const yellow1 = PIXI.Sprite.from('images/yellow1.png');
 const yellow2 = PIXI.Sprite.from('images/yellow2.png');
 const rabbit = PIXI.Sprite.from('images/rabbit.png');
 
+const trophyTexture = PIXI.Texture.from('images/trophy.png');
+const trophy = {
+    sprite: new PIXI.Sprite(trophyTexture),
+    z: 0,
+    x: 0,
+    y: 0,
+};
 // // Add the assets to load
 // PIXI.Assets.add('blue1', 'images/blue1.png');
 // PIXI.Assets.add('blue2', 'images/blue2.png');
@@ -48,17 +55,20 @@ const rabbit = PIXI.Sprite.from('images/rabbit.png');
 
 export class Game {
     constructor() {
-        this.app = new PIXI.Application({ backgroundColor: 0x1099bb });
+        this.app = new PIXI.Application({ width: 1000,
+            height: 1000,
+            backgroundColor: 0x00110F });
         this.tanks = [];
         this.missiles = [];
     }
 
     header() {
+        console.log("Tanks (Inside Header) -->", this.tanks);
         document.body.appendChild(this.app.view);
         // Scale mode for all textures, will retain pixelation
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
         // Update with the cancel button
-        const sprite = PIXI.Sprite.from('images/explode.png');
+        const sprite = PIXI.Sprite.from('images/cancel.png');
 
         // Set the initial position
         sprite.anchor.set(0.5);
@@ -74,11 +84,19 @@ export class Game {
         sprite.on('click', onClick); // mouse-only
         // sprite.on('tap', onClick); // touch-only
         this.app.stage.addChild(sprite);
+        this.app.stage.addChild(trophy.sprite);
     }
 
     event(payload) {
         var { args, event } = payload;
-        console.log("ARGS IS :", args);
+        console.log("Tanks (Inside Event) -->", this.tanks);
+        console.log("Argument Received -->", args);
+
+
+        // Test Code
+        trophy.x = trophy.x + 10
+        trophy.y = trophy.y + 10
+
         // get the create_tank separarted
         if (event == "create_tank" || event == "move_tank") {
           var tank_name = args[0];
@@ -98,8 +116,8 @@ export class Game {
       }
   
       moveTank(tank_name, x, y, heading, speed) {
-        console.log(this)
-        console.log("MOVE TANK IS :", tank_name, x, y, heading, speed);
+        console.log("Tanks (Inside Move Tank) -->", this.tanks);
+        console.log("Move tank -->", tank_name, x, y, heading, speed);
         var tank_index = this.tanks.findIndex(tank => tank && tank.name == tank_name);
         if (tank_index == -1) {
             this.createTank(tank_name, x, y, heading, speed)
@@ -112,8 +130,8 @@ export class Game {
       }
 
       moveMissile(missile_name, x, y) {
-        console.log(this)
-        console.log("MOVE MISSILE IS :", missile_name, x, y);
+        console.log("Tanks (Inside Move Missile) -->", this.tanks);
+        console.log("Move Missile -->", missile_name, x, y);
         var missile_index = this.missiles.findIndex(missile => missile.name == missile_name);
         var old_missile = this.missiles[missile_index]
         var new_missile = old_missile.update(x, y)
@@ -121,6 +139,8 @@ export class Game {
       }
 
       createTank(tank_name, x, y, heading, speed) {
+        console.log("Tanks (Inside Create Tank) -->", this.tanks);
+        console.log("Create Tank --->", tank_name, x, y, heading, speed);
         var new_tank = new Tank(tank_name, x, y, heading, speed);
         var assets = ['blue1','blue2','blue3','blue4','blue5','blue6','blue7','blue8','blue9','red1','red2','red3','red4','red5','red6','red7','yellow1','yellow2','rabbit'];
         var asset = assets[Math.floor(Math.random()*19)];
@@ -129,6 +149,8 @@ export class Game {
       }
 
       createMissile(missile_name, x, y) {
+        console.log("Tanks (Inside Create Missile) -->", this.tanks);
+        console.log("Create Missile --->", missile_name, x, y);
         var new_missile = new Missile(missile_name, x, y);
         this.missiles.push(new_missile)
       }
