@@ -108,6 +108,25 @@ deploy-job:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "dev"
 
+deploy-job-new:
+  tags: ["build"]
+  image: $CI_REGISTRY/frobots/builder-main:main
+  stage: deploy
+  variables:
+    POOL_SIZE: 2
+    PORT: 4000
+    GIT_SUBMODULE_STRATEGY: normal
+    
+  before_script:
+    #- (cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*)
+  
+  script:
+    - ./contrib/build_new.sh
+  rules:
+    #- if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "dev"
+  allow_failure: true
+
 server-test:
   image: $CI_REGISTRY/frobots/builder-main:main
   tags: ["prod"]
