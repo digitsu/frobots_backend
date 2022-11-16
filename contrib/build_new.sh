@@ -10,12 +10,14 @@ if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     ip='not a valid branch'
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     ip=240b:10:2f60:18ff:94df:e0ff:fed8:9527
-    bastion=172.104.73.245
+    
 else
     ip='not a valid branch'
 fi
 
 cp ./ssh_config ~/.ssh/config
+cat ~/.ssh/config
+rm /tmp/docker.sock
 
 ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
 
