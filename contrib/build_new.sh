@@ -14,7 +14,7 @@ elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
 else
     ip='not a valid branch'
 fi
-echo "test"
+echo "Building Docker image"
 cp ./ssh_config ~/.ssh/config
 cat ~/.ssh/config
 rm /tmp/docker.sock
