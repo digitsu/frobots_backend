@@ -15,6 +15,7 @@ else
     ip='not a valid branch'
 fi
 echo "Building Docker image"
+mkdir -p ~/.ssh
 cp ./contrib/ssh_config ~/.ssh/config || true
 cat ~/.ssh/config || true
 rm /tmp/docker.sock || true
