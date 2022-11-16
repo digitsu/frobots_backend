@@ -54,12 +54,16 @@ const trophy = {
 // PIXI.Assets.backgroundLoad(['blue1','blue2','blue3','blue4','blue5','blue6','blue7','blue8','blue9','red1','red2','red3','red4','red5','red6','red7','yellow1','yellow2','rabbit']);
 
 export class Game {
-    constructor() {
+    constructor(tank, missiles) {
+        console.log("Constructor Tanks As Params:-", tank);
+        tank = new Array(0);
+        console.log("Constructor Tank As Params:-", tank);
         this.app = new PIXI.Application({ width: 1000,
             height: 1000,
             backgroundColor: 0x00110F });
         this.tanks = [];
-        this.missiles = [];
+        this.missiles = new Array();
+        console.log("Constructor :-", this.tanks);
     }
 
     header() {
@@ -91,7 +95,6 @@ export class Game {
         var { args, event } = payload;
         console.log("Tanks (Inside Event) -->", this.tanks);
         console.log("Argument Received -->", args);
-
 
         // Test Code
         trophy.x = trophy.x + 10

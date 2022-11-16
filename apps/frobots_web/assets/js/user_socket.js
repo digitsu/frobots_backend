@@ -16,8 +16,9 @@ function connectToSocket(match_id) {
   channel.join()
   .receive("ok", resp => { 
     //Create a Pixi Application
-    game = new Game();
-    console.log("GAME IS: ", game)
+    console.log("OLD GAME :- ", game)
+    game = new Game([], []);
+    console.log("NEW GAME :- ", game)
     game.header()
   })
   .receive("error", resp => { console.log("Unable to join", resp) })
