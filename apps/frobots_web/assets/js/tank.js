@@ -1,5 +1,5 @@
 export class Tank {
-    constructor(tank_name, x, y, heading, speed) {
+    constructor(tank_name, x, y, heading, speed, tank_sprite) {
        this.scan = [0, 0];
        this.damage = 0;
        this.speed = speed;
@@ -13,11 +13,13 @@ export class Tank {
        this.fsm_state = null;
        this.fsm_debug = null;
        this.class = null;
+       this.tank_sprite = tank_sprite;
     }
 
     update(x, y, heading, speed) {
         this.loc = [x, y];
         this.speed = speed;
         this.heading = heading;
+        return this;
     }
 }

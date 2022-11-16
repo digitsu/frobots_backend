@@ -22,7 +22,7 @@ defmodule FrobotsWeb.GarageLive.Index do
     ## Request Match & Join Match ID Channel
     assigns = socket.assigns()
     {:ok, match_id} = Simulator.request_match(assigns.simulator)
-    {:noreply, socket |> assign(:match_id, match_id)}
+    {:noreply, socket |> assign(:match_id, match_id) |> push_event(:match, %{id: match_id})}
   end
 
   @impl Phoenix.LiveView
@@ -41,17 +41,12 @@ defmodule FrobotsWeb.GarageLive.Index do
       payout_map: 'd'
     }
 
-    # {:noreply, socket |> push_event(:match, %{id: assigns.match_id})}
-
     ## TODO :: SEND Frobots DATA so the game will be constructed based on that
     case Simulator.start_match(assigns.simulator, match_data) do
       {:ok, frobots_data} ->
-        IO.inspect(frobots_data, label: "Frobots Data")
-
         {:noreply,
          socket
-         |> assign(:frobots_data, frobots_data)
-         |> push_event(:match, %{id: assigns.match_id})}
+         |> assign(:frobots_data, frobots_data)}
 
       {:error, error} ->
         Logger.error("Error in starting the match #{error}")
