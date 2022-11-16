@@ -9,5 +9,6 @@ export class Missile {
 
     update(x, y) {
         this.loc = [x, y];
+        return this;
     }
 }

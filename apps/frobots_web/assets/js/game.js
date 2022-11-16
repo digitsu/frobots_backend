@@ -20,7 +20,7 @@ export class Game {
 
     event(payload) {
         var { args, event } = payload;
-        console.log("Args Received -->", args);
+        console.log("Payload Received -->", payload);
         if (event == "create_tank") {
           var tank_name = args[0];
           var [x, y] = args[1];
@@ -45,16 +45,15 @@ export class Game {
       }
 
       createTank(tank_name, x, y, heading, speed) {
+        // Not sure how to get the tank class here.....
+        var asset = tankHead("TankClass");
+        var tank_sprite = new PIXI.Sprite(PIXI.Texture.from('images/' + asset + '.png'));
+        tank_sprite.x = x;
+        tank_sprite.y = y;
+
         var new_tank = new Tank(tank_name, x, y, heading, speed, tank_sprite);
         this.tanks.push(new_tank);
-
-        // Not sure how to get the tank class here.....
-        var asset = tankHead("TankClass")
-        console.log("Asset :", asset);
         
-        var tank_sprite = new PIXI.Sprite(PIXI.Texture.from('images/' + asset + '.png'));
-        tank_sprite.x = new_tank.loc[0];
-        tank_sprite.y = new_tank.loc[1];
         this.app.stage.addChild(tank_sprite);
       }
   
