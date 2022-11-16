@@ -22,6 +22,8 @@ rm /tmp/docker.sock || true
 
 ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
 
+rm /tmp/.ssh.key || true
+
 docker image build --build-arg SENDGRID_API_KEY  -t elixir/frobots_backend -f ./Dockerfile .
 
 docker stop frobots_backend
