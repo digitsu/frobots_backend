@@ -62,8 +62,6 @@ export class Game {
     event(payload) {
         var { args, event } = payload;
         console.log("PAYLOAD RECEIVED -->", payload);
-
-        // get the create_tank separarted
         if (event == "create_tank") {
           var tank_name = args[0];
           var [x, y] = args[1];
@@ -100,18 +98,12 @@ export class Game {
       }
   
       moveTank(tank_name, x, y, heading, speed) {
-        // var tanks = this.tanks.filter(removeUndefined);
         var tank_index = this.tanks.findIndex(tank => tank && tank.name == tank_name);
-        // console.log("Tank Index :", tank_index)
-        // if (tank_index == -1) {
-        //     console.log("........Error Unable to Find the tank.......")
-        // } else {
         var old_tank = this.tanks[tank_index];
         var new_tank = old_tank.update(x, y, heading, speed);
         this.tanks[tank_index] = new_tank;
         new_tank.tank_sprite.x = x;
-        new_tank.tank_sprite.y = y;``
-        // }
+        new_tank.tank_sprite.y = y;
       }
 
       moveMissile(missile_name, x, y) {
@@ -129,31 +121,8 @@ export class Game {
         var new_missile = new Missile(missile_name, x, y);
         this.missiles.push(new_missile)
       }
-
-      drawObject(asset, x, y) {
-        console.log("DRAW OBJECT :", asset);
-        blue1.anchor.set(0.5);
-        // Set the initial position
-        blue1.x = x;
-        blue1.y = y;
-        this.app.stage.addChild(blue1);
-
-        // PIXI.Assets.load(asset_name).then((texture) => {
-        //     console.log("LOADING......")
-        //     // create a new Sprite from the resolved loaded texture
-        //     const character = new PIXI.Sprite(texture);
-        //     character.anchor.set(0.5);
-        //     character.x = x;
-        //     character.y = y;
-        //     this.app.stage.addChild(character);
-        // });
-      }
 }
 
 function onClick() {
     console.log("Send Cancel Event");
-}
-
-function removeUndefined(object) {
-  return object != undefined;
 }
