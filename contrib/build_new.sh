@@ -17,7 +17,7 @@ fi
 echo "Building Docker image"
 mkdir -p ~/.ssh
 cp ./contrib/ssh_config ~/.ssh/config || true
-cat ~/.ssh/config || true
+
 rm /tmp/docker.sock || true
 
 ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
