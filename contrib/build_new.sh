@@ -29,7 +29,7 @@ docker image build --build-arg SENDGRID_API_KEY  -t elixir/frobots_backend -f ./
 docker stop frobots_backend ||true
 docker stop postgres || true
 docker network create frobots-network ||true
-docker create volume postgres_home ||true
+docker volume create postgres_home ||true
 
 docker container prune --force ||true
 
