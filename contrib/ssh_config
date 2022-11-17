@@ -2,4 +2,4 @@ Host jumphost
     IdentityFile /tmp/.ssh.key
     HostName 172.104.73.245
     User jumper
-    StrictHostKeyChecking no
+    StrictHostKeyChecking accept-new
