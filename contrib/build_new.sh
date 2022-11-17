@@ -38,4 +38,4 @@ docker run --detach --rm --network frobots-network --network-alias postgres-serv
 
 docker run --rm -dp $PORT:$PORT -e SENDGRID_API_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network frobots-network --name frobots_backend elixir/frobots_backend
 
-docker exec frobots_backend bin/frobots_backend eval "FrobotsWeb.Release.migrate"
+docker exec frobots_backend bin/frobots_backend eval "FrobotsWeb.Release.migrate" ||true
