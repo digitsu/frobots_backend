@@ -110,7 +110,7 @@ deploy-job:
     - if: $CI_COMMIT_BRANCH == "dev"
 
 deploy-job-new:
-  tags: ["test"]
+  tags: ["test_docker"]
   image: $CI_REGISTRY/frobots/builder-main:main
   stage: deploy
   variables:

@@ -9,8 +9,8 @@ chmod 0600 /tmp/.ssh.key
 if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     ip='not a valid branch'
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
-    #ip=240b:10:2f60:18ff:94df:e0ff:fed8:9527
-    ip=10.8.8.167
+    ip=240b:10:2f60:18ff:94df:e0ff:fed8:9527
+    #ip=10.8.8.167
     
 else
     ip='not a valid branch'
