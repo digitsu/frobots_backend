@@ -85,7 +85,7 @@ if config_env() == :prod do
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 
   database_url =
-    System.get_env("DATABASE_URL_STAGING") ||
+    System.get_env("DATABASE_URL") ||
       raise("""
       environment variable DATABASE_URL is missing.
       For example: ecto://USER:PASS@HOST/DATABASE
