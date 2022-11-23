@@ -37,7 +37,7 @@ stages:
     GIT_SUBMODULE_STRATEGY: normal
     POSTGRES_HOST: postgres
     POSTGRES_PASSWORD: postgres
-    WEB_NETWORK: web-network
+ 
 
 
 print-vars:
@@ -119,7 +119,7 @@ deploy-job-new:
     POOL_SIZE: 2
     PORT: 4000
     GIT_SUBMODULE_STRATEGY: normal
-    WEB_NETWORK: web-network
+
     
   before_script:
     #- (cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*)
