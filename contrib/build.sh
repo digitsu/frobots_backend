@@ -19,6 +19,6 @@ docker image build --build-arg SENDGRID_API_KEY  -t elixir/frobots_backend -f ./
 
 docker stop frobots_backend
 docker container prune --force
-docker run --rm -dp $PORT:$PORT -e SENDGRID_API_KEY -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network frobots-network --name frobots_backend elixir/frobots_backend
+docker run --rm -dp $PORT:$PORT -e SENDGRID_API_KEY -e POOL_SIZE -e PORT -e DATABASE_URL -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network frobots-network --network $WEB_NETWORK --name frobots_backend elixir/frobots_backend
 
 docker exec frobots_backend bin/frobots_backend eval "FrobotsWeb.Release.migrate"

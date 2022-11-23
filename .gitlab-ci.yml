@@ -37,6 +37,7 @@ stages:
     GIT_SUBMODULE_STRATEGY: normal
     POSTGRES_HOST: postgres
     POSTGRES_PASSWORD: postgres
+    WEB_NETWORK: web-network
 
 
 print-vars:
