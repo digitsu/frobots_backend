@@ -11,7 +11,7 @@ import Config
 # before starting your production server.
 config :frobots_web, FrobotsWeb.Endpoint,
   url: [host: "dev-internal.frobots.io", port: 80],
-  check_origin: ["dev-internal.frobots.io"],
+  check_origin: ["//dev-internal.frobots.io", "//localhost:4000"],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
