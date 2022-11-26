@@ -1,8 +1,8 @@
 defmodule FrobotsWeb.SendgridApi do
   require HTTPoison
 
-  @api_key System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY")
-  @default_base_url "https://api.sendgrid.com"
+  @api_key Application.get_env(:sendgrid, :sendgrid_mailinglist_key)
+  @default_base_url Application.get_env(:sendgrid, :base_url, "")
 
   def get_contacts(base_url \\ @default_base_url, dryrun) do
     headers = [Authorization: "Bearer #{@api_key}", Accept: "Application/json"]

@@ -54,6 +54,17 @@ if config_env() == :prod || config_env() == :staging do
   # configures the dashboard admin password -- make sure to use SSL when we open up the server to public as inputs are exposed in transit via basic_auth
   config :frobots_web, :basic_auth, username: admin_user, password: admin_pass
 
+  sendgrid_mailinglist_key =
+    System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY") ||
+      raise """
+      environment variable SENDGRID_API_KEY is missing.
+      Did you forget to source env vars?
+      """
+
+  config :frobots_web, :sendgrid,
+    sendgrid_mailinglist_key: sendgrid_mailinglist_key,
+    base_url: "https://api.sendgrid.com"
+
   # ## Using releases
   #
   # If you are doing OTP releases, you need to instruct Phoenix
