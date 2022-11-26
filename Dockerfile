@@ -1,21 +1,17 @@
-ARG MIX_ENV="prod"
-
 # build stage
 FROM elixir:alpine AS build
 
+ARG MIX_ENV
+ENV MIX_ENV="${MIX_ENV}"
+
 # install build dependencies
 RUN apk add --no-cache build-base git python3 curl openssh perl
-
 
 # sets work dir
 WORKDIR /app
 
 # install hex + rebar
 RUN mix local.hex --force && mix local.rebar --force
-
-
-ARG MIX_ENV
-ENV MIX_ENV="${MIX_ENV}"
 
 # install mix dependencies
 COPY mix.exs mix.lock ./
@@ -63,9 +59,6 @@ RUN mix release
 FROM alpine AS app
 
 ARG MIX_ENV
-#pass this to the final app binary
-ENV SENDGRID_API_KEY="${SENDGRID_API_KEY}"
-
 
 # install runtime dependencies
 RUN apk add --no-cache libstdc++ openssl ncurses-libs bash
@@ -91,7 +84,7 @@ USER "${USER}"
 
 # copy release executables
 COPY --from=build --chown="${USER}":"${USER}" /app/_build/"${MIX_ENV}"/rel/frobots_backend ./
-COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots/priv/templates /app/_build/prod/lib/frobots/priv/templates/
+COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots/priv/templates /app/_build/"${MIX_ENV}"/lib/frobots/priv/templates/
 
 ENTRYPOINT ["bin/frobots_backend"]
 
