@@ -57,7 +57,9 @@ defmodule FrobotsWeb.MixProject do
       {:ecto_psql_extras, "~> 0.6"},
       {:sobelow, "~> 0.8", only: :dev},
       {:cors_plug, "~> 3.0"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
+      {:phoenix_client, "~> 0.3"}
     ]
   end
 
