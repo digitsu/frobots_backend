@@ -27,6 +27,13 @@ if config_env() == :prod || config_env() == :staging do
       Did you forget to source env vars?
       """
 
+  sendgrid_api_key =
+    System.get_env("SENDGRID_API_KEY") ||
+      raise """
+      environment variable SENDGRID_API_KEY is missing.
+      Did you forget to source env vars?
+      """
+
   config :frobots_web, FrobotsWeb.Endpoint,
     http: [
       # Enable IPv6 and bind on all interfaces.
@@ -41,20 +48,13 @@ if config_env() == :prod || config_env() == :staging do
 
   config :frobots, FrobotsWeb.Mailer,
     adapter: Swoosh.Adapters.Sendgrid,
-    api_key: System.get_env("SENDGRID_API_KEY"),
+    api_key: sendgrid_api_key,
     domain: "frobots.io"
 
   # configures the dashboard admin password -- make sure to use SSL when we open up the server to public as inputs are exposed in transit via basic_auth
   config :frobots_web, :basic_auth, username: admin_user, password: admin_pass
 
-  # config swoosh sendgrid
-  config :swoosh, :api_client, Swoosh.ApiClient.Hackney
 
-  # read api key from env
-  config :frobots, FrobotsWeb.Mailer,
-    adapter: Swoosh.Adapters.Sendgrid,
-    api_key: System.get_env("SENDGRID_API_KEY"),
-    domain: "frobots.io"
 
   # ## Using releases
   #

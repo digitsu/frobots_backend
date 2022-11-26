@@ -59,6 +59,7 @@ RUN mix release
 FROM alpine AS app
 
 ARG MIX_ENV
+ARG SENDGRID_API_KEY
 #pass this to the final app binary
 ENV SENDGRID_API_KEY="${SENDGRID_API_KEY}"
 
