@@ -39,7 +39,7 @@ defmodule FrobotsWeb.Router do
     live "/docs", DocsLive.Index, :index
 
     get "/", PageController, :index
-    get "/home", PageController, :index
+    #get "/home", PageController, :index
     resources "/users", UserController
     resources "/sessions", SessionController, only: [:new, :create, :delete]
   end

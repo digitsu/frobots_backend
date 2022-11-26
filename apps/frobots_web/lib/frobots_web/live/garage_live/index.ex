@@ -1,6 +1,7 @@
 defmodule FrobotsWeb.GarageLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
+  require Logger
 
   alias FrobotsWeb.Simulator
 
