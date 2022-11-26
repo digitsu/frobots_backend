@@ -25,6 +25,17 @@ config :frobots_web, FrobotsWeb.Endpoint,
   live_view: [signing_salt: "WEFJDV5M"],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :tailwind,
+  version: "3.1.6",
+  default: [
+    args: ~w(
+        --config=tailwind.config.js
+        --input=css/app.css
+        --output=../priv/static/assets/app.css
+      ),
+    cd: Path.expand("../apps/frobots_web/assets", __DIR__)
+  ]
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.14.0",
@@ -94,6 +105,11 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :phoenix_client,
+  socket: [
+    url: "ws://localhost:4000/socket/websocket"
+  ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

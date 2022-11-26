@@ -30,8 +30,16 @@ defmodule FrobotsWeb.Router do
   scope "/", FrobotsWeb do
     pipe_through :browser
 
+    # live routes
+    live "/home", HomeLive.Index, :index
+
+    live "/garage", GarageLive.Index, :index
+    live "/teams", TeamLive.Index, :index
+    live "/matches", MatchLive.Index, :index
+    live "/docs", DocsLive.Index, :index
+
     get "/", PageController, :index
-    get "/home", PageController, :index
+    # get "/home", PageController, :index
     resources "/users", UserController
     resources "/sessions", SessionController, only: [:new, :create, :delete]
   end

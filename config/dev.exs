@@ -52,6 +52,9 @@ config :frobots_web, FrobotsWeb.Endpoint,
       ~r"lib/frobots_web/(live|views)/.*(ex)$",
       ~r"lib/frobots_web/templates/.*(eex)$"
     ]
+  ],
+  watchers: [
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # Configure your database
