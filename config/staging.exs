@@ -10,12 +10,12 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :frobots_web, FrobotsWeb.Endpoint,
-  url: [host: "internal.frobots.io", port: 80],
+  url: [host: "dev-internal.frobots.io", port: 80],
   check_origin: ["//localhost"]
 
-# Do not print debug messages in production
-config :logger, level: :info
 
+# Do print debug messages in staging
+config :logger, level: :debug
 
 
 # ## SSL Support

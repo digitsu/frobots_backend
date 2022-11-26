@@ -8,10 +8,11 @@ chmod 0600 /tmp/.ssh.key
 
 if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     ip='not a valid branch'
+    mixenv=prod
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     ip=240b:10:2f60:18ff:94df:e0ff:fed8:9527
     #ip=10.8.8.167
-    
+    mixenv=staging
 else
     ip='not a valid branch'
 fi
@@ -25,7 +26,7 @@ ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/v
 
 rm /tmp/.ssh.key || true
 
-docker image build --build-arg SENDGRID_API_KEY  -t elixir/frobots_backend -f ./Dockerfile .
+docker image build --build-arg SENDGRID_API_KEY --build-arg MIX_ENV=${mixenv} -t elixir/frobots_backend -f ./Dockerfile .
 
 docker stop frobots_backend ||true
 docker stop postgres || true
