@@ -18,7 +18,7 @@ else
 fi
 echo "Building Docker image"
 mkdir -p ~/.ssh
-cp ./contrib/ssh_config ~/.ssh/config || true
+cp $SSH_CONFIG ~/.ssh/config || true
 
 rm /tmp/docker.sock || true
 
