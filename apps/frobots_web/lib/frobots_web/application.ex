@@ -20,7 +20,8 @@ defmodule FrobotsWeb.Application do
          ttl_check_interval: :timer.minutes(1),
          global_ttl: :timer.minutes(10),
          touch_on_read: true
-       ]}
+       ]},
+      FrobotsWeb.RefreshSendgridContacts
     ]
 
     # update all templates from source code

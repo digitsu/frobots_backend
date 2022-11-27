@@ -22,7 +22,19 @@ config :frobots_web, FrobotsWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [view: FrobotsWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Frobots.PubSub,
-  live_view: [signing_salt: "WEFJDV5M"]
+  live_view: [signing_salt: "WEFJDV5M"],
+  cache_static_manifest: "priv/static/cache_manifest.json"
+
+config :tailwind,
+  version: "3.1.6",
+  default: [
+    args: ~w(
+        --config=tailwind.config.js
+        --input=css/app.css
+        --output=../priv/static/assets/app.css
+      ),
+    cd: Path.expand("../apps/frobots_web/assets", __DIR__)
+  ]
 
 # Configure esbuild (the version is required)
 config :esbuild,
@@ -49,15 +61,6 @@ config :frobots, FrobotsWeb.Mailer, adapter: Swoosh.Adapters.Local
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, Swoosh.ApiClient.Hackney
-
-sendgrid_api_key =
-  System.get_env("SENDGRID_API_KEY") || "environment variable SENDGRID_API_KEY is missing"
-
-# this is bad..remove after testing
-config :frobots, FrobotsWeb.Mailer,
-  adapter: Swoosh.Adapters.Sendgrid,
-  api_key: sendgrid_api_key,
-  domain: "frobots.io"
 
 # Sample configuration:
 #
@@ -102,6 +105,11 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :phoenix_client,
+  socket: [
+    url: "ws://localhost:4000/socket/websocket"
+  ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

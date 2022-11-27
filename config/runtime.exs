@@ -1,6 +1,6 @@
 import Config
 
-if config_env() == :prod do
+if config_env() == :prod || config_env() == :staging do
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
   # want to use a different value for prod and you most likely don't want
@@ -27,6 +27,13 @@ if config_env() == :prod do
       Did you forget to source env vars?
       """
 
+  sendgrid_api_key =
+    System.get_env("SENDGRID_API_KEY") ||
+      raise """
+      environment variable SENDGRID_API_KEY is missing.
+      Did you forget to source env vars?
+      """
+
   config :frobots_web, FrobotsWeb.Endpoint,
     http: [
       # Enable IPv6 and bind on all interfaces.
@@ -41,20 +48,22 @@ if config_env() == :prod do
 
   config :frobots, FrobotsWeb.Mailer,
     adapter: Swoosh.Adapters.Sendgrid,
-    api_key: System.get_env("SENDGRID_API_KEY"),
+    api_key: sendgrid_api_key,
     domain: "frobots.io"
 
   # configures the dashboard admin password -- make sure to use SSL when we open up the server to public as inputs are exposed in transit via basic_auth
   config :frobots_web, :basic_auth, username: admin_user, password: admin_pass
 
-  # config swoosh sendgrid
-  config :swoosh, :api_client, Swoosh.ApiClient.Hackney
+  sendgrid_mailinglist_key =
+    System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY") ||
+      raise """
+      environment variable SENDGRID_API_KEY is missing.
+      Did you forget to source env vars?
+      """
 
-  # read api key from env
-  config :frobots, FrobotsWeb.Mailer,
-    adapter: Swoosh.Adapters.Sendgrid,
-    api_key: System.get_env("SENDGRID_API_KEY"),
-    domain: "frobots.io"
+  config :frobots_web, :sendgrid,
+    sendgrid_mailinglist_key: sendgrid_mailinglist_key,
+    base_url: "https://api.sendgrid.com"
 
   # ## Using releases
   #
@@ -86,25 +95,10 @@ if config_env() == :prod do
 
   database_url =
     System.get_env("DATABASE_URL") ||
-      raise """
+      raise("""
       environment variable DATABASE_URL is missing.
       For example: ecto://USER:PASS@HOST/DATABASE
-      """
-
-  maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
-
-  config :frobots, Frobots.Repo,
-    # ssl: true,
-    url: database_url,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
-    socket_options: maybe_ipv6
-
-  database_url =
-    System.get_env("DATABASE_URL") ||
-      raise """
-      environment variable DATABASE_URL is missing.
-      For example: ecto://USER:PASS@HOST/DATABASE
-      """
+      """)
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
 
