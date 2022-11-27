@@ -8,18 +8,24 @@ export class Tank {
        this.loc = [x, y];
        this.id = tank_name;
        this.name = tank_name;
-       this.timer = null;
+       this.timer = undefined;
        this.status = "alive";
-       this.fsm_state = null;
-       this.fsm_debug = null;
-       this.class = null;
+       this.fsm_state = undefined;
+       this.fsm_debug = undefined;
+       this.class = undefined;
        this.tank_sprite = tank_sprite;
+       this.scan_line = undefined;
     }
 
     update(x, y, heading, speed) {
         this.loc = [x, y];
         this.speed = speed;
         this.heading = heading;
+        return this;
+    }
+
+    update_scan(g, g2) {
+        this.scan_line = [g, g2];
         return this;
     }
 }
