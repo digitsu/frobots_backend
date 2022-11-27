@@ -96,7 +96,9 @@ export class Game {
         } else if (event == "fsm_state" || event == "fsm_debug") {
           // console.log("Payload Received -->", payload);
         } else if (event == "game_over") {
-          this.app.destroy;
+          console.log("Game Over")
+
+          this.app.destroy(true);
         } else {
           console.log("Payload Received -->", payload);
         }
@@ -132,12 +134,13 @@ export class Game {
 
       moveMissile(missile_name, x, y) {
         var missile_index = this.missiles.findIndex(missile => missile.name == missile_name);
-        var old_missile = this.missiles[missile_index];
-        var new_missile = old_missile.update(x, y);
-        this.missiles[missile_index] = new_missile;
-
-        new_missile.missile_sprite.x = new_missile.loc[0];
-        new_missile.missile_sprite.y = new_missile.loc[1];
+        if (missile_index > -1) {
+          var old_missile = this.missiles[missile_index];
+          var new_missile = old_missile.update(x, y);
+          new_missile.missile_sprite.x = new_missile.loc[0];
+          new_missile.missile_sprite.y = new_missile.loc[1];
+          this.missiles[missile_index] = new_missile;
+        }
       }
 
       explodeMissile(missile_name) {
