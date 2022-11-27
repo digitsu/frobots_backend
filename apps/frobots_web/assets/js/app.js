@@ -22,6 +22,7 @@ import "./user_socket.js"
 import "phoenix_html"
 // Establish Phoenix Socket and LiveView configuration.
 import {Socket} from "phoenix"
+import {connectToSocket} from "./user_socket"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
@@ -37,8 +38,15 @@ window.addEventListener("phx:page-loading-stop", info => topbar.hide())
 liveSocket.connect()
 
 // expose liveSocket on window for web console debug logs and latency simulation:
-// >> liveSocket.enableDebug()
+liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+window.addEventListener(`phx:match`, (e) => {
+    let match_id = e.detail.id
+    console.log("MAtch ID:" , match_id)
+    if(match_id) {
+      connectToSocket(match_id)
+    }
+})
