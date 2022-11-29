@@ -103,35 +103,11 @@ deploy-job:
   script:
     - echo $SENDGRID_API_KEY
     - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
-    - ./contrib/build.sh
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_COMMIT_BRANCH == "dev"
-
-deploy-job-new:
-  tags: ["test_docker"]
-  image: $CI_REGISTRY/frobots/builder-main:main
-  stage: deploy
-  variables:
-    POOL_SIZE: 2
-    PORT: 4000
-    GIT_SUBMODULE_STRATEGY: normal
-    SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-    SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
-
-    
-  before_script:
-    #- (cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*)
-  
-  script:
-    - echo $SENDGRID_API_KEY
-    - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - ./contrib/build_new.sh
   rules:
-    #- if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "dev"
-  allow_failure: true
 
 server-test:
   image: $CI_REGISTRY/frobots/builder-main:main
