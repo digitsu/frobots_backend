@@ -7,24 +7,21 @@ cp $SSH_KEY /tmp/.ssh.key
 chmod 0600 /tmp/.ssh.key
 
 if [[ $CI_COMMIT_BRANCH == "main" ]]; then
-    ip='not a valid branch'
+    ip=$FROBOTSBACKEND_PROD
     mixenv=prod
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
-    ip=240b:10:2f60:18ff:94df:e0ff:fed8:9527
-    #ip=10.8.8.167
+    ip=$FROBOTSBACKEND_STAGING
     mixenv=staging
 else
     ip='not a valid branch'
 fi
-echo "Building Docker image"
 mkdir -p ~/.ssh
 cp $SSH_CONFIG ~/.ssh/config || true
-
 rm /tmp/docker.sock || true
-
 ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
-
 rm /tmp/.ssh.key || true
+
+echo "Building Docker image"
 
 docker image build --build-arg MIX_ENV=${mixenv} -t elixir/frobots_backend -f ./Dockerfile .
 
