@@ -66,31 +66,28 @@ config :frobots, Frobots.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
+sendgrid_api_key =
+  System.get_env("SENDGRID_API_KEY") ||
+    raise """
+    environment variable SENDGRID_API_KEY is missing.
+    Did you forget to source env vars?
+    """
 
-  sendgrid_api_key =
-    System.get_env("SENDGRID_API_KEY") ||
-        raise """
-        environment variable SENDGRID_API_KEY is missing.
-        Did you forget to source env vars?
-        """
+sendgrid_mailinglist_key =
+  System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY") ||
+    raise """
+    environment variable SENDGRID_API_EXPORT_MAILINGLIST_KEY is missing.
+    Did you forget to source env vars?
+    """
 
-  sendgrid_mailinglist_key =
-      System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY") ||
-        raise """
-        environment variable SENDGRID_API_KEY is missing.
-        Did you forget to source env vars?
-        """
+config :sendgrid,
+  sendgrid_mailinglist_key: sendgrid_mailinglist_key,
+  base_url: "https://api.sendgrid.com"
 
-  config :sendgrid,
-      sendgrid_mailinglist_key: sendgrid_mailinglist_key,
-      base_url: "https://api.sendgrid.com"
-
-
-  config :frobots, FrobotsWeb.Mailer,
-      adapter: Swoosh.Adapters.Sendgrid,
-      api_key: sendgrid_api_key,
-      domain: "frobots.io"
-
+config :frobots, FrobotsWeb.Mailer,
+  adapter: Swoosh.Adapters.Sendgrid,
+  api_key: sendgrid_api_key,
+  domain: "frobots.io"
 
 # print debug messages in dev
 config :logger, level: :debug
