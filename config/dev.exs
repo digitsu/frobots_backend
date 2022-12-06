@@ -66,19 +66,9 @@ config :frobots, Frobots.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-sendgrid_api_key =
-  System.get_env("SENDGRID_API_KEY") ||
-    raise """
-    environment variable SENDGRID_API_KEY is missing.
-    Did you forget to source env vars?
-    """
+sendgrid_api_key = System.get_env("SENDGRID_API_KEY")
 
-sendgrid_mailinglist_key =
-  System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY") ||
-    raise """
-    environment variable SENDGRID_API_EXPORT_MAILINGLIST_KEY is missing.
-    Did you forget to source env vars?
-    """
+sendgrid_mailinglist_key = System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY")
 
 config :sendgrid,
   sendgrid_mailinglist_key: sendgrid_mailinglist_key,
