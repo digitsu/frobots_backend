@@ -52,8 +52,6 @@ lint-job:
   stage: build
   variables:
     MIX_ENV: dev
-    SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-    SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
 
   allow_failure: false
   script:
