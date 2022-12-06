@@ -61,7 +61,7 @@ if config_env() == :prod || config_env() == :staging do
       Did you forget to source env vars?
       """
 
-  config :frobots_web, :sendgrid,
+  config :sendgrid,
     sendgrid_mailinglist_key: sendgrid_mailinglist_key,
     base_url: "https://api.sendgrid.com"
 
