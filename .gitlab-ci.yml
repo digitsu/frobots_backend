@@ -68,6 +68,9 @@ test-job:
   stage: test
   variables: 
     MIX_ENV: test
+    SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+    SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
+
 
   coverage: '/\d+.\d+\%\s+\|\s+Total/'
   script:
