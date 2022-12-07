@@ -21,7 +21,6 @@ config :phoenix_client,
     url: "ws://internal.frobots.io:4000/socket/websocket"
   ]
 
-
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
