@@ -5,7 +5,7 @@ ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
 
 # install build dependencies
-RUN apk add --no-cache build-base git python3 curl openssh perl
+RUN apk add --no-cache build-base git nodejs npm python3 curl openssh perl
 
 # sets work dir
 WORKDIR /app
@@ -22,6 +22,7 @@ COPY config/ config/
 
 # copy the mix configs for the web app
 COPY apps/frobots_web/mix.exs /app/apps/frobots_web/
+COPY apps/frobots_web/assets/package*.json /app/apps/frobots_web/assets/
 
 # copy ALL
 COPY . /app/
@@ -36,6 +37,7 @@ RUN mix deps.get --only $MIX_ENV
 RUN mix deps.compile
 
 WORKDIR /app/apps/frobots_web
+RUN npm i --prefix ./apps/frobots_web/assets
 
 # Compile assets
 #RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
