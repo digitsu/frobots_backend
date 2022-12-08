@@ -11,7 +11,8 @@ import Config
 # before starting your production server.
 config :frobots_web, FrobotsWeb.Endpoint,
   url: [host: "dev-internal.frobots.io", port: 4000],
-  check_origin: ["//localhost", "//dev-internal.frobots.io"]
+  check_origin: ["//localhost", "//dev-internal.frobots.io"],
+  server: true
 
 # Do print debug messages in staging
 config :logger, level: :debug
