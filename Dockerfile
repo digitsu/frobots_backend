@@ -37,7 +37,7 @@ RUN mix deps.get --only $MIX_ENV
 RUN mix deps.compile
 
 WORKDIR /app/apps/frobots_web
-RUN npm i --prefix ./apps/frobots_web/assets
+RUN npm i --prefix ./assets
 
 # Compile assets
 #RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
