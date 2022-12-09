@@ -1,28 +1,8 @@
 import Config
 
-sendgrid_api_key =
-  System.get_env("SENDGRID_API_KEY") ||
-    raise """
-    environment variable SENDGRID_API_KEY is missing.
-    Did you forget to source env vars?
-    """
+sendgrid_api_key = System.get_env("SENDGRID_API_KEY")
 
-config :frobots, FrobotsWeb.Mailer,
-  adapter: Swoosh.Adapters.Sendgrid,
-  api_key: sendgrid_api_key,
-  domain: "frobots.io"
-
-sendgrid_mailinglist_key =
-  System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY") ||
-    raise """
-    environment variable SENDGRID_API_KEY is missing.
-    Did you forget to source env vars?
-    """
-
-config :sendgrid,
-  sendgrid_mailinglist_key: sendgrid_mailinglist_key,
-  base_url: "https://api.sendgrid.com",
-  send_mail: config_env() == :prod
+sendgrid_mailinglist_key = System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY")
 
 if config_env() == :prod || config_env() == :staging do
   # The secret key base is used to sign/encrypt cookies and other secrets.
@@ -63,6 +43,30 @@ if config_env() == :prod || config_env() == :staging do
 
   # configures the dashboard admin password -- make sure to use SSL when we open up the server to public as inputs are exposed in transit via basic_auth
   config :frobots_web, :basic_auth, username: admin_user, password: admin_pass
+
+  sendgrid_api_key =
+    sendgrid_api_key ||
+      raise """
+      environment variable SENDGRID_API_KEY is missing.
+      Did you forget to source env vars?
+      """
+
+  config :frobots, FrobotsWeb.Mailer,
+    adapter: Swoosh.Adapters.Sendgrid,
+    api_key: sendgrid_api_key,
+    domain: "frobots.io"
+
+  sendgrid_mailinglist_key =
+    sendgrid_mailinglist_key ||
+      raise """
+      environment variable SENDGRID_API_KEY is missing.
+      Did you forget to source env vars?
+      """
+
+  config :sendgrid,
+    sendgrid_mailinglist_key: sendgrid_mailinglist_key,
+    base_url: "https://api.sendgrid.com",
+    send_mail: config_env() == :prod
 
   # ## Using releases
   #
