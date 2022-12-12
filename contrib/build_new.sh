@@ -22,11 +22,9 @@ ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/v
 rm /tmp/.ssh.key || true
 
 echo "copy over certs"
-cp $FROBOTS_CERT_KEY /tmp/.FROBOTS_CERT_KEY
-cp $FROBOTS_CERT_PEM /tmp/.FROBOTS_CERT_PEM
 
 echo "Building Docker image"
-docker image build --build-arg MIX_ENV=${mixenv} -t elixir/frobots_backend -f ./Dockerfile .
+docker image build --build-arg MIX_ENV=${mixenv} --build-arg FROBOTS_CERT_KEY=$FROBOTS_CERT_KEY --build-arg FROBOTS_CERT_PEM=$FROBOTS_CERT_PEM -t elixir/frobots_backend -f ./Dockerfile .
 
 docker stop frobots_backend ||true
 docker stop postgres || true
