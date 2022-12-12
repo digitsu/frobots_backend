@@ -10,7 +10,7 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :frobots_web, FrobotsWeb.Endpoint,
-  url: [host: "dev-internal.frobots.io", port: 443],
+  url: [host: "dev-internal.frobots.io", port: 4000],
   check_origin: ["//localhost", "//dev-internal.frobots.io"],
   server: true
 
