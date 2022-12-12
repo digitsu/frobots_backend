@@ -90,17 +90,17 @@ COPY --from=build --chown="${USER}":"${USER}" /app/_build/"${MIX_ENV}"/rel/frobo
 COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots/priv/templates /app/_build/"${MIX_ENV}"/lib/frobots/priv/templates/
 
 # copy the certificate files
-RUN mkdir -p ${HOME}/.ssh
-RUN echo ${HOME}
-ARG FROBOTS_CERT_PEM
-ARG FROBOTS_CERT_KEY
+# RUN mkdir -p ${HOME}/.ssh
+# RUN echo ${HOME}
+# ARG FROBOTS_CERT_PEM
+# ARG FROBOTS_CERT_KEY
 
-RUN echo ${FROBOTS_CERT_KEY} > ${HOME}/.ssh/FROBOTS_CERT_KEY
-RUN echo ${FROBOTS_CERT_PEM} > ${HOME}/.ssh/FROBOTS_CERT_PEM
-RUN chmod 600 ${HOME}/.ssh/FROBOTS_CERT_KEY
+# RUN echo ${FROBOTS_CERT_KEY} > ${HOME}/.ssh/frobots_cert.key
+# RUN echo ${FROBOTS_CERT_PEM} > ${HOME}/.ssh/frobots_cert.pem
+# RUN chmod 600 ${HOME}/.ssh/FROBOTS_CERT_KEY
 
-ENV FROBOTS_SSL_KEY_PATH="${HOME}/.ssh/FROBOTS_CERT_KEY"
-ENV FROBOTS_SSL_CERT_PATH="${HOME}/.ssh/FROBOTS_CERT_PEM"
+ENV FROBOTS_SSL_KEY_PATH="/var/certs/frobots_cert.key"
+ENV FROBOTS_SSL_CERT_PATH="/var/certs/frobots_cert.pem"
 
 ENTRYPOINT ["bin/frobots_backend"]
 
