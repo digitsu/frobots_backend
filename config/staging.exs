@@ -19,7 +19,12 @@ config :logger, level: :debug
 
 config :phoenix_client,
   socket: [
-    url: "ws://dev-internal.frobots.io:4000/socket/websocket"
+    url: "wss://dev-internal.frobots.io/socket/websocket",
+    wss: [
+      cipher_suite: :strong,
+      keyfile: System.get_env("FROBOTS_SSL_KEY_PATH"),
+      certfile: System.get_env("FROBOTS_SSL_CERT_PATH")
+    ]
   ]
 
 # ## SSL Support
