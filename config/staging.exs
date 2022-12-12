@@ -20,6 +20,7 @@ config :frobots_web, FrobotsWeb.Endpoint,
   ],
   server: true
 
+
 # Do print debug messages in staging
 config :logger, level: :debug
 
