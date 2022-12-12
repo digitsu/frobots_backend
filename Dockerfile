@@ -62,6 +62,7 @@ FROM alpine AS app
 
 ARG MIX_ENV
 
+
 # install runtime dependencies
 RUN apk add --no-cache libstdc++ openssl ncurses-libs bash
 
@@ -87,6 +88,13 @@ USER "${USER}"
 # copy release executables
 COPY --from=build --chown="${USER}":"${USER}" /app/_build/"${MIX_ENV}"/rel/frobots_backend ./
 COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots/priv/templates /app/_build/"${MIX_ENV}"/lib/frobots/priv/templates/
+
+# copy the certificate files
+RUN mkdir -p $HOME/.ssh
+RUN cp /tmp/.FROBOTS_CERT_KEY $HOME/.ssh/FROBOTS_CERT_KEY
+RUN cp /tmp/.FROBOTS_CERT_PEM $HOME/.ssh/FROBOTS_CERT_PEM
+ENV FROBOTS_SSL_KEY_PATH="$HOME/.ssh/FROBOTS_CERT_KEY"
+ENV FROBOTS_SSL_CERT_PATH="$HOME/.ssh/FROBOTS_CERT_PEM"
 
 ENTRYPOINT ["bin/frobots_backend"]
 

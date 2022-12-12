@@ -21,8 +21,11 @@ rm /tmp/docker.sock || true
 ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
 rm /tmp/.ssh.key || true
 
-echo "Building Docker image"
+echo "copy over certs"
+cp $FROBOTS_CERT_KEY /tmp/.FROBOTS_CERT_KEY
+cp $FROBOTS_CERT_PEM /tmp/.FROBOTS_CERT_PEM
 
+echo "Building Docker image"
 docker image build --build-arg MIX_ENV=${mixenv} -t elixir/frobots_backend -f ./Dockerfile .
 
 docker stop frobots_backend ||true
