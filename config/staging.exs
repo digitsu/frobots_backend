@@ -10,7 +10,7 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :frobots_web, FrobotsWeb.Endpoint,
-  url: [host: "dev-internal.frobots.io", port: 4000],
+  url: [host: "dev-internal.frobots.io", port: 443],
   check_origin: ["//localhost", "//dev-internal.frobots.io"],
   https: [
     port: 443,
@@ -18,8 +18,7 @@ config :frobots_web, FrobotsWeb.Endpoint,
     keyfile: System.get_env("FROBOTS_SSL_KEY_PATH"),
     certfile: System.get_env("FROBOTS_SSL_CERT_PATH")
   ],
-  server: true,
-  force_ssl: [hsts: true]
+  server: true
 
 # Do print debug messages in staging
 config :logger, level: :debug
