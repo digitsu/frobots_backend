@@ -17,7 +17,7 @@ config :frobots_web, FrobotsWeb.Endpoint,
     cipher_suite: :strong,
     keyfile: System.get_env("FROBOTS_SSL_KEY_PATH"),
     certfile: System.get_env("FROBOTS_SSL_CERT_PATH")
-  ]
+  ],
   server: true,
   force_ssl: [hsts: true]
 
