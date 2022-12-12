@@ -24,10 +24,8 @@ rm /tmp/.ssh.key || true
 echo "copy over certs"
 
 echo "Building Docker image"
-echo $FROBOTS_CERT_PEM
-echo $FROBOTS_CERT_KEY
 
-docker image build --build-arg MIX_ENV=${mixenv} --build-arg FROBOTS_CERT_KEY=$FROBOTS_CERT_KEY --build-arg FROBOTS_CERT_PEM=$FROBOTS_CERT_PEM -t elixir/frobots_backend -f ./Dockerfile .
+docker image build --build-arg MIX_ENV=${mixenv} --build-arg FROBOTS_CERT_KEY --build-arg FROBOTS_CERT_PEM -t elixir/frobots_backend -f ./Dockerfile .
 
 docker stop frobots_backend ||true
 docker stop postgres || true
