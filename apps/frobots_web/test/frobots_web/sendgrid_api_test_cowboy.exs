@@ -44,6 +44,8 @@ defmodule FrobotsWeb.SendgridApiTestCowboy do
   alias FrobotsWeb.SendInvites
   alias Frobots.Accounts
   alias Frobots.Accounts.User
+  alias Swoosh.Email
+  import Swoosh.TestAssertions
 
   setup do
     options = [
@@ -57,29 +59,15 @@ defmodule FrobotsWeb.SendgridApiTestCowboy do
   end
 
   test "get_contacts/1 hits GET /v3/marketing/contacts" do
-    dryrun = true
     test_server_url = "http://localhost:4040"
-
     sendgrid_data = {:ok, ["test1@mail.com", "test2@mail.com"]}
-
-    assert {:ok, body} = FrobotsWeb.SendgridApi.get_contacts(test_server_url, dryrun)
-
+    assert {:ok, body} = FrobotsWeb.SendgridApi.get_contacts(test_server_url)
     assert {:ok, body} == sendgrid_data
   end
 
-  test "system should skip duplicate emails" do
-    dryrun = true
-    emails = ["test1@mail.com", "test2@mail.com", "test1@mail.com"]
-    sendgrid_data = {:ok, emails}
-
-    SendInvites.process_response(sendgrid_data, dryrun)
-
-    user1 = Accounts.get_user_by(username: Enum.at(emails, 0))
-    assert user1.username == Enum.at(emails, 0)
-    user2 = Accounts.get_user_by(username: Enum.at(emails, 1))
-    assert user2.username == Enum.at(emails, 1)
-
-    inserted_users = Accounts.list_users()
-    assert Enum.count(inserted_users) == 2
+  test "given user emails application sends beta invite email" do
+    mail = SendInvites.build_mail("test user1", "test1@mail.com", "1234", "abcd1234")
+    Swoosh.Adapters.Test.deliver(mail, [])
+    assert_email_sent(mail)
   end
 end

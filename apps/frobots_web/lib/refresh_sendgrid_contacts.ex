@@ -20,14 +20,13 @@ defmodule FrobotsWeb.RefreshSendgridContacts do
   end
 
   def refresh_list() do
-    # true -> just a dry run ..emails will not be sent
-    # false -> this is the real thing..emails will be sent
-    SendInvites.launch_beta(false)
+    if Application.get_env(:sendgrid, :send_email) == true do
+      SendInvites.process_mailing_list()
+    end
   end
 
   defp schedule_work() do
-    # change this to reload every 24 hrs..  24 * 24 * 60
-    # every 3 mins
+    # runs every 3 mins
     Process.send_after(self(), :refresh, 180_000)
   end
 end
