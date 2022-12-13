@@ -44,7 +44,6 @@ defmodule FrobotsWeb.SendgridApiTestCowboy do
   alias FrobotsWeb.SendInvites
   alias Frobots.Accounts
   alias Frobots.Accounts.User
-  alias Swoosh.Email
   import Swoosh.TestAssertions
 
   setup do
