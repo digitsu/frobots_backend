@@ -16,10 +16,10 @@ config :frobots_web, FrobotsWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
-config :phoenix_client,
-  socket: [
-    url: "ws://internal.frobots.io:4000/socket/websocket"
-  ]
+# config :phoenix_client,
+#   socket: [
+#     url: "ws://internal.frobots.io:4000/socket/websocket"
+#   ]
 
 # ## SSL Support
 #
