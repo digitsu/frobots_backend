@@ -11,10 +11,21 @@ import Config
 # before starting your production server.
 config :frobots_web, FrobotsWeb.Endpoint,
   url: [host: "dev-internal.frobots.io", port: 80],
-  check_origin: ["//localhost"]
+  check_origin: ["//localhost", "//dev-internal.frobots.io"],
+  server: true
 
 # Do print debug messages in staging
 config :logger, level: :debug
+
+# config :phoenix_client,
+#   socket: [
+#     url: "wss://dev-internal.frobots.io/socket/websocket",
+#     wss: [
+#       cipher_suite: :strong,
+#       keyfile: System.get_env("FROBOTS_SSL_KEY_PATH"),
+#       certfile: System.get_env("FROBOTS_SSL_CERT_PATH")
+#     ]
+#   ]
 
 # ## SSL Support
 #

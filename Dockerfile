@@ -5,7 +5,7 @@ ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
 
 # install build dependencies
-RUN apk add --no-cache build-base git python3 curl openssh perl
+RUN apk add --no-cache build-base git nodejs npm python3 curl openssh perl
 
 # sets work dir
 WORKDIR /app
@@ -22,6 +22,7 @@ COPY config/ config/
 
 # copy the mix configs for the web app
 COPY apps/frobots_web/mix.exs /app/apps/frobots_web/
+COPY apps/frobots_web/assets/package*.json /app/apps/frobots_web/assets/
 
 # copy ALL
 COPY . /app/
@@ -36,6 +37,7 @@ RUN mix deps.get --only $MIX_ENV
 RUN mix deps.compile
 
 WORKDIR /app/apps/frobots_web
+RUN npm i --prefix ./assets
 
 # Compile assets
 #RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
@@ -60,11 +62,12 @@ FROM alpine AS app
 
 ARG MIX_ENV
 
+
 # install runtime dependencies
 RUN apk add --no-cache libstdc++ openssl ncurses-libs bash
 
 ENV USER="elixir"
-
+ENV HOME="/home/${USER}"
 WORKDIR "/home/${USER}/app"
 
 RUN \
@@ -85,6 +88,19 @@ USER "${USER}"
 # copy release executables
 COPY --from=build --chown="${USER}":"${USER}" /app/_build/"${MIX_ENV}"/rel/frobots_backend ./
 COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots/priv/templates /app/_build/"${MIX_ENV}"/lib/frobots/priv/templates/
+
+# copy the certificate files
+# RUN mkdir -p ${HOME}/.ssh
+# RUN echo ${HOME}
+# ARG FROBOTS_CERT_PEM
+# ARG FROBOTS_CERT_KEY
+
+# RUN echo ${FROBOTS_CERT_KEY} > ${HOME}/.ssh/frobots_cert.key
+# RUN echo ${FROBOTS_CERT_PEM} > ${HOME}/.ssh/frobots_cert.pem
+# RUN chmod 600 ${HOME}/.ssh/FROBOTS_CERT_KEY
+
+ENV FROBOTS_SSL_KEY_PATH="/var/certs/frobots_cert.key"
+ENV FROBOTS_SSL_CERT_PATH="/var/certs/frobots_cert.pem"
 
 ENTRYPOINT ["bin/frobots_backend"]
 

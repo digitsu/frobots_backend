@@ -11,10 +11,15 @@ import Config
 # before starting your production server.
 config :frobots_web, FrobotsWeb.Endpoint,
   url: [host: "internal.frobots.io", port: 80],
-  check_origin: ["//localhost"]
+  check_origin: ["//localhost", "//internal.frobots.io"]
 
 # Do not print debug messages in production
 config :logger, level: :info
+
+# config :phoenix_client,
+#   socket: [
+#     url: "ws://internal.frobots.io:4000/socket/websocket"
+#   ]
 
 # ## SSL Support
 #
