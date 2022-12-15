@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "caniuse-lite": "^1.0.30001439",
     "p2": "^0.7.1",
     "phaser": "^3.55.2",
     "phaser-ce": "^2.19.2",
