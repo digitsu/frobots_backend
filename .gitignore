@@ -43,6 +43,3 @@ crash_logs/
 .env
 loadenv.sh
 
-package-lock.json
-package.json
-
