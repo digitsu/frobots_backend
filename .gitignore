@@ -42,3 +42,7 @@ crash_logs/
 # do not keep the env secrets in repo
 .env
 loadenv.sh
+
+package-lock.json
+package.json
+
