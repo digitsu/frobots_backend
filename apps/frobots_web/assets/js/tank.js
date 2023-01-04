@@ -1,6 +1,5 @@
 export class Tank {
     constructor(tank_name, x, y, heading, speed, tank_sprite) {
-       this.scan = [0, 0];
        this.damage = 0;
        this.speed = speed;
        this.heading = heading;

@@ -12,6 +12,9 @@ export class Game {
             backgroundColor: 0x00110F });
         this.tanks = tanks;
         this.missiles = missiles;
+
+        this.stats = new PIXI.Text("P", {font:"50px Arial", fill:"white"});
+        this.app.stage.addChild(this.stats);
     }
 
     header() {
@@ -28,7 +31,6 @@ export class Game {
           var speed = args[3];
           this.createTank(tank_name, x, y, heading, speed);
         } else if (event == "move_tank") {
-
             var tank_name = args[0];
             var [x, y] = args[1];
             var heading = args[2];
@@ -94,14 +96,15 @@ export class Game {
         } else if (event == "damage") {
           // console.log("Payload Received -->", payload);
         } else if (event == "fsm_state" || event == "fsm_debug") {
-          // console.log("Payload Received -->", payload);
+          console.log("Payload Received -->", payload);
         } else if (event == "game_over") {
           console.log("Game Over")
-
           this.app.destroy(true);
         } else {
-          console.log("Payload Received -->", payload);
+          console.log("Unhandled Payload Received -->", payload);
         }
+
+        this.stats.text = this.get_stats(this.tanks);
       }
 
       createTank(tank_name, x, y, heading, speed) {
@@ -172,10 +175,24 @@ export class Game {
         this.missiles.push(new_missile);
         this.app.stage.addChild(missile_sprite);
       }
+
+      get_stats(tanks) {
+        let stats = "";
+        for (let i = 0; i < tanks.length; i++) {
+          stats += get_stat(tanks[i]) + "\n";
+        }
+
+        return stats;
+      }
+
 }
 
 function onClick() {
     console.log("Send Cancel Event");
+}
+
+function get_stat(tank) {
+  return tank.name + " " + " dm: " + tank.damage + " sp: " + tank.speed + " hd: " + tank.heading + " sc: " + tank.scan_line + " st: " + tank.status
 }
 
 function tankHead(tank_class, _name) {
