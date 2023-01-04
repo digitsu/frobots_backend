@@ -13,7 +13,7 @@ export class Game {
         this.tanks = tanks;
         this.missiles = missiles;
 
-        this.stats = new PIXI.Text("P", {font:"50px Arial", fill:"white"});
+        this.stats = new PIXI.Text("", {font:"50px Arial", fill:"white"});
         this.app.stage.addChild(this.stats);
     }
 
@@ -90,13 +90,32 @@ export class Game {
             .moveTo(x, y)
             .lineTo(x3, y3);
         
-          var new_tank = tank.update_scan(g, g2);
+          var new_tank = tank.update_scan(g, g2, deg, res);
           this.tanks[tank_index] = new_tank;
           this.app.stage.addChild(g, g2);
         } else if (event == "damage") {
-          // console.log("Payload Received -->", payload);
-        } else if (event == "fsm_state" || event == "fsm_debug") {
-          console.log("Payload Received -->", payload);
+          var tank_name = args[0];
+          var damage = args[1];
+
+          var tank_index = this.tanks.findIndex(tank => tank && tank.name == tank_name);
+          var old_tank = this.tanks[tank_index];
+          var new_tank = old_tank.update_damage(damage);
+          this.tanks[tank_index] = new_tank;
+        } else if (event == "fsm_state") {
+          var tank_name = args[0];
+          var tank_status = args[1];
+
+          var tank_index = this.tanks.findIndex(tank => tank && tank.name == tank_name);
+          var old_tank = this.tanks[tank_index];
+          var new_tank = old_tank.update_status(tank_status);
+          this.tanks[tank_index] = new_tank;
+        } else if (event == "fsm_debug") {
+          var tank_name = args[0];
+          var fsm_debug = args[1];
+          var tank_index = this.tanks.findIndex(tank => tank && tank.name == tank_name);
+          var old_tank = this.tanks[tank_index];
+          var new_tank = old_tank.update_fsm_debug(fsm_debug);
+          this.tanks[tank_index] = new_tank;
         } else if (event == "game_over") {
           console.log("Game Over")
           this.app.destroy(true);
@@ -192,7 +211,7 @@ function onClick() {
 }
 
 function get_stat(tank) {
-  return tank.name + " " + " dm: " + tank.damage + " sp: " + tank.speed + " hd: " + tank.heading + " sc: " + tank.scan_line + " st: " + tank.status
+  return tank.name + "  " + "  dm:  " + tank.damage + "  sp:  " + tank.speed + "  hd:  " + tank.heading + "  sc:  " + tank.scan + "  st:  " + tank.status + "  debug:  " + tank.debug;
 }
 
 function tankHead(tank_class, _name) {
