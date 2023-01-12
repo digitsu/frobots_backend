@@ -170,7 +170,6 @@ export class Game {
 
         var missile_index = this.missiles.findIndex(missile => missile.name == missile_name);
         if (missile_index > -1) {
-          console.log("Explode..........");
           var old_missile = this.missiles[missile_index];
           old_missile.missile_sprite.x = undefined;
           old_missile.missile_sprite.y = undefined;
