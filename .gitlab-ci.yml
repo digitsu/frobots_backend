@@ -109,7 +109,7 @@ deploy-job:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - ./contrib/build_new.sh
   rules:
-    - if: $DEPLOY == "false"
+    - if: $DOWNSTREAM_DEPLOY == "false"
       when: never
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "dev"
