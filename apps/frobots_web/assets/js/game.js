@@ -7,13 +7,27 @@ import {Missile} from "./missile.js"
 
 export class Game {
     constructor(tanks, missiles) {
-        this.app = new PIXI.Application({ width: 1000,
-            height: 1000,
-            backgroundColor: 0x00110F });
+        this.app = new PIXI.Application({ width: 1000, height: 1000, background: '#000000' });
         this.tanks = tanks;
         this.missiles = missiles;
 
-        this.stats = new PIXI.Text("", {font:"50px Arial", fill:"white"});
+        for (var i=1; i<1000; i=i+10) {
+          var vertical = new PIXI.Graphics()
+          vertical.lineStyle(2, 0x1099bb)
+          vertical.moveTo(i, 0)
+          vertical.lineTo(i, 1000)
+          this.app.stage.addChild(vertical)
+        }
+       
+        for (var i=1; i<1000; i=i+10) {
+          var horizontal = new PIXI.Graphics()
+          horizontal.lineStyle(2, 0x1099bb)
+          horizontal.moveTo(0, i)
+          horizontal.lineTo(1000, i)
+          this.app.stage.addChild(horizontal)
+        }
+
+        this.stats = new PIXI.Text("", {font: "25px Arial", fill: "white"});
         this.app.stage.addChild(this.stats);
     }
 
@@ -185,7 +199,7 @@ export class Game {
       }
 
       createMissile(missile_name, x, y) {
-        var missile_sprite = new PIXI.Sprite(PIXI.Texture.from('images/bomb.png'));
+        var missile_sprite = new PIXI.Sprite(PIXI.Texture.from('images/missile.png'));
         missile_sprite.x = x;
         missile_sprite.y = y;
 
