@@ -27,7 +27,7 @@ export class Game {
           this.app.stage.addChild(horizontal)
         }
 
-        this.stats = new PIXI.Text("", {font: "25px Arial", fill: "white"});
+        this.stats = new PIXI.Text("", {font: "4px Arial", fill: "white"});
         this.app.stage.addChild(this.stats);
     }
 
@@ -213,7 +213,6 @@ export class Game {
         for (let i = 0; i < tanks.length; i++) {
           stats += get_stat(tanks[i]) + "\n";
         }
-
         return stats;
       }
 
@@ -224,7 +223,21 @@ function onClick() {
 }
 
 function get_stat(tank) {
-  return tank.name + "  " + "  dm:  " + tank.damage + "  sp:  " + tank.speed + "  hd:  " + tank.heading + "  sc:  " + tank.scan + "  st:  " + tank.status + "  debug:  " + tank.debug;
+  return pad(tank.name, 15) + "dm: " + pad(tank.damage, 12) + "sp: " + pad(tank.speed, 12) + "hd: " + pad(tank.heading, 12) + "sc: " + pad(tank.scan, 12) + "st: " + pad(tank.status, 20) + "debug: " + tank.debug;
+}
+
+function pad(value, length) {
+  if (typeof value === 'number') {
+    return value.toString().padEnd(length);
+  } else if (typeof value === 'undefined') {
+    return "undefined".padEnd(length);
+  } else if (typeof value === 'string') {
+    return value.padEnd(length);
+  } else if (value == null) {
+    return "undefined".padEnd(length);
+  } else {
+    return value;
+  }
 }
 
 function tankHead(tank_class, _name) {
