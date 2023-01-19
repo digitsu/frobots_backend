@@ -35,7 +35,7 @@ defmodule FrobotsWeb.GarageLive.Index do
     match_data = %{
       commission_rate: 10,
       entry_fee: 100,
-      frobots: [%{name: "sniper"}, %{name: "random"}, %{name: "rabbit"}],
+      frobots: [%{name: "sniper"}, %{name: "dummy"}, %{name: "rabbit"}],
       match_type: :individual,
       max_frobots: 4,
       min_frobots: 2,

@@ -27,7 +27,13 @@ export class Game {
           this.app.stage.addChild(horizontal)
         }
 
-        this.stats = new PIXI.Text("", {font: "4px Arial", fill: "white"});
+        this.stats = new PIXI.Text("", {
+          fontSize: 20,
+          lineHeight: 20,
+          letterSpacing: 0,
+          fill: 0xffffff,
+          align: "left"
+        });
         this.app.stage.addChild(this.stats);
     }
 
@@ -142,7 +148,8 @@ export class Game {
 
       createTank(tank_name, x, y, heading, speed) {
         // Not sure how to get the tank class here.....
-        var asset = tankHead("TankClass");
+        console.log(tank_name);
+        var asset = tankHead(tank_name);
         var tank_sprite = new PIXI.Sprite(PIXI.Texture.from('images/' + asset + '.png'));
         tank_sprite.x = x;
         tank_sprite.y = y;
@@ -223,35 +230,31 @@ function onClick() {
 }
 
 function get_stat(tank) {
-  return pad(tank.name, 15) + "dm: " + pad(tank.damage, 12) + "sp: " + pad(tank.speed, 12) + "hd: " + pad(tank.heading, 12) + "sc: " + pad(tank.scan, 12) + "st: " + pad(tank.status, 20) + "debug: " + tank.debug;
+  var name = tank.name.padEnd(12);
+  var dm = "dm: " + tank.damage;
+  var sp = "sp: " + tank.speed;
+  var hd = "hd: " + tank.heading;
+  var sc = "sc: " + tank.scan;
+  var st = "st: " + tank.status;
+  var debug = "debug: " + tank.debug;
+  return name + dm.padEnd(10) + sp.padEnd(10) + hd.padEnd(10) + sc.padEnd(15) + st.padEnd(17) + debug.padEnd(15);
 }
 
-function pad(value, length) {
-  if (typeof value === 'number') {
-    return value.toString().padEnd(length);
-  } else if (typeof value === 'undefined') {
-    return "undefined".padEnd(length);
-  } else if (typeof value === 'string') {
-    return value.padEnd(length);
-  } else if (value == null) {
-    return "undefined".padEnd(length);
-  } else {
-    return value;
-  }
-}
+function tankHead(tank_name) {
+    console.log("Inside Tank Head", tank_name);
 
-function tankHead(tank_class, _name) {
     var assets = ['blue1','blue2','blue3','blue4','blue5','blue6','blue7','blue8','blue9','red1','red2','red3','red4','red5','red6','red7','yellow1','yellow2','rabbit'];
     var asset = null;
-    if (tank_class ==  "Proto") {
+    if (tank_name.match("sniper") !=  null || tank_name.match("random") !=  null || tank_name.match("rook") !=  null || tank_name.match("tracker") !=  null) {
         asset = assets[Math.floor(Math.random()*7) + 8];
-    } else if (tank_class == "Target") {
-        asset = assets[Math.floor(Math.random()*2) + 15];
+    } else if (tank_name.match("dummy") !=  null || tank_name.match("target") !=  null) {
+        asset = assets[Math.floor(Math.random()*2) + 16];
+    } else if (tank_name.match("rabbit") !=  null) {
+      asset = "rabbit";
     } else {
         asset = assets[Math.floor(Math.random()*9)];
     }
     return asset;
-
 }
 
 function removeExplode(explode_sprite) {

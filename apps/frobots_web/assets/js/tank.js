@@ -1,6 +1,6 @@
 export class Tank {
     constructor(tank_name, x, y, heading, speed, tank_sprite) {
-        this.scan = undefined;
+       this.scan = undefined;
        this.damage = 0;
        this.speed = speed;
        this.heading = heading;
