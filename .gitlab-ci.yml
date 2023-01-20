@@ -76,7 +76,6 @@ test-job:
     #- mix test --color apps/frobots/test/
     #- mix test --color apps/frobots_web/test/
     - mix coveralls --umbrella || true
-    - mix ecto.migrate
     - mix test --color
 
   artifacts:
