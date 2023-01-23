@@ -137,12 +137,27 @@ export class Game {
           var new_tank = old_tank.update_fsm_debug(fsm_debug);
           this.tanks[tank_index] = new_tank;
         } else if (event == "game_over") {
-          console.log("Game Over")
-          this.app.destroy(true);
+          console.log("Game Over", args);
+          let winner = "Winner: ";
+          for (let i = 0; i < args.length; i++) {
+            winner += args[i] + " "
+          }
+          console.log("Winner:", winner);
+          var result = new PIXI.Text(winner, {
+            fontSize: 20,
+            lineHeight: 20,
+            letterSpacing: 0,
+            fill: 0xffffff,
+            align: "center"
+          });
+          result.position.x = 300;
+          result.position.y = 300;
+          this.app.stage.addChild(result);
+          setTimeout(() => { this.app.destroy(true); }, 5000);
+          
         } else {
           console.log("Unhandled Payload Received -->", payload);
         }
-
         this.stats.text = this.get_stats(this.tanks);
       }
 
