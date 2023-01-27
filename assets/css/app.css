@@ -1,5 +1,8 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import "tailwindcss/colors";
 
-
+.bg-login {
+    background-color: #414141;
+}

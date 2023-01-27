@@ -10,7 +10,12 @@ module.exports = {
     '../lib/*_web/**/*.*ex'
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'frobots-grey': '#414141',
+        'frobots-green': '#00FF47'
+      }
+    },
   },
   plugins: [
     require('@tailwindcss/forms'),

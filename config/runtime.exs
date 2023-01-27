@@ -56,10 +56,16 @@ if config_env() == :prod || config_env() == :staging do
     api_key: sendgrid_api_key,
     domain: "frobots.io"
 
+  # can we use both?
+  config :frobots, Frobots.Mailer,
+    adapter: Swoosh.Adapters.Sendgrid,
+    api_key: sendgrid_api_key,
+    domain: "frobots.io"
+
   sendgrid_mailinglist_key =
     sendgrid_mailinglist_key ||
       raise """
-      environment variable SENDGRID_API_KEY is missing.
+      environment variable SENDGRID_API_EXPORT_MAILINGLIST_KEY is missing.
       Did you forget to source env vars?
       """
 

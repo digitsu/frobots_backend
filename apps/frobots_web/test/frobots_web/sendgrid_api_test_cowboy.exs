@@ -7,10 +7,6 @@ defmodule FrobotsWeb.SendgridApiTestRouter do
   plug :fetch_query_params
 
   get "/v3/marketing/contacts" do
-    IO.inspect("inside /v3/marketing/contacts")
-    # dryrun = true
-    # test_server_url = "http://localhost:4040"
-
     # shape of data that comes back from sendgrid
     # remove all other fields except email for brevity
     return_data = ~s'''

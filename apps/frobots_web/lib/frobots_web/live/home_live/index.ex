@@ -1,13 +1,18 @@
 defmodule FrobotsWeb.HomeLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
+  alias Frobots.Accounts
+  alias Frobots.Assets
 
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
+    current_user = Accounts.get_user_by_session_token(session["user_token"])
+    # current_user = Accounts.get_user!(session["user_id"])
     # set required data via assigns
     # for example..fetch leaderboard entries and pass to liveview as follow
-
-    {:ok, socket}
+    # get list of fronots and show
+    frobots = Assets.list_user_frobots(current_user)
+    {:ok, socket |> assign(:frobots, frobots)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -17,13 +22,6 @@ defmodule FrobotsWeb.HomeLive.Index do
   end
 
   defp apply_action(socket, :index, _params) do
-    # entries = Frobots.LeaderBoard.get()
-    # {:ok,socket
-    # |> assign(:entries, entries)
-    # }
-
-    #  socket
-    # |> assign_new(:rider_search, fn -> rider_search end)
     socket
   end
 end

@@ -1,5 +1,8 @@
 import Config
 
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
+
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :frobots_web, FrobotsWeb.Endpoint,
@@ -24,3 +27,9 @@ config :frobots, Frobots.Repo,
 config :pbkdf2_elixir, :rounds, 1
 
 config :fubars, registry_name: :test_match_registry
+
+# swoosh stuff -- needed for testing
+config :frobots, Frobots.Mailer, adapter: Swoosh.Adapters.Local
+
+# Swoosh API client is needed for adapters other than SMTP.
+config :swoosh, :api_client, Swoosh.ApiClient.Hackney

@@ -1,0 +1,43 @@
+<div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-login"
+>
+  <div class="sm:mx-auto sm:w-full sm:max-w-md border-frobots-green">
+    <img class="mx-auto h-12 w-auto" src="https://tailwindui.com/img/logos/workflow-mark-on-white.svg" alt="Workflow">
+    <h2 class="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900">Forgot your password?
+    </h2>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md" >
+    <div class="py-8 px-4 shadow border-frobots-green sm:rounded-lg sm:px-10">
+      <.form let={f} for={:user} action={Routes.user_reset_password_path(@conn, :create)}>
+        <div>
+          <label for="email" class="block text-sm font-medium leading-5 text-gray-700">
+            Email address
+          </label>
+          <div class="mt-1 rounded-md shadow-sm">
+             <%= email_input f, :email ,
+             class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5",
+             required: true  %>
+          </div>
+          <%= error_tag f, :email %>
+        </div>
+
+        <div class="mt-6">
+          <span class="block w-full rounded-md shadow-sm">
+            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700 transition duration-150 ease-in-out">
+              Send instructions to reset password
+            </button>
+          </span>
+        </div>
+       </.form>
+
+      <div class="mt-6">
+        <div class="text-sm leading-5 w-full inline-flex  justify-center">
+          <a href={Routes.user_session_path(@conn, :new)} class="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150">
+            Already have an account? Login
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,20 +1,29 @@
 defmodule FrobotsWeb.Router do
   use FrobotsWeb, :router
+  import FrobotsWeb.UserAuth
 
   pipeline :browser do
     plug :accepts, ["html", "text"]
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, {FrobotsWeb.LayoutView, :root}
-    # include this if you use session
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug FrobotsWeb.Plugs.Locale, "en"
-    plug FrobotsWeb.Auth
+    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+  end
+
+  pipeline :api_authenticated do
+    # guardian functions
+    plug FrobotsWeb.AuthAccessPipeline
+  end
+
+  pipeline :require_authenticated_api do
+    # guardian functions
+    plug :accepts, ~w(html json)
     plug FrobotsWeb.Api.Auth
   end
 
@@ -27,39 +36,16 @@ defmodule FrobotsWeb.Router do
     plug :admin_basic_auth
   end
 
-  scope "/", FrobotsWeb do
-    pipe_through :browser
-
-    # live routes
-    live "/home", HomeLive.Index, :index
-
-    live "/garage", GarageLive.Index, :index
-    live "/teams", TeamLive.Index, :index
-    live "/matches", MatchLive.Index, :index
-    live "/docs", DocsLive.Index, :index
-
-    get "/", PageController, :index
-    get "/oldhome", PageController, :index
-    resources "/users", UserController
-    resources "/sessions", SessionController, only: [:new, :create, :delete]
-  end
-
+  # gen auth will provide authentication services
   scope "/manage", FrobotsWeb do
-    pipe_through [:browser, :authenticate_user]
+    pipe_through [:browser, :require_authenticated_user]
     resources "/frobots", FrobotController
   end
 
   scope "/api/v1", FrobotsWeb, as: :api do
-    pipe_through [:api, :authenticate_api_user]
+    pipe_through [:require_authenticated_api]
     get "/frobots/templates", Api.FrobotController, :templates
     resources "/frobots", Api.FrobotController, except: [:new, :edit]
-    resources "/users", Api.UserController, except: [:new, :edit]
-  end
-
-  # unprotected route to get leaderboard entries
-  scope "/api/v1", FrobotsWeb, as: :api do
-    pipe_through [:api]
-    get "/leaderboard", Api.LeaderboardController, :index
   end
 
   scope "/token", FrobotsWeb, as: :api do
@@ -67,10 +53,12 @@ defmodule FrobotsWeb.Router do
     get "/generate", Api.TokenController, :gen_token
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", FrobotsWeb do
-  #   pipe_through :api
-  # end
+  # unprotected route to get leaderboard entries
+  scope "/api/v1", FrobotsWeb, as: :api do
+    pipe_through [:api]
+    get "/leaderboard", Api.LeaderboardController, :index
+    post "/users/log_in", Api.UserSessionController, :create
+  end
 
   # Enables LiveDashboard only for development
   #
@@ -106,5 +94,50 @@ defmodule FrobotsWeb.Router do
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Authenticed routes
+
+  scope "/", FrobotsWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    # live routes
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", FrobotsWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live "/home", HomeLive.Index, :index
+    live "/garage", GarageLive.Index, :index
+    live "/teams", TeamLive.Index, :index
+    live "/matches", MatchLive.Index, :index
+    live "/docs", DocsLive.Index, :index
+
+    # manage users
+    live "/users", UsersLive.Index, :index
+    live "/users/new", UsersLive.Index, :new
+
+    get "/", PageController, :index
+    get "/oldhome", PageController, :index
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  end
+
+  scope "/", FrobotsWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
   end
 end
