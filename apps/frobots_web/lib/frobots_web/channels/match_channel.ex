@@ -73,13 +73,11 @@ defmodule FrobotsWeb.MatchChannel do
             {:reply, {:ok, frobots_map}, socket}
 
           {:error, error} ->
-            IO.puts(error)
             Logger.error(error)
             {:reply, :error, socket}
         end
 
       {:error, error} ->
-        IO.puts(error)
         Logger.error(error)
         {:reply, :error, socket}
     end
@@ -105,7 +103,6 @@ defmodule FrobotsWeb.MatchChannel do
           x + 1
       end
 
-    IO.puts(~s"assigning match #{match_id}")
     {:reply, {:ok, match_id}, socket}
   end
 

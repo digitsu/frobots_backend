@@ -32,11 +32,16 @@ defmodule FrobotsWeb.Api.Auth do
         assign(conn, :current_user, Accounts.get_user_by(id: user_id))
 
       {:ok, username} when is_binary(username) ->
-        assign(conn, :current_user, Accounts.get_user_by(username: username))
+        assign(conn, :current_user, Accounts.get_user_by(name: username))
 
       # or{:error, :invalid}
       _unauthorized ->
-        assign(conn, :current_user, nil)
+        conn
+        |> put_status(:unauthorized)
+        |> put_view(FrobotsWeb.ErrorView)
+        |> render(:"401")
+        # Stop any downstream transformations.
+        |> halt()
     end
   end
 

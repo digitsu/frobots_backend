@@ -40,4 +40,47 @@ defmodule FrobotsWeb.ConnCase do
     on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
+
+  @doc """
+  Setup helper that registers and logs in users.
+
+      setup :register_and_log_in_user
+
+  It stores an updated connection and a registered user in the
+  test context.
+  """
+  def register_and_log_in_user(%{conn: conn}) do
+    {:ok, user} = Frobots.AccountsFixtures.user_fixture()
+    %{conn: log_in_user(conn, user), user: user}
+  end
+
+  @doc """
+  Logs the given `user` into the `conn`.
+
+  It returns an updated `conn`.
+  """
+  def log_in_user(conn, user) do
+    token = Frobots.Accounts.generate_user_session_token(user)
+
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:user_token, token)
+  end
+
+  def create_user() do
+    {:ok, user} = Frobots.AccountsFixtures.user_fixture()
+    %{user: user}
+  end
+
+  def get_unique_username() do
+    Frobots.AccountsFixtures.unique_user_name()
+  end
+
+  def get_unique_email() do
+    Frobots.AccountsFixtures.unique_user_email()
+  end
+
+  def get_valid_password() do
+    Frobots.AccountsFixtures.valid_user_password()
+  end
 end

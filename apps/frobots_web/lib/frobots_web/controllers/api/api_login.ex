@@ -8,14 +8,12 @@ defmodule FrobotsWeb.Api.Login do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    conn
-    |> get_userpass()
-    |> login_with_userpass()
-    |> case do
-      # we can safely assume that if token is valid, it must have been created by a valid user in the db.
-      {:ok, user} -> assign(conn, :current_user, user)
-      _unauthorized -> assign(conn, :current_user, nil)
-    end
+    user =
+      conn
+      |> get_userpass()
+      |> login_with_userpass()
+
+    assign(conn, :current_user, user)
   end
 
   def login_with_userpass(basic_auth_token) do
@@ -23,7 +21,9 @@ defmodule FrobotsWeb.Api.Login do
       with {:ok, admin_pass} <- Base.decode64(basic_auth_token),
            %{"username" => username, "pass" => pass} <-
              Regex.named_captures(~r/(?<username>.+):(?<pass>.+)/, admin_pass) do
-        Frobots.Accounts.authenticate_by_username_and_pass(username, pass)
+        # change usernamet to email
+        user = Frobots.Accounts.get_user_by(email: username)
+        Frobots.Accounts.get_user_by_email_and_password(user.email, pass)
       end
     end
   end

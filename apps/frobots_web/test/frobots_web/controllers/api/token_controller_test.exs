@@ -16,13 +16,13 @@ defmodule FrobotsWeb.Api.TokenControllerTest do
   describe "generate a token" do
     setup [:basic_auth_login]
 
-    @tag login_as: "admin"
+    @tag login_as: "admin@mail.com"
     test "admin api login", %{conn: conn} do
       conn = get(conn, Routes.api_token_path(conn, :gen_token))
       assert %{"token" => _} = json_response(conn, 200)["data"]
     end
 
-    @tag login_as: "somedude"
+    @tag login_as: "somedude@mail.com"
     test "non-admin login also should work", %{conn: conn} do
       conn = get(conn, Routes.api_token_path(conn, :gen_token))
       assert %{"token" => _} = json_response(conn, 200)["data"]

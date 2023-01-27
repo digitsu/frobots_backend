@@ -23,8 +23,7 @@ defmodule FrobotsWeb do
 
       import Plug.Conn
       import FrobotsWeb.Gettext
-      # new import
-      import FrobotsWeb.Auth, only: [authenticate_user: 2]
+      import FrobotsWeb.Api.Auth, only: [authenticate_api_user: 2, authenticate_api_admin_user: 2]
       alias FrobotsWeb.Router.Helpers, as: Routes
     end
   end
@@ -78,8 +77,6 @@ defmodule FrobotsWeb do
       import Plug.Conn
       import Phoenix.Controller
       import Phoenix.Component
-      # new import
-      import FrobotsWeb.Auth, only: [authenticate_user: 2]
       import FrobotsWeb.Api.Auth, only: [authenticate_api_user: 2, authenticate_api_admin_user: 2]
       import Phoenix.LiveView.Router
     end
@@ -106,6 +103,13 @@ defmodule FrobotsWeb do
       import FrobotsWeb.ErrorHelpers
       import FrobotsWeb.Gettext
       alias FrobotsWeb.Router.Helpers, as: Routes
+
+      # Alias in JS
+      alias Phoenix.LiveView.JS
+
+      # Alias in components
+      alias FrobotsWeb.Components, as: C
+      alias FrobotsWeb.Components.UI
     end
   end
 

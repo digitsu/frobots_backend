@@ -98,22 +98,18 @@ defmodule FrobotsWeb.Simulator do
 
   @impl true
   def handle_info(%Message{event: "arena_event", payload: payload}, state) do
-    IO.inspect(payload, label: "Arena Event")
     ## WE GET THE EVENTS HEREE .......
     maybe_send_to_gui(decode_event(payload))
     {:noreply, state}
   end
 
   @impl true
-  def handle_info(%Message{event: "phx_error", topic: topic}, state) do
-    IO.puts("Error from server: " <> topic)
+  def handle_info(%Message{event: "phx_error", topic: _topic}, state) do
     {:noreply, state}
   end
 
   @impl true
-  def handle_info(msg, state) do
-    IO.puts("Got a message")
-    inspect(msg)
+  def handle_info(_msg, state) do
     {:noreply, state}
   end
 end
