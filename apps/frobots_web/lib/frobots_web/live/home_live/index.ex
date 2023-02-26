@@ -7,12 +7,13 @@ defmodule FrobotsWeb.HomeLive.Index do
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
-    # current_user = Accounts.get_user!(session["user_id"])
-    # set required data via assigns
-    # for example..fetch leaderboard entries and pass to liveview as follow
     # get list of fronots and show
     frobots = Assets.list_user_frobots(current_user)
-    {:ok, socket |> assign(:frobots, frobots)}
+
+    {:ok,
+     socket
+     |> assign(:frobots, frobots)
+     |> assign(:featured_frobots, get_featured_frobots())}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -23,5 +24,32 @@ defmodule FrobotsWeb.HomeLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
+  end
+
+  defp get_featured_frobots() do
+    base_path = Path.join(:code.priv_dir(:frobots_web), "/static/images/")
+
+    [
+      %{
+        "name" => "X-tron",
+        "xp" => "65700 xp",
+        "image_path" => base_path <> "/featured_one.png"
+      },
+      %{
+        "name" => "New Horizon",
+        "xp" => "65700 xp",
+        "image_path" => base_path <> "/featured_two.png"
+      },
+      %{
+        "name" => "Golden Rainbow",
+        "xp" => "65700 xp",
+        "image_path" => base_path <> "/featured_three.png"
+      },
+      %{
+        "name" => "Steel Bully",
+        "xp" => "65700 xp",
+        "image_path" => base_path <> "/featured_four.png"
+      }
+    ]
   end
 end
