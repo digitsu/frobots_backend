@@ -1,9 +1,11 @@
-<div class="body-container">
-    <p> User lands here after logging in. </p>
-
-    <%= for frobot <- @frobots do%>
-        <div> <%= frobot.name %></div>
-    <%end %>
-
-
-</div>
+<section>
+  <div class="flex justify-between items-center my-4 w-90 m-auto">
+    <div class="font-bold text-lg my-4">
+        <h6>Welcome DJC</h6>
+    </div>
+    <div>
+      <p class="font-bold text-xs text-gray-400">QDOS 40000</p>
+    </div>
+  </div>
+  <div id="dashboard-content" phx-hook="DashboardContentHook" phx-update="ignore"></div>
+</section>
