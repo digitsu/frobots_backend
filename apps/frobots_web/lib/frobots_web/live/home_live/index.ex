@@ -13,7 +13,8 @@ defmodule FrobotsWeb.HomeLive.Index do
     {:ok,
      socket
      |> assign(:frobots, frobots)
-     |> assign(:featured_frobots, get_featured_frobots())}
+     |> assign(:featured_frobots, get_featured_frobots())
+     |> assign(:current_user_stats, Assets.get_user_stats(current_user))}
   end
 
   # add additional handle param events as needed to handle button clicks etc
