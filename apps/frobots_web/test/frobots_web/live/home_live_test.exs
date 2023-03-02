@@ -8,7 +8,9 @@ defmodule FrobotsWeb.HomeLiveTest do
 
     test "users can create todos", %{conn: conn} do
       {:ok, _index_live, html} = live(conn, Routes.home_index_path(conn, :index))
-      assert html =~ "User lands here after logging in."
+
+      assert html =~
+               "<div id=\"dashboard-content\" phx-hook=\"DashboardContentHook\" phx-update=\"ignore\"></div>"
     end
   end
 end
