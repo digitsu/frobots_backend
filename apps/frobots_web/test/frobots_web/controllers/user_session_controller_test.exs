@@ -12,9 +12,12 @@ defmodule FrobotsWeb.UserSessionControllerTest do
     test "renders log in page", %{conn: conn} do
       conn = get(conn, Routes.user_session_path(conn, :new))
       response = html_response(conn, 200)
-      assert response =~ "Sign in to your account"
-      assert response =~ "Signup"
-      assert response =~ "Forgot your password?"
+
+      assert response =~
+               "<button type=\"submit\" class=\"w-full flex\n                            justify-center py-2 px-4 border border-transparent\n                            text-sm font-medium rounded-md text-white\n                            bg-frobots-green-bgc hover:bg-frobots-green-dark\n                            focus:outline-none focus:border-indigo-700\n                            focus:ring-indigo active:bg-frobots-green-dark\n                            transition duration-150 ease-in-out\">\n                Login\n              </button>\n"
+
+      assert response =~ "Create an Account"
+      assert response =~ "Forgot your password ?"
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
@@ -74,7 +77,10 @@ defmodule FrobotsWeb.UserSessionControllerTest do
         })
 
       response = html_response(conn, 200)
-      assert response =~ "Sign in to your account"
+
+      assert response =~
+               "<div class=\"mt-6\">\n            <div class=\"mt-1 rounded-md shadow-sm\">\n<input class=\"w-full block bg-frobots-login-in-bgc text-white border\n                border-gray-600 rounded py-3 px-4 leading-tight\n                focus:outline-none focus:bg-frobots-login-in-bgc-light\n                focus:border-green-300\" id=\"user_email\" name=\"user[email]\" placeholder=\"Enter your email\" type=\"email\" value=\"some@username.com\">\n            </div>\n\n          </div>\n\n\n          <div class=\"mt-6\">\n            <div class=\"mt-1 rounded-md shadow-sm\">\n<input class=\"w-full block bg-frobots-login-in-bgc\n                    text-white border border-gray-600 rounded py-3 px-4\n                    leading-tight focus:outline-none\n                    focus:bg-frobots-login-in-bgc-light focus:border-green-300\" id=\"user_password\" name=\"user[password]\" placeholder=\"Enter your\n                    password\" type=\"password\">\n            </div>\n\n          </div>\n\n          <div class=\"mt-6 flex items-center justify-between\">\n            <div class=\"flex items-center\">\n<input name=\"user[persistent_session]\" type=\"hidden\" value=\"false\"><input class=\"form-checkbox\n                        h-4 w-4 text-indigo-600 transition duration-150\n                        ease-in-out\" id=\"user_persistent_session\" name=\"user[persistent_session]\" type=\"checkbox\" value=\"true\">\n<label class=\"ml-2 block text-sm leading-5 text-white\" for=\"user_persistent_session\">Remember me</label>\n            </div>\n\n            <div class=\"text-sm leading-5\">\n              <a href=\"/users/reset_password\" class=\"font-medium text-frobots-green\n                            hover:text-frobots-green-dark focus:outline-none\n                            focus:underline transition ease-in-out\n                            duration-150\">\n                Forgot your password ?\n              </a>\n            </div>\n          </div>\n\n          <div class=\"mt-6\">\n            <span class=\"block w-full rounded-md shadow-sm\">\n              <button type=\"submit\" class=\"w-full flex\n                            justify-center py-2 px-4 border border-transparent\n                            text-sm font-medium rounded-md text-white\n                            bg-frobots-green-bgc hover:bg-frobots-green-dark\n                            focus:outline-none focus:border-indigo-700\n                            focus:ring-indigo active:bg-frobots-green-dark\n                            transition duration-150 ease-in-out\">\n                Login\n              </button>\n            </span>\n          </div>\n\n            <div x-show.transition.opacity=\"fade\" class=\"py-4\">\n              <p class=\"alert alert-danger m-auto\" role=\"alert\">\nInvalid email or password\n              </p>\n            </div>"
+
       assert response =~ "Invalid email or password"
     end
   end
