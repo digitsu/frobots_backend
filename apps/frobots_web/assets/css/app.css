@@ -202,3 +202,8 @@ header section {
 .w-90 {
   width: 90%;
 }
+
+section {
+ background-image: linear-gradient(179.29deg, #000000 0.64%,
+  #161C24 99.44%); 
+}
