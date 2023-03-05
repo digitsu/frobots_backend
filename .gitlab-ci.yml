@@ -45,6 +45,7 @@ print-vars:
     - echo $CI_COMMIT_BRANCH
     - echo $SENDGRID_API_KEY
     - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
+    - echo $GHOST_API_KEY
 
 lint-job:
   tags: ["build"]
@@ -68,6 +69,7 @@ test-job:
     MIX_ENV: test
     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
+    GHOST_API_KEY: ${GHOST_API_KEY}
 
 
   coverage: '/\d+.\d+\%\s+\|\s+Total/'
@@ -99,6 +101,7 @@ deploy-job:
     GIT_SUBMODULE_STRATEGY: normal
     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
+    GHOST_API_KEY: ${GHOST_API_KEY}
     
   before_script:
     #- (cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*)
