@@ -60,7 +60,7 @@ config :frobots_web, FrobotsWeb.Endpoint,
 # Configure your database
 config :frobots, Frobots.Repo,
   username: System.get_env("POSTGRES_USER") || "postgres",
-  password: System.get_env("POSTGRES_PASS") || "Password@123",
+  password: System.get_env("POSTGRES_PASS") || "postgres",
   hostname: System.get_env("POSTGRES_HOST") || "localhost",
   database: System.get_env("POSTGRES_DB") || "frobots_dev",
   show_sensitive_data_on_connection_error: true,

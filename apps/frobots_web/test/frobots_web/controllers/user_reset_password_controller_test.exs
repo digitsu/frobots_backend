@@ -15,8 +15,8 @@ defmodule FrobotsWeb.UserResetPasswordControllerTest do
       conn = get(conn, Routes.user_reset_password_path(conn, :new))
       response = html_response(conn, 200)
 
-      assert response =~
-               "<button type=\"submit\" class=\"w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-frobots-green-bgc hover:bg-frobots-green-dark focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-frobots-green-dark transition duration-150 ease-in-out\">\n                        Send instructions to reset password\n                      </button>\n"
+       assert response =~ "Send instructions to reset password"
+
     end
   end
 

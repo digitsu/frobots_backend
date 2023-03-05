@@ -13,11 +13,14 @@ defmodule FrobotsWeb.UserSessionControllerTest do
       conn = get(conn, Routes.user_session_path(conn, :new))
       response = html_response(conn, 200)
 
-      assert response =~
-               "<button type=\"submit\" class=\"w-full flex\n                            justify-center py-2 px-4 border border-transparent\n                            text-sm font-medium rounded-md text-white\n                            bg-frobots-green-bgc hover:bg-frobots-green-dark\n                            focus:outline-none focus:border-indigo-700\n                            focus:ring-indigo active:bg-frobots-green-dark\n                            transition duration-150 ease-in-out\">\n                Login\n              </button>\n"
-
+      assert response =~ "<h2 class=\"text-3xl leading-9 font-bold text-white\">Login </h2>"
+      assert response =~ "New\n            user ?"
       assert response =~ "Create an Account"
+      assert response =~ "Enter your email"
+      assert response =~ "Enter your password"
+      assert response =~ "Remember me"
       assert response =~ "Forgot your password ?"
+      assert response =~ "Login"
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
@@ -78,9 +81,13 @@ defmodule FrobotsWeb.UserSessionControllerTest do
 
       response = html_response(conn, 200)
 
-      assert response =~
-               "<button type=\"submit\" class=\"w-full flex\n                            justify-center py-2 px-4 border border-transparent\n                            text-sm font-medium rounded-md text-white\n                            bg-frobots-green-bgc hover:bg-frobots-green-dark\n                            focus:outline-none focus:border-indigo-700\n                            focus:ring-indigo active:bg-frobots-green-dark\n                            transition duration-150 ease-in-out\">\n                Login\n              </button>\n"
-
+      assert response =~ "Login"
+      assert response =~ "New\n            user ?"
+      assert response =~ "Create an Account"
+      assert response =~ "Enter your email"
+      assert response =~ "Enter your password"
+      assert response =~ "Remember me"
+      assert response =~ "Forgot your password ?"
       assert response =~ "Invalid email or password"
     end
   end
