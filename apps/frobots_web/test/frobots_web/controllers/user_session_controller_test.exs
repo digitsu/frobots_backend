@@ -12,9 +12,15 @@ defmodule FrobotsWeb.UserSessionControllerTest do
     test "renders log in page", %{conn: conn} do
       conn = get(conn, Routes.user_session_path(conn, :new))
       response = html_response(conn, 200)
-      assert response =~ "Sign in to your account"
-      assert response =~ "Signup"
-      assert response =~ "Forgot your password?"
+
+      assert response =~ "<h2 class=\"text-3xl leading-9 font-bold text-white\">Login </h2>"
+      assert response =~ "New\n            user ?"
+      assert response =~ "Create an Account"
+      assert response =~ "Enter your email"
+      assert response =~ "Enter your password"
+      assert response =~ "Remember me"
+      assert response =~ "Forgot your password ?"
+      assert response =~ "Login"
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
@@ -74,7 +80,14 @@ defmodule FrobotsWeb.UserSessionControllerTest do
         })
 
       response = html_response(conn, 200)
-      assert response =~ "Sign in to your account"
+
+      assert response =~ "Login"
+      assert response =~ "New\n            user ?"
+      assert response =~ "Create an Account"
+      assert response =~ "Enter your email"
+      assert response =~ "Enter your password"
+      assert response =~ "Remember me"
+      assert response =~ "Forgot your password ?"
       assert response =~ "Invalid email or password"
     end
   end
