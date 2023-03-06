@@ -11,10 +11,13 @@ defmodule FrobotsWeb.UserRegistrationControllerTest do
 
       assert response =~ "Register"
       assert response =~ "Enter your email"
+      assert response =~ "Enter your password"
       assert response =~ "Register to Frobots"
 
       assert response =~
                "Already have an account ? Login"
+
+      assert response =~ "Forgot your password?"
     end
 
     test "redirects if already logged in", %{conn: conn} do
