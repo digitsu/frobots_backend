@@ -1,5 +1,7 @@
 import Config
 
+config :frobots_web, :ghost_api_key, System.get_env("GHOST_API_KEY")
+
 sendgrid_api_key = System.get_env("SENDGRID_API_KEY")
 
 sendgrid_mailinglist_key = System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY")
