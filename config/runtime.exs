@@ -7,7 +7,6 @@ ghost_api_key =
     Did you forget to source env vars?
     """
 
-
 config :frobots_web, :ghost_api_key, ghost_api_key
 
 sendgrid_api_key = System.get_env("SENDGRID_API_KEY")
