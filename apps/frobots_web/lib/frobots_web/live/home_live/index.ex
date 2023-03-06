@@ -59,7 +59,9 @@ defmodule FrobotsWeb.HomeLive.Index do
   defp get_blog_posts() do
     ghost_api_key = Application.fetch_env!(:frobots_web, :ghost_api_key)
 
-    case HTTPoison.get("https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}") do
+    url = "https://ghost.fubars.tech/ghost/api/content/posts/?key=" <> ghost_api_key
+
+    case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, data} = Jason.decode(body)
         data["posts"]
