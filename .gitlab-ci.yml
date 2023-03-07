@@ -91,7 +91,7 @@ test-job:
 
 deploy-job:
   tags: ["build"]
-  image: $CI_REGISTRY/frobots/builder-main:main
+  image: $BUILDER_IMAGE
   stage: deploy
   variables:
     POOL_SIZE: 2
@@ -116,7 +116,7 @@ deploy-job:
     - if: $CI_COMMIT_BRANCH == "dev"
 
 server-test:
-  image: $CI_REGISTRY/frobots/builder-main:main
+  image: $BUILDER_IMAGE
   tags: ["prod"]
   stage: smoke
   needs: ["deploy-job"]
