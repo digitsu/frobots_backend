@@ -1,5 +1,5 @@
 # build stage
-FROM elixir:1.14.3-otp-24-slim AS build
+FROM registry.gitlab.com/frobots/builder-main:main AS build
 
 ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
