@@ -91,7 +91,7 @@ test-job:
 
 deploy-job:
   tags: ["build"]
-  image: $BUILDER_IMAGE
+  image: docker:23.0.1
   stage: deploy
   variables:
     POOL_SIZE: 2
