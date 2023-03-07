@@ -1,5 +1,5 @@
 # build stage
-FROM 1.14.3-otp-24-slim AS build
+FROM elixir:1.14.3-otp-24-slim AS build
 
 ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
