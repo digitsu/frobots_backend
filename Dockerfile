@@ -5,7 +5,8 @@ ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
 
 # install build dependencies
-RUN apk add --no-cache build-base git nodejs npm python3 curl openssh perl
+#RUN apk add --no-cache build-base git nodejs npm python3 curl openssh perl
+
 
 # sets work dir
 WORKDIR /app
