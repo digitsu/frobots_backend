@@ -62,10 +62,11 @@ echo "Building Docker image"
 
 docker image build --build-arg MIX_ENV=${mixenv} -t elixir/frobots_backend -f ./Dockerfile .
 
-if [ $? ]; then
-    echo "Failed Docker build"
-    exit 1
-fi
+# if for some reason need to find out if docker exited with something other that goodness?
+# if [ $? ]; then
+#     echo "Failed Docker build"
+#     exit 1
+# fi
 
 docker stop frobots_backend ||true
 docker stop postgres || true
