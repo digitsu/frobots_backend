@@ -1,4 +1,4 @@
-defmodule FrobotsWeb.HomeLiveTest do
+defmodule FrobotsWeb.GarageFrobotsListLive do
   use FrobotsWeb.ConnCase, async: true
   import Phoenix.LiveViewTest
   alias FrobotsWeb.ConnCase
@@ -6,8 +6,8 @@ defmodule FrobotsWeb.HomeLiveTest do
   describe "Index" do
     setup [:create_user, :register_and_log_in_user]
 
-    test "users can create todos", %{conn: conn} do
-      {:ok, _index_live, html} = live(conn, Routes.home_index_path(conn, :index))
+    test "lists all frobots and free slots", %{conn: conn} do
+      {:ok, _index_live, html} = live(conn, Routes.garage_frobotslist(conn, :index))
 
       assert html =~
                "<div id=\"frobots-list\" phx-hook=\"FrobotsListHook\" phx-update=\"ignore\"></div>"
