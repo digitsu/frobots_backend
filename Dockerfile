@@ -38,6 +38,7 @@ RUN mix deps.get --only $MIX_ENV
 RUN mix deps.compile
 
 WORKDIR /app/apps/frobots_web
+RUN alias npm='node --dns-result-order=ipv4first /usr/bin/npm'
 RUN npm i --prefix ./assets
 
 # Compile assets
