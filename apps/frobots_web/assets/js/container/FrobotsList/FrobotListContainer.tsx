@@ -27,7 +27,7 @@ const frobotsList = [
   },
 ]
 export default () => (
-  <Grid container spacing={5}>
+  <Grid container alignItems="center" justifyContent="center" spacing={5}>
     {frobotsList.map((featuredFrobot) => (
       <Grid item md={3}>
         <Card
@@ -39,17 +39,24 @@ export default () => (
         >
           <Box>
             <Box position={'relative'}>
-              <Box component={'img'} src={featuredFrobot.bgUrl}></Box>
               <Box
-                width={240}
-                height={240}
-                top={'calc(50% - 120px)'}
-                left={'calc(50% - 120px)'}
-                zIndex={1}
-                position={'absolute'}
                 component={'img'}
+                src={featuredFrobot.bgUrl}
+                width="100%"
+                height="100%"
+              ></Box>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  p: 5,
+                  transform: 'translate(-50%, -50%)',
+                }}
+                component={'img'}
+                width={'100%'}
                 src={featuredFrobot.src}
-              />
+              ></Box>
             </Box>
             <Box textAlign={'center'} my={2}>
               <Typography fontWeight={'bold'} variant="subtitle1">
@@ -75,6 +82,8 @@ export default () => (
           <Box>
             <Box position={'relative'}>
               <Box
+                width="100%"
+                height="100%"
                 sx={{ filter: 'grayscale(1)' }}
                 component={'img'}
                 src={'/images/createfrobot_bg.png'}
