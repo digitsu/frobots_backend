@@ -26,7 +26,9 @@ ping -c 4 jumphost
 echo "testing ping to ip direct"
 ping -c 4 172.105.215.192
 echo "jumping to" $ip
-ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
+#ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
+
+ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@172.105.215.192 deployer@${ip}
 rm /tmp/.ssh.key || true
 
 echo "copy over certs"
