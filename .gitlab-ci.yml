@@ -90,7 +90,7 @@ test-job:
         - _build/test/lib/fubars/test-junit-report.xml 
 
 deploy-job:
-  tags: ["build", "web", "prod", "linode"]
+  tags: ["build"]
   image: $BUILDER_IMAGE
   stage: deploy
   variables:
