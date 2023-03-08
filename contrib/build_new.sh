@@ -29,7 +29,10 @@ echo "jumping to" $ip
 #ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
 echo "whoami"
 whoami
-ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@172.105.215.192 deployer@${ip}
+#ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@172.105.215.192 deployer@${ip}
+
+ssh -i /tmp/.ssh.key -F ~/.ssh/config -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
+
 rm /tmp/.ssh.key || true
 
 echo "copy over certs"
