@@ -15,9 +15,15 @@ elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
 else
     ip='not a valid branch'
 fi
+echo "making .ssh dir"
 mkdir -p ~/.ssh
-cp $SSH_CONFIG ~/.ssh/config || true
+echo "copying config" $SSH_CONFIG
+cp $SSH_CONFIG ~/.ssh/config 
+echo "removing old socket"
 rm /tmp/docker.sock || true
+echo "test ping jumphost" 
+ping -c 4 jumphost
+echo "jumping to" $ip
 ssh -i /tmp/.ssh.key -f -o StrictHostKeyChecking=no -N -L '/tmp/docker.sock':'/var/run/docker.sock' -J jumper@jumphost deployer@${ip}
 rm /tmp/.ssh.key || true
 
