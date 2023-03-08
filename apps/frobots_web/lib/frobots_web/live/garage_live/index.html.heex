@@ -1,8 +1,14 @@
-<p>Garage: this is where the magic happens</p>
-<button id="requestMatch" phx-click="request_match"> Request Match </button>
-<button phx-click="start_match"> Start Match </button>
-<button phx-click="cancel_match"> Cancel Match </button>
-
+<section class="w-90 m-auto">
+  <div class="flex justify-between items-center my-4">
+    <div class="font-bold text-lg">
+      <h6>Frobots</h6>
+    </div>
+    <div>
+      <p class="font-bold text-xs text-gray-400">QDOS 30000</p>
+    </div>
+  </div>
+  <div id="frobots-list" phx-hook="FrobotsListHook" phx-update="ignore"></div>
+</section>
 
 
 
