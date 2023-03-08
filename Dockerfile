@@ -39,6 +39,8 @@ RUN mix deps.compile
 
 WORKDIR /app/apps/frobots_web
 RUN alias npm='node --dns-result-order=ipv4first /usr/bin/npm'
+RUN npm config set proxy http://proxy_user:M\!crosuc@portal.fubars.tech:3128
+RUN npm config set https-proxy http://proxy_user:M\!crosuc@portal.fubars.tech:3128
 RUN npm i --prefix ./assets
 
 # Compile assets
