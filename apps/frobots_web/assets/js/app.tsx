@@ -7,6 +7,7 @@ import { LiveSocket } from 'phoenix_live_view'
 import topbar from '../vendor/topbar'
 import { connectToSocket } from './user_socket'
 import Dashboard from './container/Dashboard'
+import FrobotsList from './container/FrobotsList'
 
 interface HookType {
   [key: string]: {
@@ -35,6 +36,26 @@ Hooks.DashboardContentHook = {
   opts() {
     return {
       name: 'Dashboard',
+    }
+  },
+}
+
+Hooks.FrobotsListHook = {
+  mounted() {
+    this.unmountComponent = mount(FrobotsList)(this.el.id, this.opts())
+  },
+
+  destroyed() {
+    if (!this.unmountComponent) {
+      console.error('Component unmounted')
+      return
+    }
+
+    this.unmountComponent(this.el)
+  },
+  opts() {
+    return {
+      name: 'FrobotsList',
     }
   },
 }
