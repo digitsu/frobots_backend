@@ -49,7 +49,7 @@ RUN npm i --prefix ./assets
 # Compile assets
 #RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
 #RUN /app/wrapper.pl mix assets.deploy
-RUN yarn config set https-proxy
+RUN yarn config set https-proxy $HTTPS_PROXY
 RUN mix assets.deploy
 
 

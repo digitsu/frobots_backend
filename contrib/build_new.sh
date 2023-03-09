@@ -60,7 +60,7 @@ docker container stop cert_copy ||true
 
 echo "Building Docker image"
 
-docker image build --build-arg MIX_ENV=${mixenv} --build-arg HTTP_PROXY=${HTTP_PROXY} --build-arg HTTPS_PROXY=${HTTPS_PROXY} -t elixir/frobots_backend -f ./Dockerfile .
+docker image build --build-arg MIX_ENV=${mixenv} --build-arg HTTP_PROXY=${SQUID_PROXY} --build-arg HTTPS_PROXY=${SQUID_PROXY} -t elixir/frobots_backend -f ./Dockerfile .
 
 echo "clean up images"
 docker stop frobots_backend || true
