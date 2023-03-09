@@ -1,6 +1,9 @@
 # build stage
 FROM elixir:1.14.3-alpine AS build
 
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
 ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
 
@@ -27,9 +30,6 @@ COPY apps/frobots_web/assets/package*.json /app/apps/frobots_web/assets/
 
 # copy ALL
 COPY . /app/
-#RUN /app/wrapper.pl mix deps.get --only $MIX_ENV
-#RUN /bin/sh -c 'source /app/.env; mix deps.get --only $MIX_ENV'
-#RUN mix deps.get --only $MIX_ENV
 RUN mix deps.get --only $MIX_ENV
 
 # compile dependencies
@@ -38,9 +38,7 @@ RUN mix deps.get --only $MIX_ENV
 RUN mix deps.compile
 
 WORKDIR /app/apps/frobots_web
-RUN alias npm='node --dns-result-order=ipv4first /usr/bin/npm'
-RUN npm config set proxy http://proxy_user:M\!crosuc@portal.fubars.tech:3128
-RUN npm config set https-proxy http://proxy_user:M\!crosuc@portal.fubars.tech:3128
+
 RUN npm i --prefix ./assets
 
 # Compile assets

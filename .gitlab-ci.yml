@@ -100,9 +100,6 @@ deploy-job:
     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
     
-  before_script:
-    #- (cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*)
-  
   script:
     - echo $SENDGRID_API_KEY
     - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
