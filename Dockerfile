@@ -3,6 +3,10 @@ FROM elixir:1.14.3-alpine AS build
 
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
+# mix needs the proxy settings in the ENV, not like npm which has a proxy setting file
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTPS_PROXY
+
 
 ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
