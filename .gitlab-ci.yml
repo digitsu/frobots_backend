@@ -45,6 +45,7 @@ print-vars:
     - echo $CI_COMMIT_BRANCH
     - echo $SENDGRID_API_KEY
     - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
+    - echo $SQUID_PROXY
 
 lint-job:
   tags: ["build"]
