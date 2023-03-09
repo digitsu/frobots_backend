@@ -97,15 +97,6 @@ USER "${USER}"
 COPY --from=build --chown="${USER}":"${USER}" /app/_build/"${MIX_ENV}"/rel/frobots_backend ./
 COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots/priv/templates /app/_build/"${MIX_ENV}"/lib/frobots/priv/templates/
 
-# copy the certificate files
-# RUN mkdir -p ${HOME}/.ssh
-# RUN echo ${HOME}
-# ARG FROBOTS_CERT_PEM
-# ARG FROBOTS_CERT_KEY
-
-# RUN echo ${FROBOTS_CERT_KEY} > ${HOME}/.ssh/frobots_cert.key
-# RUN echo ${FROBOTS_CERT_PEM} > ${HOME}/.ssh/frobots_cert.pem
-# RUN chmod 600 ${HOME}/.ssh/FROBOTS_CERT_KEY
 
 ENV FROBOTS_SSL_KEY_PATH="/var/certs/frobots_cert.key"
 ENV FROBOTS_SSL_CERT_PATH="/var/certs/frobots_cert.pem"
