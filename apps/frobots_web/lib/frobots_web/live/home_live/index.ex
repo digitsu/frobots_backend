@@ -73,7 +73,7 @@ defmodule FrobotsWeb.HomeLive.Index do
         []
     end
   end
-  
+
   def show_global_stats() do
     %{
       "players_online" => 250,
