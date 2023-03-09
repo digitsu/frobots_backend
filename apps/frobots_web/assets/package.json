@@ -1,16 +1,15 @@
 {
-"scripts": {
-  "format": "prettier --write \"./js/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
-},
+  "scripts": {
+    "format": "prettier --write \"./js/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+  },
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@monaco-editor/react": "^4.4.6",
     "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.9",
+    "@reduxjs/toolkit": "^1.9.3",
     "blockly": "^9.1.1",
-    "caniuse-lite": "^1.0.30001439",
-    "canvas": "^2.10.2",
     "p2": "^0.7.1",
     "phaser": "^3.55.2",
     "phaser-ce": "^2.19.2",
@@ -22,7 +21,8 @@
     "prettier": "^2.8.4",
     "react": "^17.0.2",
     "react-blockly": "7.0.0",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-redux": "^8.0.5"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",

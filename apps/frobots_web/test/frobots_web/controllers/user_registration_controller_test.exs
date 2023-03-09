@@ -8,9 +8,16 @@ defmodule FrobotsWeb.UserRegistrationControllerTest do
       {:ok, user} = user_fixture()
       conn = get(conn, Routes.user_registration_path(conn, :new))
       response = html_response(conn, 200)
-      assert response =~ "<h1>Register</h1>"
-      assert response =~ "Log in</a>"
+
       assert response =~ "Register"
+      assert response =~ "Enter your email"
+      assert response =~ "Enter your password"
+      assert response =~ "Register to Frobots"
+
+      assert response =~
+               "Already have an account ? Login"
+
+      assert response =~ "Forgot your password?"
     end
 
     test "redirects if already logged in", %{conn: conn} do
@@ -47,9 +54,9 @@ defmodule FrobotsWeb.UserRegistrationControllerTest do
         })
 
       response = html_response(conn, 200)
-      assert response =~ "<h1>Register</h1>"
-      assert response =~ "must have the @ sign and no spaces"
-      assert response =~ "should be at least 8 character"
+
+      assert response =~
+               "Already have an account ? Login"
     end
   end
 end

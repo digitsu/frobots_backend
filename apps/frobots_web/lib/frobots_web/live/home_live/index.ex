@@ -1,15 +1,17 @@
 defmodule FrobotsWeb.HomeLive.Index do
-  # use Phoenix.LiveView
   use FrobotsWeb, :live_view
   alias Frobots.Accounts
   alias Frobots.Assets
 
   @impl Phoenix.LiveView
+  @spec mount(any, nil | maybe_improper_list | map, map) :: {:ok, map}
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     # get list of frobots and show
 
     IO.inspect(get_blog_posts())
+
+    IO.inspect(show_global_stats())
 
     {:ok,
      socket
@@ -17,6 +19,7 @@ defmodule FrobotsWeb.HomeLive.Index do
      |> assign(:featured_frobots, get_featured_frobots())
      |> assign(:current_user_stats, Assets.get_user_stats(current_user))
      |> assign(:blog_posts, get_blog_posts())}
+     |> assign(:global_stats, show_global_stats())}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -69,5 +72,12 @@ defmodule FrobotsWeb.HomeLive.Index do
       {:error, _error} ->
         []
     end
+  def show_global_stats() do
+    %{
+      "players_online" => 250,
+      "matches_in_progress" => 65,
+      "players_registered" => 1500,
+      "matches_completed" => 376
+    }
   end
 end

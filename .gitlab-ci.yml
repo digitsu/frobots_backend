@@ -29,6 +29,7 @@ stages:
   before_script:
     #- docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - mix local.hex --force
+    #- mix archive.install github hexpm/hex branch latest
     - mix local.rebar --force
     - mix deps.get --only $MIX_ENV
 
@@ -46,6 +47,7 @@ print-vars:
     - echo $SENDGRID_API_KEY
     - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
     - echo $GHOST_API_KEY
+    - echo $SQUID_PROXY
 
 lint-job:
   tags: ["build"]
@@ -93,7 +95,7 @@ test-job:
 
 deploy-job:
   tags: ["build"]
-  image: $CI_REGISTRY/frobots/builder-main:main
+  image: $BUILDER_IMAGE
   stage: deploy
   variables:
     POOL_SIZE: 2
@@ -103,9 +105,6 @@ deploy-job:
     SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
     GHOST_API_KEY: ${GHOST_API_KEY}
     
-  before_script:
-    #- (cd $(mktemp -d) && wget https://download.docker.com/linux/static/stable/x86_64/docker-20.10.9.tgz && tar xvzf * && cp docker/* /usr/local/bin/ && chmod +x /usr/local/bin/*)
-  
   script:
     - echo $SENDGRID_API_KEY
     - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
@@ -120,7 +119,7 @@ deploy-job:
     - if: $CI_COMMIT_BRANCH == "dev"
 
 server-test:
-  image: $CI_REGISTRY/frobots/builder-main:main
+  image: $BUILDER_IMAGE
   tags: ["prod"]
   stage: smoke
   needs: ["deploy-job"]

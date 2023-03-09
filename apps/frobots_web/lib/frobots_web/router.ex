@@ -124,6 +124,9 @@ defmodule FrobotsWeb.Router do
     live "/users", UsersLive.Index, :index
     live "/users/new", UsersLive.Index, :new
 
+    # garrage
+    live "/garage/frobots", GarageFrobotsListLive.Index, :index
+
     get "/", PageController, :index
     get "/oldhome", PageController, :index
     get "/users/settings", UserSettingsController, :edit
