@@ -12,7 +12,7 @@ ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
 
 # install build dependencies
-RUN apk add --no-cache build-base git nodejs npm python3 curl openssh perl
+RUN apk add --no-cache build-base git nodejs npm python3 curl openssh perl yarn
 
 
 # sets work dir
@@ -49,6 +49,7 @@ RUN npm i --prefix ./assets
 # Compile assets
 #RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
 #RUN /app/wrapper.pl mix assets.deploy
+RUN yarn config set https-proxy
 RUN mix assets.deploy
 
 
