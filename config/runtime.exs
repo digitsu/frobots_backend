@@ -1,8 +1,12 @@
 import Config
 
+ghost_api_key = System.get_env("GHOST_API_KEY")
+sendgrid_api_key = System.get_env("SENDGRID_API_KEY")
+sendgrid_mailinglist_key = System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY")
+
 if config_env() == :prod || config_env() == :staging || config_env() == :test do
   ghost_api_key =
-    System.get_env("GHOST_API_KEY") ||
+    ghost_api_key ||
       raise """
       environment variable GHOST_API_KEY is missing.
       Did you forget to source env vars?
@@ -10,10 +14,6 @@ if config_env() == :prod || config_env() == :staging || config_env() == :test do
 
   config :frobots_web, :ghost_api_key, ghost_api_key
 end
-
-sendgrid_api_key = System.get_env("SENDGRID_API_KEY")
-
-sendgrid_mailinglist_key = System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY")
 
 if config_env() == :prod || config_env() == :staging do
   # The secret key base is used to sign/encrypt cookies and other secrets.
