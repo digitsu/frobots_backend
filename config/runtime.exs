@@ -37,7 +37,10 @@ if config_env() == :prod || config_env() == :staging do
       environment variable GHOST_API_KEY is missing.
       Did you forget to source env vars?
       """
-  config :frobots_web, :ghost_blog_url, "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
+
+  config :frobots_web,
+         :ghost_blog_url,
+         "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
 
   config :frobots_web, FrobotsWeb.Endpoint,
     http: [
