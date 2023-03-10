@@ -120,6 +120,9 @@ config :phoenix_client,
     url: "ws://localhost:4000/socket/websocket"
   ]
 
+
+config :frobots_web, env: Mix.env()
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

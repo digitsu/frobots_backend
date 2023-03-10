@@ -9,10 +9,6 @@ defmodule FrobotsWeb.HomeLive.Index do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     # get list of frobots and show
 
-    IO.inspect(get_blog_posts())
-
-    IO.inspect(show_global_stats())
-
     {:ok,
      socket
      |> assign(:frobots, Assets.list_user_frobots(current_user))
@@ -59,17 +55,23 @@ defmodule FrobotsWeb.HomeLive.Index do
     ]
   end
 
-  defp get_blog_posts() do
-    ghost_api_key = Application.fetch_env!(:frobots_web, :ghost_api_key)
-    url = "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
+  def get_blog_posts() do
+    env = Application.get_env(:frobots_web, :env)
 
-    case HTTPoison.get(url) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok, data} = Jason.decode(body)
-        data["posts"]
+    if env == :prod or env == :dev do
+      ghost_api_key = Application.fetch_env!(:frobots_web, :ghost_api_key)
+      url = "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
 
-      {:error, _error} ->
-        []
+      case HTTPoison.get(url) do
+        {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+          {:ok, data} = Jason.decode(body)
+          data["posts"]
+
+        {:error, _error} ->
+          []
+      end
+    else
+      []
     end
   end
 
