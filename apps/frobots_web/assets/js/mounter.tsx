@@ -4,13 +4,16 @@ import React from 'react'
 import { render, unmountComponentAtNode } from 'react-dom'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
+import ThemeConfig from './theme'
 
 export const mount = (Component) => (id: string, opts) => {
   const rootElement = document.getElementById(id)
   render(
     <>
       <Provider store={store}>
-        <Component {...opts} />
+        <ThemeConfig>
+          <Component {...opts} />
+        </ThemeConfig>
       </Provider>
     </>,
     rootElement
