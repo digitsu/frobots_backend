@@ -7,16 +7,14 @@ defmodule FrobotsWeb.HomeLive.Index do
   @spec mount(any, nil | maybe_improper_list | map, map) :: {:ok, map}
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
-    # get list of fronots and show
-    frobots = Assets.list_user_frobots(current_user)
-
-    IO.inspect(show_global_stats())
+    # get list of frobots and show
 
     {:ok,
      socket
-     |> assign(:frobots, frobots)
+     |> assign(:frobots, Assets.list_user_frobots(current_user))
      |> assign(:featured_frobots, get_featured_frobots())
      |> assign(:current_user_stats, Assets.get_user_stats(current_user))
+     |> assign(:blog_posts, get_blog_posts())
      |> assign(:global_stats, show_global_stats())}
   end
 
@@ -55,6 +53,23 @@ defmodule FrobotsWeb.HomeLive.Index do
         "image_path" => base_path <> "/featured_four.png"
       }
     ]
+  end
+
+  def get_blog_posts() do
+    url = Application.fetch_env!(:frobots_web, :ghost_blog_url)
+
+    if String.contains?(url, "localhost") do
+      []
+    else
+      case HTTPoison.get(url) do
+        {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+          {:ok, data} = Jason.decode(body)
+          data["posts"]
+
+        {:error, _error} ->
+          []
+      end
+    end
   end
 
   def show_global_stats() do

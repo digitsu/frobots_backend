@@ -46,6 +46,7 @@ print-vars:
     - echo $CI_COMMIT_BRANCH
     - echo $SENDGRID_API_KEY
     - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
+    - echo $GHOST_API_KEY
     - echo $SQUID_PROXY
 
 lint-job:
@@ -70,6 +71,7 @@ test-job:
     MIX_ENV: test
     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
+    GHOST_API_KEY: ${GHOST_API_KEY}
 
 
   coverage: '/\d+.\d+\%\s+\|\s+Total/'
@@ -101,10 +103,12 @@ deploy-job:
     GIT_SUBMODULE_STRATEGY: normal
     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
+    GHOST_API_KEY: ${GHOST_API_KEY}
     
   script:
     - echo $SENDGRID_API_KEY
     - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
+    - echo $GHOST_API_KEY
     - echo "downstream deploy?"$DOWNSTREAM_DEPLOY
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - ./contrib/build_new.sh
