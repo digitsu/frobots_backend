@@ -56,12 +56,11 @@ defmodule FrobotsWeb.HomeLive.Index do
   end
 
   def get_blog_posts() do
-    env = Application.get_env(:frobots_web, :env)
+    url = Application.fetch_env!(:frobots_web, :ghost_blog_url)
 
-    if env == :prod or env == :dev do
-      ghost_api_key = Application.fetch_env!(:frobots_web, :ghost_api_key)
-      url = "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
-
+    if String.contains?(url, "localhost") do
+      []
+    else
       case HTTPoison.get(url) do
         {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
           {:ok, data} = Jason.decode(body)
@@ -70,8 +69,6 @@ defmodule FrobotsWeb.HomeLive.Index do
         {:error, _error} ->
           []
       end
-    else
-      []
     end
   end
 

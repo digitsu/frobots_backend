@@ -33,3 +33,6 @@ config :frobots, Frobots.Mailer, adapter: Swoosh.Adapters.Local
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, Swoosh.ApiClient.Hackney
+
+
+config :frobots_web, :ghost_blog_url, "http://localhost/blog"
