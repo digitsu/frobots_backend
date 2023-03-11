@@ -12,55 +12,22 @@
   </head>
   <body>
     <header>
-      <section>
-        <a href="/" class="phx-logo">
-          <%= if Accounts.user_is_admin?(@current_user) do %>
-          <img src={Routes.static_path(@conn, "/images/heavy_bot.png")} width="100" height="100" alt="Frobots Admin Logo"/>
-          <% else %>
-          <img src={Routes.static_path(@conn, "/images/frobot_icon.png")} width="100" height="100" alt="Frobots Logo"/>
-          <% end %>
-        </a>
-        <nav role="navigation">
-          <ul>
-            <%= if @current_user do %>
-            <li><%= @current_user.username %></li>
-            <li>
-              <%= link "Log out",
-              to: Routes.session_path(@conn, :delete, @current_user),
-              method: "delete" %>
-            </li>
-              <%= if Accounts.user_is_admin?(@current_user) do %>
-                <li><%= link "Register", to: Routes.user_path(@conn, :new) %></li>
-              <% end %>
-            <% else %>
-            <li><%= link "Log in", to: Routes.session_path(@conn, :new) %></li>
-            <% end %>
-
-            <li>
-              <a href="/home">Home</a>
-            </li>
-            <li>
-              <a href="/oldhome">Old Home</a>
-            </li>
-            <li>
-              <a href="/docs">Docs</a>
-            </li>
-            <li>
-              <a href="/teams">Teams</a>
-            </li>
-            <li>
-              <a href="/matches">Matches</a>
-            </li>
-
-            <li>
-              <a href="/garage">Garage</a>
-            </li>
-
-          </ul>
-        </nav>
-        
-      </section>
+      <%= if @current_user do %>
+          <div class="flex flex-row space-y-3.5 py-4 px-8 items-center justify-between  border-b-2 border-b-gray-800">
+            <p class="w-24 h-8 text-xl font-bold tracking-wider leading-relaxed text-white uppercase"><a href="/home">FROBOTS</a></p>
+            <nav role="navigation">
+              <div class="inline-flex space-x-8 items-center justify-end h-8">
+                <p class="tracking-wider leading-relaxed text-gray-400"><a href="/home">Dashboard</a></p>
+                <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/garage">Garage</a> </p>
+                <p class="tracking-wider leading-relaxed text-gray-400">Arena</p>
+                <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/docs">Docs</a> </p>
+                <p><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></p>
+            </div>
+          </nav>
+          </div>
+      <% end %>
     </header>
+
     <%= @inner_content %>
   </body>
 </html>

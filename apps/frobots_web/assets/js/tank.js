@@ -1,6 +1,6 @@
 export class Tank {
     constructor(tank_name, x, y, heading, speed, tank_sprite) {
-       this.scan = [0, 0];
+       this.scan = undefined;
        this.damage = 0;
        this.speed = speed;
        this.heading = heading;
@@ -10,7 +10,6 @@ export class Tank {
        this.name = tank_name;
        this.timer = undefined;
        this.status = "alive";
-       this.fsm_state = undefined;
        this.fsm_debug = undefined;
        this.class = undefined;
        this.tank_sprite = tank_sprite;
@@ -24,8 +23,24 @@ export class Tank {
         return this;
     }
 
-    update_scan(g, g2) {
+    update_scan(g, g2, deg, res) {
         this.scan_line = [g, g2];
+        this.scan = [deg, res];
+        return this;
+    }
+
+    update_status(status) {
+        this.status = status;
+        return this;
+    }
+
+    update_fsm_debug(fsm_debug) {
+        this.fsm_debug = fsm_debug;
+        return this;
+    }
+
+    update_damage(damage) {
+        this.damage = damage;
         return this;
     }
 }

@@ -39,8 +39,8 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
 
   describe "index" do
     setup [:api_login]
-    @tag login_as: "admin"
-    test "lists all frobots", %{conn: conn} do
+    @tag login_as: "admin@mail.com"
+    test "lists all frobots", %{conn: conn, user: user} do
       conn = get(conn, Routes.api_frobot_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
     end
@@ -48,11 +48,20 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
 
   describe "create frobot" do
     setup [:api_login]
+    @tag login_as: "admin@mail.com"
 
-    @tag login_as: "admin"
-    test "renders frobot when data is valid", %{conn: conn} do
+    test "renders frobot when data is valid", %{conn: conn, user: user, jwt: jwt} do
       conn = post(conn, Routes.api_frobot_path(conn, :create), frobot: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
+
+      # Phoenix rectycle causes conn to be reset a hence current_user wont be available for show action
+      # remedy: setup a new conn obj with required assigns and headers
+      # https://hexdocs.pm/phoenix/Phoenix.ConnTest.html#module-recycling
+
+      conn =
+        build_conn()
+        |> Plug.Conn.assign(:current_user, user)
+        |> Plug.Conn.put_req_header("authorization", "Bearer " <> jwt)
 
       conn = get(conn, Routes.api_frobot_path(conn, :show, id))
 
@@ -65,7 +74,7 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    @tag login_as: "admin"
+    @tag login_as: "admin@mail.com"
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.api_frobot_path(conn, :create), frobot: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
@@ -75,11 +84,21 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
   describe "update frobot" do
     setup [:api_login, :create_frobot]
 
-    @tag login_as: "admin"
-    test "renders frobot when data is valid", %{conn: conn, frobot: %Frobot{id: id} = frobot} do
+    @tag login_as: "admin@mail.com"
+    test "renders frobot when data is valid", %{
+      conn: conn,
+      user: user,
+      jwt: jwt,
+      frobot: %Frobot{id: id} = frobot
+    } do
       conn = put(conn, Routes.api_frobot_path(conn, :update, frobot), frobot: @update_attrs)
 
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
+
+      conn =
+        build_conn()
+        |> Plug.Conn.assign(:current_user, user)
+        |> Plug.Conn.put_req_header("authorization", "Bearer " <> jwt)
 
       conn = get(conn, Routes.api_frobot_path(conn, :show, id))
 
@@ -92,7 +111,7 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    @tag login_as: "admin"
+    @tag login_as: "admin@mail.com"
     test "renders errors when data is invalid", %{conn: conn, frobot: frobot} do
       conn = put(conn, Routes.api_frobot_path(conn, :update, frobot), frobot: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
@@ -102,10 +121,15 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
   describe "delete frobot" do
     setup [:api_login, :create_frobot]
 
-    @tag login_as: "admin"
-    test "deletes chosen frobot", %{conn: conn, frobot: frobot} do
+    @tag login_as: "admin@mail.com"
+    test "deletes chosen frobot", %{conn: conn, user: user, jwt: jwt, frobot: frobot} do
       conn = delete(conn, Routes.api_frobot_path(conn, :delete, frobot))
       assert response(conn, 204)
+
+      conn =
+        build_conn()
+        |> Plug.Conn.assign(:current_user, user)
+        |> Plug.Conn.put_req_header("authorization", "Bearer " <> jwt)
 
       assert_error_sent 404, fn ->
         get(conn, Routes.api_frobot_path(conn, :show, frobot))

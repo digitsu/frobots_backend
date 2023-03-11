@@ -1,0 +1,57 @@
+<div class="w-1/4">
+    <C.flash_component flash={@flash} />
+    <.form let={f} for={@changeset}
+        id="user-form"
+        phx-target={@myself}
+        phx-change="validate"
+        phx-submit="save">
+
+        <div class="my-2">
+            <%= label f, :name, class: "block text-sm font-medium leading-5 text-gray-700" do %>
+            Enter Name.
+            <% end %>
+            <div class="mt-1 rounded-md shadow-sm">
+                <%= text_input f, :name, [class: "block w-full px-3 py-2 placeholder-gray-400 transition duration-150 ease-in-out border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5"] %>
+            </div>
+            <div class="p-2">
+                <%= error_tag f, :name %>
+            </div>
+        </div>
+
+        <div class="mt-2 py-2 ">
+            <%= label f, :email, class: "block text-sm font-medium leading-5 text-gray-700" do %>
+                Enter email
+            <% end %>
+            <div class="mt-1 rounded-md shadow-sm">
+                <%= text_input f, :email,
+                [class: "block w-full px-3 py-2 placeholder-gray-400 transition duration-150 ease-in-out border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5",
+                placeholder: "jon@mail.com"] %>
+            </div>
+            <div class="p-2">
+                <%= error_tag f, :email %>
+            </div>
+        </div>
+
+        <div class="mt-2 py-2 ">
+            <%= label f, :password, class: "block text-sm font-medium leading-5 text-gray-700" do %>
+                Enter password
+            <% end %>
+            <div class="mt-1 rounded-md shadow-sm">
+                <%= password_input f, :password,
+                [class: "block w-full px-3 py-2 placeholder-gray-400 transition duration-150 ease-in-out border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5",
+                placeholder: "******"] %>
+
+            </div>
+            <div class="p-2">
+                <%= error_tag f, :password %>
+            </div>
+        </div>
+
+        <div class="py-2 flex justify-end">
+            <C.button type="submit"
+                phx-disable-with="Saving...">
+                Save
+            </C.button>
+        </div>
+    </.form>
+</div>

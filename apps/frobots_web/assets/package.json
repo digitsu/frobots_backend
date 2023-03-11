@@ -1,6 +1,17 @@
 {
+  "scripts": {
+    "format": "prettier --write \"./js/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+  },
   "dependencies": {
-    "caniuse-lite": "^1.0.30001439",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@monaco-editor/react": "^4.4.6",
+    "@mui/icons-material": "^5.11.9",
+    "@mui/material": "^5.11.9",
+    "@mui/styles": "^5.11.12",
+    "@reduxjs/toolkit": "^1.9.3",
+    "blockly": "^9.1.1",
+    "lodash": "^4.17.21",
     "p2": "^0.7.1",
     "phaser": "^3.55.2",
     "phaser-ce": "^2.19.2",
@@ -8,6 +19,16 @@
     "phoenix_html": "file:../../../deps/phoenix_html",
     "phoenix_live_view": "file:../../../deps/phoenix_live_view",
     "pixi": "^0.3.1",
-    "pixi.js": "^7.0.3"
+    "pixi.js": "^7.0.3",
+    "prettier": "^2.8.4",
+    "react": "^17.0.2",
+    "react-blockly": "7.0.0",
+    "react-dom": "^17.0.2",
+    "react-redux": "^8.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "@types/react": "^17.0.52",
+    "@types/react-dom": "^17.0.18"
   }
 }

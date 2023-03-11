@@ -41,7 +41,7 @@ config :esbuild,
   version: "0.14.0",
   default: [
     args:
-      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+      ~w(js/app.tsx --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../apps/frobots_web/assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
@@ -57,10 +57,19 @@ config :frobots,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :frobots, FrobotsWeb.Mailer, adapter: Swoosh.Adapters.Local
+config :frobots, Frobots.Mailer, adapter: Swoosh.Adapters.Local
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, Swoosh.ApiClient.Hackney
+
+config :frobots, FrobotsWeb.Guardian,
+  issuer: "frobots",
+  secret_key: "BY8grm00++tVtByLhHG15he/3GlUG0rOSLmP2/2cbIRwdR4xJk1RHvqGHPFuNcF8",
+  ttl: {3, :days}
+
+config :frobots, FrobotsWeb.AuthAccessPipeline,
+  module: FrobotsWeb.Guardian,
+  error_handler: FrobotsWeb.AuthErrorHandler
 
 # Sample configuration:
 #
@@ -110,6 +119,8 @@ config :phoenix_client,
   socket: [
     url: "ws://localhost:4000/socket/websocket"
   ]
+
+config :frobots_web, env: Mix.env()
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

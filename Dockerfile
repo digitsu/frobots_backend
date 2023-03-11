@@ -1,11 +1,19 @@
 # build stage
-FROM elixir:alpine AS build
+FROM elixir:1.13.4-alpine AS build
+
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+# mix needs the proxy settings in the ENV, not like npm which has a proxy setting file
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTPS_PROXY
+
 
 ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
 
 # install build dependencies
-RUN apk add --no-cache build-base git nodejs npm python3 curl openssh perl
+RUN apk add --no-cache build-base git nodejs npm python3 curl openssh perl yarn
+
 
 # sets work dir
 WORKDIR /app
@@ -26,9 +34,6 @@ COPY apps/frobots_web/assets/package*.json /app/apps/frobots_web/assets/
 
 # copy ALL
 COPY . /app/
-#RUN /app/wrapper.pl mix deps.get --only $MIX_ENV
-#RUN /bin/sh -c 'source /app/.env; mix deps.get --only $MIX_ENV'
-#RUN mix deps.get --only $MIX_ENV
 RUN mix deps.get --only $MIX_ENV
 
 # compile dependencies
@@ -37,11 +42,14 @@ RUN mix deps.get --only $MIX_ENV
 RUN mix deps.compile
 
 WORKDIR /app/apps/frobots_web
+RUN npm config set proxy $HTTP_PROXY
+RUN npm config set https-proxy $HTTPS_PROXY
 RUN npm i --prefix ./assets
 
 # Compile assets
 #RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
 #RUN /app/wrapper.pl mix assets.deploy
+RUN yarn config set https-proxy $HTTPS_PROXY
 RUN mix assets.deploy
 
 
@@ -89,15 +97,6 @@ USER "${USER}"
 COPY --from=build --chown="${USER}":"${USER}" /app/_build/"${MIX_ENV}"/rel/frobots_backend ./
 COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots/priv/templates /app/_build/"${MIX_ENV}"/lib/frobots/priv/templates/
 
-# copy the certificate files
-# RUN mkdir -p ${HOME}/.ssh
-# RUN echo ${HOME}
-# ARG FROBOTS_CERT_PEM
-# ARG FROBOTS_CERT_KEY
-
-# RUN echo ${FROBOTS_CERT_KEY} > ${HOME}/.ssh/frobots_cert.key
-# RUN echo ${FROBOTS_CERT_PEM} > ${HOME}/.ssh/frobots_cert.pem
-# RUN chmod 600 ${HOME}/.ssh/FROBOTS_CERT_KEY
 
 ENV FROBOTS_SSL_KEY_PATH="/var/certs/frobots_cert.key"
 ENV FROBOTS_SSL_CERT_PATH="/var/certs/frobots_cert.pem"

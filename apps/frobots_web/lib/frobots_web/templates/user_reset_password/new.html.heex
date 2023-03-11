@@ -1,0 +1,33 @@
+
+  <section class="auth-background-gradient">
+  <div class="flex items-center justify-center flex-col md:flex-row h-screen items-center">
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div
+      class="py-8 px-4 shadow border-frobots-green sm:rounded-lg sm:px-10" >
+        <.form let={f} for={:user} action={Routes.user_reset_password_path(@conn, :create)}>
+            <div>
+                  <div class="sm:mx-auto sm:w-full sm:max-w-md ">
+                      <h2 class="py-8 text-center text-3xl leading-9 font-bold text-white">Forgot your password ? </h2>
+                  </div>
+        
+                  <div class="mt-1 rounded-md shadow-sm">
+                    <%= email_input f, :email , placeholder: "Enter your email", class: "w-full block bg-frobots-login-in-bgc text-white border border-gray-600 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-frobots-login-in-bgc-light focus:border-green-300",
+                    required: true  %>
+                  </div>
+                <%= error_tag f, :email %>
+             </div>
+
+              <div class="mt-6">
+                    <span class="block w-full rounded-md shadow-sm">
+                      <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-frobots-green-bgc hover:bg-frobots-green-dark focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-frobots-green-dark transition duration-150 ease-in-out">
+                        Send instructions to reset password
+                      </button>
+                    </span>
+              </div>
+        </.form>
+    
+      </div>
+  </div>
+</div>
+</section>

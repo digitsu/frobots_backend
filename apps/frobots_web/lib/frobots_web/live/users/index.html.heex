@@ -1,0 +1,48 @@
+<%= if @live_action in [:new, :edit] do %>
+ <UI.modal show id={:edit} return_to={Routes.users_index_path(@socket, :index)} >
+    <:title><%= Atom.to_string(@live_action) |> String.capitalize() %> User </:title>
+    <.live_component
+      module={FrobotsWeb.UsersLive.FormComponent}
+      id="1-sdsdv"
+      action={@live_action}
+      user={@user}
+      return_to={Routes.users_index_path(@socket, :index)}/>
+  </UI.modal>
+<% end %>
+
+<div class="m-auto flex flex-row space-between px-4 py-3 border-b-2 border-gray-200 body-container">
+    <div class="flex-1">
+        <p class="text-lg font-bold text-gray-700">
+            Users
+        </p>
+    </div>
+
+    <div id="new_user_btn">
+        <C.button patch_to={Routes.users_index_path(@socket, :new)} class="ml-2" %>
+            New User
+        </C.button>
+    </div>
+</div>
+
+<div class="body-container mt-5">
+    <table class="text-left mt-4 w-full">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 bg-gray-100 font-bold uppercase text-md text-grey-dark border-b">User Name</th>
+                <th class="py-2 px-4 bg-gray-100 font-bold uppercase text-md text-grey-dark border-b">Email</th>
+                <th class="py-2 px-4 bg-gray-100 font-bold uppercase text-md text-grey-dark border-b"></th>
+
+            </tr>
+        </thead>
+        <tbody>
+        <%= for user <- @users do %>
+            <tr class="hover:bg-grey-lighter">
+                <td class="py-2 px-4 border-b border-grey-light"> <%= user.name %>  </td>
+                <td class="py-2 px-6 border-b border-grey-light"> <%= user.email %></td>
+
+
+            </tr>
+        <% end %>
+        </tbody>
+    </table>
+</div>

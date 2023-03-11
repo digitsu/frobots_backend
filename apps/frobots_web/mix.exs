@@ -59,7 +59,9 @@ defmodule FrobotsWeb.MixProject do
       {:cors_plug, "~> 3.0"},
       {:httpoison, "~> 1.8"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
-      {:phoenix_client, "~> 0.3"}
+      {:phoenix_client, "~> 0.3"},
+      {:guardian, "~> 2.3"},
+      {:heroicons, "~> 0.3.0"}
     ]
   end
 

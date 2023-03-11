@@ -1,13 +1,21 @@
 defmodule FrobotsWeb.HomeLive.Index do
-  # use Phoenix.LiveView
   use FrobotsWeb, :live_view
+  alias Frobots.Accounts
+  alias Frobots.Assets
 
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
-    # set required data via assigns
-    # for example..fetch leaderboard entries and pass to liveview as follow
+  @spec mount(any, nil | maybe_improper_list | map, map) :: {:ok, map}
+  def mount(_params, session, socket) do
+    current_user = Accounts.get_user_by_session_token(session["user_token"])
+    # get list of frobots and show
 
-    {:ok, socket}
+    {:ok,
+     socket
+     |> assign(:frobots, Assets.list_user_frobots(current_user))
+     |> assign(:featured_frobots, get_featured_frobots())
+     |> assign(:current_user_stats, Assets.get_user_stats(current_user))
+     |> assign(:blog_posts, get_blog_posts())
+     |> assign(:global_stats, show_global_stats())}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -17,13 +25,59 @@ defmodule FrobotsWeb.HomeLive.Index do
   end
 
   defp apply_action(socket, :index, _params) do
-    # entries = Frobots.LeaderBoard.get()
-    # {:ok,socket
-    # |> assign(:entries, entries)
-    # }
-
-    #  socket
-    # |> assign_new(:rider_search, fn -> rider_search end)
     socket
+  end
+
+  defp get_featured_frobots() do
+    base_path = Path.join(:code.priv_dir(:frobots_web), "/static/images/")
+
+    [
+      %{
+        "name" => "X-tron",
+        "xp" => "65700 xp",
+        "image_path" => base_path <> "/featured_one.png"
+      },
+      %{
+        "name" => "New Horizon",
+        "xp" => "65700 xp",
+        "image_path" => base_path <> "/featured_two.png"
+      },
+      %{
+        "name" => "Golden Rainbow",
+        "xp" => "65700 xp",
+        "image_path" => base_path <> "/featured_three.png"
+      },
+      %{
+        "name" => "Steel Bully",
+        "xp" => "65700 xp",
+        "image_path" => base_path <> "/featured_four.png"
+      }
+    ]
+  end
+
+  def get_blog_posts() do
+    url = Application.fetch_env!(:frobots_web, :ghost_blog_url)
+
+    if String.contains?(url, "localhost") do
+      []
+    else
+      case HTTPoison.get(url) do
+        {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+          {:ok, data} = Jason.decode(body)
+          data["posts"]
+
+        {:error, _error} ->
+          []
+      end
+    end
+  end
+
+  def show_global_stats() do
+    %{
+      "players_online" => 250,
+      "matches_in_progress" => 65,
+      "players_registered" => 1500,
+      "matches_completed" => 376
+    }
   end
 end

@@ -7,11 +7,34 @@ import {Missile} from "./missile.js"
 
 export class Game {
     constructor(tanks, missiles) {
-        this.app = new PIXI.Application({ width: 1000,
-            height: 1000,
-            backgroundColor: 0x00110F });
+        this.app = new PIXI.Application({ width: 1000, height: 1000, background: '#000000' });
         this.tanks = tanks;
         this.missiles = missiles;
+
+        for (var i=1; i<1000; i=i+10) {
+          var vertical = new PIXI.Graphics()
+          vertical.lineStyle(2, 0x1099bb)
+          vertical.moveTo(i, 0)
+          vertical.lineTo(i, 1000)
+          this.app.stage.addChild(vertical)
+        }
+       
+        for (var i=1; i<1000; i=i+10) {
+          var horizontal = new PIXI.Graphics()
+          horizontal.lineStyle(2, 0x1099bb)
+          horizontal.moveTo(0, i)
+          horizontal.lineTo(1000, i)
+          this.app.stage.addChild(horizontal)
+        }
+
+        this.stats = new PIXI.Text("", {
+          fontSize: 20,
+          lineHeight: 20,
+          letterSpacing: 0,
+          fill: 0xffffff,
+          align: "left"
+        });
+        this.app.stage.addChild(this.stats);
     }
 
     header() {
@@ -28,7 +51,6 @@ export class Game {
           var speed = args[3];
           this.createTank(tank_name, x, y, heading, speed);
         } else if (event == "move_tank") {
-
             var tank_name = args[0];
             var [x, y] = args[1];
             var heading = args[2];
@@ -88,25 +110,61 @@ export class Game {
             .moveTo(x, y)
             .lineTo(x3, y3);
         
-          var new_tank = tank.update_scan(g, g2);
+          var new_tank = tank.update_scan(g, g2, deg, res);
           this.tanks[tank_index] = new_tank;
           this.app.stage.addChild(g, g2);
         } else if (event == "damage") {
-          // console.log("Payload Received -->", payload);
-        } else if (event == "fsm_state" || event == "fsm_debug") {
-          // console.log("Payload Received -->", payload);
-        } else if (event == "game_over") {
-          console.log("Game Over")
+          var tank_name = args[0];
+          var damage = args[1];
 
-          this.app.destroy(true);
+          var tank_index = this.tanks.findIndex(tank => tank && tank.name == tank_name);
+          var old_tank = this.tanks[tank_index];
+          var new_tank = old_tank.update_damage(damage);
+          this.tanks[tank_index] = new_tank;
+        } else if (event == "fsm_state") {
+          var tank_name = args[0];
+          var tank_status = args[1];
+
+          var tank_index = this.tanks.findIndex(tank => tank && tank.name == tank_name);
+          var old_tank = this.tanks[tank_index];
+          var new_tank = old_tank.update_status(tank_status);
+          this.tanks[tank_index] = new_tank;
+        } else if (event == "fsm_debug") {
+          var tank_name = args[0];
+          var fsm_debug = args[1];
+          var tank_index = this.tanks.findIndex(tank => tank && tank.name == tank_name);
+          var old_tank = this.tanks[tank_index];
+          var new_tank = old_tank.update_fsm_debug(fsm_debug);
+          this.tanks[tank_index] = new_tank;
+        } else if (event == "game_over") {
+          console.log("Game Over", args);
+          let winner = "Winner: ";
+          for (let i = 0; i < args.length; i++) {
+            winner += args[i] + " "
+          }
+          console.log("Winner:", winner);
+          var result = new PIXI.Text(winner, {
+            fontSize: 20,
+            lineHeight: 20,
+            letterSpacing: 0,
+            fill: 0xffffff,
+            align: "center"
+          });
+          result.position.x = 300;
+          result.position.y = 300;
+          this.app.stage.addChild(result);
+          setTimeout(() => { this.app.destroy(true); }, 5000);
+          
         } else {
-          console.log("Payload Received -->", payload);
+          console.log("Unhandled Payload Received -->", payload);
         }
+        this.stats.text = this.get_stats(this.tanks);
       }
 
       createTank(tank_name, x, y, heading, speed) {
         // Not sure how to get the tank class here.....
-        var asset = tankHead("TankClass");
+        console.log(tank_name);
+        var asset = tankHead(tank_name);
         var tank_sprite = new PIXI.Sprite(PIXI.Texture.from('images/' + asset + '.png'));
         tank_sprite.x = x;
         tank_sprite.y = y;
@@ -148,7 +206,6 @@ export class Game {
 
         var missile_index = this.missiles.findIndex(missile => missile.name == missile_name);
         if (missile_index > -1) {
-          console.log("Explode..........");
           var old_missile = this.missiles[missile_index];
           old_missile.missile_sprite.x = undefined;
           old_missile.missile_sprite.y = undefined;
@@ -164,7 +221,7 @@ export class Game {
       }
 
       createMissile(missile_name, x, y) {
-        var missile_sprite = new PIXI.Sprite(PIXI.Texture.from('images/bomb.png'));
+        var missile_sprite = new PIXI.Sprite(PIXI.Texture.from('images/missile.png'));
         missile_sprite.x = x;
         missile_sprite.y = y;
 
@@ -172,24 +229,47 @@ export class Game {
         this.missiles.push(new_missile);
         this.app.stage.addChild(missile_sprite);
       }
+
+      get_stats(tanks) {
+        let stats = "";
+        for (let i = 0; i < tanks.length; i++) {
+          stats += get_stat(tanks[i]) + "\n";
+        }
+        return stats;
+      }
+
 }
 
 function onClick() {
     console.log("Send Cancel Event");
 }
 
-function tankHead(tank_class, _name) {
+function get_stat(tank) {
+  var name = tank.name.padEnd(12);
+  var dm = "dm: " + tank.damage;
+  var sp = "sp: " + tank.speed;
+  var hd = "hd: " + tank.heading;
+  var sc = "sc: " + tank.scan;
+  var st = "st: " + tank.status;
+  var debug = "debug: " + tank.debug;
+  return name + dm.padEnd(10) + sp.padEnd(10) + hd.padEnd(10) + sc.padEnd(15) + st.padEnd(17) + debug.padEnd(15);
+}
+
+function tankHead(tank_name) {
+    console.log("Inside Tank Head", tank_name);
+
     var assets = ['blue1','blue2','blue3','blue4','blue5','blue6','blue7','blue8','blue9','red1','red2','red3','red4','red5','red6','red7','yellow1','yellow2','rabbit'];
     var asset = null;
-    if (tank_class ==  "Proto") {
+    if (tank_name.match("sniper") !=  null || tank_name.match("random") !=  null || tank_name.match("rook") !=  null || tank_name.match("tracker") !=  null) {
         asset = assets[Math.floor(Math.random()*7) + 8];
-    } else if (tank_class == "Target") {
-        asset = assets[Math.floor(Math.random()*2) + 15];
+    } else if (tank_name.match("dummy") !=  null || tank_name.match("target") !=  null) {
+        asset = assets[Math.floor(Math.random()*2) + 16];
+    } else if (tank_name.match("rabbit") !=  null) {
+      asset = "rabbit";
     } else {
         asset = assets[Math.floor(Math.random()*9)];
     }
     return asset;
-
 }
 
 function removeExplode(explode_sprite) {

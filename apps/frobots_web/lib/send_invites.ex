@@ -1,13 +1,12 @@
 defmodule FrobotsWeb.SendInvites do
   alias FrobotsWeb.{Mailer, BetaMailer, MailTemplates}
   alias Frobots.Accounts
-  alias FrobotsWeb.Api.Auth
   alias FrobotsWeb.SendgridApi
   require Logger
 
   def existing_user?(email) do
     # check database to see if username exists
-    Accounts.get_user_by(username: email)
+    Accounts.get_user_by_email(email)
   end
 
   def process_mailing_list() do
@@ -33,7 +32,7 @@ defmodule FrobotsWeb.SendInvites do
         new_user = %{"username" => email, "password" => "Secret!@#", "name" => email}
         {:ok, user} = Accounts.register_user(new_user)
         # get token
-        token = Auth.generate_token(user.id)
+        token = generate_token(user.id)
 
         build_mail(user.name, user.username, user.id, token)
         |> Mailer.deliver()
@@ -47,5 +46,13 @@ defmodule FrobotsWeb.SendInvites do
       |> String.replace("#welcome_url", "https://dashboard.frobots.io?id=#{token}&uid=#{uid}")
 
     BetaMailer.welcome(%{name: name, email: email}, template)
+  end
+
+  def generate_token(user_id) do
+    Phoenix.Token.sign(
+      FrobotsWeb.Endpoint,
+      inspect(__MODULE__),
+      user_id
+    )
   end
 end

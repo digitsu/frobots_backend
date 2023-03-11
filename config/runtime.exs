@@ -1,7 +1,7 @@
 import Config
 
+ghost_api_key = System.get_env("GHOST_API_KEY")
 sendgrid_api_key = System.get_env("SENDGRID_API_KEY")
-
 sendgrid_mailinglist_key = System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY")
 
 if config_env() == :prod || config_env() == :staging do
@@ -31,6 +31,17 @@ if config_env() == :prod || config_env() == :staging do
       Did you forget to source env vars?
       """
 
+  ghost_api_key =
+    ghost_api_key ||
+      raise """
+      environment variable GHOST_API_KEY is missing.
+      Did you forget to source env vars?
+      """
+
+  config :frobots_web,
+         :ghost_blog_url,
+         "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
+
   config :frobots_web, FrobotsWeb.Endpoint,
     http: [
       # Enable IPv6 and bind on all interfaces.
@@ -56,10 +67,16 @@ if config_env() == :prod || config_env() == :staging do
     api_key: sendgrid_api_key,
     domain: "frobots.io"
 
+  # can we use both?
+  config :frobots, Frobots.Mailer,
+    adapter: Swoosh.Adapters.Sendgrid,
+    api_key: sendgrid_api_key,
+    domain: "frobots.io"
+
   sendgrid_mailinglist_key =
     sendgrid_mailinglist_key ||
       raise """
-      environment variable SENDGRID_API_KEY is missing.
+      environment variable SENDGRID_API_EXPORT_MAILINGLIST_KEY is missing.
       Did you forget to source env vars?
       """
 
