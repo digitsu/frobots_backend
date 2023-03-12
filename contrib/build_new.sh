@@ -65,7 +65,7 @@ docker image build --build-arg MIX_ENV=${mixenv} --build-arg HTTP_PROXY=${SQUID_
 echo "clean up images"
 docker stop frobots_backend || true
 docker stop postgres || true
-#docker network create frobots-network || true
+docker network create $FROBOTS_NETWORK || true
 docker volume create postgres_home || true
 docker volume create postgres_data || true
 
