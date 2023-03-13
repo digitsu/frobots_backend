@@ -1,0 +1,30 @@
+import * as Blockly from 'blockly'
+
+export const darkTheme = Blockly.Theme.defineTheme('classicDark', {
+  base: Blockly.Themes.Classic,
+  componentStyles: {
+    workspaceBackgroundColour: '#1d1f21',
+    toolboxBackgroundColour: '#282a2e',
+    flyoutBackgroundColour: '#1d1f21',
+    flyoutOpacity: 0.8,
+    scrollbarColour: '#555',
+    insertionMarkerColour: '#81c784',
+    insertionMarkerOpacity: 0.3,
+    scrollbarOpacity: 0.4,
+    cursorColour: '#fff',
+    cursorOpacity: 0.5,
+    draggingWorkspaceOpacity: 0.8,
+    toolboxForegroundColour: '#fff',
+    toolboxOpacity: 1,
+    categoryBackgroundColour: '#1d1f21',
+    categoryForegroundColour: '#fff',
+    selectedGlowColour: '#fff',
+    selectedGlowOpacity: 0.3,
+    replacementGlowColour: '#81c784',
+    replacementGlowOpacity: 0.3,
+    highlightColour: '#81c784',
+    highlightOpacity: 0.3,
+    deleteColour: '#e91e63',
+    deleteOpacity: 0.7,
+  },
+})

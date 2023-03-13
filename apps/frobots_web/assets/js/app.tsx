@@ -8,6 +8,7 @@ import topbar from '../vendor/topbar'
 import { connectToSocket } from './user_socket'
 import Dashboard from './container/Dashboard'
 import FrobotsList from './container/FrobotsList'
+import CreateFrobot from './container/CreateFrobot/index.jsx'
 
 interface HookType {
   [key: string]: {
@@ -56,6 +57,26 @@ Hooks.FrobotsListHook = {
   opts() {
     return {
       name: 'FrobotsList',
+    }
+  },
+}
+
+Hooks.FrobotCreateHook = {
+  mounted() {
+    this.unmountComponent = mount(CreateFrobot)(this.el.id, this.opts())
+  },
+
+  destroyed() {
+    if (!this.unmountComponent) {
+      console.error('Component unmounted')
+      return
+    }
+
+    this.unmountComponent(this.el)
+  },
+  opts() {
+    return {
+      name: 'CreateFrobot',
     }
   },
 }

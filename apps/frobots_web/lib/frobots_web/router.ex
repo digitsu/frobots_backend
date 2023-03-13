@@ -115,7 +115,6 @@ defmodule FrobotsWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live "/home", HomeLive.Index, :index
-    live "/garage", GarageLive.Index, :index
     live "/teams", TeamLive.Index, :index
     live "/matches", MatchLive.Index, :index
     live "/docs", DocsLive.Index, :index
@@ -124,8 +123,9 @@ defmodule FrobotsWeb.Router do
     live "/users", UsersLive.Index, :index
     live "/users/new", UsersLive.Index, :new
 
-    # garrage
-    live "/garage/frobots", GarageFrobotsListLive.Index, :index
+    # garage
+    live "/garage", GarageFrobotsListLive.Index, :index
+    live "/garage/create", GarageFrobotCreateLive.Index, :index
 
     get "/", PageController, :index
     get "/oldhome", PageController, :index
