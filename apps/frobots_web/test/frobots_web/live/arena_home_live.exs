@@ -10,7 +10,7 @@ defmodule FrobotsWeb.GarageFrobotCreateLive do
       {:ok, _index_live, html} = live(conn, Routes.arena(conn, :index))
 
       assert html =~
-               "<div id='area-content' phx-hook='ArenaContentHook' phx-update='ignore'></div>"
+               "<div id='arena-content' phx-hook='ArenaContentHook' phx-update='ignore'></div>"
     end
   end
 end
