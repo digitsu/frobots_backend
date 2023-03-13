@@ -9,6 +9,7 @@ import { connectToSocket } from './user_socket'
 import Dashboard from './container/Dashboard'
 import FrobotsList from './container/FrobotsList'
 import CreateFrobot from './container/CreateFrobot/index.jsx'
+import ArenaHome from './container/Arena'
 
 interface HookType {
   [key: string]: {
@@ -77,6 +78,26 @@ Hooks.FrobotCreateHook = {
   opts() {
     return {
       name: 'CreateFrobot',
+    }
+  },
+}
+
+Hooks.ArenaContentHook = {
+  mounted() {
+    this.unmountComponent = mount(ArenaHome)(this.el.id, this.opts())
+  },
+
+  destroyed() {
+    if (!this.unmountComponent) {
+      console.error('Component unmounted')
+      return
+    }
+
+    this.unmountComponent(this.el)
+  },
+  opts() {
+    return {
+      name: 'ArenaHome',
     }
   },
 }
