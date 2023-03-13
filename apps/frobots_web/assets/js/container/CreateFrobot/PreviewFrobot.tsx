@@ -1,8 +1,7 @@
 import React from 'react'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid, Typography, Button } from '@mui/material'
 import { useSelector } from 'react-redux'
 import Card from '../../components/generic/Card'
-import Button from '../../components/generic/Button/Button'
 
 export default () => {
   const { starterMech, frobotName, bio } = useSelector(

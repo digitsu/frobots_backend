@@ -1,11 +1,10 @@
 import React from 'react'
-import { Box, Grid, Typography } from '@mui/material'
-import Card from '../../components/generic/Card'
+import { Box, Grid, Typography, Card } from '@mui/material'
 export default () => {
   return (
     <Card>
       <Box p={3} height={240}>
-        <Grid container spacing={1}>
+        <Grid container spacing={1} height={'100%'} alignItems={'center'}>
           <Grid item xs={9} sm={9} md={9} lg={9}>
             <Box mt={2}>
               {' '}

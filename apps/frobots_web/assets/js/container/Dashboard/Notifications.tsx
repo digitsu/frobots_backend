@@ -1,9 +1,6 @@
 import React from 'react'
-import { Button, Divider, Typography } from '@mui/material'
-import { Box } from '@mui/system'
-import { ArrowForward } from '@mui/icons-material'
+import { Divider, Typography, Box, Card } from '@mui/material'
 import ViewMore from '../../components/generic/Button/ViewMore'
-import Card from '../../components/generic/Card'
 
 const notifications = [
   {
