@@ -1,6 +1,5 @@
-import React, { FC } from 'react';
-import type { ChangeEvent, MouseEvent } from 'react';
-import PropTypes from 'prop-types';
+import React, { FC, type ChangeEvent, type MouseEvent } from 'react'
+import PropTypes from 'prop-types'
 import {
   Box,
   Button,
@@ -13,15 +12,18 @@ import {
   TablePagination,
   TableRow,
   Typography,
-} from '@mui/material';
+} from '@mui/material'
 
 interface MatchListTableProps {
-  matchs: any[];
-  matchsCount: number;
-  onPageChange: (event: MouseEvent<HTMLButtonElement> | null, newPage: number) => void;
-  onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  page: number;
-  rowsPerPage: number;
+  matchs: any[]
+  matchsCount: number
+  onPageChange: (
+    event: MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => void
+  onRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void
+  page: number
+  rowsPerPage: number
 }
 
 const getStatusName = (status: string) => {
@@ -29,15 +31,18 @@ const getStatusName = (status: string) => {
     live: '#37A6E4',
     upcoming: '#FFD600',
     completed: '#5BE584',
-    cancelled: '#FF5630'
-  };
+    cancelled: '#FF5630',
+  }
 
   return (
-    <Typography color={statusColors[status] || 'gray'} sx={{ textTransform: 'capitalize' }}>
+    <Typography
+      color={statusColors[status] || 'gray'}
+      sx={{ textTransform: 'capitalize' }}
+    >
       {status}
     </Typography>
-  );
-};
+  )
+}
 
 export const MatchList: FC<MatchListTableProps> = (props) => {
   const {
@@ -48,15 +53,23 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
     page,
     rowsPerPage,
     ...other
-  } = props;
+  } = props
 
   return (
-    <Box
-      sx={{ position: 'relative' }}
-      {...other}
-    >
-      <TableContainer sx={{ maxHeight: 320, minHeight: 320, backgroundColor: '#212B36', boxShadow: 'none' }}>
-        <Table sx={{ minWidth: 500 }} stickyHeader={true}>
+    <Box sx={{ position: 'relative' }} {...other}>
+      <TableContainer
+        sx={{
+          maxHeight: 320,
+          minHeight: 320,
+          backgroundColor: '#212B36',
+          boxShadow: 'none',
+        }}
+      >
+        <Table
+          aria-label="simple table"
+          sx={{ minWidth: 500 }}
+          stickyHeader={true}
+        >
           <TableHead sx={{ color: '#fff' }}>
             <TableRow>
               <TableCell
@@ -130,105 +143,93 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
           <TableBody sx={{ color: '#fff' }}>
             {matchs?.length === 0 && (
               <TableRow>
-                <TableCell>
-                  No Data Found
-                </TableCell>
+                <TableCell>No Data Found</TableCell>
               </TableRow>
             )}
 
             {matchs.map((match) => {
-
               return (
-                <TableRow
-                  hover
-                  key={match.matchId}
-                >
+                <TableRow hover key={match.matchId}>
                   <TableCell sx={{ color: '#fff' }}>
-                    <Stack
-                      alignItems="center"
-                      direction="row"
-                      spacing={1}
-                    >
+                    <Stack alignItems="center" direction="row" spacing={1}>
                       {match.matchId}
                     </Stack>
                   </TableCell>
                   <TableCell sx={{ color: '#fff' }}>
-                    <Stack
-                      alignItems="center"
-                      direction="row"
-                      spacing={1}
-                    >
+                    <Stack alignItems="center" direction="row" spacing={1}>
                       {match.name}
                     </Stack>
                   </TableCell>
-                  <TableCell sx={{ color: '#fff' }}>
-                    {match.host}
-                  </TableCell>
+                  <TableCell sx={{ color: '#fff' }}>{match.host}</TableCell>
                   <TableCell sx={{ color: '#fff' }}>
                     {getStatusName(match.status)}
                   </TableCell>
-                  <TableCell sx={{ color: '#fff' }}>
-                    {match.time}
-                  </TableCell>
-                  <TableCell sx={{ color: '#fff', display: 'flex', justifyContent: 'space-around' }}>
-                    {match.status !== 'completed'
-                      ? (
-                        <>
-                          <Button
-                            disabled={match.status === 'cancelled'}
-                            variant='outlined'
-                            size="medium"
-                            sx={{
-                              color: '#00B8D9',
-                              padding: '0px 15px'
-                            }}
-                          >
-                            Join
-                          </Button>
-                          <Button
-                            disabled={match.status === 'cancelled'}
-                            variant='outlined'
-                            size="medium"
-                            sx={{
-                              color: '#00B8D9',
-                              padding: '0px 15px'
-                            }}
-                          >
-                            Watch
-                          </Button>
-                        </>
-                      )
-
-                      : (
-                        <>
-                          <Button
-                            disabled={match.status === 'cancelled'}
-                            variant='outlined'
-                            size="medium"
-                            sx={{
-                              color: '#00B8D9',
-                              padding: '0px 15px'
-                            }}
-                          >
-                            Replay
-                          </Button>
-                          <Button
-                            disabled={match.status === 'cancelled'}
-                            variant='outlined'
-                            size="medium"
-                            sx={{
-                              color: '#00B8D9',
-                              padding: '0px 15px'
-                            }}
-                          >
-                            Results
-                          </Button>
-                        </>
-                      )
-                    }
+                  <TableCell sx={{ color: '#fff' }}>{match.time}</TableCell>
+                  <TableCell
+                    sx={{
+                      color: '#fff',
+                      display: 'flex',
+                      justifyContent: 'space-around',
+                    }}
+                  >
+                    {match.status !== 'completed' ? (
+                      <>
+                        <Button
+                          disabled={match.status === 'cancelled'}
+                          variant="outlined"
+                          size="medium"
+                          sx={{
+                            color: '#00B8D9',
+                            borderColor: '#00B8D9',
+                            padding: '0px 25px',
+                          }}
+                        >
+                          Join
+                        </Button>
+                        <Button
+                          disabled={match.status === 'cancelled'}
+                          variant="outlined"
+                          size="medium"
+                          sx={{
+                            color: '#00B8D9',
+                            borderColor: '#00B8D9',
+                            padding: '0px 25px',
+                          }}
+                        >
+                          Watch
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          disabled={match.status === 'cancelled'}
+                          variant="outlined"
+                          size="medium"
+                          sx={{
+                            color: '#00B8D9',
+                            borderColor: '#00B8D9',
+                            padding: '0px 18px',
+                          }}
+                        >
+                          Replay
+                        </Button>
+                        <Button
+                          disabled={match.status === 'cancelled'}
+                          variant="outlined"
+                          size="medium"
+                          sx={{
+                            color: '#00B8D9',
+                            borderColor: '#00B8D9',
+                            padding: '0px 18px',
+                          }}
+                        >
+                          Results
+                        </Button>
+                      </>
+                    )}
                   </TableCell>
                 </TableRow>
-              );
+              )
             })}
           </TableBody>
         </Table>
@@ -244,8 +245,8 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
         sx={{ color: '#fff' }}
       />
     </Box>
-  );
-};
+  )
+}
 
 MatchList.propTypes = {
   matchs: PropTypes.any,
@@ -254,4 +255,4 @@ MatchList.propTypes = {
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
-};
+}

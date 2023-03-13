@@ -1,6 +1,10 @@
-import React from 'react'
-import type { ChangeEvent, MouseEvent } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type MouseEvent,
+} from 'react'
 import { Grid, Box, Typography, CardContent } from '@mui/material'
 import Card from '../../components/generic/Card'
 import { MatchList } from './MatchList'
@@ -65,16 +69,16 @@ const matchesList = [
   },
 ]
 interface Filters {
-  query?: string;
-  isUpcoming?: boolean;
-  isLive?: boolean;
-  isCompleted?: boolean;
+  query?: string
+  isUpcoming?: boolean
+  isLive?: boolean
+  isCompleted?: boolean
 }
 
 interface Search {
-  filters: Filters;
-  page: number;
-  rowsPerPage: number;
+  filters: Filters
+  page: number
+  rowsPerPage: number
 }
 
 export function applyPagination<T = any>(
@@ -82,64 +86,70 @@ export function applyPagination<T = any>(
   page: number,
   rowsPerPage: number
 ): T[] {
-  return documents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  return documents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 }
 
 const getMatchesAPI = (request: Search) => {
-  const { filters, page, rowsPerPage } = request;
+  const { filters, page, rowsPerPage } = request
 
-  let data = matchesList;
-  let count = data.length;
+  let data = matchesList
+  let count = data.length
 
   if (typeof filters !== 'undefined') {
     data = matchesList.filter((match) => {
       if (typeof filters.query !== 'undefined' && filters.query !== '') {
-        let queryMatched = false;
-        const properties: ('host' | 'name' | 'status')[] = ['host', 'name', 'status'];
+        let queryMatched = false
+        const properties: ('host' | 'name' | 'status')[] = [
+          'host',
+          'name',
+          'status',
+        ]
 
         properties.forEach((property) => {
-          if ((match[property]).toLowerCase().includes(filters.query!.toLowerCase())) {
-            queryMatched = true;
+          if (
+            match[property].toLowerCase().includes(filters.query!.toLowerCase())
+          ) {
+            queryMatched = true
           }
-        });
+        })
 
         if (!queryMatched) {
-          return false;
+          return false
         }
       }
 
       if (typeof filters.isCompleted !== 'undefined') {
         if (match.status !== 'completed') {
-          return false;
+          return false
         }
       }
 
       if (typeof filters.isLive !== 'undefined') {
         if (match.status !== 'live') {
-          return false;
+          return false
         }
       }
 
       if (typeof filters.isUpcoming !== 'undefined') {
         if (match.status !== 'upcoming') {
-          return false;
+          return false
         }
       }
 
-      return true;
-    });
+      return true
+    })
 
-    count = data.length;
+    count = data.length
   }
 
   if (typeof page !== 'undefined' && typeof rowsPerPage !== 'undefined') {
-    data = applyPagination(data, page, rowsPerPage);
+    data = applyPagination(data, page, rowsPerPage)
   }
 
-  return Promise.resolve({
+  return {
     data,
-    count
-  });
+    count,
+  }
 }
 
 const useSearch = () => {
@@ -148,94 +158,91 @@ const useSearch = () => {
       query: undefined,
       isUpcoming: undefined,
       isLive: undefined,
-      isCompleted: undefined
+      isCompleted: undefined,
     },
     page: 0,
     rowsPerPage: 5,
-  });
+  })
 
   return {
     search,
-    updateSearch: setSearch
-  };
-};
+    updateSearch: setSearch,
+  }
+}
 
-const useMatches = (search: Search): { matchs: any[]; matchsCount: number; } => {
+const useMatches = (search: Search): { matchs: any[]; matchsCount: number } => {
   const [state, setState] = useState<{
-    matchs: any[];
-    matchsCount: number;
+    matchs: any[]
+    matchsCount: number
   }>({
     matchs: [],
-    matchsCount: 0
-  });
+    matchsCount: 0,
+  })
 
-  const getMatches = useCallback(
-    async () => {
-      try {
-        const response = await getMatchesAPI(search);
+  const getMatches = useCallback(async () => {
+    try {
+      const response = getMatchesAPI(search)
 
-        setState({
-          matchs: response.data,
-          matchsCount: response.count
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    [search]
-  );
+      setState({
+        matchs: response.data,
+        matchsCount: response.count,
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }, [search])
 
-  useEffect(
-    () => {
-      getMatches();
-    },
+  useEffect(() => {
+    getMatches()
+  }, [search, getMatches])
 
-    [search, getMatches]
-  );
-
-  return state;
-};
+  return state
+}
 
 export default () => {
-  const { search, updateSearch } = useSearch();
-  const { matchs, matchsCount } = useMatches(search);
+  const { search, updateSearch } = useSearch()
+  const { matchs, matchsCount } = useMatches(search)
 
   const handleFiltersChange = useCallback(
     (filters: Filters): void => {
       updateSearch((prevState) => ({
         ...prevState,
-        filters
-      }));
+        filters,
+      }))
     },
     [updateSearch]
-  );
+  )
 
   const handlePageChange = useCallback(
     (event: MouseEvent<HTMLButtonElement> | null, page: number): void => {
       updateSearch((prevState) => ({
         ...prevState,
-        page
-      }));
+        page,
+      }))
     },
     [updateSearch]
-  );
+  )
 
   const handleRowsPerPageChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>): void => {
       updateSearch((prevState) => ({
         ...prevState,
-        rowsPerPage: parseInt(event.target.value, 10)
-      }));
+        rowsPerPage: parseInt(event.target.value, 10),
+      }))
     },
     [updateSearch]
-  );
+  )
 
   return (
     <>
       <Box width={'90%'} m={'auto'}>
         <Grid container spacing={2}>
           <Grid item lg={3} md={12} sm={12} xs={12}>
-            <Typography sx={{ pl: 0, mt: 1, mb: 2 }} variant={'subtitle1'} fontWeight={'bold'}>
+            <Typography
+              sx={{ pl: 0, mt: 1, mb: 2 }}
+              variant={'subtitle1'}
+              fontWeight={'bold'}
+            >
               My Matches
             </Typography>
             <Box
@@ -253,13 +260,19 @@ export default () => {
                   position={'relative'}
                 >
                   <Box display={'flex'} gap={3}>
-                    <Box component={'img'} src={'/images/stats.svg'} width={75} />
+                    <Box
+                      component={'img'}
+                      src={'/images/stats.svg'}
+                      width={75}
+                    />
                     <Box
                       display={'flex'}
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6" fontWeight={'bold'}>12</Typography>
+                      <Typography variant="h6" fontWeight={'bold'}>
+                        12
+                      </Typography>
                       <Typography variant="caption">Live Matches</Typography>
                     </Box>
                   </Box>
@@ -284,14 +297,22 @@ export default () => {
                   position={'relative'}
                 >
                   <Box display={'flex'} gap={3}>
-                    <Box component={'img'} src={'/images/calendar.svg'} width={75} />
+                    <Box
+                      component={'img'}
+                      src={'/images/calendar.svg'}
+                      width={75}
+                    />
                     <Box
                       display={'flex'}
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6" fontWeight={'bold'}>12</Typography>
-                      <Typography variant="caption">Upcoming Matches</Typography>
+                      <Typography variant="h6" fontWeight={'bold'}>
+                        12
+                      </Typography>
+                      <Typography variant="caption">
+                        Upcoming Matches
+                      </Typography>
                     </Box>
                   </Box>
                 </Box>
@@ -315,13 +336,19 @@ export default () => {
                   position={'relative'}
                 >
                   <Box display={'flex'} gap={3}>
-                    <Box component={'img'} src={'/images/stats.svg'} width={75} />
+                    <Box
+                      component={'img'}
+                      src={'/images/stats.svg'}
+                      width={75}
+                    />
                     <Box
                       display={'flex'}
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6" fontWeight={'bold'}>625</Typography>
+                      <Typography variant="h6" fontWeight={'bold'}>
+                        625
+                      </Typography>
                       <Typography variant="caption">Past Matches</Typography>
                     </Box>
                   </Box>
@@ -330,15 +357,17 @@ export default () => {
             </Box>
           </Grid>
           <Grid item lg={9} md={12} sm={12} xs={12}>
-            <Typography sx={{ pl: 0, mt: 1, mb: 2 }} variant={'subtitle1'} fontWeight={'bold'}>
+            <Typography
+              sx={{ pl: 0, mt: 1, mb: 2 }}
+              variant={'subtitle1'}
+              fontWeight={'bold'}
+            >
               Explore Matches
             </Typography>
             <Box>
               <Card>
                 <CardContent>
-                  <MatchListSearch
-                    onFiltersChange={handleFiltersChange}
-                  />
+                  <MatchListSearch onFiltersChange={handleFiltersChange} />
                 </CardContent>
                 <CardContent>
                   <MatchList
@@ -352,10 +381,9 @@ export default () => {
                 </CardContent>
               </Card>
             </Box>
-
           </Grid>
         </Grid>
       </Box>
     </>
-  );
-};
+  )
+}

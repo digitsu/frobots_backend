@@ -1,4 +1,4 @@
-defmodule FrobotsWeb.GarageFrobotCreateLive do
+defmodule FrobotsWeb.ArenaLive do
   use FrobotsWeb.ConnCase, async: true
   import Phoenix.LiveViewTest
   alias FrobotsWeb.ConnCase
