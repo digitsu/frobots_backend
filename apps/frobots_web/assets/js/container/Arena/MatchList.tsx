@@ -33,7 +33,7 @@ const getStatusName = (status: string) => {
   };
 
   return (
-    <Typography color={statusColors[status] || 'gray'}>
+    <Typography color={statusColors[status] || 'gray'} sx={{ textTransform: 'capitalize' }}>
       {status}
     </Typography>
   );
