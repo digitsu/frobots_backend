@@ -11,7 +11,9 @@ if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     dbname=$POSTGRES_DB_PROD
     mixenv=prod
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
-    ip=$FROBOTSBACKEND_STAGING
+    ip=$FROBOTSBACKEND_PROD
+    # note that even dev uses the postgres_db name of frobots_prod, because there isn't any dev db that should be running on the same host so no need to worry about name clash
+    # and the fact I tried to setup a frobots_dev, but had issues with being able to run a mix ecto.create on it after its creation.
     dbname=$POSTGRES_DB_DEV
     mixenv=staging
 else
