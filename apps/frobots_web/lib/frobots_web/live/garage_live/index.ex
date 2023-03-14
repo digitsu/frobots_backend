@@ -17,16 +17,16 @@ defmodule FrobotsWeb.GarageLive.Index do
         {:error, {:already_started, simulator}} -> simulator
       end
 
-    {:ok, socket
-          |> assign(:simulator, simulator)
-          |> assign(:current_user, current_user)
-          |> assign(:user_frobots, Assets.list_user_frobots(current_user))
-          |> assign(:template_frobots, Assets.list_template_frobots())
-          |> assign(:starter_tanks, Assets.get_tanks())
-          |> assign(:starter_cannons, Assets.get_cannons())
-          |> assign(:starter_scanners, Assets.get_scanners())
-          |> assign(:starter_missiles, Assets.get_missiles())
-        }
+    {:ok,
+     socket
+     |> assign(:simulator, simulator)
+     |> assign(:current_user, current_user)
+     |> assign(:user_frobots, Assets.list_user_frobots(current_user))
+     |> assign(:template_frobots, Assets.list_template_frobots())
+     |> assign(:starter_tanks, Assets.get_tanks())
+     |> assign(:starter_cannons, Assets.get_cannons())
+     |> assign(:starter_scanners, Assets.get_scanners())
+     |> assign(:starter_missiles, Assets.get_missiles())}
   end
 
   @impl Phoenix.LiveView
@@ -92,13 +92,17 @@ defmodule FrobotsWeb.GarageLive.Index do
 
   def handle_event("create_frobot", params, socket) do
     current_user = get_user_from_assigns(socket)
+
     case Assets.create_frobot(current_user, params) do
       {:ok, _frobot} ->
-        {:noreply,  socket
-                    |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
+        {:noreply,
+         socket
+         |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
+
       {:error, changeset} ->
-        {:noreply,  socket
-                    |> assign(:error_messages, changeset.errors)}
+        {:noreply,
+         socket
+         |> assign(:error_messages, changeset.errors)}
     end
   end
 
@@ -108,51 +112,67 @@ defmodule FrobotsWeb.GarageLive.Index do
 
     case Assets.update_frobot(frobot, params) do
       {:ok, _frobot} ->
-        {:noreply,  socket
-                    |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
+        {:noreply,
+         socket
+         |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
+
       {:error, changeset} ->
-        {:noreply,  socket
-                    |> assign(:error_messages, changeset.errors)}
+        {:noreply,
+         socket
+         |> assign(:error_messages, changeset.errors)}
     end
   end
 
   def handle_event("create_frobot_equipment", %{"frobot_id" => _frobot_id} = params, socket) do
     current_user = get_user_from_assigns(socket)
+
     case Assets.create_equipment(params) do
       {:ok, _frobot} ->
-        {:noreply,  socket
-                    |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
+        {:noreply,
+         socket
+         |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
+
       {:error, changeset} ->
-        {:noreply,  socket
-                    |> assign(:error_messages, changeset.errors)}
+        {:noreply,
+         socket
+         |> assign(:error_messages, changeset.errors)}
     end
   end
 
-  def handle_event("update_frobot_equipment", %{"frobot_equipment_id" => _frobot_equipment_id} = params, socket) do
+  def handle_event(
+        "update_frobot_equipment",
+        %{"frobot_equipment_id" => _frobot_equipment_id} = params,
+        socket
+      ) do
     current_user = get_user_from_assigns(socket)
     frobot_equipment = Assets.get_equipment(params["frobot_equipment_id"])
 
     case Assets.update_equipment(frobot_equipment, params) do
       {:ok, _frobot} ->
-        {:noreply,  socket
-                    |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
+        {:noreply,
+         socket
+         |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
+
       {:error, changeset} ->
-        {:noreply,  socket
-                    |> assign(:error_messages, changeset.errors)}
+        {:noreply,
+         socket
+         |> assign(:error_messages, changeset.errors)}
     end
   end
 
   def handle_event("get_frobot_details", %{"id" => frobot_id}, socket) do
     case Assets.get_frobot(frobot_id) do
       nil ->
-        {:noreply,  socket
-                    |> assign(:error_messages, "Unable find frobot with id #{frobot_id}")}
+        {:noreply,
+         socket
+         |> assign(:error_messages, "Unable find frobot with id #{frobot_id}")}
+
       frobot ->
-        {:noreply,  socket
-                    |> assign(:frobot, frobot)}
+        {:noreply,
+         socket
+         |> assign(:frobot, frobot)}
     end
   end
-
 
   defp get_user_from_assigns(socket) do
     assigns = socket.assigns()

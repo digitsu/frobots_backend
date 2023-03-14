@@ -80,6 +80,4 @@ defmodule FrobotsWeb.HomeLive.Index do
       "matches_completed" => 376
     }
   end
-
-
 end
