@@ -233,6 +233,33 @@ export default () => {
     [updateSearch]
   )
 
+  const handleOpenLiveMatches = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/arena/live-matches'
+    },
+    []
+  )
+
+  const handleOpenPastMatches = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/arena/past-matches'
+    },
+    []
+  )
+
+  const handleOpenUpcomingMatches = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/arena/upcoming-matches'
+    },
+    []
+  )
+
   return (
     <>
       <Box width={'90%'} m={'auto'}>
@@ -259,7 +286,7 @@ export default () => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenLiveMatches}>
                     <Box
                       component={'img'}
                       src={'/images/stats.svg'}
@@ -296,7 +323,11 @@ export default () => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3}>
+                  <Box
+                    display={'flex'}
+                    gap={3}
+                    onClick={handleOpenUpcomingMatches}
+                  >
                     <Box
                       component={'img'}
                       src={'/images/calendar.svg'}
@@ -335,7 +366,7 @@ export default () => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenPastMatches}>
                     <Box
                       component={'img'}
                       src={'/images/stats.svg'}
