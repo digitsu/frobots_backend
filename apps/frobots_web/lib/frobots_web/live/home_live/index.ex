@@ -83,6 +83,7 @@ defmodule FrobotsWeb.HomeLive.Index do
 
   @impl true
   def handle_event("react.fetch_dashboard_details", _params, socket) do
-    {:noreply, push_event(socket, "react.return_dashboard_details", %{"globalStats" => show_global_stats()} )}
+    {:noreply,
+     push_event(socket, "react.return_dashboard_details", %{"globalStats" => show_global_stats()})}
   end
 end
