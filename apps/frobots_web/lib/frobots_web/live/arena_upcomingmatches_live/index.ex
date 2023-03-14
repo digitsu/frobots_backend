@@ -1,12 +1,11 @@
-defmodule FrobotsWeb.ArenaLive.Index do
-
+defmodule FrobotsWeb.ArenaUpcomingMatchesLive.Index do
+  # use Phoenix.LiveView
   use FrobotsWeb, :live_view
 
   @impl Phoenix.LiveView
-  @spec mount(any, nil | maybe_improper_list | map, map) :: {:ok, map}
   def mount(_params, _session, socket) do
-    # current_user = Accounts.get_user_by_session_token(session["user_token"])
-    {:ok,socket}
+    # set required data via assigns
+    {:ok, socket}
   end
 
   # add additional handle param events as needed to handle button clicks etc

@@ -1,6 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import { countReducers } from './slices/counter'
-
+import { createFrobotReducer } from './slices/createFrobot'
 export default combineReducers({
-  count: countReducers,
+  createFrobot: createFrobotReducer,
 })

@@ -1,7 +1,7 @@
-<section>
-  <div class="items-center my-4 w-90 m-auto">
+<section class="w-90 m-auto">
+  <div class="justify-between items-center my-4">
     <div class="font-bold text-lg">
-      <h6>Arena</h6>
+      <h6>My Past Matches</h6>
     </div>
     <div class="flex justify-between items-center my-2">
       <div>
@@ -11,8 +11,14 @@
         <p class="inline-block items-left font-bold text-xs text-gray-400">
           .
         </p>
+        <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="/arena">Arena</a>
+        </p>
         <p class="inline-block items-left font-bold text-xs text-gray-400">
-          Arena
+          .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          My Past Matches
         </p>
       </div>
       <div>
@@ -20,5 +26,5 @@
       </div>
     </div>
   </div>
-  <div id="arena-content" phx-hook="ArenaContentHook" phx-update="ignore"></div>
+  <div id="arena-past-matches" phx-hook="ArenaPastMatchesContentHook" phx-update="ignore"></div>
 </section>

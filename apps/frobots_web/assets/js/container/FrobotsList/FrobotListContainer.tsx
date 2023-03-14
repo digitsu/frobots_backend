@@ -80,25 +80,27 @@ export default () => (
           }}
         >
           <Box>
-            <Box position={'relative'}>
-              <Box
-                width="100%"
-                height="100%"
-                sx={{ filter: 'grayscale(1)' }}
-                component={'img'}
-                src={'/images/createfrobot_bg.png'}
-              ></Box>
-              <Typography
-                variant="h6"
-                display={'flex'}
-                justifyContent={'center'}
-                width={'100%'}
-                position={'absolute'}
-                top={'50%'}
-              >
-                +Create Frobot
-              </Typography>
-            </Box>
+            <a href={'/garage/create'}>
+              <Box position={'relative'}>
+                <Box
+                  width="100%"
+                  height="100%"
+                  sx={{ filter: 'grayscale(1)' }}
+                  component={'img'}
+                  src={'/images/createfrobot_bg.png'}
+                ></Box>
+                <Typography
+                  variant="h6"
+                  display={'flex'}
+                  justifyContent={'center'}
+                  width={'100%'}
+                  position={'absolute'}
+                  top={'50%'}
+                >
+                  +Create Frobot
+                </Typography>
+              </Box>
+            </a>
             <Box textAlign={'center'} my={2}>
               <Typography fontWeight={'bold'} variant="subtitle1">
                 Empty Spark

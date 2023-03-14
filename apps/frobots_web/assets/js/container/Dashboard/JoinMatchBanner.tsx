@@ -1,6 +1,5 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, Button } from '@mui/material'
 import React from 'react'
-import Button from '../../components/generic/Button/Button'
 export default () => {
   return (
     <Box>
@@ -33,10 +32,7 @@ export default () => {
                 </Typography>
               </Box>
               <Box>
-                <Button
-                  variant="contained"
-                  sx={{ textTransform: 'capitalize', px: 5, py: 1 }}
-                >
+                <Button variant="contained" sx={{ px: 5, py: 1 }}>
                   Join Match
                 </Button>
               </Box>

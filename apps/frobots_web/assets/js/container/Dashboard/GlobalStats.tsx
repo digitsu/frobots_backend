@@ -1,8 +1,5 @@
 import React from 'react'
-import { Button, Typography } from '@mui/material'
-import { Box } from '@mui/system'
-import { ArrowForward } from '@mui/icons-material'
-import Card from '../../components/generic/Card'
+import { Typography, Box, Card } from '@mui/material'
 
 const topPlayers = [
   {
