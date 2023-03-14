@@ -8,7 +8,8 @@ import FeaturedFrobotSection from './FeaturedFrobotSection'
 import ProfileDetails from './ProfileDetails'
 import JoinMatchBanner from './JoinMatchBanner'
 import NewsAndUpdatesSection from './NewsAndUpdatesSection'
-export default () => {
+export default (props: any) => {
+  const { fetchGlobalStats, globalStats } = props
   return (
     <>
       <Box width={'90%'} m={'auto'}>
@@ -145,7 +146,10 @@ export default () => {
             >
               <ProfileDetails />
               <Box>
-                <GlobalStats />
+                <GlobalStats
+                  fetchGlobalStats={fetchGlobalStats}
+                  globalStats={globalStats}
+                />
               </Box>
             </Box>
           </Grid>
