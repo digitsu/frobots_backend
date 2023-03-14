@@ -1,9 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Grid, Typography, Autocomplete, TextField } from '@mui/material'
-//import TextField from '../../components/generic/TextField'
-//import Autocomplete from '../../components/generic/Autocomplete'
-import Button from '../../components/generic/Button/Button'
+import { Box, Typography, Autocomplete, TextField, Button } from '@mui/material'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
 import { templateFrobots } from '../../mock/templateFrobots'
 

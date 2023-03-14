@@ -1,10 +1,9 @@
 import React from 'react'
-import { Stepper, Step, Box, StepLabel } from '@mui/material'
+import { Stepper, Step, Box, StepLabel, Button } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
 import BasicDetailsForm from './BasicDetailsForm'
 import EditBrainCode from './EditBrainCode'
-import Button from '../../components/generic/Button/Button'
 import PreviewFrobot from './PreviewFrobot'
 export default () => {
   const dispatch = useDispatch()
