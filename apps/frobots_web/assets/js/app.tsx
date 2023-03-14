@@ -10,6 +10,11 @@ import Dashboard from './container/Dashboard'
 import FrobotsList from './container/FrobotsList'
 import CreateFrobot from './container/CreateFrobot/index.jsx'
 import ArenaHome from './container/Arena'
+import {
+  LiveMatches,
+  PastMatches,
+  UpcomingMatches,
+} from './container/ArenaMatches/index.js'
 
 interface HookType {
   [key: string]: {
@@ -98,6 +103,66 @@ Hooks.ArenaContentHook = {
   opts() {
     return {
       name: 'ArenaHome',
+    }
+  },
+}
+
+Hooks.ArenaLiveMatchesContentHook = {
+  mounted() {
+    this.unmountComponent = mount(LiveMatches)(this.el.id, this.opts())
+  },
+
+  destroyed() {
+    if (!this.unmountComponent) {
+      console.error('Component unmounted')
+      return
+    }
+
+    this.unmountComponent(this.el)
+  },
+  opts() {
+    return {
+      name: 'ArenaLiveMatches',
+    }
+  },
+}
+
+Hooks.ArenaPastMatchesContentHook = {
+  mounted() {
+    this.unmountComponent = mount(PastMatches)(this.el.id, this.opts())
+  },
+
+  destroyed() {
+    if (!this.unmountComponent) {
+      console.error('Component unmounted')
+      return
+    }
+
+    this.unmountComponent(this.el)
+  },
+  opts() {
+    return {
+      name: 'ArenaPastMatches',
+    }
+  },
+}
+
+Hooks.ArenaUpcomingMatchesContentHook = {
+  mounted() {
+    this.unmountComponent = mount(UpcomingMatches)(this.el.id, this.opts())
+  },
+
+  destroyed() {
+    if (!this.unmountComponent) {
+      console.error('Component unmounted')
+      return
+    }
+
+    this.unmountComponent(this.el)
+  },
+  opts() {
+    return {
+      name: 'ArenaUpcomingMatches',
     }
   },
 }
