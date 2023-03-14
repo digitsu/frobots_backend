@@ -1,11 +1,10 @@
 defmodule FrobotsWeb.ArenaLive.Index do
-  # use Phoenix.LiveView
   use FrobotsWeb, :live_view
 
   @impl Phoenix.LiveView
+  @spec mount(any, nil | maybe_improper_list | map, map) :: {:ok, map}
   def mount(_params, _session, socket) do
-    # set required data via assigns
-    # for example..fetch leaderboard entries and pass to liveview as follow
+    # current_user = Accounts.get_user_by_session_token(session["user_token"])
     {:ok, socket}
   end
 
@@ -16,13 +15,6 @@ defmodule FrobotsWeb.ArenaLive.Index do
   end
 
   defp apply_action(socket, :index, _params) do
-    # entries = Frobots.LeaderBoard.get()
-    # {:ok,socket
-    # |> assign(:entries, entries)
-    # }
-
-    #  socket
-    # |> assign_new(:rider_search, fn -> rider_search end)
     socket
   end
 end
