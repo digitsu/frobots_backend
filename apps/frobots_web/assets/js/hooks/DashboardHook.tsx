@@ -3,10 +3,12 @@ import Dashboard from '../container/Dashboard'
 
 export default {
   mounted() {
-    this.unmountComponent = mount(Dashboard)(this.el.id, this.opts({}))
     this.pushEventTo(this.el, 'react.fetch_dashboard_details')
     this.handleEvent('react.return_dashboard_details', (dashboardDetails) => {
-      mount(Dashboard)(this.el.id, this.opts({ ...dashboardDetails }))
+      this.unmountComponent = mount(Dashboard)(
+        this.el.id,
+        this.opts({ ...dashboardDetails })
+      )
     })
   },
 
@@ -17,10 +19,10 @@ export default {
     }
     this.unmountComponent(this.el)
   },
-  opts({ globalStats }) {
+  opts(dashboardDetails) {
     return {
       name: 'Dashboard',
-      globalStats,
+      ...dashboardDetails,
     }
   },
 }

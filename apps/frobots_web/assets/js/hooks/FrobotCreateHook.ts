@@ -3,7 +3,16 @@ import CreateFrobot from '../container/CreateFrobot'
 
 export default {
   mounted() {
-    this.unmountComponent = mount(CreateFrobot)(this.el.id, this.opts())
+    this.pushEventTo(this.el, 'react.fetch_frobot_create_details')
+    this.handleEvent(
+      'react.return_frobot_create_details',
+      (createFrobotDetails) => {
+        this.unmountComponent = mount(CreateFrobot)(
+          this.el.id,
+          this.opts({ ...createFrobotDetails })
+        )
+      }
+    )
   },
 
   destroyed() {
@@ -14,9 +23,10 @@ export default {
 
     this.unmountComponent(this.el)
   },
-  opts() {
+  opts(createFrobotDetails) {
     return {
       name: 'CreateFrobot',
+      ...createFrobotDetails,
     }
   },
 }
