@@ -1,6 +1,5 @@
 import { Grid, Card, Box, Typography, Table, TableBody, TableRow, TableCell, Button } from "@mui/material"
 import React from "react"
-import BattlesTable from "./BattlesTable"
 
 const advanceDetails = {
   ranking: '12345',
@@ -20,6 +19,7 @@ return (
         bgcolor: '#212B36',
         borderRadius: 4,
         paddingTop: '100%',
+        overflowY:'scroll',
         position: 'relative',
         '@media (max-width: 600px)': {
           paddingTop: '50%',
@@ -107,9 +107,9 @@ return (
               </Box>
             </Grid>
           </Grid>
-          <Box pb={2} >
+          <Box >
             {' '}
-            <Box px={4} mt={2} mb={4}>
+            <Box px={4} mt={2} >
               <Button variant="outlined" fullWidth sx={{mb: 10 }}>
                 View Brain Code
               </Button>

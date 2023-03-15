@@ -14,7 +14,7 @@ const basicDetails = {
 export default ()=>{
     return (
       <Grid container pb={2} spacing={2}>
-        <Grid item lg={4} md={4} sm={4} xs={12}>
+        <Grid item lg={4} md={4} sm={12} xs={12}>
           <Card
             sx={{
               bgcolor: '#212B36',
@@ -50,70 +50,73 @@ export default ()=>{
             ></Box>
           </Card>
         </Grid>
-        <Grid item lg={4} md={4} sm={4} xs={12}>
-          <Card
-            sx={{
-              bgcolor: '#212B36',
-              borderRadius: 4,
-              paddingTop: '100%',
-              position: 'relative',
-              '@media (max-width: 600px)': {
-                paddingTop: '50%',
-              },
-            }}
-          >
-            <Box
+
+        <Grid item lg={4} md={4} sm={12} xs={12}>
+          
+            <Card
               sx={{
-                position: 'absolute',
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                p: 4,
+                overflowY: 'scroll',
+                bgcolor: '#212B36',
+                borderRadius: 4,
+                paddingTop: '100%',
+                position: 'relative',
+                '@media (max-width: 600px)': {
+                  paddingTop: '50%',
+                },
               }}
             >
-              <Typography variant="h6" component="h2" gutterBottom>
-                Name
-              </Typography>
-              <Typography variant="body1" gutterBottom mt={1}>
-                {basicDetails.name}
-              </Typography>
-              <Typography variant="h6" gutterBottom mt={2}>
-                Hash
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                #{basicDetails.hash}
-              </Typography>
-              <Typography variant="h6" gutterBottom mt={2}>
-                Mech/Tank
-              </Typography>
-              <Box display={'flex'} alignItems={'center'}>
-                <Typography pr={2} variant="body2" gutterBottom>
-                  {basicDetails.mech}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  p: 4,
+                }}
+              >
+                <Typography variant="h6" component="h2" gutterBottom>
+                  Name
                 </Typography>
-                {basicDetails.isBoost && (
-                  <Button
-                    color="warning"
-                    size="small"
-                    style={{ fontSize: '12px', padding: '4px 8px' }}
-                  >
-                    Boost
-                  </Button>
-                )}
-              </Box>
-
-              <Typography variant="h6" gutterBottom>
-                Bio
-              </Typography>
-              <Box sx={{ height: 100, overflowY: 'scroll' }}>
+                <Typography variant="body1" gutterBottom mt={1}>
+                  {basicDetails.name}
+                </Typography>
+                <Typography variant="h6" gutterBottom mt={2}>
+                  Hash
+                </Typography>
                 <Typography variant="body2" gutterBottom>
-                  {basicDetails.bio}
+                  #{basicDetails.hash}
                 </Typography>
+                <Typography variant="h6" gutterBottom mt={2}>
+                  Mech/Tank
+                </Typography>
+                <Box display={'flex'} alignItems={'center'}>
+                  <Typography pr={2} variant="body2" gutterBottom>
+                    {basicDetails.mech}
+                  </Typography>
+                  {basicDetails.isBoost && (
+                    <Button
+                      color="warning"
+                      size="small"
+                      style={{ fontSize: '12px', padding: '4px 8px' }}
+                    >
+                      Boost
+                    </Button>
+                  )}
+                </Box>
+
+                <Typography variant="h6" gutterBottom>
+                  Bio
+                </Typography>
+                <Box sx={{ height: 100, overflowY: 'scroll' }}>
+                  <Typography variant="body2" gutterBottom>
+                    {basicDetails.bio}
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          </Card>
+            </Card>
         </Grid>
-     
+
         <FrobotAdvancedDetails />
         <AttachedEquipments />
       </Grid>
