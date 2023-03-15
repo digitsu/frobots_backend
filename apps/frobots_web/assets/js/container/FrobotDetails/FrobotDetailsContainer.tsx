@@ -14,7 +14,7 @@ const basicDetails = {
 export default ()=>{
     return (
       <Grid container pb={2} spacing={2}>
-        <Grid item xs={12} sm={4}>
+        <Grid item lg={4} md={4} sm={4} xs={12}>
           <Card
             sx={{
               bgcolor: '#212B36',
@@ -50,7 +50,7 @@ export default ()=>{
             ></Box>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item lg={4} md={4} sm={4} xs={12}>
           <Card
             sx={{
               bgcolor: '#212B36',
@@ -113,8 +113,9 @@ export default ()=>{
             </Box>
           </Card>
         </Grid>
-        <FrobotAdvancedDetails/>
-        <AttachedEquipments/>
+     
+        <FrobotAdvancedDetails />
+        <AttachedEquipments />
       </Grid>
     )
     

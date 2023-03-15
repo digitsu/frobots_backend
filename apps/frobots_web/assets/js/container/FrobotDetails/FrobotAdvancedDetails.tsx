@@ -1,5 +1,6 @@
 import { Grid, Card, Box, Typography, Table, TableBody, TableRow, TableCell, Button } from "@mui/material"
 import React from "react"
+import BattlesTable from "./BattlesTable"
 
 const advanceDetails = {
   ranking: '12345',
@@ -12,141 +13,113 @@ const advanceDetails = {
 }
 
 export default ()=>{
-return <Grid item xs={12} sm={4}>
-  <Card
-    sx={{
-      bgcolor: '#212B36',
-      borderRadius: 4,
-      paddingTop: '100%',
-      position: 'relative',
-      '@media (max-width: 600px)': {
-        paddingTop: '50%',
-      },
-    }}
-  >
-    <Box
+return (
+  <Grid item lg={4} md={6} sm={6} xs={12}>
+    <Card
       sx={{
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
+        bgcolor: '#212B36',
+        borderRadius: 4,
+        paddingTop: '100%',
+        position: 'relative',
+        '@media (max-width: 600px)': {
+          paddingTop: '50%',
+        },
       }}
     >
-      <Typography px={3} pt={4} variant="h4" component="h2" gutterBottom>
-        297050 XP
-      </Typography>
-
-      <Table>
-        <TableBody>
-          <TableRow>
-            <TableCell
-              style={{ fontWeight: 'bold' }}
-              variant="body"
-              component="th"
-              scope="row"
-            >
-              Ranking
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="center">
-              :
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">
-              {advanceDetails.ranking}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell
-              style={{ fontWeight: 'bold' }}
-              component="th"
-              scope="row"
-            >
-              Mech/Tank Health{' '}
-              {advanceDetails.isRepair && (
-                <Button
-                  color="warning"
-                  size="small"
-                  style={{ fontSize: '12px', padding: '4px 8px' }}
-                >
-                  Repair
-                </Button>
-              )}
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="center">
-              :
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">
-              {advanceDetails.mechTankHealth}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell
-              style={{ fontWeight: 'bold' }}
-              component="th"
-              scope="row"
-            >
-              Speed
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="center">
-              :
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">
-              {advanceDetails.speed}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell
-              style={{ fontWeight: 'bold' }}
-              component="th"
-              scope="row"
-            >
-              HP
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="center">
-              :
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">
-              {advanceDetails.hp}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell
-              style={{ fontWeight: 'bold' }}
-              component="th"
-              scope="row"
-            >
-              Wins
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="center">
-              :
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">
-              {advanceDetails.wins}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell
-              style={{ fontWeight: 'bold' }}
-              component="th"
-              scope="row"
-            >
-              QDOS Earned
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="center">
-              :
-            </TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">
-              {advanceDetails.qdosEarned}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-      <Box px={4} mt={6} mb={10}>
-        <Button variant="outlined" fullWidth sx={{ py: 1, mb: 10 }}>
-          View Brain Code
-        </Button>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+        }}
+      >
+        <Typography sx={{ pl: 4, pt: 2, mt: 1, mb: 2 }} variant={'h5'}>
+          2780451 XP
+        </Typography>
+        <Box>
+          <Grid pl={4} container spacing={2}>
+            <Grid item >
+              <Box  textAlign="left">
+                <Typography my={2.2} variant="subtitle2">
+                  Ranking
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  Mech/Tank Health
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  Speed
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  HP
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  Wins
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  QDOS Earned
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item>
+              <Box textAlign="center">
+                <Typography my={2.2} variant="subtitle2">
+                  :
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  :
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  :
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  :
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  :
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  :
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid pr={3} item xs={7}>
+              <Box textAlign="right">
+                <Typography my={2.2} variant="subtitle2">
+                  {advanceDetails.ranking}
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  {advanceDetails.mechTankHealth}
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  {advanceDetails.speed}
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  {advanceDetails.hp}
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  {advanceDetails.wins}
+                </Typography>
+                <Typography my={2.2} variant="subtitle2">
+                  {advanceDetails.qdosEarned}
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
+          <Box pb={2} >
+            {' '}
+            <Box px={4} mt={2} mb={4}>
+              <Button variant="outlined" fullWidth sx={{mb: 10 }}>
+                View Brain Code
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       </Box>
-    </Box>
-  </Card>
-</Grid>
+    </Card>
+    
+  </Grid>
+  
+)
 }
