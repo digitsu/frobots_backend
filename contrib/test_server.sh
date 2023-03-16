@@ -17,7 +17,8 @@ else
 	exit 1
 fi
 
-ret2=$(curl -get $1 | grep -q $teststring; echo $?)
+#ret2=$(curl -L --get $1 | grep -q $teststring; echo $?)
+ret2=$(curl -LG $1 | tac | tac | grep -q $teststring; echo $?)
 
 if [ $ret2 -eq 1 ]; then
 	echo "FAILED to find '$teststring' in HTTP response body"
