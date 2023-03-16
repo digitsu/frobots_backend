@@ -124,7 +124,7 @@ server-test:
   stage: smoke
   needs: ["deploy-job"]
   script:
-    - ./contrib/test_server.sh https://internal.frobots.io "Welcome to FROBOTS BETA"
+    - ./contrib/test_server.sh https://internal.frobots.io "Enter your password"
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
  

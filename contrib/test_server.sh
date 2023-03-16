@@ -8,12 +8,10 @@ teststring=$2
 echo "$greeting back $user! Today is $day, which is the best day of the entire week!"
 echo "Your Bash shell version is: $BASH_VERSION. Enjoy!"
 
-ret=$(curl -Is $1 | grep HTTP | cut -d ' ' -f2)
+ret=$(curl -LIs $1 | grep HTTP | cut -d ' ' -f2 | tail -1 )
 
-if [ $ret -eq 301 ]; then
-	echo "SUCCESS 301"
-elif [ $ret -eq 200 ]; then
-	echo "SUCCESS 200"
+if [ $ret -eq 200 ]; then
+	echo "SUCCESS 200 - Got a website!"
 else
 	echo "FAILED Web Check"
 	exit 1
