@@ -58,6 +58,8 @@ defmodule FrobotsWeb.Router do
     pipe_through [:api]
     get "/leaderboard", Api.LeaderboardController, :index
     post "/users/log_in", Api.UserSessionController, :create
+
+    post "/match", Api.MatchController, :create
   end
 
   # Enables LiveDashboard only for development
