@@ -28,7 +28,7 @@ export default () => {
             <Box position={'relative'}>
               <Box width={'100%'} m={'auto'}>
                 <Box
-                  borderRadius={4}
+                  borderRadius={2}
                   component={'img'}
                   width={'100%'}
                   src={featuredFrobot.src}
@@ -39,7 +39,7 @@ export default () => {
                   width={'100%'}
                   p={1}
                   sx={{
-                    borderRadius: 4,
+                    borderRadius: 2,
                     overflow: 'hidden',
                     '::after': {
                       content: '""',

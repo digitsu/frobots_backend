@@ -1,32 +1,20 @@
 import React from 'react'
-import { Button, Typography } from '@mui/material'
-import { Box } from '@mui/system'
-import { ArrowForward } from '@mui/icons-material'
-import Card from '../../components/generic/Card'
+import { Typography, Box, Card } from '@mui/material'
+import GlobalStatsItem from '../../components/Dashboard/GlobalStatsItem'
 
-const topPlayers = [
-  {
-    name: '2920',
-    color: '#00AB55',
-    details: 'Players Online',
-  },
-  {
-    name: '72',
-    color: '#FFAB00',
-    details: 'Matches In Progress',
-  },
-  {
-    name: '4729',
-    color: '#00B8D9',
-    details: 'Players Registered',
-  },
-  {
-    name: '12412312',
-    color: '#FFAB00',
-    details: 'Matches Completed',
-  },
-]
-export default () => {
+type GlobalStats = {
+  matches_completed: number
+  matches_in_progress: number
+  players_online: number
+  players_registered: number
+}
+
+type GlobalStatsProps = {
+  globalStats: GlobalStats
+}
+
+export default (props) => {
+  const { globalStats }: GlobalStatsProps = props
   return (
     <Card>
       <Box px={2} py={2} maxHeight={240}>
@@ -34,43 +22,30 @@ export default () => {
           Global Stats
         </Typography>
         <Box flexDirection={'column'} display={'flex'} gap={1}>
-          {topPlayers.map((playerDetails, index) => (
-            <Box
-              display={'flex'}
-              gap={1}
-              alignItems={'flex-start'}
-              justifyContent={'flex-start'}
-            >
-              <Box
-                gap={1}
-                display={'flex'}
-                flexDirection={'column'}
-                alignItems={'center'}
-              >
-                <Box
-                  component={'div'}
-                  width={12}
-                  minHeight={12}
-                  borderRadius={'50%'}
-                  bgcolor={playerDetails.color}
-                ></Box>
-                {index !== topPlayers.length - 1 && (
-                  <Box
-                    component={'div'}
-                    width={'1px'}
-                    bgcolor={'gray'}
-                    height={'20px'}
-                  />
-                )}
-              </Box>
-              <Box>
-                <Typography variant="body2">{playerDetails.name}</Typography>
-                <Typography fontSize={11} color={'lightslategray'}>
-                  {playerDetails.details}
-                </Typography>
-              </Box>
-            </Box>
-          ))}
+          <GlobalStatsItem
+            color={'#00AB55'}
+            subtitle={'Players Online'}
+            label={globalStats?.players_online}
+            index={0}
+          />
+          <GlobalStatsItem
+            color={'#FFAB00'}
+            subtitle={'Matches In Progress'}
+            label={globalStats?.matches_in_progress}
+            index={1}
+          />
+          <GlobalStatsItem
+            color={'#00B8D9'}
+            subtitle={'Players Registered'}
+            label={globalStats?.players_registered}
+            index={2}
+          />
+          <GlobalStatsItem
+            color={'#FFAB00'}
+            subtitle={'Matches Completed'}
+            label={globalStats?.matches_completed}
+            index={3}
+          />
         </Box>
       </Box>
     </Card>

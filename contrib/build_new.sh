@@ -8,9 +8,13 @@ chmod 0600 /tmp/.ssh.key
 
 if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     ip=$FROBOTSBACKEND_PROD
+    dbname=$POSTGRES_DB_PROD
     mixenv=prod
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     ip=$FROBOTSBACKEND_STAGING
+    # note that even dev uses the postgres_db name of frobots_prod, because there isn't any dev db that should be running on the same host so no need to worry about name clash
+    # and the fact I tried to setup a frobots_dev, but had issues with being able to run a mix ecto.create on it after its creation.
+    dbname=$POSTGRES_DB_PROD
     mixenv=staging
 else
     ip='not a valid branch'
@@ -73,7 +77,8 @@ docker container prune --force || true
 
 echo "running postgres"
 docker run --detach --rm --network $FROBOTS_NETWORK --network-alias postgres-server -e POSTGRES_PASSWORD=$POSTGRES_PASS -e POSTGRES_USER=$POSTGRES_USER -v postgres_home:/home/${POSTGRES_USER} -v postgres_data:/var/lib/postgresql/data --name postgres postgres:12-bullseye
-echo "running the backend"
-docker run --rm -dp $PORT:$PORT -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
-echo "running migrations"
-docker exec frobots_backend bin/frobots_backend eval "FrobotsWeb.Release.migrate"
+echo "running the backend on: "$DATABASE_URL_NEW${dbname}
+docker run --rm -dp $PORT:$PORT -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW${dbname} -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
+#echo "running migrations"
+#docker exec frobots_backend bin/frobots_backend eval "FrobotsWeb.Release.migrate"
+echo "skipping migrations -- run manually!"
