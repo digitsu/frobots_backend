@@ -5,8 +5,8 @@ import React, {
   type ChangeEvent,
   type MouseEvent,
 } from 'react'
-import { Grid, Box, Typography, CardContent } from '@mui/material'
-import Card from '../../components/generic/Card'
+import { Grid, Box, Typography, CardContent, Card } from '@mui/material'
+
 import { MatchList } from './MatchList'
 import { MatchListSearch } from './MatchListSearch'
 
