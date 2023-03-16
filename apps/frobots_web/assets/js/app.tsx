@@ -7,8 +7,6 @@ import topbar from '../vendor/topbar'
 import { connectToSocket } from './user_socket'
 import Hooks from './hooks'
 
-
-
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute('content')

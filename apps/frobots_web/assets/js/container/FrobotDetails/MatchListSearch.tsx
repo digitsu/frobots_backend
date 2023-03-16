@@ -7,11 +7,7 @@ import React, {
   useEffect,
 } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Box,
-  Tab,
-  Tabs,
-} from '@mui/material'
+import { Box, Tab, Tabs } from '@mui/material'
 
 interface Filters {
   query?: string

@@ -132,7 +132,7 @@ defmodule FrobotsWeb.Router do
     # garage
     live "/garage", GarageFrobotsListLive.Index, :index
     live "/garage/create", GarageFrobotCreateLive.Index, :index
-    live "/garage/frobots/details", GarageFrobotsDetailsLive.Index, :index
+    live "garage/frobot", GarageFrobotsDetailsLive.Index, :index
 
     get "/", PageController, :index
     get "/oldhome", PageController, :index

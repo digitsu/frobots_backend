@@ -5,7 +5,6 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
     # set required data via assigns
-    # for example..fetch leaderboard entries and pass to liveview as follow
     {:ok, socket}
   end
 
@@ -16,13 +15,6 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
   end
 
   defp apply_action(socket, :index, _params) do
-    # entries = Frobots.LeaderBoard.get()
-    # {:ok,socket
-    # |> assign(:entries, entries)
-    # }
-
-    #  socket
-    # |> assign_new(:rider_search, fn -> rider_search end)
     socket
   end
 end

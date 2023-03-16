@@ -37,10 +37,7 @@ const getStatusName = (status: string) => {
 }
 
 export const MatchList: FC<MatchListTableProps> = (props) => {
-  const {
-    matchs,
-    ...other
-  } = props
+  const { matchs, ...other } = props
 
   return (
     <Box sx={{ position: 'relative' }} {...other}>

@@ -1,5 +1,5 @@
-import { Grid, Typography } from "@mui/material"
-import React from "react"
+import { Grid, Typography } from '@mui/material'
+import React from 'react'
 
 const sliderImages = [
   { id: 0, src: '/images/frobot_slider_1.png' },
@@ -11,14 +11,14 @@ const sliderImages = [
   { id: 6, src: '/images/frobot_slider_7.png' },
 ]
 
-export default ()=>{
-    return (
-      <Grid px={1} container spacing={2}>
-        {sliderImages.map((image) => (
-          <Grid item key={image.id}  xs={12}>
-            <img src={image.src} alt={`Image ${image.id}`} />
-          </Grid>
-        ))}
-      </Grid>
-    )
+export default () => {
+  return (
+    <Grid px={1} container spacing={2}>
+      {sliderImages.map((image) => (
+        <Grid item key={image.id} xs={12}>
+          <img src={image.src} alt={`Image ${image.id}`} />
+        </Grid>
+      ))}
+    </Grid>
+  )
 }
