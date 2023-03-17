@@ -95,11 +95,11 @@ defmodule Frobots.AssetsTest do
       {:ok, equipment} =
         Assets.create_equipment(%{
           equipment_id: 1,
-          equipment_type: :Tank,
+          equipment_type: :XFrame,
           frobot_id: id
         })
 
-      assert equipment.equipment_type == :Tank
+      assert equipment.equipment_type == :XFrame
       assert equipment.equipment_id == 1
     end
 
@@ -111,7 +111,7 @@ defmodule Frobots.AssetsTest do
       {:ok, equipment1} =
         Assets.create_equipment(%{
           equipment_id: 1,
-          equipment_type: :Tank,
+          equipment_type: :XFrame,
           frobot_id: id
         })
 
