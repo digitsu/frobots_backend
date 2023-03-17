@@ -81,29 +81,21 @@ if config_env() == :prod || config_env() == :staging do
          :ghost_blog_url,
          "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
 
-  S3_store_secret_key =
+  s3_store_secret_key =
     System.get_env("LINODE_BACKEND_STORE_SECRET_KEY") ||
       raise """
       environment variable LINODE_BACKEND_STORE_SECRET_KEY is missing.
       Did you forget to source env vars?
       """
 
-  config :frobots_web,
-         :S3_store_secret_key,
-         S3_store_secret_key
-
-  S3_store_access_key =
+  s3_store_access_key =
     System.get_env("LINODE_BACKEND_STORE_ACCESS_KEY") ||
       raise """
       environment variable LINODE_BACKEND_STORE_ACCESS_KEY is missing.
       Did you forget to source env vars?
       """
 
-  config :frobots_web,
-         :S3_store_access_key,
-         S3_store_access_key
-
-  S3_store_url =
+  s3_store_url =
     System.get_env("LINODE_BACKEND_STORE_URL") ||
       raise """
       environment variable LINODE_BACKEND_STORE_URL is missing.
@@ -111,8 +103,10 @@ if config_env() == :prod || config_env() == :staging do
       """
 
   config :frobots_web,
-         :S3_store_url,
-         S3_store_url
+         :s3_store,
+         url: s3_store_url,
+         access_key: s3_store_access_key,
+         secret_key: s3_store_secret_key
 
   # ## Using releases
   #
