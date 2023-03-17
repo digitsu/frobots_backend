@@ -1,10 +1,10 @@
-defmodule Frobots.Assets.Tank do
+defmodule Frobots.Assets.XFrame do
   use Ecto.Schema
   import Ecto.Changeset
 
   @derive {Jason.Encoder,
            only: [
-             :tank_type,
+             :xframe_type,
              :max_speed_ms,
              :turn_speed,
              :scanner_hardpoint,
@@ -15,8 +15,8 @@ defmodule Frobots.Assets.Tank do
              :accel_speed_mss
            ]}
 
-  schema "tanks" do
-    field :tank_type, Ecto.Enum, values: ~w(Mk1 Mk2)a
+  schema "xframes" do
+    field :xframe_type, Ecto.Enum, values: ~w(Tank_Mk1 Tank_Mk2)a
     field :max_speed_ms, :integer
     field :turn_speed, :integer
     field :scanner_hardpoint, :integer
@@ -30,7 +30,7 @@ defmodule Frobots.Assets.Tank do
   end
 
   @fields [
-    :tank_type,
+    :xframe_type,
     :max_speed_ms,
     :turn_speed,
     :scanner_hardpoint,
@@ -42,10 +42,10 @@ defmodule Frobots.Assets.Tank do
   ]
 
   @doc false
-  def changeset(tank, attrs) do
-    tank
+  def changeset(xframe, attrs) do
+    xframe
     |> cast(attrs, @fields)
     |> validate_required(@fields)
-    |> unique_constraint([:tank_type])
+    |> unique_constraint([:xframe_type])
   end
 end
