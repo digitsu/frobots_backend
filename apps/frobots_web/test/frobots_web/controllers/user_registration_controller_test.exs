@@ -5,7 +5,7 @@ defmodule FrobotsWeb.UserRegistrationControllerTest do
 
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do
-      {:ok, user} = user_fixture()
+      {:ok, _user} = user_fixture()
       conn = get(conn, Routes.user_registration_path(conn, :new))
       response = html_response(conn, 200)
 

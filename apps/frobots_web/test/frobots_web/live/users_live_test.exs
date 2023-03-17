@@ -24,7 +24,7 @@ defmodule FrobotsWeb.UsersLiveTest do
     end
 
     test "admin can create new user with valid attributes", %{conn: conn} do
-      {:ok, user_live, html} = live(conn, Routes.users_index_path(conn, :index))
+      {:ok, user_live, _html} = live(conn, Routes.users_index_path(conn, :index))
 
       # Click on New Item
       user_live

@@ -1,6 +1,6 @@
 defmodule FrobotsWeb.SendInvites do
-  alias FrobotsWeb.{Mailer, BetaMailer, MailTemplates}
-  alias Frobots.Accounts
+  alias FrobotsWeb.{BetaMailer, MailTemplates}
+  alias Frobots.{Accounts, Mailer}
   alias FrobotsWeb.SendgridApi
   require Logger
 

@@ -3,7 +3,7 @@ defmodule FrobotsWeb.Api.UserSessionControllerTest do
 
   import Frobots.AccountsFixtures
 
-  setup %{conn: conn} do
+  setup %{conn: _conn} do
     {:ok, user} = user_fixture()
     %{user: user}
   end

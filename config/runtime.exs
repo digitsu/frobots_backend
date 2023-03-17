@@ -54,12 +54,6 @@ if config_env() == :prod || config_env() == :staging do
       Did you forget to source env vars?
       """
 
-  config :frobots, FrobotsWeb.Mailer,
-    adapter: Swoosh.Adapters.Sendgrid,
-    api_key: sendgrid_api_key,
-    domain: "frobots.io"
-
-  # can we use both?
   config :frobots, Frobots.Mailer,
     adapter: Swoosh.Adapters.Sendgrid,
     api_key: sendgrid_api_key,
@@ -124,7 +118,7 @@ if config_env() == :prod || config_env() == :staging do
   # Also, you may need to configure the Swoosh API client of your choice if you
   # are not using SMTP. Here is an example of the configuration:
   #
-  #     config :frobots_web, FrobotsWeb.Mailer,
+  #     config :frobots_web, Frobots.Mailer,
   #       adapter: Swoosh.Adapters.Mailgun,
   #       api_key: System.get_env("MAILGUN_API_KEY"),
   #       domain: System.get_env("MAILGUN_DOMAIN")

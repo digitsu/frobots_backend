@@ -1,7 +1,6 @@
 defmodule FrobotsWeb.HomeLiveTest do
   use FrobotsWeb.ConnCase, async: true
   import Phoenix.LiveViewTest
-  alias FrobotsWeb.ConnCase
 
   describe "Index" do
     setup [:create_user, :register_and_log_in_user]
@@ -17,7 +16,7 @@ defmodule FrobotsWeb.HomeLiveTest do
   describe "Test Ghost Blog Basic" do
     setup [:create_user, :register_and_log_in_user]
 
-    test "Try to get the ghost blog in test, should return nothing", %{conn: conn} do
+    test "Try to get the ghost blog in test, should return nothing", %{conn: _conn} do
       assert FrobotsWeb.HomeLive.Index.get_blog_posts() == []
     end
   end

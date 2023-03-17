@@ -40,7 +40,7 @@ defmodule FrobotsWeb.Api.FrobotControllerTest do
   describe "index" do
     setup [:api_login]
     @tag login_as: "admin@mail.com"
-    test "lists all frobots", %{conn: conn, user: user} do
+    test "lists all frobots", %{conn: conn, user: _user} do
       conn = get(conn, Routes.api_frobot_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
     end
