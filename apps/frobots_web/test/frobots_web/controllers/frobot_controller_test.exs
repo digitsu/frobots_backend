@@ -40,7 +40,7 @@ defmodule FrobotsWeb.FrobotControllerTest do
     )
   end
 
-  test "authorizes actions against access by other users", %{conn: conn} do
+  test "authorizes actions against access by other users", %{conn: _conn} do
     {:ok, owner} = user_fixture(email: "owner@mail.com")
     frobot = frobot_fixture(owner, @create_attrs)
     {:ok, non_owner} = user_fixture(email: "sneaky@mail.com")
