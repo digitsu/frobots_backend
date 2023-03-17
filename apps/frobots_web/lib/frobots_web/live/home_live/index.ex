@@ -56,19 +56,22 @@ defmodule FrobotsWeb.HomeLive.Index do
   end
 
   def get_blog_posts() do
-    url = Application.fetch_env!(:frobots_web, :ghost_blog_url)
-
-    if String.contains?(url, "localhost") do
-      []
+    with {:ok, url} <- Application.fetch_env(:frobots_web, :ghost_blog_url),
+         {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- HTTPoison.get(url),
+         {:ok, data} <- Jason.decode(body) do
+      data["posts"]
     else
-      case HTTPoison.get(url) do
-        {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-          {:ok, data} = Jason.decode(body)
-          data["posts"]
+      {:ok, _} ->
+        IO.puts("Something other than HTTP 200 returned")
+        []
 
-        {:error, _error} ->
-          []
-      end
+      {:error, err} ->
+        IO.puts("GhostBlog: no data posts! Err: " <> err)
+        []
+
+      :error ->
+        IO.puts("GhostBlog: No Ghost URL!")
+        []
     end
   end
 
