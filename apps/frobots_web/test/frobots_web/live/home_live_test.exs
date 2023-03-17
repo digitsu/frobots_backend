@@ -20,6 +20,5 @@ defmodule FrobotsWeb.HomeLiveTest do
     test "Try to get the ghost blog in test, should return nothing", %{conn: conn} do
       assert FrobotsWeb.HomeLive.Index.get_blog_posts() == []
     end
-
   end
 end
