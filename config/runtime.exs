@@ -1,9 +1,5 @@
 import Config
 
-ghost_api_key = System.get_env("GHOST_API_KEY")
-sendgrid_api_key = System.get_env("SENDGRID_API_KEY")
-sendgrid_mailinglist_key = System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY")
-
 if config_env() == :prod || config_env() == :staging do
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
@@ -16,6 +12,16 @@ if config_env() == :prod || config_env() == :staging do
       environment variable SECRET_KEY_BASE is missing.
       You can generate one by calling: mix phx.gen.secret
       """
+
+  config :frobots_web, FrobotsWeb.Endpoint,
+    http: [
+      # Enable IPv6 and bind on all interfaces.
+      # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
+      ip: {0, 0, 0, 0, 0, 0, 0, 0},
+      port: String.to_integer(System.get_env("PORT") || "4000"),
+      transport_options: [socket_opts: [:inet6]]
+    ],
+    secret_key_base: secret_key_base
 
   admin_user =
     System.get_env("ADMIN_USER") ||
@@ -31,32 +37,18 @@ if config_env() == :prod || config_env() == :staging do
       Did you forget to source env vars?
       """
 
-  ghost_api_key =
-    ghost_api_key ||
-      raise """
-      environment variable GHOST_API_KEY is missing.
-      Did you forget to source env vars?
-      """
-
-  config :frobots_web,
-         :ghost_blog_url,
-         "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
-
-  config :frobots_web, FrobotsWeb.Endpoint,
-    http: [
-      # Enable IPv6 and bind on all interfaces.
-      # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
-      ip: {0, 0, 0, 0, 0, 0, 0, 0},
-      port: String.to_integer(System.get_env("PORT") || "4000"),
-      transport_options: [socket_opts: [:inet6]]
-    ],
-    secret_key_base: secret_key_base
-
   # configures the dashboard admin password -- make sure to use SSL when we open up the server to public as inputs are exposed in transit via basic_auth
   config :frobots_web, :basic_auth, username: admin_user, password: admin_pass
 
+  sendgrid_mailinglist_key =
+    System.get_env("SENDGRID_API_EXPORT_MAILINGLIST_KEY") ||
+      raise """
+      environment variable SENDGRID_API_EXPORT_MAILINGLIST_KEY is missing.
+      Did you forget to source env vars?
+      """
+
   sendgrid_api_key =
-    sendgrid_api_key ||
+    System.get_env("SENDGRID_API_KEY") ||
       raise """
       environment variable SENDGRID_API_KEY is missing.
       Did you forget to source env vars?
@@ -73,17 +65,43 @@ if config_env() == :prod || config_env() == :staging do
     api_key: sendgrid_api_key,
     domain: "frobots.io"
 
-  sendgrid_mailinglist_key =
-    sendgrid_mailinglist_key ||
-      raise """
-      environment variable SENDGRID_API_EXPORT_MAILINGLIST_KEY is missing.
-      Did you forget to source env vars?
-      """
-
   config :sendgrid,
     sendgrid_mailinglist_key: sendgrid_mailinglist_key,
     base_url: "https://api.sendgrid.com",
     send_mail: config_env() == :prod
+
+  ghost_api_key =
+    System.get_env("GHOST_API_KEY") ||
+      raise """
+      environment variable GHOST_API_KEY is missing.
+      Did you forget to source env vars?
+      """
+
+  config :frobots_web,
+         :ghost_blog_url,
+         "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
+
+  S3_store_key =
+    System.get_env("LINODE_BACKEND_STORE_KEY") ||
+      raise """
+      environment variable LINODE_BACKEND_STORE_KEY is missing.
+      Did you forget to source env vars?
+      """
+
+  config :frobots_web,
+         :S3_store_key,
+         S3_store_key
+
+  S3_store_api =
+    System.get_env("LINODE_BACKEND_STORE") ||
+      raise """
+      environment variable LINODE_BACKEND_STORE_KEY is missing.
+      Did you forget to source env vars?
+      """
+
+  config :frobots_web,
+         :S3_store_api,
+         S3_store_api
 
   # ## Using releases
   #
