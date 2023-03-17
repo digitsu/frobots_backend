@@ -13,4 +13,13 @@ defmodule FrobotsWeb.HomeLiveTest do
                "<div id=\"dashboard-content\" phx-hook=\"DashboardContentHook\" phx-update=\"ignore\"></div>"
     end
   end
+
+  describe "Test Ghost Blog Basic" do
+    setup [:create_user, :register_and_log_in_user]
+
+    test "Try to get the ghost blog in test, should return nothing", %{conn: conn} do
+      assert FrobotsWeb.HomeLive.Index.get_blog_posts() == []
+    end
+
+  end
 end
