@@ -46,7 +46,10 @@ defmodule Frobots.MixProject do
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.3"},
       {:hackney, "~> 1.18"},
-      {:bsv, "~> 2.1.0"}
+      {:bsv, "~> 2.1.0"},
+      {:ex_aws, "~> 2.1"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:sweet_xml, "~> 0.6"}
     ]
   end
 

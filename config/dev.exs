@@ -79,12 +79,17 @@ config :phoenix, :stacktrace_depth, 20
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
 
-s3_store_secret_key = "64wmd2FxcBQhypwycnkXUdm5tNQFbs0B01RYaccX"
-s3_store_access_key = "NSU161QPPISNBMLOQHSR"
-s3_store_url = "frobots-assets.ap-south-1.linodeobjects.com"
+s3_store_url = System.get_env("S3_URL") || "ap-south-1.linodeobjects.com"
+s3_store_bucket = System.get_env("S3_BUCKET") || "frobots-assets"
 
-config :frobots_web,
-       :s3_store,
-       url: s3_store_url,
-       access_key: s3_store_access_key,
-       secret_key: s3_store_secret_key
+config :ex_aws,
+  debug_requests: true,
+  access_key_id: [{:system, "S3_ACCESS_KEY"}, :instance_role],
+  secret_access_key: [{:system, "S3_SECRET_KEY"}, :instance_role],
+  region: "US"
+
+config :ex_aws, :s3,
+  scheme: "https://",
+  host: s3_store_url,
+  region: "US",
+  bucket: s3_store_bucket
