@@ -1,10 +1,4 @@
-import {
-  Grid,
-  Card,
-  Box,
-  Typography,
-  Button,
-} from '@mui/material'
+import { Grid, Card, Box, Typography, Button } from '@mui/material'
 import React from 'react'
 
 const advanceDetails = {
@@ -133,7 +127,11 @@ export default () => {
                 mx: 4,
               }}
             >
-              <Button variant="outlined" fullWidth onClick={handleOpenBrainCode}>
+              <Button
+                variant="outlined"
+                fullWidth
+                onClick={handleOpenBrainCode}
+              >
                 View Brain Code
               </Button>
             </Box>
