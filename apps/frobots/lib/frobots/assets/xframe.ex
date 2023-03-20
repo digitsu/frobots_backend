@@ -7,8 +7,9 @@ defmodule Frobots.Assets.XFrame do
              :xframe_type,
              :max_speed_ms,
              :turn_speed,
-             :scanner_hardpoint,
-             :weapon_hardpoint,
+             :sensor_hardpoints,
+             :weapon_hardpoints,
+             :cpu_hardpoints,
              :movement_type,
              :max_health,
              :max_throttle,
@@ -16,12 +17,13 @@ defmodule Frobots.Assets.XFrame do
            ]}
 
   schema "xframes" do
-    field :xframe_type, Ecto.Enum, values: ~w(Tank_Mk1 Tank_Mk2)a
+    field :xframe_type, Ecto.Enum, values: ~w(Tank_Mk1 Tank_Mk2 Tank_Mk3)a
     field :max_speed_ms, :integer
     field :turn_speed, :integer
-    field :scanner_hardpoint, :integer
-    field :weapon_hardpoint, :integer
-    field :movement_type, Ecto.Enum, values: ~w(tread bipedal hover)a
+    field :sensor_hardpoints, :integer
+    field :weapon_hardpoints, :integer
+    field :cpu_hardpoints, :integer
+    field :movement_type, Ecto.Enum, values: ~w(tracks bipedal hover)a
     field :max_health, :integer
     field :max_throttle, :integer
     field :accel_speed_mss, :integer
@@ -33,8 +35,8 @@ defmodule Frobots.Assets.XFrame do
     :xframe_type,
     :max_speed_ms,
     :turn_speed,
-    :scanner_hardpoint,
-    :weapon_hardpoint,
+    :sensor_hardpoints,
+    :weapon_hardpoints,
     :movement_type,
     :max_health,
     :max_throttle,

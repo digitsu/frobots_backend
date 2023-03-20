@@ -83,9 +83,9 @@ defmodule Frobots.Assets do
   end
 
   @doc """
-  Gets a single frobot.
+  Gets a single frobot by name.
 
-  Raises `Ecto.NoResultsError` if the Frobot does not exist.
+  nil if doesn't exist
 
   ## Examples
 
@@ -93,34 +93,20 @@ defmodule Frobots.Assets do
       %Frobot{}
 
       iex> get_frobot!(456)
-      ** (Ecto.NoResultsError)
+      nil
 
   """
-  def get_frobot!(name) when is_bitstring(name) do
+  def get_frobot(name) when is_bitstring(name) do
     Frobot
     |> frobots_name_query(name)
     |> Repo.one()
     |> Repo.preload(:equipment)
   end
 
-  def get_frobot!(id), do: Repo.get!(Frobot, id) |> Repo.preload(:equipment)
-
-  @doc """
-  Gets a single frobot.
-
-  Returns if the Frobot does not exist.
-
-  ## Examples
-
-      iex> get_frobot(123)
-      %Frobot{}
-
-      iex> get_frobot(456)
-      ** nil
-
-  """
   @spec get_frobot(any) :: nil | [%{optional(atom) => any}] | %{optional(atom) => any}
   def get_frobot(id), do: Repo.get(Frobot, id) |> Repo.preload(:equipment)
+
+  def get_frobot!(id), do: Repo.get!(Frobot, id) |> Repo.preload(:equipment)
 
   @doc """
   Creates a frobot.
@@ -263,7 +249,7 @@ defmodule Frobots.Assets do
     |> Repo.insert!()
   end
 
-  def get_xframe!(xframe_type) do
+  def get_xframe(xframe_type) do
     from(t in XFrame, where: t.xframe_type == ^xframe_type)
     |> Repo.one()
   end
@@ -322,7 +308,7 @@ defmodule Frobots.Assets do
     |> Repo.insert!()
   end
 
-  def get_cannon!(cannon_type) do
+  def get_cannon(cannon_type) do
     from(c in Cannon, where: c.cannon_type == ^cannon_type)
     |> Repo.one()
   end
@@ -344,7 +330,7 @@ defmodule Frobots.Assets do
     |> Repo.insert!()
   end
 
-  def get_missile!(missile_type) do
+  def get_missile(missile_type) do
     from(m in Missile, where: m.missile_type == ^missile_type)
     |> Repo.one()
   end
@@ -366,7 +352,7 @@ defmodule Frobots.Assets do
     |> Repo.insert!()
   end
 
-  def get_scanner!(scanner_type) do
+  def get_scanner(scanner_type) do
     from(s in Scanner, where: s.scanner_type == ^scanner_type)
     |> Repo.one()
   end
