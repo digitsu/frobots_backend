@@ -1,4 +1,4 @@
-defmodule FrobotsWeb.Api.LeaderboardController do
+defmodule FrobotsWeb.Api.MatchController do
   use FrobotsWeb, :controller
 
   action_fallback FrobotsWeb.FallbackController
