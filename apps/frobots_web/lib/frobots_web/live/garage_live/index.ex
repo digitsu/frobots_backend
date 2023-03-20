@@ -145,9 +145,11 @@ defmodule FrobotsWeb.GarageLive.Index do
         socket
       ) do
     current_user = get_user_from_assigns(socket)
-    frobot_equipment = Assets.get_equipment(params["frobot_equipment_id"])
 
-    case Assets.update_equipment(frobot_equipment, params) do
+    frobot_equipment =
+      Assets.get_equipment(params["equipment_type"], params["frobot_equipment_id"])
+
+    case Assets.update_equipment(frobot_equipment) do
       {:ok, _frobot} ->
         {:noreply,
          socket

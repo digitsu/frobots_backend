@@ -13,10 +13,6 @@ defmodule Frobots.Assets.Frobot do
     field :avatar, :string
     belongs_to :user, Frobots.Accounts.User
 
-    has_many :equipment, Frobots.Assets.Equipment,
-      foreign_key: :frobot_id,
-      on_delete: :delete_all
-
     many_to_many :battlelogs, Frobots.Events.Battlelog,
       join_through: Frobots.Joins.FrobotBattlelog
 

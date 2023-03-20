@@ -1,8 +1,8 @@
 defmodule Frobots.AssetsTest do
   use Frobots.DataCase, async: true
+  doctest Frobots.Assets
 
   alias Frobots.Assets
-  alias Frobots.Assets.FrobotEquipment
 
   describe "frobots" do
     alias Frobots.Assets.Frobot
@@ -85,50 +85,6 @@ defmodule Frobots.AssetsTest do
       {:ok, owner} = user_fixture()
       %Frobot{name: name} = frobot_fixture(owner)
       assert %Frobot{name: ^name} = Assets.get_frobot!(name)
-    end
-
-    # create frobot equipment for exisiting frobot
-    test "create_frobot_equipment/1 should create frobot_equipment" do
-      {:ok, owner} = user_fixture()
-      %Frobot{id: id} = frobot_fixture(owner)
-
-      {:ok, equipment} =
-        Assets.create_equipment(%{
-          equipment_id: 1,
-          equipment_type: :XFrame,
-          frobot_id: id
-        })
-
-      assert equipment.equipment_type == :XFrame
-      assert equipment.equipment_id == 1
-    end
-
-    # should be able to delete equipment
-    test "delete_frobot_equipment/1 should delete frobot_equipment for given frobot_equipment_id" do
-      {:ok, owner} = user_fixture()
-      %Frobot{id: id} = frobot_fixture(owner)
-
-      {:ok, equipment1} =
-        Assets.create_equipment(%{
-          equipment_id: 1,
-          equipment_type: :XFrame,
-          frobot_id: id
-        })
-
-      {:ok, equipment1} =
-        Assets.create_equipment(%{
-          equipment_id: 2,
-          equipment_type: :Cannon,
-          frobot_id: id
-        })
-
-      data = Assets.list_frobot_equipment(id)
-      assert Enum.count(data) == 2
-
-      Assets.delete_equipment(equipment1)
-
-      data = Assets.list_frobot_equipment(id)
-      assert Enum.count(data) == 1
     end
   end
 end

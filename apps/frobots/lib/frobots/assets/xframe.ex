@@ -1,6 +1,7 @@
 defmodule Frobots.Assets.XFrame do
   use Ecto.Schema
   import Ecto.Changeset
+  use ExConstructor
 
   @derive {Jason.Encoder,
            only: [

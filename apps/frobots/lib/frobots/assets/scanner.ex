@@ -1,6 +1,7 @@
 defmodule Frobots.Assets.Scanner do
   use Ecto.Schema
   import Ecto.Changeset
+  use ExConstructor
 
   @derive {Jason.Encoder,
            only: [
