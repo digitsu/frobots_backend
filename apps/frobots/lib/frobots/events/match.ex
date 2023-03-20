@@ -36,7 +36,8 @@ defmodule Frobots.Events.Match do
     :min_player_frobot,
     :max_player_frobot,
     :status,
-    :frobots
+    :frobots,
+    :user_id
   ]
 
   @doc false
