@@ -2,7 +2,6 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Typography, Autocomplete, TextField, Button } from '@mui/material'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
-import { templateFrobots } from '../../mock/templateFrobots'
 
 const starterMechs = [
   {
@@ -24,8 +23,15 @@ const starterMechs = [
     name: 'Small bee',
   },
 ]
-
-export default () => {
+export default (props: any) => {
+  const { templates } = props
+  const templateFrobots =
+    templates?.map(({ name, brain_code, blockly_code }, index) => ({
+      label: name,
+      brain_code,
+      blockly_code,
+      id: index,
+    })) || []
   const dispatch = useDispatch()
   const {
     changeStarterMech,
