@@ -8,6 +8,7 @@ import {
   PastMatchesHook,
 } from './ArenaMatchesHook'
 import FrobotDetailsHook from './FrobotDetailsHook'
+import FrobotBrainCodeHook from './FrobotBrainCodeHook'
 
 interface HookType {
   [key: string]: {
@@ -28,5 +29,6 @@ Hooks.LiveMatchesHook = LiveMatchesHook
 Hooks.UpcomingMatchesHook = UpcomingMatchesHook
 Hooks.PastMatchesHook = PastMatchesHook
 Hooks.FrobotDetailsHook = FrobotDetailsHook
+Hooks.FrobotBrainCodeHook = FrobotBrainCodeHook
 
 export default Hooks

@@ -3,15 +3,12 @@ import {
   Card,
   Box,
   Typography,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
   Button,
 } from '@mui/material'
 import React from 'react'
 
 const advanceDetails = {
+  id: 1,
   ranking: '12345',
   mechXFrameHealth: '60',
   isRepair: true,
@@ -22,6 +19,10 @@ const advanceDetails = {
 }
 
 export default () => {
+  const handleOpenBrainCode = () => {
+    window.location.href = `/garage/frobot/${advanceDetails.id}/braincode`
+  }
+
   return (
     <Grid item lg={4} md={6} sm={6} xs={12}>
       <Card
@@ -132,7 +133,7 @@ export default () => {
                 mx: 4,
               }}
             >
-              <Button variant="outlined" fullWidth sx={{}}>
+              <Button variant="outlined" fullWidth onClick={handleOpenBrainCode}>
                 View Brain Code
               </Button>
             </Box>
