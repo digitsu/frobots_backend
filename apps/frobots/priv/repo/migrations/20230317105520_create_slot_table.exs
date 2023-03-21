@@ -7,6 +7,8 @@ defmodule Frobots.Repo.Migrations.CreateSlotTable do
       add(:slot_type, :string)
       add(:status, :string)
       add(:match_id, references(:matches, on_delete: :nothing))
+
+      timestamps()
     end
   end
 end

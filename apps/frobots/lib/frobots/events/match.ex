@@ -22,7 +22,7 @@ defmodule Frobots.Events.Match do
     embeds_one :match_template, Frobots.Events.MatchTemplate
 
     has_one :battlelog, Frobots.Events.Battlelog
-    has_many :slots, Slot
+    has_many :slots, Slot, foreign_key: :match_id
 
     timestamps()
   end
@@ -45,6 +45,7 @@ defmodule Frobots.Events.Match do
     match
     |> cast(attrs, @fields)
     |> cast_embed(:match_template, required: true)
+    |> cast_assoc(:slots, with: &Slot.changeset/2)
     |> validate_required([:status])
     |> unique_constraint([:battlelog])
   end
