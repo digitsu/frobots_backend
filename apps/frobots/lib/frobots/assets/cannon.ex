@@ -40,8 +40,12 @@ defmodule Frobots.Assets.CannonInst do
   import Ecto.Changeset
   use ExConstructor
 
+
   @derive {Jason.Encoder,
            only: [
+             :user,
+             :cannon,
+             :frobot,
              :reload_time,
              :rate_of_fire,
              :magazine_size
@@ -57,10 +61,19 @@ defmodule Frobots.Assets.CannonInst do
     timestamps()
   end
 
+  @fields [
+    :reload_time,
+    :rate_of_fire,
+    :magazine_size
+  ]
   @doc false
   def changeset(cannon, attrs) do
     cannon
-    |> cast(attrs, :user, :cannon)
-    |> validate_required(:user, :cannon)
+    |> Frobots.Repo.preload(:cannon)
+    |> Frobots.Repo.preload(:frobot)
+    |> cast_assoc(:cannon, with: &Frobots.Assets.Cannon.changeset/2 )
+    |> cast_assoc(:frobot, with: &Frobots.Assets.Frobot.changeset/2)
+    |> cast(attrs, @fields)
+    |> validate_required(@fields)
   end
 end

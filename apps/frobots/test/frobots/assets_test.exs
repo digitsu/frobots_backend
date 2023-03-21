@@ -84,7 +84,7 @@ defmodule Frobots.AssetsTest do
     test "get_frobot!/1 with a frobot name" do
       {:ok, owner} = user_fixture()
       %Frobot{name: name} = frobot_fixture(owner)
-      assert %Frobot{name: ^name} = Assets.get_frobot!(name)
+      assert %Frobot{name: ^name} = Assets.get_frobot(name)
     end
   end
 end

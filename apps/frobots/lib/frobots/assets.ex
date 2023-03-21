@@ -89,11 +89,11 @@ defmodule Frobots.Assets do
 
   ## Examples
 
-      iex> Frobots.Assets.get_frobot!(123)
+      iex> Frobots.Assets.get_frobot("sniper")
 
       %Elixir.Frobots.Assets.Frobot{}
 
-      iex> Frobots.Assets.get_frobot!(456)
+      iex> Frobots.Assets.get_frobot("notaname")
       nil
 
   """
@@ -112,12 +112,23 @@ defmodule Frobots.Assets do
   Creates a frobot.
 
   ## Examples
+      # iex> {:ok, owner1} = Frobots.AccountsFixtures.user_fixture(%{email: Frobots.AccountsFixtures.unique_user_email()})
+      # iex> frobot1 = Frobots.AssetsFixtures.frobot_fixture(owner1, %{name: "rabbit", xp: 10})
+      # iex> Frobots.Assets.create_frobot(owner1, frobot1)
+      # {:ok, %Frobots.Assets.Frobot{}}
 
-      iex> (%{})
-      {:ok, %Frobots.Assets.Frobot{}}
+      # iex> attrs = Enum.into(%{}, %{
+      # ...> brain_code: "some brain_code",
+      # ...> class: "some class",
+      # ...> name: ~s/some name:#{:rand.uniform(1000)}/,
+      # ...> xp: 42
+      # ...> })
 
-      iex> Frobots.Assets.create_frobot(%{})
-      {:error, %Ecto.Changeset{}}
+      # iex> Frobots.Assets.create_frobot(owner1, attrs)
+      # {:ok, %Frobots.Assets.Frobot{}}
+
+      # iex> Frobots.Assets.create_frobot(nil,nil)
+      # {:error, %Ecto.Changeset{}}
 
   """
   def create_frobot(%Accounts.User{} = user, attrs \\ %{}) do
@@ -139,7 +150,7 @@ defmodule Frobots.Assets do
 
   ## Examples
 
-      iex> Frobots.Assets.update_frobot(%Frobots.Assets.Frobot{}, %{brain_code: "new_code"})
+      iex> Frobots.Assets.update_frobot(%Frobots.Assets.Frobot{}, %{brain_code: "new_code", name: "somename1"})
       {:ok, %Frobots.Assets.Frobot{}}
 
       iex> Frobots.Assets.update_frobot(%Frobots.Assets.Frobot{}, %{notafield: "blah"})
@@ -173,8 +184,9 @@ defmodule Frobots.Assets do
 
   ## Examples
 
-      iex> Frobots.Assets.change_frobot(%Elixir.Frobots.Assets.Frobot{})
-      %Ecto.Changeset{data: %Elixir.Frobots.Assets.Frobot{}}
+      iex> Frobots.Assets.change_frobot(%Elixir.Frobots.Assets.Frobot{brain_code: "sameting", name: "somename"})
+
+      %Ecto.Changeset{data: %Frobots.Assets.Frobot{}, valid?: true}
 
   """
   def change_frobot(%Frobot{} = frobot, attrs \\ %{}) do
@@ -345,7 +357,7 @@ defmodule Frobots.Assets do
 
   ## Examples
 
-      iex> Frobots.Assets.create_equipment(%{equipment_type: "Cannon", reload_time: 5, rate_of_fire: 2, magazine_size: 2})
+      iex> Frobots.Assets.create_equipment(%{equipment_type: "Cannon", reload_time: 5, rate_of_fire: 2, magazine_size: 2, user: Frobots.AccountsFixtures.user_fixture()})
 
       {:ok, %Elixir.Frobots.Assets.Cannon{}}
 

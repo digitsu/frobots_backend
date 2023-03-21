@@ -48,7 +48,9 @@ defmodule Frobots.Assets.MissileInst do
 
   @derive {Jason.Encoder,
            only: [
-
+             :user,
+             :missile,
+             :frobot,
              :damage_direct,
              :damage_near,
              :damage_far,
@@ -56,8 +58,10 @@ defmodule Frobots.Assets.MissileInst do
              :range
            ]}
 
-  schema "missiles" do
-    field :missile_type, Ecto.Enum, values: ~w(Mk1 Mk2)a
+  schema "missile_inst" do
+    belongs_to :user, Frobots.Accounts.User
+    belongs_to :missile, Frobots.Assets.Missile
+    belongs_to :frobot, Frobots.Assets.Frobot
     field :damage_direct, {:array, :integer}
     field :damage_near, {:array, :integer}
     field :damage_far, {:array, :integer}
@@ -67,7 +71,6 @@ defmodule Frobots.Assets.MissileInst do
   end
 
   @fields [
-    :missile_type,
     :damage_direct,
     :damage_near,
     :damage_far,
@@ -78,8 +81,10 @@ defmodule Frobots.Assets.MissileInst do
   @doc false
   def changeset(missile, attrs) do
     missile
+    |> cast_assoc(:user, with: &Frobots.Accounts.User.validate_email/1 )
+    |> cast_assoc(:missile, with: &Frobots.Assets.Missile.changeset/2 )
+    |> cast_assoc(:frobot, with: &Frobots.Assets.Frobot.changeset/2)
     |> cast(attrs, @fields)
     |> validate_required(@fields)
-    |> unique_constraint([:missile_type])
   end
 end
