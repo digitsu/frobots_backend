@@ -12,8 +12,42 @@
           .
         </p>
         <p class="inline-block items-left font-bold text-xs text-gray-400">
-          Arena
+          <table class="card-body table">
+            <thead>
+              <tr>
+                <th>Match ID</th>
+                <th>Match Name</th>
+                <th>Host</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Actions</th>
+                <th> </th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for match <- @matches do %>
+                  <tr>
+                  <td><%= match.id %></td>
+                  <td><%= match.title %></td>
+                  <td><%= match.user.name %></td>
+                  <td><%= match.status %></td>
+                  <td><%= match.time %></td>
+                  <td><%= "Action" %></td>
+                  <td><%= "Watch" %></td>
+                  </tr>
+              <% end %>
+            </tbody>
+          </table>
         </p>
+        <nav class="border-t border-gray-200">
+          <ul class="flex my-2">
+            <%= for idx <-  Enum.to_list(1..@total_pages) do %>
+              <li class="">
+                <a class="px-2 py-2 {idx}" href="#" phx-click="navigate" phx-value-page={idx}><%= idx %></a>
+              </li>
+            <% end %>
+          </ul>
+        </nav>
       </div>
       <div>
         <p class="inline-block font-bold text-xs text-gray-400">QDOS 40000</p>

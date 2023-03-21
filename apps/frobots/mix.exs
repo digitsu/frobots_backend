@@ -46,7 +46,8 @@ defmodule Frobots.MixProject do
       {:pbkdf2_elixir, "~> 1.0"},
       {:swoosh, "~> 1.3"},
       {:hackney, "~> 1.18"},
-      {:bsv, "~> 2.1.0"}
+      {:bsv, "~> 2.1.0"},
+      {:scrivener_ecto, "~> 2.0"}
     ]
   end
 

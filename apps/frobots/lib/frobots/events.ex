@@ -12,6 +12,13 @@ defmodule Frobots.Events do
   alias Frobots.{Assets, Accounts}
   alias Frobots.Agents.WinnersBucket
 
+  @topic inspect(__MODULE__)
+  @pubsub_server Frobots.PubSub
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(@pubsub_server, @topic)
+  end
+
   defmodule FrobotLeaderboardStats do
     defstruct frobot: "",
               username: "",
@@ -138,12 +145,8 @@ defmodule Frobots.Events do
     |> Match.changeset(attrs)
   end
 
-  def create_match!(attrs \\ %{}) do
-    _create_match(attrs) |> Repo.insert!()
-  end
-
   def create_match(attrs \\ %{}) do
-    _create_match(attrs) |> Repo.insert()
+    _create_match(attrs) |> Repo.insert() |> broadcast_change([:match, :created])
   end
 
   def change_match(%Match{} = match, attrs \\ %{}) do
@@ -156,8 +159,12 @@ defmodule Frobots.Events do
     Repo.get_by(Match, params)
   end
 
-  def list_match_by(params, preload \\ []) do
-    Match |> preload(^preload) |> Repo.all(params)
+  def list_match_by(params, preload \\ [], order_by \\ []) do
+    Match |> preload(^preload) |> order_by(^order_by) |> Repo.all(params)
+  end
+
+  def list_paginated_matches(params \\ [], preload \\ [], order_by \\ []) do
+    Match |> preload(^preload) |> order_by(^order_by) |> Repo.paginate(params)
   end
 
   def get_battlelog_by(params) do
@@ -359,4 +366,11 @@ defmodule Frobots.Events do
     |> Enum.map_reduce({nil, 0, 0}, &do_ranking/2)
     |> elem(0)
   end
+
+  defp broadcast_change({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(@pubsub_server, @topic, {__MODULE__, event, result})
+    {:ok, result}
+  end
+
+  defp broadcast_change(error, _event), do: error
 end
