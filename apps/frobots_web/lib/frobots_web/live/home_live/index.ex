@@ -2,6 +2,7 @@ defmodule FrobotsWeb.HomeLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.Accounts
   alias Frobots.Assets
+  alias Frobots.Stats
 
   @impl Phoenix.LiveView
   @spec mount(any, nil | maybe_improper_list | map, map) :: {:ok, map}
@@ -13,7 +14,7 @@ defmodule FrobotsWeb.HomeLive.Index do
      socket
      |> assign(:frobots, Assets.list_user_frobots(current_user))
      |> assign(:featured_frobots, get_featured_frobots())
-     |> assign(:current_user_stats, Assets.get_user_stats(current_user))
+     |> assign(:current_user_stats, Stats.get_user_stats(current_user))
      |> assign(:blog_posts, get_blog_posts())
      |> assign(:global_stats, show_global_stats())}
   end
