@@ -14,7 +14,7 @@ const advanceDetails = {
 
 export default () => {
   const handleOpenBrainCode = () => {
-    window.location.href = `/garage/frobot/${advanceDetails.id}/braincode`
+    window.location.href = `/garage/frobot/braincode?id=${advanceDetails.id}`
   }
 
   return (
