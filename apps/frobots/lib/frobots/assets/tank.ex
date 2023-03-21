@@ -16,7 +16,7 @@ defmodule Frobots.Assets.XFrame do
            ]}
 
   schema "xframes" do
-    field :xframe_type, Ecto.Enum, values: ~w(Tank_Mk1 Tank_Mk2)a
+    field :xframe_type, Ecto.Enum, values: ~w(Tank_Mk1 Tank_Mk2 Tank_Mk3)a
     field :max_speed_ms, :integer
     field :turn_speed, :integer
     field :scanner_hardpoint, :integer

@@ -9,7 +9,7 @@ defmodule Frobots.Assets.Scanner do
              :resolution
            ]}
 
-  schema "scanner" do
+  schema "scanners" do
     field :scanner_type, Ecto.Enum, values: ~w(Mk1 Mk2)a
     field :max_range, :integer
     field :resolution, :integer

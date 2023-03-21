@@ -15,6 +15,40 @@ defmodule Frobots.AssetsTest do
       xp: 42
     }
 
+    @scanner %{
+      scanner_type: "Mk1",
+      max_range: 700,
+      resolution: 10
+    }
+
+    @missile %{
+      missile_type: "Mk1",
+      damage_direct: [5, 10],
+      damage_near: [20, 5],
+      damage_far: [40, 3],
+      speed: 400,
+      range: 900
+    }
+
+    @cannon %{
+      cannon_type: "Mk1",
+      reload_time: 5,
+      rate_of_fire: 1,
+      magazine_size: 2
+    }
+
+    @xframe %{
+      xframe_type: "Tank_Mk1",
+      max_speed_ms: 30,
+      turn_speed: 50,
+      scanner_hardpoint: 1,
+      weapon_hardpoint: 1,
+      movement_type: "tread",
+      max_health: 100,
+      max_throttle: 100,
+      accel_speed_mss: 5
+    }
+
     test "list_frobots/0 returns all frobots" do
       {:ok, owner} = user_fixture()
       %Frobot{id: id1} = frobot_fixture(owner)
@@ -129,6 +163,43 @@ defmodule Frobots.AssetsTest do
 
       data = Assets.list_frobot_equipment(id)
       assert Enum.count(data) == 1
+    end
+
+    test "get_missiles fetches missiles rig data" do
+      {:ok, missile} = Assets.create_missile(@missile)
+      missiles = Assets.get_missiles()
+      assert Enum.count(missiles) > 0
+
+      item = Enum.at(missiles, 0)
+      assert item.missile_type == :Mk1
+    end
+
+    test "get_cannons fetches cannons rig data" do
+      {:ok, cannon} = Assets.create_cannon(@cannon)
+      cannons = Assets.get_cannons()
+      assert Enum.count(cannons) > 0
+
+      item = Enum.at(cannons, 0)
+      assert item.cannon_type == :Mk1
+    end
+
+    test "get_scanners fetches scanners rig data" do
+      {:ok, scanner} = Assets.create_scanner(@scanner)
+      scanners = Assets.get_scanners()
+      assert Enum.count(scanners) > 0
+
+      item = Enum.at(scanners, 0)
+      assert item.scanner_type == :Mk1
+    end
+
+    test "get_xframes fetches xframes rig data" do
+      {:ok, xframe} = Assets.create_xframe(@xframe)
+      xframes = Assets.get_xframes()
+      assert Enum.count(xframes) > 0
+
+      item = Enum.at(xframes, 0)
+      assert item.xframe_type == :Tank_Mk1
+      assert item.movement_type == :tread
     end
   end
 end

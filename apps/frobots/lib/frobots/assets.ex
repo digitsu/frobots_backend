@@ -273,6 +273,7 @@ defmodule Frobots.Assets do
   end
 
   # frobot equipment
+
   def create_equipment(attrs) do
     %Equipment{}
     |> Equipment.changeset(attrs)
@@ -310,6 +311,18 @@ defmodule Frobots.Assets do
   end
 
   # get starter cannons
+  @doc """
+  Creates a cannon.
+
+  ## Examples
+
+      iex> create_cannon(%{field: value})
+      {:ok, %Cannon{}}
+
+      iex> create_cannon(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
   def create_cannon(attrs \\ %{}) do
     %Cannon{}
     |> Cannon.changeset(attrs)
@@ -332,6 +345,18 @@ defmodule Frobots.Assets do
   end
 
   # get starter missiles
+  @doc """
+  Creates a Missile.
+
+  ## Examples
+
+      iex> create_missile(%{field: value})
+      {:ok, %Missile{}}
+
+      iex> create_missile(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
   def create_missile(attrs \\ %{}) do
     %Missile{}
     |> Missile.changeset(attrs)
@@ -354,6 +379,18 @@ defmodule Frobots.Assets do
   end
 
   # get starter scanners
+  @doc """
+  Creates a Scanner.
+
+  ## Examples
+
+      iex> create_scanner(%{field: value})
+      {:ok, %Scanner{}}
+
+      iex> create_scanner(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
   def create_scanner(attrs \\ %{}) do
     %Scanner{}
     |> Scanner.changeset(attrs)
@@ -372,6 +409,6 @@ defmodule Frobots.Assets do
   end
 
   def get_scanners() do
-    Repo.all(Scanners)
+    Repo.all(Scanner)
   end
 end

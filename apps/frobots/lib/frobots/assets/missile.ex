@@ -12,7 +12,7 @@ defmodule Frobots.Assets.Missile do
              :range
            ]}
 
-  schema "scanner" do
+  schema "missiles" do
     field :missile_type, Ecto.Enum, values: ~w(Mk1 Mk2)a
     field :damage_direct, {:array, :integer}
     field :damage_near, {:array, :integer}

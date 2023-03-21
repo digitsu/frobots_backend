@@ -10,7 +10,7 @@ defmodule Frobots.Assets.Cannon do
              :magazine_size
            ]}
 
-  schema "cannon" do
+  schema "cannons" do
     field :cannon_type, Ecto.Enum, values: ~w(Mk1 Mk2)a
     field :reload_time, :integer
     field :rate_of_fire, :integer
