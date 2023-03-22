@@ -255,8 +255,8 @@ defmodule Frobots.Assets do
     Repo.all(q)
   end
 
-  # get starter cannons
-  @doc """
+
+  @doc ~S"""
   Creates a cannon.
 
   ## Examples
@@ -289,8 +289,7 @@ defmodule Frobots.Assets do
     Repo.all(Cannon)
   end
 
-  # get starter missiles
-  @doc """
+  @doc ~S"""
   Creates a Missile.
 
   ## Examples
@@ -323,7 +322,6 @@ defmodule Frobots.Assets do
     Repo.all(Missile)
   end
 
-  # get starter scanners
   @doc """
   Creates a Scanner.
 
