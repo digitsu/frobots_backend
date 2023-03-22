@@ -49,7 +49,8 @@ defmodule Frobots.MixProject do
       {:bsv, "~> 2.1.0"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
-      {:sweet_xml, "~> 0.6"}
+      {:sweet_xml, "~> 0.6"},
+      {:exconstructor, "~> 1.2.7"}
     ]
   end
 

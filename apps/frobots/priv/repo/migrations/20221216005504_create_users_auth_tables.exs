@@ -14,8 +14,8 @@ defmodule Frobots.Repo.Migrations.CreateUsersAuthTables do
       timestamps()
     end
 
-    create unique_index(:users, [:email])
-    create unique_index(:users, [:name])
+    create_if_not_exists unique_index(:users, [:email])
+    create_if_not_exists unique_index(:users, [:name])
 
     create table(:users_tokens) do
       add :user_id, references(:users, on_delete: :delete_all), null: false
@@ -25,7 +25,7 @@ defmodule Frobots.Repo.Migrations.CreateUsersAuthTables do
       timestamps(updated_at: false)
     end
 
-    create index(:users_tokens, [:user_id])
-    create unique_index(:users_tokens, [:context, :token])
+    create_if_not_exists index(:users_tokens, [:user_id])
+    create_if_not_exists unique_index(:users_tokens, [:context, :token])
   end
 end

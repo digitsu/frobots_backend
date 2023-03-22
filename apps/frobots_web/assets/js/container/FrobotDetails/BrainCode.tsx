@@ -6,21 +6,11 @@ import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
 import LuaEditor from '../Garage/LuaEditor'
 
-const brainCode = {
-  id: '1',
-  avatar: '/images/frobot_bg.png',
-  blockly_code:
-    '<xml xmlns="https://developers.google.com/blockly/xml"><variables><variable id="qWi|Qnie}qC8R-C@2@^:">i</variable></variables><block type="controls_for" id="|)BG:l7`?9A|U%,}//!I" x="22" y="38"><field name="VAR" id="qWi|Qnie}qC8R-C@2@^:">i</field><value name="FROM"><shadow type="math_number" id="r1~*IbVIoH$sW$mz%@4e"><field name="NUM">1</field></shadow></value><value name="TO"><shadow type="math_number" id="D.WgL-OU6]:8pIV[D-OZ"><field name="NUM">10</field></shadow></value><value name="BY"><shadow type="math_number" id="C:i3_PH$iWWKQ/KW[FnQ"><field name="NUM">1</field></shadow></value><statement name="DO"><block type="controls_flow_statements" id="%2G981-vwQhCGyepc%rw"><field name="FLOW">BREAK</field></block></statement></block></xml>',
-  brain_code: `--\n return function(state, ...)\n state = state or {}\n -- do nothing\n state._type = \"target\"\n return state\n end" id: 2  label  :   "Target"`,
-  class: null,
-  name: 'New Horizon',
-  xp: 1223500,
-}
-
-export default () => {
-  const [luaCode, setLuaCode] = useState(brainCode.brain_code)
+export default (props: any) => {
+  const { frobot, ...others } = props
+  const [luaCode, setLuaCode] = useState(frobot.brain_code || '')
   const [xmlText, setXmlText] = useState(null)
-  const [blocklyCode, setBlocklyCode] = useState(brainCode.blockly_code)
+  const [blocklyCode, setBlocklyCode] = useState(frobot.blockly_code || '')
 
   function a11yProps(index: number) {
     return {
@@ -137,7 +127,7 @@ export default () => {
           {
             <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
               <BlocklyEditor
-                defaultXml={blocklyCode}
+                defaultXml={blocklyCode || ''}
                 setXmlText={setXmlText}
                 workspaceDidChange={workspaceDidChange}
               />

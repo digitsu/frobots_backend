@@ -4,7 +4,7 @@ import React from 'react'
 const advanceDetails = {
   id: 1,
   ranking: '12345',
-  mechXFrameHealth: '60',
+  mechXframeHealth: '60',
   isRepair: true,
   speed: '20km/hr',
   hp: '120',
@@ -14,7 +14,7 @@ const advanceDetails = {
 
 export default () => {
   const handleOpenBrainCode = () => {
-    window.location.href = `/garage/frobot/${advanceDetails.id}/braincode`
+    window.location.href = `/garage/frobot/braincode?id=${advanceDetails.id}`
   }
 
   return (
@@ -105,7 +105,7 @@ export default () => {
                     {advanceDetails.ranking}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {advanceDetails.mechXFrameHealth}
+                    {advanceDetails.mechXframeHealth}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
                     {advanceDetails.speed}

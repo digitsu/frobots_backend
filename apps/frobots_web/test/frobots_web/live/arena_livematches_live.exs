@@ -10,7 +10,7 @@ defmodule FrobotsWeb.ArenaLiveMatchesLive do
       {:ok, _index_live, html} = live(conn, Routes.arena(conn, :index))
 
       assert html =~
-               "<div id='arena-live-matches' phx-hook='ArenaLiveMatchesContentHook' phx-update='ignore'></div>"
+               "<div id='arena-live-matches' phx-hook='LiveMatchesHook' phx-update='ignore'></div>"
     end
   end
 end

@@ -27,4 +27,76 @@ defmodule Frobots.EventsTest do
       assert bl
     end
   end
+
+  describe "Match" do
+    test "create a match" do
+      alias Frobots.Assets.Frobot
+
+      {:ok, owner} = user_fixture()
+      %Frobot{id: n1} = frobot_fixture(owner, %{name: "rabbit"})
+      %Frobot{id: n2} = frobot_fixture(owner, %{name: "random"})
+
+      params = create_match_params(owner, n1, n2)
+
+      {:ok, match} = Frobots.Events.create_match(params)
+      assert is_integer(match.id)
+      assert length(match.slots) == 3
+      assert match.status == :pending
+    end
+
+    test "get a match" do
+      alias Frobots.Assets.Frobot
+
+      {:ok, owner} = user_fixture()
+      %Frobot{id: n1} = frobot_fixture(owner, %{name: "rabbit"})
+      %Frobot{id: n2} = frobot_fixture(owner, %{name: "random"})
+
+      params = create_match_params(owner, n1, n2)
+
+      {:ok, created_match} = Frobots.Events.create_match(params)
+      assert [match] = Frobots.Events.list_match_by(id: created_match.id, status: :pending)
+
+      assert created_match.id == match.id
+      assert created_match.status == match.status
+    end
+  end
+
+  defp create_match_params(owner, n1, n2) do
+    %{
+      "user_id" => owner.id,
+      "title" => "My Match",
+      "description" => "Match description",
+      "match_time" => DateTime.utc_now() |> DateTime.to_string(),
+      # 1 hour
+      "timer" => 3600,
+      "arena_id" => 1,
+      "min_player_frobot" => 1,
+      "max_player_frobot" => 3,
+      "slots" => [
+        %{
+          "frobot_id" => n1,
+          "status" => "ready",
+          "slot_type" => "host"
+        },
+        %{
+          "frobot_id" => n2,
+          "status" => "ready",
+          "slot_type" => "protobot"
+        },
+        %{
+          "frobot_id" => nil,
+          "status" => "closed",
+          "slot_type" => "closed"
+        }
+      ],
+      "match_template" => %{
+        "entry_fee" => 100,
+        "commission_rate" => 10,
+        "match_type" => "team",
+        "payout_map" => [100],
+        "max_frobots" => 3,
+        "min_frobots" => 1
+      }
+    }
+  end
 end
