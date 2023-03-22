@@ -3,6 +3,12 @@
     <div class="font-bold text-lg">
       <h6>Arena</h6>
     </div>
+
+    <form action="#" phx-submit="create">
+      <%= text_input :match, :title, placeholder: "What do you want to get done?" %>
+      <%= submit "Create", phx_disable_with: "Creating..." %>
+    </form>
+
     <div class="flex justify-between items-center my-2">
       <div>
         <p class="inline-block items-left font-bold text-xs text-400">

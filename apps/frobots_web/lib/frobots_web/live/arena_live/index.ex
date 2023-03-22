@@ -41,6 +41,48 @@ defmodule FrobotsWeb.ArenaLive.Index do
      )}
   end
 
+  def handle_event("create", %{"match" => _match_details}, socket) do
+    params = %{
+      "user_id" => socket.assign.current_user.id,
+      "title" => "My Match",
+      "description" => "Match description",
+      "match_time" => DateTime.utc_now() |> DateTime.to_string(),
+      # 1 hour
+      "timer" => 3600,
+      "arena_id" => 1,
+      "min_player_frobot" => 1,
+      "max_player_frobot" => 3,
+      "slots" => [
+        %{
+          "frobot_id" => 1,
+          "status" => "ready",
+          "slot_type" => "host"
+        },
+        %{
+          "frobot_id" => 2,
+          "status" => "ready",
+          "slot_type" => "protobot"
+        },
+        %{
+          "frobot_id" => nil,
+          "status" => "closed",
+          "slot_type" => "closed"
+        }
+      ],
+      "match_template" => %{
+        "entry_fee" => 100,
+        "commission_rate" => 10,
+        "match_type" => "team",
+        "payout_map" => [100],
+        "max_frobots" => 3,
+        "min_frobots" => 1
+      }
+    }
+
+    Events.create_match(params)
+    {:noreply, socket}
+  end
+
   # add additional handle param events as needed to handle button clicks etc
   @impl Phoenix.LiveView
   def handle_params(%{"page" => page_number}, _, socket) do
@@ -66,7 +108,28 @@ defmodule FrobotsWeb.ArenaLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_info({Events, [:match, :created], _match}, socket) do
-    {:noreply, socket}
+  def handle_info({Events, [:match, :created], match}, socket) do
+    matches = socket.assign.matches
+    page_size = socket.assign.page_size
+
+    updated_matches =
+      if length(matches) < page_size do
+        [match | matches]
+      else
+        [match | List.delete_at(matches, length(matches) - 1)]
+      end
+
+    {:noreply, socket |> assign(:matches, updated_matches)}
+  end
+
+  def handle_info({Events, [:match, :updated], match}, socket) do
+    matches = socket.assign.matches
+
+    updated_matches =
+      Enum.map(matches, fn old_match ->
+        if old_match.id == match.id, do: match, else: old_match
+      end)
+
+    {:noreply, socket |> assign(:matches, updated_matches)}
   end
 end
