@@ -13,7 +13,7 @@ import React from 'react'
 
 const advanceDetails = {
   ranking: '12345',
-  mechXFrameHealth: '60',
+  mechXframeHealth: '60',
   isRepair: true,
   speed: '20km/hr',
   hp: '120',
@@ -110,7 +110,7 @@ export default () => {
                     {advanceDetails.ranking}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {advanceDetails.mechXFrameHealth}
+                    {advanceDetails.mechXframeHealth}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
                     {advanceDetails.speed}

@@ -14,6 +14,10 @@ defmodule Frobots.Accounts.User do
     field :migrated_user, :boolean
     timestamps()
     has_many :frobots, Frobots.Assets.Frobot
+    has_many :xframe_inst, Frobots.Assets.XframeInst
+    has_many :cannon_inst, Frobots.Assets.CannonInst
+    has_many :missile_inst, Frobots.Assets.MissileInst
+    has_many :scanner_inst, Frobots.Assets.ScannerInst
   end
 
   @doc """
@@ -52,7 +56,7 @@ defmodule Frobots.Accounts.User do
     |> validate_email()
   end
 
-  def validate_email(changeset) do
+  defp validate_email(changeset) do
     changeset
     |> validate_required([:email])
     |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")

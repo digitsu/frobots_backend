@@ -15,7 +15,7 @@
 | Cannon | Mk1 | Mk2 |
 | --- | --- | --- |
 | reload_time | 5(s) | 7 |
-| rate_of_fire | 1(s) | 0\.5 |
+| rate_of_fire | 1(per s) | 2 |
 | magazine_size | 2 | 3 |
 
 | Missile | Mk1 |

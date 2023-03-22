@@ -5,13 +5,8 @@ defmodule Frobots.Assets do
 
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{Frobot, XFrame, Missile, Scanner, Cannon}
+  alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
   alias Frobots.Accounts
-  alias Frobots.Events
-
-  defmodule UserStats do
-    defstruct frobots_count: 0, total_xp: 0, matches_participated: 0, upcoming_matches: 0
-  end
 
   @prototype_class "Proto"
   @target_class "Target"
@@ -112,23 +107,27 @@ defmodule Frobots.Assets do
   Creates a frobot.
 
   ## Examples
-      # iex> {:ok, owner1} = Frobots.AccountsFixtures.user_fixture(%{email: Frobots.AccountsFixtures.unique_user_email()})
-      # iex> frobot1 = Frobots.AssetsFixtures.frobot_fixture(owner1, %{name: "rabbit", xp: 10})
-      # iex> Frobots.Assets.create_frobot(owner1, frobot1)
-      # {:ok, %Frobots.Assets.Frobot{}}
+      # good example
+      iex> alias Frobots.Assets.Frobot
+      iex> alias Frobots.Assets
+      iex> alias Frobots.AccountsFixtures, as: Fixtures
+      iex> frobot1 = %{name: "bumpkin", xp: 10, brain_code: "return\(\);"}
+      iex> with {:ok, owner1} <- Fixtures.user_fixture(
+      ...> %{email: Fixtures.unique_user_email()}),
+      iex> {:ok, %Frobot{} = new_frobot} <- Assets.create_frobot(owner1, frobot1),
+      ...> do: new_frobot.name == "bumpkin"
+      true # success!
 
-      # iex> attrs = Enum.into(%{}, %{
-      # ...> brain_code: "some brain_code",
-      # ...> class: "some class",
-      # ...> name: ~s/some name:#{:rand.uniform(1000)}/,
-      # ...> xp: 42
-      # ...> })
-
-      # iex> Frobots.Assets.create_frobot(owner1, attrs)
-      # {:ok, %Frobots.Assets.Frobot{}}
-
-      # iex> Frobots.Assets.create_frobot(nil,nil)
-      # {:error, %Ecto.Changeset{}}
+      # failed example (missing a required field)
+      # failure will return error
+      iex> alias Frobots.Assets.Frobot
+      iex> alias Frobots.Assets
+      iex> alias Frobots.AccountsFixtures, as: Fixtures
+      iex> frobot1 = %{name: "bumpkin", xp: 10}
+      iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: Fixtures.unique_user_email()}),
+      iex> {:error, %Ecto.Changeset{} = cs} <- Assets.create_frobot(owner1, frobot1),
+      ...> do: cs.valid? == false
+      true
 
   """
   def create_frobot(%Accounts.User{} = user, attrs \\ %{}) do
@@ -149,12 +148,17 @@ defmodule Frobots.Assets do
   Updates a frobot.
 
   ## Examples
+      # first create one, then change it.
+      iex> alias Frobots.Assets.Frobot
+      iex> alias Frobots.Assets
+      iex> alias Frobots.AccountsFixtures, as: Fixtures
+      iex> frobot1 = %{name: "bumpkin", xp: 10, brain_code: "return\(\);"}
+      iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: Fixtures.unique_user_email()}),
+      iex> {:ok, %Frobot{} = new_frobot} <- Assets.create_frobot(owner1, frobot1),
+      iex> {:ok, %Frobot{} = changed_frobot } <- Assets.update_frobot(new_frobot, %{brain_code: "new_code", name: "NotABumpkin"}),
+      ...> do: changed_frobot.name == "NotABumpkin"
+      true
 
-      iex> Frobots.Assets.update_frobot(%Frobots.Assets.Frobot{}, %{brain_code: "new_code", name: "somename1"})
-      {:ok, %Frobots.Assets.Frobot{}}
-
-      iex> Frobots.Assets.update_frobot(%Frobots.Assets.Frobot{}, %{notafield: "blah"})
-      {:error, %Ecto.Changeset{}}
 
   """
   def update_frobot(%Frobot{} = frobot, attrs) do
@@ -163,18 +167,6 @@ defmodule Frobots.Assets do
     |> Repo.update()
   end
 
-  @doc ~S"""
-  Deletes a frobot.
-
-  ## Examples
-
-      iex> Frobots.Assets.delete_frobot(%Frobots.Assets.Frobot{})
-      {:ok, %Elixir.Frobots.Assets.Frobot{}}
-
-      iex> Frobots.Assets.delete_frobot(%Frobots.Assets.Frobot{})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_frobot(%Frobot{} = frobot) do
     Repo.delete(frobot)
   end
@@ -183,10 +175,13 @@ defmodule Frobots.Assets do
   Returns an `%Ecto.Changeset{}` for tracking frobot changes.
 
   ## Examples
+      # not a great example, as we really need static data to prove a change,
+      # so take this as just an illustration of the API Spec, not really a test
 
-      iex> Frobots.Assets.change_frobot(%Elixir.Frobots.Assets.Frobot{brain_code: "sameting", name: "somename"})
+      iex> with cs <- Frobots.Assets.change_frobot(%Elixir.Frobots.Assets.Frobot{brain_code: "sameting", name: "somename"}),
+      ...> do: cs.valid? == true
+      true
 
-      %Ecto.Changeset{data: %Frobots.Assets.Frobot{}, valid?: true}
 
   """
   def change_frobot(%Frobot{} = frobot, attrs \\ %{}) do
@@ -212,70 +207,54 @@ defmodule Frobots.Assets do
     Enum.map(frobots, fn frobot -> load_one_frobot_from_db(frobot) end)
   end
 
-  def get_user_stats(%Accounts.User{} = user) do
-    user_frobots = list_user_frobots(user)
-
-    total_xp =
-      Enum.reduce(user_frobots, 0, fn x, acc ->
-        if is_nil(x.xp) do
-          acc
-        else
-          x.xp + acc
-        end
-      end)
-
-    frobot_ids = Enum.map(user_frobots, fn x -> x.id end)
-    match_participation_count = Events.get_match_participation_count(frobot_ids)
-
-    # return map
-
-    %UserStats{
-      frobots_count: Enum.count(user_frobots),
-      total_xp: total_xp,
-      matches_participated: match_participation_count,
-      upcoming_matches: 0
-    }
-  end
-
   @doc ~S"""
-  Creates a xframe.
+  Creates a xframe. (this is a master template)
 
   ## Examples
-
-      iex> Frobots.Assets.create_xframe(%{xframe_type: "NewTank MkX",
-      ...> weapon_hardpoints: 1 })
-      {:ok, %Elixir.Frobots.Assets.XFrame{}}
-
-      iex> Frobots.Assets.create_xframe(%{field: "bad_value"})
-      {:error, %Ecto.Changeset{}}
+      # a contrived example, seeing as the schema has xframe_type a enum, which means you have to add it to the schema before you can call this fn on a new type. BUT at least we show all the needed fields for validation to pass...
+      iex> alias Frobots.Assets.Xframe
+      iex> with {:ok, %Xframe{} = xf } <- Frobots.Assets.create_xframe(
+      ...> %{xframe_type: :Tank_Mk1,
+      ...>   weapon_hardpoints: 1,
+      ...>   max_speed_ms: 10,
+      ...>   turn_speed: 10,
+      ...>   sensor_hardpoints: 1,
+      ...>   movement_type: "tracks",
+      ...>   max_health: 999,
+      ...>   max_throttle: 100,
+      ...>   accel_speed_mss: 4,
+      ...>   }),
+      ...> do: xf.max_health == 999
+      true
 
   """
   def create_xframe(attrs \\ %{}) do
-    %XFrame{}
-    |> XFrame.changeset(attrs)
+    %Xframe{}
+    |> Xframe.changeset(attrs)
     |> Repo.insert()
   end
 
   def create_xframe!(attrs \\ %{}) do
-    %XFrame{}
-    |> XFrame.changeset(attrs)
+    %Xframe{}
+    |> Xframe.changeset(attrs)
     |> Repo.insert!()
   end
 
   def get_xframe(xframe_type) do
-    from(t in XFrame, where: t.xframe_type == ^xframe_type)
+    from(t in Xframe, where: t.xframe_type == ^xframe_type)
     |> Repo.one()
   end
 
   def get_xframes() do
-    Repo.all(XFrame)
+    Repo.all(Xframe)
   end
 
   # fetch frobots by user
   def get_user_frobots(user_id) do
     q =
-      from fr in Frobot,
+      from(fr in Frobot,
         where: fr.user_id == ^user_id
+      )
 
     Repo.all(q)
   end
@@ -352,29 +331,48 @@ defmodule Frobots.Assets do
   Only need the equipment_type to be set, the rest is ignored
   as it will get the data from the master template
 
+  Use this API from the FE as to create a INSTANCE from a template, and associate it with the frobot.
+
   NOTE: creating a struct doesn't guarantee you can insert into the db
   it still may fail db changeset validations
 
+
+
   ## Examples
 
-      iex> Frobots.Assets.create_equipment(%{equipment_type: "Cannon", reload_time: 5, rate_of_fire: 2, magazine_size: 2, user: Frobots.AccountsFixtures.user_fixture()})
+      # simple case to create a equipment (and assign to a user)
+      iex> alias Frobots.Assets
+      iex> alias Frobots.AccountsFixtures, as: Fixtures
+      iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: Fixtures.unique_user_email()}),
+      ...> {:ok, %Ecto.Changeset{} = cs} <- Assets.create_equipment( Map.put(%{equipment_type: "Cannon", class: "Mk1"}, :user_id, owner1.id) ),
+      ...> do: false
+      true
 
-      {:ok, %Elixir.Frobots.Assets.Cannon{}}
 
-      iex> Frobots.Assets.create_xframe(%{equipment_type: "bad_value"})
 
-      {:ArgumentError, nil}
+      # case of passing in a bad equipment type
+      iex> Frobots.Assets.create_equipment(%{equipment_type: "badvalue"})
+      "Unrecognized equipment_type"
 
   """
   def create_equipment(attrs) do
     try do
-      type = String.to_existing_atom("Elixir.Frobots.Assets." <> attrs.equipment_type <> "Inst")
+      # Algo in brief first figure out the part they want, return false if can't find it
+      etype = String.to_existing_atom("Elixir.Frobots.Assets." <> attrs.equipment_type <> "Inst")
+      # then copy over the values from the master template part
+      # then pass to the instance changeset
+      # make a new instance struct
+      # #use ExConstructor to try to create the struct that atom module refers to
+      inst_struct = etype.new(attrs)
 
-      type.new(attrs)
-      |> type.changeset(attrs)
-      |> Repo.insert()
+      # inst_struct = Map.put(inst_struct, )
+      cannon_template =
+        Frobots.Assets.get_cannon(attrs)
+        |> etype.changeset(attrs)
+        |> Repo.insert()
     rescue
-      ArgumentError -> nil
+      # we get here if the string-to-atom fails due to not an atom we know.
+      ArgumentError -> "Unrecognized equipment_type"
     end
   end
 
@@ -402,27 +400,31 @@ defmodule Frobots.Assets do
   end
 
   def delete_equipment(equipment)
-      when equipment in [%XFrame{}, %Cannon{}, %Scanner{}, %Missile{}] do
+      when equipment in [%Xframe{}, %Cannon{}, %Scanner{}, %Missile{}] do
     Repo.delete(equipment)
   end
 
   # fetch frobot equipment by frobot
   def list_frobot_equipment(frobot_id) do
     cannons =
-      from c in Cannon,
+      from(c in Cannon,
         where: c.frobot_id == ^frobot_id
+      )
 
     scanners =
-      from s in Scanner,
+      from(s in Scanner,
         where: s.frobot_id == ^frobot_id
+      )
 
     xframes =
-      from x in XFrame,
+      from(x in Xframe,
         where: x.frobot_id == ^frobot_id
+      )
 
     missiles =
-      from m in Missile,
+      from(m in Missile,
         where: m.frobot_id == ^frobot_id
+      )
 
     Repo.all(cannons) ++ Repo.all(scanners) ++ Repo.all(xframes) ++ Repo.all(missiles)
   end

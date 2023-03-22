@@ -1,11 +1,13 @@
-defmodule Frobots.Assets.Xframe do
+defmodule Frobots.Assets.XframeInst do
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor
 
   @derive {Jason.Encoder,
            only: [
-             :xframe_type,
+             :user_id,
+             :xframe_id,
+             :frobot_id,
              :max_speed_ms,
              :turn_speed,
              :sensor_hardpoints,
@@ -17,23 +19,27 @@ defmodule Frobots.Assets.Xframe do
              :accel_speed_mss
            ]}
 
-  schema "xframes" do
-    field :xframe_type, Ecto.Enum, values: ~w(Tank_Mk1 Tank_Mk2 Tank_Mk3)a
-    field :max_speed_ms, :integer
-    field :turn_speed, :integer
-    field :sensor_hardpoints, :integer
-    field :weapon_hardpoints, :integer
-    field :cpu_hardpoints, :integer
-    field :movement_type, Ecto.Enum, values: ~w(tracks bipedal hover)a
-    field :max_health, :integer
-    field :max_throttle, :integer
-    field :accel_speed_mss, :integer
-    has_many :xframe_inst, Frobots.Assets.XframeInst
+  schema "xframe_inst" do
+    belongs_to(:user, Frobots.Accounts.User)
+    belongs_to(:xframe, Frobots.Assets.Xframe)
+    belongs_to(:frobot, Frobots.Assets.Frobot)
+    field(:max_speed_ms, :integer)
+    field(:turn_speed, :integer)
+    field(:sensor_hardpoints, :integer)
+    field(:weapon_hardpoints, :integer)
+    field(:cpu_hardpoints, :integer)
+    field(:movement_type, Ecto.Enum, values: ~w(tracks bipedal hover)a)
+    field(:max_health, :integer)
+    field(:max_throttle, :integer)
+    field(:accel_speed_mss, :integer)
+
     timestamps()
   end
 
   @fields [
-    :xframe_type,
+    :user_id,
+    :frobot_id,
+    :xframe_id,
     :max_speed_ms,
     :turn_speed,
     :sensor_hardpoints,
@@ -49,6 +55,5 @@ defmodule Frobots.Assets.Xframe do
     xframe
     |> cast(attrs, @fields)
     |> validate_required(@fields)
-    |> unique_constraint([:xframe_type])
   end
 end

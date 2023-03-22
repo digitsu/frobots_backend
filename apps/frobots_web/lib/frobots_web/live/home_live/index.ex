@@ -1,8 +1,8 @@
 defmodule FrobotsWeb.HomeLive.Index do
   use FrobotsWeb, :live_view
+  alias Frobots.Stats
   alias Frobots.Accounts
   alias Frobots.Assets
-  alias Frobots.Stats
 
   @impl Phoenix.LiveView
   @spec mount(any, nil | maybe_improper_list | map, map) :: {:ok, map}

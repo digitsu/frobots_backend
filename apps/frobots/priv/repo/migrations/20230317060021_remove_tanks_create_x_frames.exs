@@ -1,4 +1,4 @@
-defmodule Frobots.Repo.Migrations.RemoveTanksCreateXFrames do
+defmodule Frobots.Repo.Migrations.RemoveTanksCreateXframes do
   use Ecto.Migration
 
   def up do

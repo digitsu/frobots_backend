@@ -1,14 +1,5 @@
 defmodule Frobots.Stats do
-  @moduledoc """
-  The Stats context.
-  all APIs to collect and collate data
-  """
   alias Frobots.{Accounts, Events, Assets}
-
-  defmodule UserStats do
-    defstruct frobots_count: 0, total_xp: 0, matches_participated: 0, upcoming_matches: 0
-  end
-
 
   def get_user_stats(%Accounts.User{} = user) do
     user_frobots = Assets.list_user_frobots(user)

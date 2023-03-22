@@ -1,25 +1,30 @@
-defmodule Frobots.Assets.Scanner do
+defmodule Frobots.Assets.ScannerInst do
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor
 
   @derive {Jason.Encoder,
            only: [
-             :scanner_type,
+             :user_id,
+             :scanner_id,
+             :frobot_id,
              :max_range,
              :resolution
            ]}
 
-  schema "scanners" do
-    field :scanner_type, Ecto.Enum, values: ~w(Mk1 Mk2)a
+  schema "scanner_inst" do
+    belongs_to :user, Frobots.Accounts.User
+    belongs_to :scanner, Frobots.Assets.Scanner
+    belongs_to :frobot, Frobots.Assets.Frobot
     field :max_range, :integer
     field :resolution, :integer
-    has_many :scanner_inst, Frobots.Assets.ScannerInst
     timestamps()
   end
 
   @fields [
-    :scanner_type,
+    :user_id,
+    :frobot_id,
+    :scanner_id,
     :max_range,
     :resolution
   ]
@@ -29,7 +34,5 @@ defmodule Frobots.Assets.Scanner do
     scanner
     |> cast(attrs, @fields)
     |> validate_required(@fields)
-    |> unique_constraint([:scanner_type])
   end
 end
-

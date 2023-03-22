@@ -16,6 +16,10 @@ defmodule Frobots.Assets.Frobot do
     many_to_many :battlelogs, Frobots.Events.Battlelog,
       join_through: Frobots.Joins.FrobotBattlelog
 
+    has_one :xframe_inst, Frobots.Assets.XframeInst
+    has_many :cannon_inst, Frobots.Assets.CannonInst
+    has_many :scanner_inst, Frobots.Assets.ScannerInst
+    has_many :missile_inst, Frobots.Assets.MissileInst
     timestamps()
   end
 

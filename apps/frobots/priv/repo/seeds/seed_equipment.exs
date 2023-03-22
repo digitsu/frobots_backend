@@ -36,7 +36,7 @@ xframes = [
 
 for xframe <- xframes do
   case Assets.get_xframe(xframe.xframe_type) do
-    [] -> Assets.create_xframe!(xframe)
+    nil -> Assets.create_xframe!(xframe)
     _ -> nil
   end
 end
@@ -49,13 +49,13 @@ cannons = [
 
   %{cannon_type: "Mk2",
     reload_time: 7,
-    rate_of_fire: 0.5,
+    rate_of_fire: 2,
     magazine_size: 3}
 ]
 
 for cannon <- cannons do
   case Assets.get_cannon(cannon.cannon_type) do
-    [] -> Assets.create_cannon!(cannon)
+    nil -> Assets.create_cannon!(cannon)
     _ -> nil
   end
 end
@@ -71,7 +71,7 @@ missiles = [
 
 for missile <- missiles do
   case Assets.get_missile(missile.missile_type) do
-    [] -> Assets.create_missile!(missile)
+    nil -> Assets.create_missile!(missile)
     _ -> nil
   end
 end
@@ -88,7 +88,7 @@ scanners = [
 ]
 for scanner <- scanners do
   case Assets.get_scanner(scanner.scanner_type) do
-    [] -> Assets.create_scanner!(scanner)
+    nil -> Assets.create_scanner!(scanner)
     _ -> nil
   end
 end
