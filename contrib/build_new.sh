@@ -87,4 +87,5 @@ echo "running the backend on: "$DATABASE_URL_NEW${dbname}
 docker run --rm -dp $PORT:$PORT -e S3_URL -e S3_BUCKET -e S3_ACCESS_KEY -e S3_SECRET_KEY -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW${dbname} -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
 echo "running migrations"
 docker exec frobots_backend bin/frobots_backend eval "FrobotsWeb.Release.migrate"
-#echo "skipping migrations -- run manually!"
+echo "running seeds"
+docker exec -it frobots_web bin/frobots_web eval 'FrobotsWeb.Release.Seeder.seed(Elixir.Frobots.Repo, "seed_equipment.exs")'

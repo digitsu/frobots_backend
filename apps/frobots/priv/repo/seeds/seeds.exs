@@ -37,15 +37,16 @@ for {name, brain_path} <- Frobots.frobot_paths() do
   Assets.create_frobot!(user, frobot)
 end
 
-Accounts.update_user(Accounts.get_user_by(email: admin_user), %{admin: true})
+Accounts.update_profile(Accounts.get_user_by(email: admin_user), %{admin: true})
 
 Frobots.Assets.create_xframe!(%{
-  xframe_type: "Tank_Mk1",
+  type: "Tank_Mk1",
   max_speed_ms: 30,
   turn_speed: 50,
   ## not sure of the values
-  scanner_hardpoint: 1,
-  weapon_hardpoint: 1,
+  sensor_hardpoints: 1,
+  weapon_hardpoints: 1,
+  cpu_hardpoints: 1,
   movement_type: "tread",
   max_throttle: 100,
   accel_speed_mss: 5,

@@ -6,6 +6,7 @@ defmodule FrobotsWeb.GarageLive.Index do
   alias FrobotsWeb.Simulator
   alias Frobots.{Accounts, Assets}
   require Logger
+  alias Frobots.Equipment
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -126,7 +127,11 @@ defmodule FrobotsWeb.GarageLive.Index do
   def handle_event("create_frobot_equipment", %{"frobot_id" => _frobot_id} = params, socket) do
     current_user = get_user_from_assigns(socket)
 
-    case Assets.create_equipment(params) do
+    case Equipment.create_equipment(
+           current_user,
+           params["equipment_class"],
+           params["equipment_type"]
+         ) do
       {:ok, _frobot} ->
         {:noreply,
          socket
@@ -145,9 +150,11 @@ defmodule FrobotsWeb.GarageLive.Index do
         socket
       ) do
     current_user = get_user_from_assigns(socket)
-    frobot_equipment = Assets.get_equipment(params["frobot_equipment_id"])
 
-    case Assets.update_equipment(frobot_equipment, params) do
+    frobot_equipment =
+      Equipment.get_equipment(params["equipment_class"], params["frobot_equipment_id"])
+
+    case Equipment.update_equipment(frobot_equipment, params["equipment_class"], params) do
       {:ok, _frobot} ->
         {:noreply,
          socket
