@@ -167,6 +167,14 @@ defmodule Frobots.Events do
     Match |> preload(^preload) |> order_by(^order_by) |> Repo.paginate(params)
   end
 
+  def count_matches_by_status(status) do
+    Repo.one(
+      from m in Match,
+        where: m.status == ^status,
+        select: count(m.id)
+    )
+  end
+
   def get_battlelog_by(params) do
     Repo.get_by(Battlelog, params)
   end
