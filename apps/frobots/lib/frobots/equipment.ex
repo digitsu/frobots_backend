@@ -1,11 +1,8 @@
 defmodule Frobots.Equipment do
-  alias Frobots.Assets
-
-  import Ecto.Query, warn: false
   alias Frobots.Repo
   alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
   alias Frobots.Accounts
-
+  import Ecto.Changeset
   @doc ~S"""
   EQUIPMENT INTERFACE APIs
   create an instance of an equipment for the frobot.
@@ -16,8 +13,6 @@ defmodule Frobots.Equipment do
 
   NOTE: creating a struct doesn't guarantee you can insert into the db
   it still may fail db changeset validations
-
-
 
   ## Examples
 

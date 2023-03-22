@@ -1,4 +1,7 @@
-defmodule Frobots.Stats do
+defmodule Frobots.UserStats do
+  defstruct frobots_count: 0, total_xp: 0, matches_participated: 0, upcoming_matches: 0
+
+
   alias Frobots.{Accounts, Events, Assets}
 
   def get_user_stats(%Accounts.User{} = user) do
@@ -18,7 +21,7 @@ defmodule Frobots.Stats do
 
     # return map
 
-    %UserStats{
+    %Frobots.UserStats{
       frobots_count: Enum.count(user_frobots),
       total_xp: total_xp,
       matches_participated: match_participation_count,

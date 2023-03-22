@@ -126,7 +126,7 @@ defmodule FrobotsWeb.GarageLive.Index do
 
   def handle_event("create_frobot_equipment", %{"frobot_id" => _frobot_id} = params, socket) do
     current_user = get_user_from_assigns(socket)
-
+    
     case Equipment.create_equipment(current_user, params["equipment_class"], params["equipment_type"]) do
       {:ok, _frobot} ->
         {:noreply,

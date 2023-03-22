@@ -1,6 +1,6 @@
 defmodule FrobotsWeb.HomeLive.Index do
   use FrobotsWeb, :live_view
-  alias Frobots.Stats
+  alias Frobots.UserStats
   alias Frobots.Accounts
   alias Frobots.Assets
 
@@ -14,7 +14,7 @@ defmodule FrobotsWeb.HomeLive.Index do
      socket
      |> assign(:frobots, Assets.list_user_frobots(current_user))
      |> assign(:featured_frobots, get_featured_frobots())
-     |> assign(:current_user_stats, Stats.get_user_stats(current_user))
+     |> assign(:current_user_stats, UserStats.get_user_stats(current_user))
      |> assign(:blog_posts, get_blog_posts())
      |> assign(:global_stats, show_global_stats())}
   end
