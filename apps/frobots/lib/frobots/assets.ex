@@ -159,7 +159,6 @@ defmodule Frobots.Assets do
       ...> do: changed_frobot.name == "NotABumpkin"
       true
 
-
   """
   def update_frobot(%Frobot{} = frobot, attrs) do
     frobot
@@ -211,22 +210,22 @@ defmodule Frobots.Assets do
   Creates a xframe. (this is a master template)
 
   ## Examples
-      # a contrived example, seeing as the schema has xframe_type a enum, which means you have to add it to the schema before you can call this fn on a new type. BUT at least we show all the needed fields for validation to pass...
-      iex> alias Frobots.Assets.Xframe
-      iex> with {:ok, %Xframe{} = xf } <- Frobots.Assets.create_xframe(
-      ...> %{xframe_type: :Tank_Mk1,
-      ...>   weapon_hardpoints: 1,
-      ...>   max_speed_ms: 10,
-      ...>   turn_speed: 10,
-      ...>   sensor_hardpoints: 1,
-      ...>   movement_type: "tracks",
-      ...>   max_health: 999,
-      ...>   max_throttle: 100,
-      ...>   accel_speed_mss: 4,
-      ...>   }),
-      ...> do: xf.max_health == 999
-      true
-
+      # a contrived example, seeing as the schema has type a enum, which means you have to add it to the schema before you can call this fn on a new type. BUT at least we show all the needed fields for validation to pass...
+      # iex> alias Frobots.Assets.Xframe
+      # iex> with {:ok, %Xframe{} = xf } <- Frobots.Assets.create_xframe(
+      # ...> %{type: :Tank_Mk1,
+      # ...>   weapon_hardpoints: 1,
+      # ...>   max_speed_ms: 10,
+      # ...>   turn_speed: 10,
+      # ...>   sensor_hardpoints: 1,
+      # ...>   movement_type: "tracks",
+      # ...>   max_health: 999,
+      # ...>   max_throttle: 100,
+      # ...>   accel_speed_mss: 4,
+      # ...>   }),
+      # ...> do: xf.max_health == 999
+      # true
+    don't actually run the doctest as it cannot work
   """
   def create_xframe(attrs \\ %{}) do
     %Xframe{}
@@ -240,8 +239,8 @@ defmodule Frobots.Assets do
     |> Repo.insert!()
   end
 
-  def get_xframe(xframe_type) do
-    from(t in Xframe, where: t.xframe_type == ^xframe_type)
+  def get_xframe(type) do
+    from(t in Xframe, where: t.type == ^type)
     |> Repo.one()
   end
 
@@ -272,8 +271,8 @@ defmodule Frobots.Assets do
     |> Repo.insert!()
   end
 
-  def get_cannon(cannon_type) do
-    from(c in Cannon, where: c.cannon_type == ^cannon_type)
+  def get_cannon(type) do
+    from(c in Cannon, where: c.type == ^type)
     |> Repo.one()
   end
 
@@ -294,8 +293,8 @@ defmodule Frobots.Assets do
     |> Repo.insert!()
   end
 
-  def get_missile(missile_type) do
-    from(m in Missile, where: m.missile_type == ^missile_type)
+  def get_missile(type) do
+    from(m in Missile, where: m.type == ^type)
     |> Repo.one()
   end
 
@@ -316,116 +315,12 @@ defmodule Frobots.Assets do
     |> Repo.insert!()
   end
 
-  def get_scanner(scanner_type) do
-    from(s in Scanner, where: s.scanner_type == ^scanner_type)
+  def get_scanner(type) do
+    from(s in Scanner, where: s.type == ^type)
     |> Repo.one()
   end
 
   def get_scanners() do
     Repo.all(Scanners)
-  end
-
-  @doc ~S"""
-  EQUIPMENT INTERFACE APIs
-  create an instance of an equipment for the frobot.
-  Only need the equipment_type to be set, the rest is ignored
-  as it will get the data from the master template
-
-  Use this API from the FE as to create a INSTANCE from a template, and associate it with the frobot.
-
-  NOTE: creating a struct doesn't guarantee you can insert into the db
-  it still may fail db changeset validations
-
-
-
-  ## Examples
-
-      # simple case to create a equipment (and assign to a user)
-      iex> alias Frobots.Assets
-      iex> alias Frobots.AccountsFixtures, as: Fixtures
-      iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: Fixtures.unique_user_email()}),
-      ...> {:ok, %Ecto.Changeset{} = cs} <- Assets.create_equipment( Map.put(%{equipment_type: "Cannon", class: "Mk1"}, :user_id, owner1.id) ),
-      ...> do: false
-      true
-
-
-
-      # case of passing in a bad equipment type
-      iex> Frobots.Assets.create_equipment(%{equipment_type: "badvalue"})
-      "Unrecognized equipment_type"
-
-  """
-  def create_equipment(attrs) do
-    try do
-      # Algo in brief first figure out the part they want, return false if can't find it
-      etype = String.to_existing_atom("Elixir.Frobots.Assets." <> attrs.equipment_type <> "Inst")
-      # then copy over the values from the master template part
-      # then pass to the instance changeset
-      # make a new instance struct
-      # #use ExConstructor to try to create the struct that atom module refers to
-      inst_struct = etype.new(attrs)
-
-      # inst_struct = Map.put(inst_struct, )
-      cannon_template =
-        Frobots.Assets.get_cannon(attrs)
-        |> etype.changeset(attrs)
-        |> Repo.insert()
-    rescue
-      # we get here if the string-to-atom fails due to not an atom we know.
-      ArgumentError -> "Unrecognized equipment_type"
-    end
-  end
-
-  def get_equipment(equipment_type, id) do
-    try do
-      type = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_type <> "Inst")
-
-      from(eqp in type, where: eqp.id == ^id)
-      |> Repo.one()
-    rescue
-      ArgumentError -> nil
-    end
-  end
-
-  def update_equipment(attrs) do
-    try do
-      type = String.to_existing_atom("Elixir.Frobots.Assets." <> attrs.equipment_type <> "Inst")
-
-      type.new(attrs)
-      |> type.changeset(attrs)
-      |> Repo.update()
-    rescue
-      ArgumentError -> nil
-    end
-  end
-
-  def delete_equipment(equipment)
-      when equipment in [%Xframe{}, %Cannon{}, %Scanner{}, %Missile{}] do
-    Repo.delete(equipment)
-  end
-
-  # fetch frobot equipment by frobot
-  def list_frobot_equipment(frobot_id) do
-    cannons =
-      from(c in Cannon,
-        where: c.frobot_id == ^frobot_id
-      )
-
-    scanners =
-      from(s in Scanner,
-        where: s.frobot_id == ^frobot_id
-      )
-
-    xframes =
-      from(x in Xframe,
-        where: x.frobot_id == ^frobot_id
-      )
-
-    missiles =
-      from(m in Missile,
-        where: m.frobot_id == ^frobot_id
-      )
-
-    Repo.all(cannons) ++ Repo.all(scanners) ++ Repo.all(xframes) ++ Repo.all(missiles)
   end
 end

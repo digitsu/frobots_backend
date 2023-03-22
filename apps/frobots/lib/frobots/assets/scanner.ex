@@ -5,13 +5,13 @@ defmodule Frobots.Assets.Scanner do
 
   @derive {Jason.Encoder,
            only: [
-             :scanner_type,
+             :type,
              :max_range,
              :resolution
            ]}
 
   schema "scanners" do
-    field :scanner_type, Ecto.Enum, values: ~w(Mk1 Mk2)a
+    field :type, Ecto.Enum, values: ~w(Mk1 Mk2)a
     field :max_range, :integer
     field :resolution, :integer
     has_many :scanner_inst, Frobots.Assets.ScannerInst
@@ -19,7 +19,7 @@ defmodule Frobots.Assets.Scanner do
   end
 
   @fields [
-    :scanner_type,
+    :type,
     :max_range,
     :resolution
   ]
@@ -29,7 +29,6 @@ defmodule Frobots.Assets.Scanner do
     scanner
     |> cast(attrs, @fields)
     |> validate_required(@fields)
-    |> unique_constraint([:scanner_type])
+    |> unique_constraint([:type])
   end
 end
-

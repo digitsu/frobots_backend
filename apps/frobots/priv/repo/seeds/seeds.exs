@@ -40,7 +40,7 @@ end
 Accounts.update_profile(Accounts.get_user_by(email: admin_user), %{admin: true})
 
 Frobots.Assets.create_xframe!(%{
-  xframe_type: "Tank_Mk1",
+  type: "Tank_Mk1",
   max_speed_ms: 30,
   turn_speed: 50,
   ## not sure of the values

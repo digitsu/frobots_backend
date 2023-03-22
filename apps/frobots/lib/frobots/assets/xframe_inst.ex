@@ -37,7 +37,6 @@ defmodule Frobots.Assets.XframeInst do
   end
 
   @fields [
-    :user_id,
     :frobot_id,
     :xframe_id,
     :max_speed_ms,

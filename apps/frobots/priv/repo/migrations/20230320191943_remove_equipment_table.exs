@@ -20,6 +20,7 @@ defmodule Frobots.Repo.Migrations.RemoveEquipmentTable do
       add :health, :integer
       timestamps()
     end
+
     create_if_not_exists index(:xframe_inst, [:user_id])
 
     create_if_not_exists table(:cannon_inst) do
@@ -32,6 +33,7 @@ defmodule Frobots.Repo.Migrations.RemoveEquipmentTable do
       add :magazine_size, :integer
       timestamps()
     end
+
     create_if_not_exists index(:cannon_inst, [:user_id])
 
     create_if_not_exists table(:scanner_inst) do
@@ -43,6 +45,7 @@ defmodule Frobots.Repo.Migrations.RemoveEquipmentTable do
       add :resolution, :integer
       timestamps()
     end
+
     create_if_not_exists index(:scanner_inst, [:user_id])
 
     create_if_not_exists table(:missile_inst) do
@@ -57,6 +60,7 @@ defmodule Frobots.Repo.Migrations.RemoveEquipmentTable do
       add :range, :integer
       timestamps()
     end
+
     create_if_not_exists index(:missile_inst, [:user_id])
   end
 
@@ -67,6 +71,7 @@ defmodule Frobots.Repo.Migrations.RemoveEquipmentTable do
       add :frobot_id, references(:frobots, on_delete: :nothing)
       timestamps()
     end
+
     drop index(:xframe_inst, [:user_id])
     drop table(:xframe_inst)
     drop index(:cannon_inst, [:user_id])

@@ -24,9 +24,6 @@ defmodule Frobots.Assets.CannonInst do
   end
 
   @fields [
-    :user_id,
-    :frobot_id,
-    :cannon_id,
     :reload_time,
     :rate_of_fire,
     :magazine_size
