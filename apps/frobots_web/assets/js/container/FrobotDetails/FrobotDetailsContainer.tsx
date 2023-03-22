@@ -87,7 +87,7 @@ export default () => {
               #{basicDetails.hash}
             </Typography>
             <Typography variant="h6" gutterBottom mt={2}>
-              Mech/Tank
+              Mech/XFrame
             </Typography>
             <Box display={'flex'} alignItems={'baseline'}>
               <Typography pr={2} variant="body2" gutterBottom>

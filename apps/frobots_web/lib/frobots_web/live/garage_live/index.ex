@@ -23,7 +23,7 @@ defmodule FrobotsWeb.GarageLive.Index do
      |> assign(:current_user, current_user)
      |> assign(:user_frobots, Assets.list_user_frobots(current_user))
      |> assign(:template_frobots, Assets.list_template_frobots())
-     |> assign(:starter_tanks, Assets.get_tanks())
+     |> assign(:starter_xframes, Assets.get_xframes())
      |> assign(:starter_cannons, Assets.get_cannons())
      |> assign(:starter_scanners, Assets.get_scanners())
      |> assign(:starter_missiles, Assets.get_missiles())}

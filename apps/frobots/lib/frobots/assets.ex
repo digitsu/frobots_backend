@@ -5,7 +5,7 @@ defmodule Frobots.Assets do
 
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{Frobot, Equipment, Tank, Missile, Scanner, Cannon}
+  alias Frobots.Assets.{Frobot, Equipment, XFrame, Missile, Scanner, Cannon}
   alias Frobots.Accounts
   alias Frobots.Events
 
@@ -240,36 +240,36 @@ defmodule Frobots.Assets do
   end
 
   @doc """
-  Creates a tank.
+  Creates a xframe.
 
   ## Examples
 
-      iex> create_tank(%{field: value})
-      {:ok, %Tank{}}
+      iex> create_xframe(%{field: value})
+      {:ok, %XFrame{}}
 
-      iex> create_tank(%{field: bad_value})
+      iex> create_xframe(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_tank(attrs \\ %{}) do
-    %Tank{}
-    |> Tank.changeset(attrs)
+  def create_xframe(attrs \\ %{}) do
+    %XFrame{}
+    |> XFrame.changeset(attrs)
     |> Repo.insert()
   end
 
-  def create_tank!(attrs \\ %{}) do
-    %Tank{}
-    |> Tank.changeset(attrs)
+  def create_xframe!(attrs \\ %{}) do
+    %XFrame{}
+    |> XFrame.changeset(attrs)
     |> Repo.insert!()
   end
 
-  def get_tank!(tank_type) do
-    from(t in Tank, where: t.tank_type == ^tank_type)
+  def get_xframe!(xframe_type) do
+    from(t in XFrame, where: t.xframe_type == ^xframe_type)
     |> Repo.one()
   end
 
-  def get_tanks() do
-    Repo.all(Tank)
+  def get_xframes() do
+    Repo.all(XFrame)
   end
 
   # frobot equipment

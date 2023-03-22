@@ -42,12 +42,15 @@ defmodule Frobots.MixProject do
       {:phoenix_pubsub, "~> 2.0"},
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
-      {:jason, "~> 1.2"},
       {:pbkdf2_elixir, "~> 1.0"},
+      {:jason, "~> 1.2"},
       {:swoosh, "~> 1.3"},
       {:hackney, "~> 1.18"},
       {:bsv, "~> 2.1.0"},
-      {:scrivener_ecto, "~> 2.0"}
+      {:scrivener_ecto, "~> 2.0"},
+      {:ex_aws, "~> 2.1"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:sweet_xml, "~> 0.6"}
     ]
   end
 
@@ -58,7 +61,7 @@ defmodule Frobots.MixProject do
     [
       setup: ["deps.get", "ecto.setup"],
       "ecto.setup": [
-        "cmd source ../../.env",
+        # "cmd source ../../.env",
         "ecto.create",
         "ecto.migrate",
         "run priv/repo/seeds/seeds.exs"

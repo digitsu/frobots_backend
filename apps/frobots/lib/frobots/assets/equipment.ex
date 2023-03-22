@@ -4,7 +4,7 @@ defmodule Frobots.Assets.Equipment do
 
   schema "equipment" do
     field :equipment_id, :integer
-    field :equipment_type, Ecto.Enum, values: ~w(Cannon Tank Scanner Missile)a
+    field :equipment_type, Ecto.Enum, values: ~w(Cannon XFrame Scanner Missile)a
     field :frobot_id, :integer
     timestamps()
   end
