@@ -16,13 +16,13 @@ defmodule Frobots.AssetsTest do
     }
 
     @scanner %{
-      scanner_type: "Mk1",
+      type: "Mk1",
       max_range: 700,
       resolution: 10
     }
 
     @missile %{
-      missile_type: "Mk1",
+      type: "Mk1",
       damage_direct: [5, 10],
       damage_near: [20, 5],
       damage_far: [40, 3],
@@ -31,19 +31,19 @@ defmodule Frobots.AssetsTest do
     }
 
     @cannon %{
-      cannon_type: "Mk1",
+      type: "Mk1",
       reload_time: 5,
       rate_of_fire: 1,
       magazine_size: 2
     }
 
     @xframe %{
-      xframe_type: "Tank_Mk1",
+      type: "Tank_Mk1",
       max_speed_ms: 30,
       turn_speed: 50,
-      scanner_hardpoint: 1,
-      weapon_hardpoint: 1,
-      movement_type: "tread",
+      sensor_hardpoints: 1,
+      weapon_hardpoints: 1,
+      movement_type: "tracks",
       max_health: 100,
       max_throttle: 100,
       accel_speed_mss: 5
@@ -127,7 +127,7 @@ defmodule Frobots.AssetsTest do
       assert Enum.count(missiles) > 0
 
       item = Enum.at(missiles, 0)
-      assert item.missile_type == :Mk1
+      assert item.type == :Mk1
     end
 
     test "get_cannons fetches cannons rig data" do
@@ -136,7 +136,7 @@ defmodule Frobots.AssetsTest do
       assert Enum.count(cannons) > 0
 
       item = Enum.at(cannons, 0)
-      assert item.cannon_type == :Mk1
+      assert item.type == :Mk1
     end
 
     test "get_scanners fetches scanners rig data" do
@@ -145,7 +145,7 @@ defmodule Frobots.AssetsTest do
       assert Enum.count(scanners) > 0
 
       item = Enum.at(scanners, 0)
-      assert item.scanner_type == :Mk1
+      assert item.type == :Mk1
     end
 
     test "get_xframes fetches xframes rig data" do
@@ -154,8 +154,8 @@ defmodule Frobots.AssetsTest do
       assert Enum.count(xframes) > 0
 
       item = Enum.at(xframes, 0)
-      assert item.xframe_type == :Tank_Mk1
-      assert item.movement_type == :tread
+      assert item.type == :Tank_Mk1
+      assert item.movement_type == :tracks
     end
   end
 end

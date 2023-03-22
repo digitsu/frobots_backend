@@ -222,7 +222,7 @@ defmodule Frobots.Assets do
       # ...>   }),
       # ...> do: xf.max_health == 999
       # true
-    don't actually run the doctest as it cannot work
+    xdon't actually run the doctest as it cannot work
   """
   def create_xframe(attrs \\ %{}) do
     %Xframe{}
@@ -255,17 +255,17 @@ defmodule Frobots.Assets do
     Repo.all(q)
   end
 
-
   @doc ~S"""
   Creates a cannon.
 
   ## Examples
 
-      iex> create_cannon(%{field: value})
-      {:ok, %Cannon{}}
+      #iex> create_cannon(%{field: value})
+      #{:ok, %Cannon{}}
 
-      iex> create_cannon(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      #iex> create_cannon(%{field: bad_value})
+      #{:error, %Ecto.Changeset{}}
+      #doctest barfs if i dont comment above code
 
   """
   def create_cannon(attrs \\ %{}) do
@@ -294,11 +294,12 @@ defmodule Frobots.Assets do
 
   ## Examples
 
-      iex> create_missile(%{field: value})
-      {:ok, %Missile{}}
+      #iex> create_missile(%{field: value})
+      #{:ok, %Missile{}}
 
-      iex> create_missile(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      #iex> create_missile(%{field: bad_value})
+      #{:error, %Ecto.Changeset{}}
+      #doctest barfs if i dont comment above code
 
   """
   def create_missile(attrs \\ %{}) do
@@ -322,16 +323,17 @@ defmodule Frobots.Assets do
     Repo.all(Missile)
   end
 
-  @doc """
+  @doc ~S"""
   Creates a Scanner.
 
   ## Examples
 
-      iex> create_scanner(%{field: value})
-      {:ok, %Scanner{}}
+      #iex> create_scanner(%{field: value})
+      #{:ok, %Scanner{}}
 
-      iex> create_scanner(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      #iex> create_scanner(%{field: bad_value})
+      #{:error, %Ecto.Changeset{}}
+      #doctest barfs if i dont comment above code
 
   """
   def create_scanner(attrs \\ %{}) do
