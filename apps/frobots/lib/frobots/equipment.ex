@@ -1,8 +1,9 @@
 defmodule Frobots.Equipment do
+  import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
+  alias Frobots.Assets.{Xframe, Missile, Scanner, Cannon}
   alias Frobots.Accounts
-  import Ecto.Changeset
+
   @doc ~S"""
   EQUIPMENT INTERFACE APIs
   create an instance of an equipment for the frobot.
@@ -42,17 +43,17 @@ defmodule Frobots.Equipment do
   end
 
   def get_equipment(equipment_class, id) do
-    type = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_type <> "Inst")
+    module = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_class <> "Inst")
 
-    from(eqp in type, where: eqp.id == ^id)
+    from(eqp in module, where: eqp.id == ^id)
     |> Repo.one()
   end
 
-  def update_equipment(equipment, attrs) do
-    type = String.to_existing_atom("Elixir.Frobots.Assets." <> attrs.equipment_type <> "Inst")
+  def update_equipment(equipment, equipment_class, attrs) do
+    module = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_class <> "Inst")
 
-    type.new(attrs)
-    |> type.changeset(attrs)
+    equipment
+    |> module.changeset(attrs)
     |> Repo.update()
   end
 

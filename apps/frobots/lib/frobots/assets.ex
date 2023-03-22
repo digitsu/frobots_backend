@@ -92,14 +92,20 @@ defmodule Frobots.Assets do
       nil
 
   """
+
   def get_frobot(name) when is_bitstring(name) do
     Frobot
     |> frobots_name_query(name)
     |> Repo.one()
   end
 
-  @spec get_frobot(any) :: nil | [%{optional(atom) => any}] | %{optional(atom) => any}
   def get_frobot(id), do: Repo.get(Frobot, id)
+
+  def get_frobot!(name) when is_bitstring(name) do
+    Frobot
+    |> frobots_name_query(name)
+    |> Repo.one!()
+  end
 
   def get_frobot!(id), do: Repo.get!(Frobot, id)
 
@@ -172,15 +178,6 @@ defmodule Frobots.Assets do
 
   @doc ~S"""
   Returns an `%Ecto.Changeset{}` for tracking frobot changes.
-
-  ## Examples
-      # not a great example, as we really need static data to prove a change,
-      # so take this as just an illustration of the API Spec, not really a test
-
-      iex> with cs <- Frobots.Assets.change_frobot(%Elixir.Frobots.Assets.Frobot{brain_code: "sameting", name: "somename"}),
-      ...> do: cs.valid? == true
-      true
-
 
   """
   def change_frobot(%Frobot{} = frobot, attrs \\ %{}) do
