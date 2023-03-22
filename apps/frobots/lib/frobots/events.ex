@@ -156,6 +156,10 @@ defmodule Frobots.Events do
     Repo.get_by(Match, params)
   end
 
+  def list_match_by(params, preload \\ []) do
+    Match |> preload(^preload) |> Repo.all(params)
+  end
+
   def get_battlelog_by(params) do
     Repo.get_by(Battlelog, params)
   end
