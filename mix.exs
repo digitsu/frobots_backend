@@ -7,7 +7,7 @@ defmodule FrobotsUmbrella.MixProject do
       version: "0.2.2",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      elixir: "~> 1.14",
+      elixir: "~> 1.13.4",
       aliases: aliases(),
       releases: releases(),
       test_coverage: [tool: ExCoveralls],
