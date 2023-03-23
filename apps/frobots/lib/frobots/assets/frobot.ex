@@ -11,6 +11,8 @@ defmodule Frobots.Assets.Frobot do
     field :xp, :integer
     field :blockly_code, :string
     field :avatar, :string
+    field :bio, :string
+    field :pixellated_img, :string
     belongs_to :user, Frobots.Accounts.User
 
     many_to_many :battlelogs, Frobots.Events.Battlelog,
@@ -26,7 +28,7 @@ defmodule Frobots.Assets.Frobot do
   @doc false
   def changeset(frobot, attrs) do
     frobot
-    |> cast(attrs, [:brain_code, :class, :name, :xp, :blockly_code, :avatar])
+    |> cast(attrs, [:brain_code, :class, :name, :xp, :blockly_code, :avatar, :pixellated_img, :bio])
     |> validate_required([:brain_code, :name])
     |> unique_constraint([:name])
   end
