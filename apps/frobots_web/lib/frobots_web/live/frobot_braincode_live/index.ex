@@ -32,7 +32,8 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     socket
   end
 
-  def handle_event("react.fetch_bot_braincode", socket) do
+  @impl Phoenix.LiveView
+  def handle_event("react.fetch_bot_braincode", _params, socket) do
     frobot = socket.assigns.frobot
 
     frobotDetails = %{
