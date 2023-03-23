@@ -64,7 +64,8 @@ defmodule Frobots.MixProject do
         # "cmd source ../../.env",
         "ecto.create",
         "ecto.migrate",
-        "run priv/repo/seeds/seeds.exs"
+        "run priv/repo/seeds/seeds.exs",
+        "run priv/repo/seeds/seed_equipment.exs"
       ],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
