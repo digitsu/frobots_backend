@@ -45,11 +45,13 @@ WORKDIR /app/apps/frobots_web
 RUN npm config set proxy $HTTP_PROXY
 RUN npm config set https-proxy $HTTPS_PROXY
 RUN npm i --prefix ./assets
+RUN yes | npx browserslist@latest --update-db
 
 # Compile assets
 #RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
 #RUN /app/wrapper.pl mix assets.deploy
 RUN yarn config set https-proxy $HTTPS_PROXY
+RUN yarn config set http-proxy $HTTP_PROXY
 RUN mix assets.deploy
 
 
