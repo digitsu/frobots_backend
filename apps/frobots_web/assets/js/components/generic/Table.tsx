@@ -13,6 +13,7 @@ import {
 
 type TableProps = {
   tableData: {
+    id: number
     name: string
     player: string
     xp: string
@@ -26,6 +27,10 @@ type TableProps = {
 
 export default (props: TableProps) => {
   const { tableData, tableTitle, tableHeads } = props
+  const handleOpenDetails = (frobotId: number) => {
+    window.location.href = `/garage/frobot?id=${frobotId}`
+  }
+
   return (
     <>
       <Typography variant="body2" sx={{ p: 2, color: '#fff' }}>
@@ -56,8 +61,8 @@ export default (props: TableProps) => {
           </TableHead>
 
           <TableBody>
-            {tableData.map((row) => (
-              <TableRow key={row.name}>
+            {tableData.map((row, index) => (
+              <TableRow key={index} onClick={() => handleOpenDetails(row.id)}>
                 <TableCell
                   sx={{
                     color: '#fff',
