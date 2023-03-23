@@ -9,7 +9,7 @@ import {
 } from './ArenaMatchesHook'
 import FrobotDetailsHook from './FrobotDetailsHook'
 import FrobotBrainCodeHook from './FrobotBrainCodeHook'
-
+import ArenaCreateMatch from './ArenaCreateMatch'
 interface HookType {
   [key: string]: {
     mounted(): void
@@ -30,5 +30,6 @@ Hooks.UpcomingMatchesHook = UpcomingMatchesHook
 Hooks.PastMatchesHook = PastMatchesHook
 Hooks.FrobotDetailsHook = FrobotDetailsHook
 Hooks.FrobotBrainCodeHook = FrobotBrainCodeHook
+Hooks.ArenaCreateMatch = ArenaCreateMatch
 
 export default Hooks
