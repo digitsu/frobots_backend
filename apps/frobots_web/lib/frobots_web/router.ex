@@ -123,6 +123,7 @@ defmodule FrobotsWeb.Router do
     # arena
     live "/arena/:match_status/matches", ArenaMatchesLive.Index, :index
     live "/arena/:match_id", ArenaLobbyLive.Index, :index
+    live "/arena/create", ArenaCreateMatchLive.Index, :index
 
     # manage users
     live "/users", UsersLive.Index, :index

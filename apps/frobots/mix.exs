@@ -50,7 +50,8 @@ defmodule Frobots.MixProject do
       {:scrivener_ecto, "~> 2.0"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
-      {:sweet_xml, "~> 0.6"}
+      {:sweet_xml, "~> 0.6"},
+      {:exconstructor, "~> 1.2.7"}
     ]
   end
 
@@ -64,7 +65,8 @@ defmodule Frobots.MixProject do
         # "cmd source ../../.env",
         "ecto.create",
         "ecto.migrate",
-        "run priv/repo/seeds/seeds.exs"
+        "run priv/repo/seeds/seeds.exs",
+        "run priv/repo/seeds/seed_equipment.exs"
       ],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
