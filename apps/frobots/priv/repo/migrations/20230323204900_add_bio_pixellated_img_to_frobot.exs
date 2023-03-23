@@ -4,7 +4,7 @@ defmodule Frobots.Repo.Migrations.AddBioPixellatedImgToFrobot do
   def change do
     alter table(:frobots) do
       add :pixellated_img, :string, default: "https://via.placeholder.com/50.png"
-      add :bio, :string
+      add :bio, :text
     end
   end
 end
