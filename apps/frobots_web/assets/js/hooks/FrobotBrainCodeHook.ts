@@ -9,7 +9,7 @@ export default {
     }
 
     this.pushEventTo(this.el, 'react.fetch_bot_braincode', {
-      frobot_id: frobotId,
+      frobot_id: Number(frobotId),
     })
     this.handleEvent('react.return_bot_braincode', (brainCodeDetails) => {
       this.unmountComponent = mount(FrobotBrainCode)(
