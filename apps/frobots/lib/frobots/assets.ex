@@ -241,6 +241,11 @@ defmodule Frobots.Assets do
     |> Repo.one()
   end
 
+  def get_xframe!(type) do
+    from(t in Xframe, where: t.type == ^type)
+    |> Repo.one!()
+  end
+
   def get_xframes() do
     Repo.all(Xframe)
   end
@@ -273,6 +278,11 @@ defmodule Frobots.Assets do
     |> Repo.one()
   end
 
+  def get_cannon!(type) do
+    from(c in Cannon, where: c.type == ^type)
+    |> Repo.one!()
+  end
+
   def get_cannons() do
     Repo.all(Cannon)
   end
@@ -295,6 +305,11 @@ defmodule Frobots.Assets do
     |> Repo.one()
   end
 
+  def get_missile!(type) do
+    from(m in Missile, where: m.type == ^type)
+    |> Repo.one!()
+  end
+
   def get_missiles() do
     Repo.all(Missile)
   end
@@ -315,6 +330,11 @@ defmodule Frobots.Assets do
   def get_scanner(type) do
     from(s in Scanner, where: s.type == ^type)
     |> Repo.one()
+  end
+
+  def get_scanner!(type) do
+    from(s in Scanner, where: s.type == ^type)
+    |> Repo.one!()
   end
 
   def get_scanners() do
