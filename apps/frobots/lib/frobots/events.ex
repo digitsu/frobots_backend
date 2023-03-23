@@ -10,6 +10,7 @@ defmodule Frobots.Events do
   alias Frobots.Events.Battlelog
   alias Frobots.Events.Match
   alias Frobots.{Assets, Accounts}
+  alias Frobots.Accounts.User
   alias Frobots.Agents.WinnersBucket
 
   @topic inspect(__MODULE__)
@@ -164,8 +165,35 @@ defmodule Frobots.Events do
   end
 
   def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
-    Match
-    |> where(^params)
+    query =
+      Match
+      |> join(:left, [match], u in User, on: match.user_id == u.id)
+
+    query =
+      case Keyword.get(params, :search_pattern, nil) do
+        nil ->
+          query
+
+        pattern ->
+          query
+          |> where(
+            [match, user],
+            ilike(user.name, ^pattern) or ilike(match.title, ^pattern) or
+              fragment("CAST( ? AS TEXT) LIKE ?", match.id, ^pattern)
+          )
+      end
+
+    query =
+      case Keyword.get(params, :match_status, nil) do
+        nil ->
+          query
+
+        match_status ->
+          query
+          |> where([match, user], match.status == ^match_status)
+      end
+
+    query
     |> preload(^preload)
     |> order_by(^order_by)
     |> Repo.paginate(page_config)

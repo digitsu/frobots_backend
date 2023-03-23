@@ -91,14 +91,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
   #       "slot_type" => "closed"
   #     }
   #   ],
-  #   "match_template" => %{
-  #     "entry_fee" => 100,
-  #     "commission_rate" => 10,
-  #     "match_type" => "team",
-  #     "payout_map" => [100],
-  #     "max_frobots" => 3,
-  #     "min_frobots" => 1
-  #   }
+  #   "match_template" => %{}
   # }
   @impl Phoenix.LiveView
   def handle_event("create", %{"match" => match_details}, socket) do
@@ -120,6 +113,11 @@ defmodule FrobotsWeb.ArenaLive.Index do
     filter_params =
       if params["match_status"],
         do: Keyword.put(filter_params, :match_status, params["match_status"]),
+        else: filter_params
+
+    filter_params =
+      if params["search_pattern"],
+        do: Keyword.put(filter_params, :search_pattern, "%" <> params["search_pattern"] <> "%"),
         else: filter_params
 
     page_config = Keyword.new()
@@ -165,27 +163,100 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
   @impl Phoenix.LiveView
   def handle_info({Events, [:match, :created], match}, socket) do
-    matches = socket.assign.matches
     page_size = socket.assign.page_size
 
-    updated_matches =
-      if length(matches) < page_size do
-        [match | matches]
+    socket =
+      if is_nil(socket.assigns.match_status) do
+        matches = socket.assign.matches
+
+        updated_matches =
+          if length(matches) < page_size do
+            [match | matches]
+          else
+            [match | List.delete_at(matches, length(matches) - 1)]
+          end
+
+        socket |> assign(:matches, updated_matches)
       else
-        [match | List.delete_at(matches, length(matches) - 1)]
+        socket
       end
 
-    {:noreply, socket |> assign(:matches, updated_matches)}
+    socket =
+      if socket.assigns.match_status == "pending" do
+        matches = socket.assign.upcoming_matches
+
+        updated_matches =
+          if length(matches) < page_size do
+            [match | matches]
+          else
+            [match | List.delete_at(matches, length(matches) - 1)]
+          end
+
+        socket |> assign(:upcoming_matches, updated_matches)
+      else
+        socket
+      end
+
+    {:noreply, socket}
   end
 
   def handle_info({Events, [:match, :updated], match}, socket) do
-    matches = socket.assign.matches
+    socket =
+      if is_nil(socket.assigns.match_status) do
+        matches = socket.assign.matches
 
-    updated_matches =
-      Enum.map(matches, fn old_match ->
-        if old_match.id == match.id, do: match, else: old_match
-      end)
+        updated_matches =
+          Enum.map(matches, fn old_match ->
+            if old_match.id == match.id, do: match, else: old_match
+          end)
 
-    {:noreply, socket |> assign(:matches, updated_matches)}
+        socket |> assign(:matches, updated_matches)
+      else
+        socket
+      end
+
+    socket =
+      if socket.assigns.match_status == "pending" do
+        matches = socket.assign.upcoming_matches
+
+        updated_matches =
+          Enum.map(matches, fn old_match ->
+            if old_match.id == match.id, do: match, else: old_match
+          end)
+
+        socket |> assign(:upcoming_matches, updated_matches)
+      else
+        socket
+      end
+
+    socket =
+      if socket.assigns.match_status == "done" do
+        matches = socket.assign.completed_matches
+
+        updated_matches =
+          Enum.map(matches, fn old_match ->
+            if old_match.id == match.id, do: match, else: old_match
+          end)
+
+        socket |> assign(:completed_matches, updated_matches)
+      else
+        socket
+      end
+
+    socket =
+      if socket.assigns.match_status == "live" do
+        matches = socket.assign.live_matches
+
+        updated_matches =
+          Enum.map(matches, fn old_match ->
+            if old_match.id == match.id, do: match, else: old_match
+          end)
+
+        socket |> assign(:live_matches, updated_matches)
+      else
+        socket
+      end
+
+    {:noreply, socket}
   end
 end
