@@ -1,8 +1,7 @@
-import React, { FC, type ChangeEvent, type MouseEvent } from 'react'
+import React, { FC } from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
-  Button,
   Stack,
   Table,
   TableBody,

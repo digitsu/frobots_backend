@@ -1,20 +1,16 @@
 import { Grid, Card, Box, Typography, Button } from '@mui/material'
 import React from 'react'
 
-const advanceDetails = {
-  id: 1,
-  ranking: '12345',
-  mechXframeHealth: '60',
-  isRepair: true,
-  speed: '20km/hr',
-  hp: '120',
-  wins: '132/200',
-  qdosEarned: '$235790',
+interface AdvancedDetailsProps {
+  frobotDetails: any
+  isOwnedFrobot: boolean
 }
 
-export default () => {
+export default (props: AdvancedDetailsProps) => {
+  const { frobotDetails, isOwnedFrobot } = props
+
   const handleOpenBrainCode = () => {
-    window.location.href = `/garage/frobot/braincode?id=${advanceDetails.id}`
+    window.location.href = `/garage/frobot/braincode?id=${frobotDetails.id}`
   }
 
   return (
@@ -53,7 +49,7 @@ export default () => {
                   </Typography>
                   <Box display={'flex'}>
                     <Typography variant="subtitle2">Health</Typography>
-                    {advanceDetails.isRepair && (
+                    {frobotDetails.isRepair && (
                       <Button
                         color="warning"
                         size="small"
@@ -102,39 +98,42 @@ export default () => {
               <Grid pr={3} item xs={7}>
                 <Box textAlign="right">
                   <Typography my={2.2} variant="subtitle2">
-                    {advanceDetails.ranking}
+                    {frobotDetails.ranking}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {advanceDetails.mechXframeHealth}
+                    {frobotDetails.mechXframeHealth}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {advanceDetails.speed}
+                    {frobotDetails.speed}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {advanceDetails.hp}
+                    {frobotDetails.hp}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {advanceDetails.wins}
+                    {frobotDetails.wins}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {advanceDetails.qdosEarned}
+                    {frobotDetails.qdosEarned}
                   </Typography>
                 </Box>
               </Grid>
             </Grid>
-            <Box
-              sx={{
-                mx: 4,
-              }}
-            >
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={handleOpenBrainCode}
+
+            {isOwnedFrobot && (
+              <Box
+                sx={{
+                  mx: 4,
+                }}
               >
-                View Brain Code
-              </Button>
-            </Box>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={handleOpenBrainCode}
+                >
+                  View Brain Code
+                </Button>
+              </Box>
+            )}
           </Box>
         </Box>
       </Card>
