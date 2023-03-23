@@ -27,14 +27,6 @@ defmodule Frobots.Events.MatchTemplate do
       :max_frobots,
       :min_frobots
     ])
-    |> validate_required([
-      :entry_fee,
-      :commission_rate,
-      :match_type,
-      :payout_map,
-      :max_frobots,
-      :min_frobots
-    ])
   end
 
   defp validate_frobots(match_data) do

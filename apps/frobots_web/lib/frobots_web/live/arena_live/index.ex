@@ -7,9 +7,21 @@ defmodule FrobotsWeb.ArenaLive.Index do
   alias Frobots.Events
   alias Frobots.Accounts
 
-  @spec mount(any, nil | maybe_improper_list | map, map) :: {:ok, map}
-  def mount(_params, session, socket) do
+  @impl Phoenix.LiveView
+  def mount(params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
+    page_config = Keyword.new()
+
+    page_config =
+      if params["page_number"],
+        do: Keyword.put(page_config, :match_status, params["match_status"]),
+        else: page_config
+
+    page_config =
+      if params["page_size"],
+        do: Keyword.put(page_config, :match_status, params["match_status"]),
+        else: page_config
+
     if connected?(socket), do: Events.subscribe()
 
     %{
@@ -18,85 +30,129 @@ defmodule FrobotsWeb.ArenaLive.Index do
       page_size: page_size,
       total_entries: total_entries,
       total_pages: total_pages
-    } = Events.list_paginated_matches([], [:user], desc: :inserted_at)
+    } = Events.list_paginated_matches([], page_config, [:user], desc: :inserted_at)
+
+    %{entries: upcoming_matches} =
+      Events.list_paginated_matches([match_status: :pending], page_config, [:user],
+        desc: :inserted_at
+      )
+
+    %{entries: completed_matches} =
+      Events.list_paginated_matches([match_status: :done], page_config, [:user],
+        desc: :inserted_at
+      )
+
+    %{entries: live_matches} =
+      Events.list_paginated_matches([match_status: :running], page_config, [:user],
+        desc: :inserted_at
+      )
 
     {:ok,
      socket
      |> assign(:current_user, current_user)
+     |> assign(:match_status, params["match_status"])
      |> assign(:matches, matches)
+     |> assign(:upcoming_matches_list, upcoming_matches)
+     |> assign(:completed_matches_list, completed_matches)
+     |> assign(:live_matches_list, live_matches)
      |> assign(:page_number, page_number)
      |> assign(:page_size, page_size)
      |> assign(:total_entries, total_entries)
      |> assign(:total_pages, total_pages)
-     |> assign(:live_matches, Events.count_matches_by_status(:running))
-     |> assign(:completed_matches, Events.count_matches_by_status(:done))
-     |> assign(:upcoming_matches, Events.count_matches_by_status(:pending))}
+     |> assign(:live_matches_count, Events.count_matches_by_status(:running))
+     |> assign(:completed_matches_count, Events.count_matches_by_status(:done))
+     |> assign(:upcoming_matches_count, Events.count_matches_by_status(:pending))}
   end
 
+  # %{
+  #   "user_id" => 1,
+  #   "title" => "My Match",
+  #   "description" => "Match description",
+  #   "match_time" => DateTime.utc_now() |> DateTime.to_string(),
+  #   # 1 hour
+  #   "timer" => 3600,
+  #   "arena_id" => 1,
+  #   "min_player_frobot" => 1,
+  #   "max_player_frobot" => 3,
+  #   "slots" => [
+  #     %{
+  #       "frobot_id" => 1,
+  #       "status" => "ready",
+  #       "slot_type" => "host"
+  #     },
+  #     %{
+  #       "frobot_id" => 2,
+  #       "status" => "ready",
+  #       "slot_type" => "protobot"
+  #     },
+  #     %{
+  #       "frobot_id" => nil,
+  #       "status" => "closed",
+  #       "slot_type" => "closed"
+  #     }
+  #   ],
+  #   "match_template" => %{
+  #     "entry_fee" => 100,
+  #     "commission_rate" => 10,
+  #     "match_type" => "team",
+  #     "payout_map" => [100],
+  #     "max_frobots" => 3,
+  #     "min_frobots" => 1
+  #   }
+  # }
   @impl Phoenix.LiveView
-  def handle_event("navigate", %{"page" => page}, socket) do
-    {:noreply,
-     live_redirect(socket,
-       to: Routes.arena_index_path(socket, FrobotsWeb.ArenaLive.Index, page: page)
-     )}
-  end
+  def handle_event("create", %{"match" => match_details}, socket) do
+    case Events.create_match(match_details) do
+      {:ok, match} ->
+        {:noreply,
+         push_redirect(socket, to: Routes.arena_lobby_index_path(socket, :index, match.id))}
 
-  def handle_event("create", %{"match" => _match_details}, socket) do
-    params = %{
-      "user_id" => socket.assign.current_user.id,
-      "title" => "My Match",
-      "description" => "Match description",
-      "match_time" => DateTime.utc_now() |> DateTime.to_string(),
-      # 1 hour
-      "timer" => 3600,
-      "arena_id" => 1,
-      "min_player_frobot" => 1,
-      "max_player_frobot" => 3,
-      "slots" => [
-        %{
-          "frobot_id" => 1,
-          "status" => "ready",
-          "slot_type" => "host"
-        },
-        %{
-          "frobot_id" => 2,
-          "status" => "ready",
-          "slot_type" => "protobot"
-        },
-        %{
-          "frobot_id" => nil,
-          "status" => "closed",
-          "slot_type" => "closed"
-        }
-      ],
-      "match_template" => %{
-        "entry_fee" => 100,
-        "commission_rate" => 10,
-        "match_type" => "team",
-        "payout_map" => [100],
-        "max_frobots" => 3,
-        "min_frobots" => 1
-      }
-    }
-
-    Events.create_match(params)
-    {:noreply, socket}
+      {:error, changeset} ->
+        {:noreply, assign(socket, match_changeset: changeset)}
+    end
   end
 
   # add additional handle param events as needed to handle button clicks etc
   @impl Phoenix.LiveView
-  def handle_params(%{"page" => page_number}, _, socket) do
+  def handle_params(%{"page_number" => _page_number} = params, _, socket) do
+    filter_params = Keyword.new()
+
+    filter_params =
+      if params["match_status"],
+        do: Keyword.put(filter_params, :match_status, params["match_status"]),
+        else: filter_params
+
+    page_config = Keyword.new()
+
+    page_config =
+      if params["page_number"],
+        do: Keyword.put(page_config, :match_status, params["match_status"]),
+        else: page_config
+
+    page_config =
+      if params["page_size"],
+        do: Keyword.put(page_config, :match_status, params["match_status"]),
+        else: page_config
+
     %{
       entries: matches,
       page_number: page_number,
       page_size: page_size,
       total_entries: total_entries,
       total_pages: total_pages
-    } = Events.list_paginated_matches([page: page_number], [:user], desc: :inserted_at)
+    } = Events.list_paginated_matches(filter_params, page_config, [:user], desc: :inserted_at)
+
+    socket =
+      case params["match_status"] do
+        "done" -> socket |> assign(:completed_matches_list, matches)
+        "running" -> socket |> assign(:live_matches_list, matches)
+        "pending" -> socket |> assign(:upcoming_matches_list, matches)
+        _ -> socket |> assign(:matches, matches)
+      end
 
     {:noreply,
      socket
-     |> assign(:matches, matches)
+     |> assign(:match_status, params["match_status"])
      |> assign(:page_number, page_number)
      |> assign(:page_size, page_size)
      |> assign(:total_entries, total_entries)

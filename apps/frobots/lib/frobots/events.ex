@@ -163,8 +163,12 @@ defmodule Frobots.Events do
     Match |> preload(^preload) |> order_by(^order_by) |> Repo.all(params)
   end
 
-  def list_paginated_matches(params \\ [], preload \\ [], order_by \\ []) do
-    Match |> preload(^preload) |> order_by(^order_by) |> Repo.paginate(params)
+  def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
+    Match
+    |> where(^params)
+    |> preload(^preload)
+    |> order_by(^order_by)
+    |> Repo.paginate(page_config)
   end
 
   def count_matches_by_status(status) do

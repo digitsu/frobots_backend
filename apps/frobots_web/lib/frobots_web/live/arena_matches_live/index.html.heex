@@ -3,10 +3,11 @@
     <div class="font-bold text-lg">
       <h6>My Live Matches</h6>
     </div>
+
     <div class="flex justify-between items-center my-2">
       <div>
         <p class="inline-block items-left font-bold text-xs text-400">
-          <a href="/home">Dashboard</a>
+          <a href="/home">Upcoming</a>
         </p>
         <p class="inline-block items-left font-bold text-xs text-gray-400">
           .
@@ -20,6 +21,44 @@
         <p class="inline-block items-left font-bold text-xs text-gray-400">
           My Live Matches
         </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          <table class="card-body table">
+            <thead>
+              <tr>
+                <th>Match ID</th>
+                <th>Match Name</th>
+                <th>Host</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th>Actions</th>
+                <th> </th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for match <- @matches do %>
+                  <tr>
+                  <td><%= match.id %></td>
+                  <td><%= match.title %></td>
+                  <td><%= match.user && match.user.name %></td>
+                  <td><%= match.status %></td>
+                  <td><%= match.match_time %></td>
+                  <td><%= "Action" %></td>
+                  <td><%= "Watch" %></td>
+                  </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </p>
+
+        <nav class="border-t border-gray-200">
+          <ul class="flex my-2">
+            <%= for idx <-  Enum.to_list(1..@total_pages) do %>
+              <li class="">
+                <%= live_patch "#{idx}", to: Routes.arena_matches_index_path(@socket, :index, @match_status, %{page_number: idx})%>
+              </li>
+            <% end %>
+          </ul>
+        </nav>
       </div>
       <div>
         <p class="inline-block font-bold text-xs text-gray-400">QDOS 40000</p>
