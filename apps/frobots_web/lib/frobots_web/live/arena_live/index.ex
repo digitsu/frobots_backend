@@ -13,20 +13,20 @@ defmodule FrobotsWeb.ArenaLive.Index do
     page_config = Keyword.new()
 
     page_config =
-      if params["page_number"],
-        do: Keyword.put(page_config, :match_status, params["match_status"]),
+      if params["page"],
+        do: Keyword.put(page_config, :page, params["page"]),
         else: page_config
 
     page_config =
       if params["page_size"],
-        do: Keyword.put(page_config, :match_status, params["match_status"]),
+        do: Keyword.put(page_config, :page_size, params["page_size"]),
         else: page_config
 
     if connected?(socket), do: Events.subscribe()
 
     %{
       entries: matches,
-      page_number: page_number,
+      page_number: page,
       page_size: page_size,
       total_entries: total_entries,
       total_pages: total_pages
@@ -55,7 +55,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
      |> assign(:upcoming_matches_list, upcoming_matches)
      |> assign(:completed_matches_list, completed_matches)
      |> assign(:live_matches_list, live_matches)
-     |> assign(:page_number, page_number)
+     |> assign(:page, page)
      |> assign(:page_size, page_size)
      |> assign(:total_entries, total_entries)
      |> assign(:total_pages, total_pages)
@@ -107,7 +107,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
   # add additional handle param events as needed to handle button clicks etc
   @impl Phoenix.LiveView
-  def handle_params(%{"page_number" => _page_number} = params, _, socket) do
+  def handle_params(%{"page" => _page} = params, _, socket) do
     filter_params = Keyword.new()
 
     filter_params =
@@ -123,18 +123,18 @@ defmodule FrobotsWeb.ArenaLive.Index do
     page_config = Keyword.new()
 
     page_config =
-      if params["page_number"],
-        do: Keyword.put(page_config, :match_status, params["match_status"]),
+      if params["page"],
+        do: Keyword.put(page_config, :page, params["page"]),
         else: page_config
 
     page_config =
       if params["page_size"],
-        do: Keyword.put(page_config, :match_status, params["match_status"]),
+        do: Keyword.put(page_config, :page_size, params["page_size"]),
         else: page_config
 
     %{
       entries: matches,
-      page_number: page_number,
+      page_number: page,
       page_size: page_size,
       total_entries: total_entries,
       total_pages: total_pages
@@ -151,7 +151,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
     {:noreply,
      socket
      |> assign(:match_status, params["match_status"])
-     |> assign(:page_number, page_number)
+     |> assign(:page, page)
      |> assign(:page_size, page_size)
      |> assign(:total_entries, total_entries)
      |> assign(:total_pages, total_pages)}

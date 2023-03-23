@@ -64,7 +64,9 @@ defmodule Frobots.EventsTest do
       params = create_match_params(owner, n1, n2)
       {:ok, _created_match} = Frobots.Events.create_match(params)
 
-      assert %{entries: matches, page_number: 1} = Frobots.Events.list_paginated_matches(status: :pending)
+      assert %{entries: matches, page_number: 1} =
+               Frobots.Events.list_paginated_matches(status: :pending)
+
       assert Enum.all?(matches, fn match -> match.status == :pending end)
     end
 
@@ -76,12 +78,16 @@ defmodule Frobots.EventsTest do
       params = create_match_params(owner, n1, n2)
       {:ok, _created_match} = Frobots.Events.create_match(params)
 
-      assert %{entries: matches, page_number: 1} = Frobots.Events.list_paginated_matches(status: :pending, search_pattern: "my")
+      assert %{entries: matches, page_number: 1} =
+               Frobots.Events.list_paginated_matches(status: :pending, search_pattern: "my")
+
       assert length(matches) > 0
       assert Enum.all?(matches, fn match -> match.status == :pending end)
 
       ## Match not found with this pattern
-      assert %{entries: matches, page_number: 1} = Frobots.Events.list_paginated_matches(status: :pending, search_pattern: "bb")
+      assert %{entries: matches, page_number: 1} =
+               Frobots.Events.list_paginated_matches(status: :pending, search_pattern: "bb")
+
       assert length(matches) == 0
     end
   end

@@ -50,7 +50,7 @@
           <ul class="flex my-2">
             <%= for idx <-  Enum.to_list(1..@total_pages) do %>
               <li class="">
-                <%= live_patch "#{idx}", to: Routes.arena_index_path(@socket, :index, %{page_number: idx})%>
+                <%= live_patch "#{idx}", to: Routes.arena_index_path(@socket, :index, %{page: idx})%>
               </li>
             <% end %>
           </ul>
