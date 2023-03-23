@@ -117,7 +117,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     filter_params =
       if params["search_pattern"],
-        do: Keyword.put(filter_params, :search_pattern, "%" <> params["search_pattern"] <> "%"),
+        do: Keyword.put(filter_params, :search_pattern, params["search_pattern"]),
         else: filter_params
 
     page_config = Keyword.new()

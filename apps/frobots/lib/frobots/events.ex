@@ -174,7 +174,8 @@ defmodule Frobots.Events do
         nil ->
           query
 
-        pattern ->
+        search_pattern ->
+          pattern = "%" <> search_pattern <> "%"
           query
           |> where(
             [match, user],
