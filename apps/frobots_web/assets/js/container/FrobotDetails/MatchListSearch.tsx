@@ -81,13 +81,6 @@ export const MatchListSearch: FC<MatchListSearchProps> = (props) => {
     []
   )
 
-  const handleQueryChange = useCallback((): void => {
-    setFilters((prevState: any) => ({
-      ...prevState,
-      query: queryRef.current?.value,
-    }))
-  }, [])
-
   return (
     <>
       <Box

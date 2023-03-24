@@ -1,25 +1,29 @@
-import { Grid, Box, Card, Typography } from '@mui/material'
+import { Grid, Box, Typography } from '@mui/material'
 import React from 'react'
 const featuredFrobots = [
   {
+    id: 1,
     bgUrl: '/images/frobot_bg.png',
     src: '/images/frobot1.png',
     name: 'X Tron',
     xp: 5000000,
   },
   {
+    id: 2,
     bgUrl: '/images/frobot_bg.png',
     src: '/images/frobot2.png',
     name: 'New Horizon',
     xp: 1223500,
   },
   {
+    id: 3,
     bgUrl: '/images/frobot_bg.png',
     src: '/images/frobot3.png',
     name: 'Bumble bee',
     xp: 5231100,
   },
   {
+    id: 8,
     bgUrl: '/images/frobot_bg.png',
     src: '/images/frobot4.png',
     name: 'Megatron',
@@ -27,6 +31,10 @@ const featuredFrobots = [
   },
 ]
 export default () => {
+  const handleOpenDetails = (frobotId: number) => {
+    window.location.href = `/garage/frobot?id=${frobotId}`
+  }
+
   return (
     <Box
       sx={{
@@ -42,7 +50,15 @@ export default () => {
         </Typography>
         <Grid container spacing={3}>
           {featuredFrobots.map((featuredFrobot) => (
-            <Grid item lg={3} md={4} sm={6} xs={12}>
+            <Grid
+              item
+              lg={3}
+              md={4}
+              sm={6}
+              xs={12}
+              key={featuredFrobot.id}
+              onClick={() => handleOpenDetails(featuredFrobot.id)}
+            >
               <Box>
                 <Box position={'relative'} width={'100%'} m={'auto'}>
                   <Box

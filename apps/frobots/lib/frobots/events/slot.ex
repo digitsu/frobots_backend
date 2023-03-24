@@ -21,8 +21,9 @@ defmodule Frobots.Events.Slot do
   @doc false
   def changeset(match, attrs) do
     match
-    |> cast(attrs, @fields ++ [:frobot_id])
+    |> cast(attrs, @fields ++ [:frobot_id, :match_id])
     |> cast_assoc(:match)
     |> validate_required(@fields)
+    |> unique_constraint(:frobot_id, name: :unique_frobot_id_slot)
   end
 end

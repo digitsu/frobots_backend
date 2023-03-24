@@ -3,14 +3,7 @@ import FrobotBrainCode from '../container/FrobotDetails/BrainCode'
 
 export default {
   mounted() {
-    const frobotId = location.search.split('?id=')[1]
-    if (!frobotId) {
-      window.location.href = '/garage'
-    }
-
-    this.pushEventTo(this.el, 'react.fetch_bot_braincode', {
-      frobot_id: frobotId,
-    })
+    this.pushEventTo(this.el, 'react.fetch_bot_braincode')
     this.handleEvent('react.return_bot_braincode', (brainCodeDetails) => {
       this.unmountComponent = mount(FrobotBrainCode)(
         this.el.id,

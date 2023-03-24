@@ -1,21 +1,25 @@
-<section>
-  <div class="items-center my-4 w-90 m-auto">
+<section class="w-90 m-auto">
+  <div class="justify-between items-center my-4">
     <div class="font-bold text-lg">
-      <h6>Arena</h6>
+      <h6>My Live Matches</h6>
     </div>
-
-    <form action="#" phx-submit="create">
-      <%= text_input :match, :title, placeholder: "What do you want to get done?" %>
-      <%= submit "Create", phx_disable_with: "Creating..." %>
-    </form>
 
     <div class="flex justify-between items-center my-2">
       <div>
         <p class="inline-block items-left font-bold text-xs text-400">
-          <a href="/home">Dashboard</a>
+          <a href="/home">Upcoming</a>
         </p>
         <p class="inline-block items-left font-bold text-xs text-gray-400">
           .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="/arena">Arena</a>
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          My Live Matches
         </p>
         <p class="inline-block items-left font-bold text-xs text-gray-400">
           <table class="card-body table">
@@ -50,7 +54,7 @@
           <ul class="flex my-2">
             <%= for idx <-  Enum.to_list(1..@total_pages) do %>
               <li class="">
-                <%= live_patch "#{idx}", to: Routes.arena_index_path(@socket, :index, %{page: idx})%>
+                <%= live_patch "#{idx}", to: Routes.arena_matches_index_path(@socket, :index, @match_status, %{page: idx})%>
               </li>
             <% end %>
           </ul>
@@ -61,5 +65,5 @@
       </div>
     </div>
   </div>
-  <div id="arena-content" phx-hook="ArenaContentHook" phx-update="ignore"></div>
+  <div id="arena-live-matches" phx-hook="LiveMatchesHook" phx-update="ignore"></div>
 </section>

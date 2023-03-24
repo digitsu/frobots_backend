@@ -44,7 +44,7 @@ defmodule Frobots.Events.Match do
   def changeset(match, attrs) do
     match
     |> cast(attrs, @fields)
-    |> cast_embed(:match_template, required: true)
+    |> cast_embed(:match_template)
     |> cast_assoc(:slots, with: &Slot.changeset/2)
     |> validate_required([:status])
     |> unique_constraint([:battlelog])

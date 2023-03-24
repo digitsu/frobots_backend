@@ -1,5 +1,9 @@
-# build stage
-FROM elixir:1.14.3-alpine AS build
+## build stage
+#FROM elixir:1.14.3-alpine AS build
+FROM elixir:1.13.4-alpine AS build
+#FROM elixir:1.14.3-otp-24-alpine AS build
+#FROM elixir:1.14-otp-24-alpine AS build
+
 
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
@@ -45,11 +49,15 @@ WORKDIR /app/apps/frobots_web
 RUN npm config set proxy $HTTP_PROXY
 RUN npm config set https-proxy $HTTPS_PROXY
 RUN npm i --prefix ./assets
+WORKDIR /app/apps/frobots_web/assets
+RUN yes | npx browserslist@latest --update-db
 
 # Compile assets
 #RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
 #RUN /app/wrapper.pl mix assets.deploy
+WORKDIR /app/apps/frobots_web
 RUN yarn config set https-proxy $HTTPS_PROXY
+RUN yarn config set http-proxy $HTTP_PROXY
 RUN mix assets.deploy
 
 
