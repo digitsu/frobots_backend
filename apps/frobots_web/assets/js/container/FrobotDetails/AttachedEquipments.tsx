@@ -1,73 +1,21 @@
+import React, { useState } from 'react'
 import { Card, Typography, Box, Grid, Button } from '@mui/material'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import React from 'react'
-const attachedEquipments = [
-  {
-    id: 0,
-    src: '/images/frobot_eq_cannon_mk2.png',
-    name: 'Cannon MK II',
-    props: {
-      maxRange: '700m',
-      magazine: 2,
-      damage: '[40,3], [20,5], [5,10]',
-      reload: 16,
-      roF: 16,
-    },
-  },
-  {
-    id: 1,
-    src: '/images/frobot_eq_cannon_mk3.png',
-    name: 'Cannon MK III',
-    props: {
-      maxRange: '700m',
-      magazine: 2,
-      damage: '[40,3], [20,5], [5,10]',
-      reload: 16,
-      roF: 16,
-    },
-  },
-  {
-    id: 2,
-    src: '/images/frobot_eq_scanner_mk1.png',
-    name: 'Scanner MK I',
-    props: {
-      maxRange: '700m',
-      magazine: 2,
-      damage: '[40,3], [20,5], [5,10]',
-      reload: 16,
-      roF: 16,
-    },
-  },
-  {
-    id: 3,
-    src: '/images/frobot_eq_scanner_mk2.png',
-    name: 'Scanner MK II',
-    props: {
-      maxRange: '700m',
-      magazine: 2,
-      damage: '[40,3], [20,5], [5,10]',
-      reload: 16,
-      roF: 16,
-    },
-  },
-  {
-    id: 4,
-    src: '/images/frobot_eq_scanner_mk2.png',
-    name: 'Scanner MK III',
-    props: {
-      maxRange: '700m',
-      magazine: 2,
-      damage: '[40,3], [20,5], [5,10]',
-      reload: 16,
-      roF: 16,
-    },
-  },
-]
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
-const selectedEquipment = attachedEquipments[0]
+interface AttachedEquipmentsProps {
+  equipments: any[]
+  isOwnedFrobot: boolean
+}
 
-export default () => {
+export default (props: AttachedEquipmentsProps) => {
+  const { equipments, isOwnedFrobot } = props
+  const [currentEquipment, setCurrentEquipment] = useState(equipments[0])
+
+  const switchEquipment = (index: number) => {
+    setCurrentEquipment(equipments[index])
+  }
+
   return (
     <Grid item xs={12} sm={12}>
       <Card>
@@ -121,10 +69,18 @@ export default () => {
               }}
             >
               <Box display={'flex'}>
-                {attachedEquipments.slice(0, 4).map((equipment, index) => (
-                  <Grid item lg={4} md={8} sm={6} xs={12} key={equipment.id}>
+                {equipments.slice(0, 4).map((equipment: any, index: number) => (
+                  <Grid
+                    item
+                    lg={4}
+                    md={8}
+                    sm={6}
+                    xs={12}
+                    key={index}
+                    onClick={() => switchEquipment(index)}
+                  >
                     <Box sx={{ px: 4, pb: 2 }}>
-                      <Box pl={2} component={'img'} src={equipment.src} />
+                      <Box pl={2} component={'img'} src={equipment.avatar} />
                       <Box textAlign={'center'} mt={3}>
                         <Typography fontWeight={'bold'} variant="subtitle1">
                           {equipment.name}
@@ -148,7 +104,7 @@ export default () => {
           >
             <Box>
               <Typography sx={{ pl: 4, pt: 2, mt: 1, mb: 2 }} variant={'h6'}>
-                {selectedEquipment.name}
+                {currentEquipment?.name}
               </Typography>
               <Box>
                 <Grid pl={4} container spacing={2}>
@@ -193,41 +149,44 @@ export default () => {
                   <Grid pr={4} item xs={7}>
                     <Box textAlign="right">
                       <Typography my={1.2} variant="subtitle2">
-                        {selectedEquipment.props.maxRange}
+                        {currentEquipment?.props?.maxRange}
                       </Typography>
                       <Typography my={1.2} variant="subtitle2">
-                        {selectedEquipment.props.magazine}
+                        {currentEquipment?.props?.magazine}
                       </Typography>
                       <Typography my={1.2} variant="subtitle2">
-                        {selectedEquipment.props.damage}
+                        {currentEquipment?.props?.damage}
                       </Typography>
                       <Typography my={1.2} variant="subtitle2">
-                        {selectedEquipment.props.reload}
+                        {currentEquipment?.props?.reload}
                       </Typography>
                       <Typography my={1.2} variant="subtitle2">
-                        {selectedEquipment.props.roF}
+                        {currentEquipment?.props?.roF}
                       </Typography>
                     </Box>
                   </Grid>
                 </Grid>
               </Box>
             </Box>
-            <Box
-              sx={{
-                m: 4,
-              }}
-            >
-              <Button
-                variant="text"
-                fullWidth
+
+            {isOwnedFrobot && (
+              <Box
                 sx={{
-                  backgroundColor: '#00AB552F',
-                  color: '#5BE584',
+                  m: 4,
                 }}
               >
-                View Equipment Bay
-              </Button>
-            </Box>
+                <Button
+                  variant="text"
+                  fullWidth
+                  sx={{
+                    backgroundColor: '#00AB552F',
+                    color: '#5BE584',
+                  }}
+                >
+                  View Equipment Bay
+                </Button>
+              </Box>
+            )}
           </Grid>
         </Grid>
       </Card>

@@ -5,6 +5,7 @@ import { darkTheme } from '../../theme/blocklyTheme'
 import { MY_TOOLBOX } from '../../utils/toolbarConfig'
 
 export const BlocklyEditor: React.FC<any> = ({
+  defaultXml = '',
   setXmlText,
   workspaceDidChange,
 }) => {
@@ -23,7 +24,7 @@ export const BlocklyEditor: React.FC<any> = ({
             colour: '#ccc',
           },
         }}
-        initialXml={''}
+        initialXml={defaultXml}
       />
     </Box>
   )

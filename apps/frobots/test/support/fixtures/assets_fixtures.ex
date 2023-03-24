@@ -21,4 +21,17 @@ defmodule Frobots.AssetsFixtures do
 
     frobot
   end
+
+  def cannon_fixture(attrs \\ %{}) do
+    attrs =
+      Enum.into(attrs, %{
+        type: :Mk1,
+        magazine_size: 2,
+        rate_of_fire: 3,
+        reload_time: 2
+      })
+
+    {:ok, cannon} = Frobots.Assets.create_cannon(attrs)
+    cannon
+  end
 end

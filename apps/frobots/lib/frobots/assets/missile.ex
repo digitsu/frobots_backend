@@ -1,10 +1,11 @@
 defmodule Frobots.Assets.Missile do
   use Ecto.Schema
   import Ecto.Changeset
+  use ExConstructor
 
   @derive {Jason.Encoder,
            only: [
-             :missile_type,
+             :type,
              :damage_direct,
              :damage_near,
              :damage_far,
@@ -12,18 +13,19 @@ defmodule Frobots.Assets.Missile do
              :range
            ]}
 
-  schema "scanner" do
-    field :missile_type, Ecto.Enum, values: ~w(Mk1 Mk2)a
-    field :damage_direct, {:array, :integer}
-    field :damage_near, {:array, :integer}
-    field :damage_far, {:array, :integer}
-    field :speed, :integer
-    field :range, :integer
+  schema "missiles" do
+    field(:type, Ecto.Enum, values: ~w(Mk1 Mk2)a)
+    field(:damage_direct, {:array, :integer})
+    field(:damage_near, {:array, :integer})
+    field(:damage_far, {:array, :integer})
+    field(:speed, :integer)
+    field(:range, :integer)
+    has_many(:missile_inst, Frobots.Assets.MissileInst)
     timestamps()
   end
 
   @fields [
-    :missile_type,
+    :type,
     :damage_direct,
     :damage_near,
     :damage_far,
@@ -36,6 +38,6 @@ defmodule Frobots.Assets.Missile do
     missile
     |> cast(attrs, @fields)
     |> validate_required(@fields)
-    |> unique_constraint([:missile_type])
+    |> unique_constraint([:type])
   end
 end

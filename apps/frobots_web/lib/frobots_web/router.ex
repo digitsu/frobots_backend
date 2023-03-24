@@ -124,6 +124,7 @@ defmodule FrobotsWeb.Router do
     live "/arena/live-matches", ArenaLiveMatchesLive.Index, :index
     live "/arena/past-matches", ArenaPastMatchesLive.Index, :index
     live "/arena/upcoming-matches", ArenaUpcomingMatchesLive.Index, :index
+    live "/arena/create", ArenaCreateMatchLive.Index, :index
 
     # manage users
     live "/users", UsersLive.Index, :index
@@ -133,6 +134,7 @@ defmodule FrobotsWeb.Router do
     live "/garage", GarageFrobotsListLive.Index, :index
     live "/garage/create", GarageFrobotCreateLive.Index, :index
     live "/garage/frobot", GarageFrobotsDetailsLive.Index, :index
+    live "/garage/frobot/braincode", FrobotBraincodeLive.Index, :index
 
     get "/", PageController, :index
     get "/oldhome", PageController, :index
