@@ -1,11 +1,9 @@
 defmodule Frobots.EventsTest do
   use Frobots.DataCase, async: true
   alias Frobots.Events
-  alias Frobots.Agents.WinnersBucket
+  alias Frobots.Assets.Frobot
 
   describe "Match record tests" do
-    alias Frobots.Assets.Frobot
-
     test "BASIC: create a match and battlelog" do
       {:ok, owner} = user_fixture()
       %Frobot{id: n1} = frobot_fixture(owner, %{name: "rabbit"})
@@ -37,7 +35,6 @@ defmodule Frobots.EventsTest do
       %Frobot{id: n2} = frobot_fixture(owner, %{name: "random"})
 
       params = create_match_params(owner, n1, n2)
-
       {:ok, match} = Frobots.Events.create_match(params)
       assert is_integer(match.id)
       assert length(match.slots) == 3
@@ -45,8 +42,6 @@ defmodule Frobots.EventsTest do
     end
 
     test "get a match" do
-      alias Frobots.Assets.Frobot
-
       {:ok, owner} = user_fixture()
       %Frobot{id: n1} = frobot_fixture(owner, %{name: "rabbit"})
       %Frobot{id: n2} = frobot_fixture(owner, %{name: "random"})
@@ -58,6 +53,41 @@ defmodule Frobots.EventsTest do
 
       assert created_match.id == match.id
       assert created_match.status == match.status
+    end
+
+    test "list matches by pagination" do
+      {:ok, owner} = user_fixture()
+      %Frobot{id: n1} = frobot_fixture(owner, %{name: "rabbit"})
+      %Frobot{id: n2} = frobot_fixture(owner, %{name: "random"})
+
+      params = create_match_params(owner, n1, n2)
+      {:ok, _created_match} = Frobots.Events.create_match(params)
+
+      assert %{entries: matches, page_number: 1} =
+               Frobots.Events.list_paginated_matches(status: :pending)
+
+      assert Enum.all?(matches, fn match -> match.status == :pending end)
+    end
+
+    test "list matches by pagination with searching" do
+      {:ok, owner} = user_fixture()
+      %Frobot{id: n1} = frobot_fixture(owner, %{name: "rabbit"})
+      %Frobot{id: n2} = frobot_fixture(owner, %{name: "random"})
+
+      params = create_match_params(owner, n1, n2)
+      {:ok, _created_match} = Frobots.Events.create_match(params)
+
+      assert %{entries: matches, page_number: 1} =
+               Frobots.Events.list_paginated_matches(status: :pending, search_pattern: "my")
+
+      assert length(matches) > 0
+      assert Enum.all?(matches, fn match -> match.status == :pending end)
+
+      ## Match not found with this pattern
+      assert %{entries: matches, page_number: 1} =
+               Frobots.Events.list_paginated_matches(status: :pending, search_pattern: "bb")
+
+      assert length(matches) == 0
     end
   end
 
@@ -84,19 +114,10 @@ defmodule Frobots.EventsTest do
           "slot_type" => "protobot"
         },
         %{
-          "frobot_id" => nil,
           "status" => "closed",
           "slot_type" => "closed"
         }
-      ],
-      "match_template" => %{
-        "entry_fee" => 100,
-        "commission_rate" => 10,
-        "match_type" => "team",
-        "payout_map" => [100],
-        "max_frobots" => 3,
-        "min_frobots" => 1
-      }
+      ]
     }
   end
 end
