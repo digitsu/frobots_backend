@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react'
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
 import { Box, Tab, Tabs, Button } from '@mui/material'
+import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
-import LuaEditor from '../Garage/LuaEditor'
+
+const BlankBlocklyCode =
+  '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
 
 export default (props: any) => {
-  const { frobot, ...others } = props
+  const { frobot, updateFrobotCode } = props
   const [luaCode, setLuaCode] = useState(frobot.brain_code || '')
   const [xmlText, setXmlText] = useState(null)
-  const [blocklyCode, setBlocklyCode] = useState(frobot.blockly_code || '')
+  const [blocklyCode, setBlocklyCode] = useState(
+    frobot.blockly_code || BlankBlocklyCode
+  )
 
   function a11yProps(index: number) {
     return {
@@ -19,7 +24,7 @@ export default (props: any) => {
     }
   }
 
-  const [tabIndex, setTabIndex] = React.useState(blocklyCode ? 0 : 1)
+  const [tabIndex, setTabIndex] = React.useState(luaCode ? 1 : 0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
@@ -31,9 +36,9 @@ export default (props: any) => {
     customFunctions()
   }, [])
 
-  function onEditorChange(code) {
+  function onEditorChange(code: string) {
     try {
-      console.log(code)
+      setLuaCode(code)
     } catch (err) {
       console.log(err)
     }
@@ -51,11 +56,24 @@ export default (props: any) => {
   }
 
   useEffect(() => {
-    setLuaCode(blocklyCode)
+    if (tabIndex === 0) {
+      setLuaCode(blocklyCode)
+    }
   }, [blocklyCode])
 
-  // TODO : [FRO-382 brain code save logic]
-  const saveConfig = () => {}
+  const saveConfig = () => {
+    if (!luaCode || luaCode.trim() === '') {
+      return alert("Frobot can't be updated with empty lua code")
+    }
+
+    const requestBody = {
+      frobot_id: frobot.frobot_id,
+      blockly_code: xmlText,
+      brain_code: luaCode,
+    }
+
+    updateFrobotCode(requestBody)
+  }
 
   // TODO : [FRO-383 brain code simulation logic]
   const simulateConfig = () => {}
@@ -127,7 +145,7 @@ export default (props: any) => {
           {
             <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
               <BlocklyEditor
-                defaultXml={blocklyCode || ''}
+                defaultXml={blocklyCode}
                 setXmlText={setXmlText}
                 workspaceDidChange={workspaceDidChange}
               />
