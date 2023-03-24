@@ -1,9 +1,10 @@
 import React from 'react'
-import { Paper, Typography, Box } from '@mui/material'
+import { Paper, Box } from '@mui/material'
 import Table from '../../components/generic/Table'
 import ViewMore from '../../components/generic/Button/ViewMore'
 
 function createData(
+  id: number,
   name: string,
   player: string,
   xp: string,
@@ -11,11 +12,12 @@ function createData(
   rank: number,
   avatar: string
 ) {
-  return { name, player, xp, wins, rank, avatar }
+  return { id, name, player, xp, wins, rank, avatar }
 }
 
 const rows = [
   createData(
+    1,
     'XTron',
     'DJC',
     '297600 XP',
@@ -24,6 +26,7 @@ const rows = [
     '/images/leaderboard-mock-avatar.png'
   ),
   createData(
+    2,
     'Davincy Resolve',
     'Excel7',
     '297600 XP',
@@ -32,6 +35,7 @@ const rows = [
     '/images/leaderboard-mock-avatar.png'
   ),
   createData(
+    3,
     'Biohazard',
     'Excel7',
     '297600 XP',
@@ -40,6 +44,7 @@ const rows = [
     '/images/leaderboard-mock-avatar.png'
   ),
   createData(
+    3,
     'Biohazard',
     'Excel7',
     '297600 XP',
@@ -48,6 +53,7 @@ const rows = [
     '/images/leaderboard-mock-avatar.png'
   ),
   createData(
+    3,
     'Biohazard',
     'Excel7',
     '297600 XP',

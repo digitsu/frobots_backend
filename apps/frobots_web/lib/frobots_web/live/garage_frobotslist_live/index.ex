@@ -2,11 +2,16 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
 
+  alias Frobots.{Accounts, Assets}
+
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
-    # set required data via assigns
-    # for example..fetch leaderboard entries and pass to liveview as follow
-    {:ok, socket}
+  def mount(_params, session, socket) do
+    current_user = Accounts.get_user_by_session_token(session["user_token"])
+
+    {:ok,
+     socket
+     |> assign(:current_user, current_user)
+     |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -16,13 +21,14 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
   end
 
   defp apply_action(socket, :index, _params) do
-    # entries = Frobots.LeaderBoard.get()
-    # {:ok,socket
-    # |> assign(:entries, entries)
-    # }
-
-    #  socket
-    # |> assign_new(:rider_search, fn -> rider_search end)
     socket
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("react.fetch_user_frobots", _params, socket) do
+    {:noreply,
+     push_event(socket, "react.return_user_frobots", %{
+       "frobotList" => socket.assigns.user_frobots
+     })}
   end
 end

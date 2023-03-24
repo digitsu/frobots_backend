@@ -18,7 +18,7 @@ defmodule Frobots.Repo.Migrations.CreateMatches do
       timestamps()
     end
 
-    create index(:battlelogs, [:match_id])
+    create_if_not_exists index(:battlelogs, [:match_id])
 
     create table(:frobots_battlelogs) do
       add :battlelog_id, references(:battlelogs)

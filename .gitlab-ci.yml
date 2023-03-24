@@ -17,7 +17,7 @@ stages:
 
 
 .elixir:
-  image: elixir:1.13.4
+  image: elixir:1.14.3
   # Pick zero or more services to be used on all builds.
   # Only needed when using a docker container to run your tests in.
   # Check out: https://docs.gitlab.com/ee/ci/services/index.html
@@ -104,9 +104,13 @@ deploy-job:
     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
     GHOST_API_KEY: ${GHOST_API_KEY}
-    LINODE_BACKEND_STORE_URL: ${LINODE_BACKEND_STORE_URL}
-    LINODE_BACKEND_STORE_ACCESS_KEY: ${LINODE_BACKEND_STORE_ACCESS_KEY}
-    LINODE_BACKEND_STORE_SECRET_KEY: ${LINODE_BACKEND_STORE_SECRET_KEY}
+    S3_URL: ${S3_URL}
+    S3_BUCKET_STAGING: ${S3_BUCKET_STAGING}
+    S3_ACCESS_KEY_STAGING: ${S3_ACCESS_KEY_STAGING}
+    S3_SECRET_KEY_STAGING: ${S3_SECRET_KEY_STAGING}
+    S3_BUCKET_PROD: ${S3_BUCKET_PROD}
+    S3_ACCESS_KEY_PROD: ${S3_ACCESS_KEY_PROD}
+    S3_SECRET_KEY_PROD: ${S3_SECRET_KEY_PROD}
 
     
   script:

@@ -75,32 +75,31 @@ if config_env() == :prod || config_env() == :staging do
          :ghost_blog_url,
          "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
 
-  s3_store_secret_key =
-    System.get_env("LINODE_BACKEND_STORE_SECRET_KEY") ||
-      raise """
-      environment variable LINODE_BACKEND_STORE_SECRET_KEY is missing.
-      Did you forget to source env vars?
-      """
-
-  s3_store_access_key =
-    System.get_env("LINODE_BACKEND_STORE_ACCESS_KEY") ||
-      raise """
-      environment variable LINODE_BACKEND_STORE_ACCESS_KEY is missing.
-      Did you forget to source env vars?
-      """
-
   s3_store_url =
-    System.get_env("LINODE_BACKEND_STORE_URL") ||
+    System.get_env("S3_URL") ||
       raise """
-      environment variable LINODE_BACKEND_STORE_URL is missing.
+      environment variable S3_URL is missing.
       Did you forget to source env vars?
       """
 
-  config :frobots_web,
-         :s3_store,
-         url: s3_store_url,
-         access_key: s3_store_access_key,
-         secret_key: s3_store_secret_key
+  s3_store_bucket =
+    System.get_env("S3_BUCKET") ||
+      raise """
+      environment variable S3_BUCKET is missing.
+      Did you forget to source env vars?
+      """
+
+  config :ex_aws,
+    debug_requests: true,
+    access_key_id: [{:system, "S3_ACCESS_KEY"}, :instance_role],
+    secret_access_key: [{:system, "S3_SECRET_KEY"}, :instance_role],
+    region: "US"
+
+  config :ex_aws, :s3,
+    scheme: "https://",
+    host: s3_store_url,
+    region: "US",
+    bucket: s3_store_bucket
 
   # ## Using releases
   #

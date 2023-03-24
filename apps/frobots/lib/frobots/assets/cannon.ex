@@ -1,25 +1,27 @@
 defmodule Frobots.Assets.Cannon do
   use Ecto.Schema
   import Ecto.Changeset
+  use ExConstructor
 
   @derive {Jason.Encoder,
            only: [
-             :cannon_type,
+             :type,
              :reload_time,
              :rate_of_fire,
              :magazine_size
            ]}
 
-  schema "cannon" do
-    field :cannon_type, Ecto.Enum, values: ~w(Mk1 Mk2)a
+  schema "cannons" do
+    field :type, Ecto.Enum, values: ~w(Mk1 Mk2)a
     field :reload_time, :integer
     field :rate_of_fire, :integer
     field :magazine_size, :integer
+    has_many :cannon_inst, Frobots.Assets.CannonInst
     timestamps()
   end
 
   @fields [
-    :cannon_type,
+    :type,
     :reload_time,
     :rate_of_fire,
     :magazine_size
@@ -30,6 +32,6 @@ defmodule Frobots.Assets.Cannon do
     cannon
     |> cast(attrs, @fields)
     |> validate_required(@fields)
-    |> unique_constraint([:cannon_type])
+    |> unique_constraint([:type])
   end
 end

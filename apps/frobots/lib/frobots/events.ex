@@ -156,6 +156,10 @@ defmodule Frobots.Events do
     Repo.get_by(Match, params)
   end
 
+  def list_match_by(params, preload \\ []) do
+    Match |> preload(^preload) |> Repo.all(params)
+  end
+
   def get_battlelog_by(params) do
     Repo.get_by(Battlelog, params)
   end
@@ -197,7 +201,7 @@ defmodule Frobots.Events do
           participating_frobots = battlelog.frobots |> Enum.map(fn x -> x.id end)
           # participating_frobots = winning_frobot |> Enum.map(fn x -> x.id end)
 
-          frobot = Assets.get_frobot!(hd(winning_frobot))
+          frobot = Assets.get_frobot(hd(winning_frobot))
           user = Accounts.get_user!(frobot.user_id)
 
           # participating_frobots

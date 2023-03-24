@@ -1,16 +1,17 @@
-import { Grid, Box, Card, Typography, Button } from '@mui/material'
 import React from 'react'
+import { Grid, Box, Card, Typography, Button } from '@mui/material'
+import { generateRandomString } from '../../utils/util'
 import FrobotAdvancedDetails from './FrobotAdvancedDetails'
 
-const basicDetails = {
-  name: 'X-Tron',
-  hash: '867c8da2de2f26216b74d11310b89e6a',
-  mech: 'Mech MK2',
-  isBoost: true,
-  bio: 'XTron is a revolutionary new robot that combines the latest in artificial intelligence and robotics technology to bring you an interactive and intelligent companion. This innovative device is designed to bring a new level of fun and excitement to your life. With its sleek, modern design and intuitive controls, the Frobot is easy to use and operate.',
+interface frobotDetailsProps {
+  frobotDetails: any
+  currentUser: any
+  isOwnedFrobot: boolean
 }
 
-export default () => {
+export default (props: frobotDetailsProps) => {
+  const { frobotDetails, isOwnedFrobot } = props
+
   return (
     <Grid container mb={2} spacing={2}>
       <Grid item lg={4} md={12} sm={12} xs={12}>
@@ -45,7 +46,7 @@ export default () => {
             }}
             component={'img'}
             width={'100%'}
-            src={'/images/frobot1.png'}
+            src={frobotDetails.avatar}
           ></Box>
         </Card>
       </Grid>
@@ -78,22 +79,22 @@ export default () => {
               Name
             </Typography>
             <Typography variant="body1" gutterBottom mt={1}>
-              {basicDetails.name}
+              {frobotDetails.name}
             </Typography>
             <Typography variant="h6" gutterBottom mt={2}>
               Hash
             </Typography>
             <Typography variant="body2" gutterBottom>
-              #{basicDetails.hash}
+              #{generateRandomString(31)}
             </Typography>
             <Typography variant="h6" gutterBottom mt={2}>
-              Mech/XFrame
+              Mech/Xframe
             </Typography>
             <Box display={'flex'} alignItems={'baseline'}>
               <Typography pr={2} variant="body2" gutterBottom>
-                {basicDetails.mech}
+                {frobotDetails.mech}
               </Typography>
-              {basicDetails.isBoost && (
+              {frobotDetails.isBoost && (
                 <Button
                   color="warning"
                   size="small"
@@ -115,14 +116,17 @@ export default () => {
               }}
             >
               <Typography variant="body2" gutterBottom>
-                {basicDetails.bio}
+                {frobotDetails.bio}
               </Typography>
             </Box>
           </Box>
         </Card>
       </Grid>
 
-      <FrobotAdvancedDetails />
+      <FrobotAdvancedDetails
+        frobotDetails={frobotDetails}
+        isOwnedFrobot={isOwnedFrobot}
+      />
     </Grid>
   )
 }

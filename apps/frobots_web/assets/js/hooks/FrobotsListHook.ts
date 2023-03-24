@@ -3,7 +3,13 @@ import FrobotsList from '../container/FrobotsList'
 
 export default {
   mounted() {
-    this.unmountComponent = mount(FrobotsList)(this.el.id, this.opts())
+    this.pushEventTo(this.el, 'react.fetch_user_frobots')
+    this.handleEvent('react.return_user_frobots', (frobots: any) => {
+      this.unmountComponent = mount(FrobotsList)(
+        this.el.id,
+        this.opts({ ...frobots })
+      )
+    })
   },
 
   destroyed() {
@@ -14,9 +20,11 @@ export default {
 
     this.unmountComponent(this.el)
   },
-  opts() {
+
+  opts(frobots: any) {
     return {
       name: 'FrobotsList',
+      ...frobots,
     }
   },
 }

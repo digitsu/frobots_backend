@@ -10,6 +10,6 @@ defmodule Frobots.Repo.Migrations.CreateUsers do
       timestamps()
     end
 
-    create unique_index(:users, [:username])
+    create_if_not_exists unique_index(:users, [:username])
   end
 end
