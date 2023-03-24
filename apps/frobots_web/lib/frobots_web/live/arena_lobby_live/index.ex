@@ -12,8 +12,4 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   def handle_params(_, _, socket) do
     {:noreply, socket}
   end
-
-  defp apply_action(socket, :index, _params) do
-    socket
-  end
 end
