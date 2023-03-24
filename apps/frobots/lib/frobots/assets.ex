@@ -222,7 +222,7 @@ defmodule Frobots.Assets do
       # ...>   }),
       # ...> do: xf.max_health == 999
       # true
-    xdon't actually run the doctest as it cannot work
+    don't actually run the doctest as it cannot work
   """
   def create_xframe(attrs \\ %{}) do
     %Xframe{}
