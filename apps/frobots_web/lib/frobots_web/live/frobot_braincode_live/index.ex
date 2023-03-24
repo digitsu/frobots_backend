@@ -5,10 +5,21 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   alias Frobots.{Assets}
 
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
-    # set required data via assigns
-    # for example..fetch leaderboard entries and pass to liveview as follow
-    {:ok, socket}
+  def mount(params, _session, socket) do
+    frobot_id = params["id"]
+
+    case Assets.get_frobot(String.to_integer(frobot_id)) do
+      nil ->
+        {:ok,
+         socket
+         |> put_flash(:error, "Not found any frobot with id #{frobot_id}")
+         |> push_redirect(to: "/garage")}
+
+      frobot ->
+        {:ok,
+         socket
+         |> assign(:frobot, frobot)}
+    end
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -22,23 +33,19 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("react.fetch_bot_braincode", %{"frobot_id" => frobot_id}, socket) do
-    case Assets.get_frobot(frobot_id) do
-      nil ->
-        {:noreply, push_event(socket, "react.return_bot_braincode", %{"frobot" => nil})}
+  def handle_event("react.fetch_bot_braincode", _params, socket) do
+    frobot = socket.assigns.frobot
 
-      frobot ->
-        frobotDetails = %{
-          "frobot_id" => frobot.id,
-          "name" => frobot.name,
-          "avatar" => frobot.avatar,
-          "blockly_code" => frobot.blockly_code,
-          "brain_code" => frobot.brain_code,
-          "class" => frobot.class,
-          "xp" => frobot.xp
-        }
+    frobotDetails = %{
+      "frobot_id" => frobot.id,
+      "name" => frobot.name,
+      "avatar" => frobot.avatar,
+      "blockly_code" => frobot.blockly_code,
+      "brain_code" => frobot.brain_code,
+      "class" => frobot.class,
+      "xp" => frobot.xp
+    }
 
-        {:noreply, push_event(socket, "react.return_bot_braincode", %{"frobot" => frobotDetails})}
-    end
+    {:noreply, push_event(socket, "react.return_bot_braincode", %{"frobot" => frobotDetails})}
   end
 end
