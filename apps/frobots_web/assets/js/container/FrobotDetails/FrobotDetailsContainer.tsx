@@ -1,6 +1,6 @@
 import React from 'react'
 import { Grid, Box, Card, Typography, Button } from '@mui/material'
-import { generateRandomString } from '../../utils/string'
+import { generateRandomString } from '../../utils/util'
 import FrobotAdvancedDetails from './FrobotAdvancedDetails'
 
 interface frobotDetailsProps {
