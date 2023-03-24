@@ -35,7 +35,6 @@ defmodule Frobots.EventsTest do
       %Frobot{id: n2} = frobot_fixture(owner, %{name: "random"})
 
       params = create_match_params(owner, n1, n2)
-
       {:ok, match} = Frobots.Events.create_match(params)
       assert is_integer(match.id)
       assert length(match.slots) == 3
@@ -115,7 +114,6 @@ defmodule Frobots.EventsTest do
           "slot_type" => "protobot"
         },
         %{
-          "frobot_id" => nil,
           "status" => "closed",
           "slot_type" => "closed"
         }
