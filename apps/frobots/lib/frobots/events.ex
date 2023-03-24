@@ -19,7 +19,8 @@ defmodule Frobots.Events do
               xp: 0,
               attempts: 0,
               matches_won: 0,
-              matches_participated: 0
+              matches_participated: 0,
+              avatar: ""
   end
 
   defp _create_battlelog(match, attrs) do
@@ -270,7 +271,8 @@ defmodule Frobots.Events do
         xp: frobot.xp,
         attempts: total_attempts,
         matches_won: matches_won,
-        matches_participated: match_participation_count
+        matches_participated: match_participation_count,
+        avatar: frobot.avatar
       }
     end
   end
@@ -318,6 +320,7 @@ defmodule Frobots.Events do
     # group data by username, sort and rank
     for name <- uniq_names do
       user = Accounts.get_user_by(name: name)
+      avatar = user.avatar
       user_frobots = Assets.list_user_frobots(user)
 
       user_frobot_count = user_frobots |> Enum.count()
@@ -332,7 +335,7 @@ defmodule Frobots.Events do
         x.username == name
       end)
       |> Enum.reduce(
-        %{username: "", xp: 0, points: 0, attempts: 0, matches_won: 0, matches_participated: 0},
+        %{username: "", xp: 0, points: 0, attempts: 0, matches_won: 0, matches_participated: 0, avatar: ""},
         fn x, acc ->
           current_points = acc.points
           current_attempts = acc.attempts
@@ -349,6 +352,7 @@ defmodule Frobots.Events do
         end
       )
       |> Map.put(:username, name)
+      |> Map.put(:avatar, avatar)
     end
     |> Enum.sort_by(
       fn p ->
