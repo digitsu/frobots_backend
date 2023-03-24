@@ -65,7 +65,6 @@ defmodule FrobotsWeb.ArenaLive.Index do
   end
 
   # %{
-  #   "user_id" => 1,
   #   "title" => "My Match",
   #   "description" => "Match description",
   #   "match_time" => DateTime.utc_now() |> DateTime.to_string(),
@@ -86,15 +85,29 @@ defmodule FrobotsWeb.ArenaLive.Index do
   #       "slot_type" => "protobot"
   #     },
   #     %{
-  #       "frobot_id" => nil,
   #       "status" => "closed",
   #       "slot_type" => "closed"
   #     }
-  #   ],
-  #   "match_template" => %{}
+  #   ]
   # }
   @impl Phoenix.LiveView
   def handle_event("create", %{"match" => match_details}, socket) do
+    frobot_ids =
+      match_details["slots"]
+      |> Enum.map(fn slot -> slot["frobot_id"] end)
+      |> Enum.reject(&is_nil/1)
+
+    match_details =
+      match_details
+      |> Map.merge(
+        match_template(
+          frobot_ids,
+          match_details["max_player_frobot"],
+          match_details["min_player_frobot"]
+        )
+      )
+      |> Map.put_new("user_id", socket.assigns.current_user.id)
+
     case Events.create_match(match_details) do
       {:ok, match} ->
         {:noreply,
@@ -163,11 +176,11 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
   @impl Phoenix.LiveView
   def handle_info({Events, [:match, :created], match}, socket) do
-    page_size = socket.assign.page_size
+    page_size = socket.assigns.page_size
 
     socket =
       if is_nil(socket.assigns.match_status) do
-        matches = socket.assign.matches
+        matches = socket.assigns.matches
 
         updated_matches =
           if length(matches) < page_size do
@@ -183,7 +196,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     socket =
       if socket.assigns.match_status == "pending" do
-        matches = socket.assign.upcoming_matches
+        matches = socket.assigns.upcoming_matches
 
         updated_matches =
           if length(matches) < page_size do
@@ -203,7 +216,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
   def handle_info({Events, [:match, :updated], match}, socket) do
     socket =
       if is_nil(socket.assigns.match_status) do
-        matches = socket.assign.matches
+        matches = socket.assigns.matches
 
         updated_matches =
           Enum.map(matches, fn old_match ->
@@ -217,7 +230,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     socket =
       if socket.assigns.match_status == "pending" do
-        matches = socket.assign.upcoming_matches
+        matches = socket.assigns.upcoming_matches
 
         updated_matches =
           Enum.map(matches, fn old_match ->
@@ -231,7 +244,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     socket =
       if socket.assigns.match_status == "done" do
-        matches = socket.assign.completed_matches
+        matches = socket.assigns.completed_matches
 
         updated_matches =
           Enum.map(matches, fn old_match ->
@@ -245,7 +258,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     socket =
       if socket.assigns.match_status == "live" do
-        matches = socket.assign.live_matches
+        matches = socket.assigns.live_matches
 
         updated_matches =
           Enum.map(matches, fn old_match ->
@@ -258,5 +271,19 @@ defmodule FrobotsWeb.ArenaLive.Index do
       end
 
     {:noreply, socket}
+  end
+
+  defp match_template(frobot_ids, max_frobots, min_frobots) do
+    %{
+      "frobot_ids" => frobot_ids,
+      "match_template" => %{
+        "entry_fee" => 0,
+        "commission_rate" => 0,
+        "match_type" => "team",
+        "payout_map" => [100],
+        "max_frobots" => max_frobots,
+        "min_frobots" => min_frobots
+      }
+    }
   end
 end

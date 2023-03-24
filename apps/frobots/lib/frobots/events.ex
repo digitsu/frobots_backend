@@ -128,6 +128,12 @@ defmodule Frobots.Events do
           |> Enum.reject(&(&1 == nil))
       end
 
+    frobot_ids =
+      case Map.get(attrs, "frobot_ids", nil) do
+        nil -> frobot_ids
+        ids when is_list(ids) -> ids
+      end
+
     Map.put(attrs, "frobots", frobot_ids)
   end
 
