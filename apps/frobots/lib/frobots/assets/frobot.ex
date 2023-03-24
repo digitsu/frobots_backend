@@ -28,7 +28,16 @@ defmodule Frobots.Assets.Frobot do
   @doc false
   def changeset(frobot, attrs) do
     frobot
-    |> cast(attrs, [:brain_code, :class, :name, :xp, :blockly_code, :avatar, :pixellated_img, :bio])
+    |> cast(attrs, [
+      :brain_code,
+      :class,
+      :name,
+      :xp,
+      :blockly_code,
+      :avatar,
+      :pixellated_img,
+      :bio
+    ])
     |> validate_required([:brain_code, :name])
     |> unique_constraint([:name])
   end
