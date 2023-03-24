@@ -1,6 +1,7 @@
 # build stage
 #FROM elixir:1.14.3-alpine AS build
-FROM elixir:1.13.4-alpine AS build
+#FROM elixir:1.13.4-alpine AS build
+FROM elixir:1.14.3-otp-24-alpine AS build
 
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
