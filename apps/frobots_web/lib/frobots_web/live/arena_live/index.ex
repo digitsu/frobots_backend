@@ -94,7 +94,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
       match_details
       |> Map.put_new("user_id", socket.assigns.current_user.id)
 
-    case Events.create_match(match_details) do
+    case Frobots.Api.create_match(match_details) do
       {:ok, match} ->
         {:noreply,
          push_redirect(socket, to: Routes.arena_lobby_index_path(socket, :index, match.id))}
