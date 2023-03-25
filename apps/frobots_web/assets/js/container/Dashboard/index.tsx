@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, type MouseEvent } from 'react'
 import { Grid, Box, Typography, Card } from '@mui/material'
 import FrobotsLeaderBoard from './FrobotsLeaderBoard'
 import PlayerLeaderBoard from './PlayerLeaderBoard'
@@ -8,8 +8,19 @@ import FeaturedFrobotSection from './FeaturedFrobotSection'
 import ProfileDetails from './ProfileDetails'
 import JoinMatchBanner from './JoinMatchBanner'
 import NewsAndUpdatesSection from './NewsAndUpdatesSection'
+
 export default (props: any) => {
-  const { fetchGlobalStats, globalStats } = props
+  const { playerStats, globalStats, blogPosts, featuredFrobots } = props
+
+  const handleOpenLiveMatches = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/garage'
+    },
+    []
+  )
+
   return (
     <>
       <Box width={'90%'} m={'auto'}>
@@ -44,7 +55,7 @@ export default (props: any) => {
                     >
                       <Typography variant="h6">12378</Typography>
                       <Typography variant="caption">
-                        Total XP : 975610
+                        Total XP : {playerStats.total_xp}
                       </Typography>
                     </Box>
                   </Box>
@@ -60,7 +71,7 @@ export default (props: any) => {
                       borderStyle: 'dotted',
                     }}
                   />
-                  <Box display={'flex'} gap={3}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenLiveMatches}>
                     <Box
                       component={'img'}
                       src={'/images/frobot.svg'}
@@ -71,7 +82,9 @@ export default (props: any) => {
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6">7</Typography>
+                      <Typography variant="h6">
+                        {playerStats.frobots_count}
+                      </Typography>
                       <Typography variant="caption">
                         Sparkling Frobots
                       </Typography>
@@ -99,7 +112,9 @@ export default (props: any) => {
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6">635</Typography>
+                      <Typography variant="h6">
+                        {playerStats.matches_participated}
+                      </Typography>
                       <Typography variant="caption">
                         Total Matches Played
                       </Typography>
@@ -127,7 +142,9 @@ export default (props: any) => {
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6">13</Typography>
+                      <Typography variant="h6">
+                        {playerStats.upcoming_matches}
+                      </Typography>
                       <Typography variant="caption">
                         Upcoming Matches
                       </Typography>
@@ -146,10 +163,7 @@ export default (props: any) => {
             >
               <ProfileDetails />
               <Box>
-                <GlobalStats
-                  fetchGlobalStats={fetchGlobalStats}
-                  globalStats={globalStats}
-                />
+                <GlobalStats globalStats={globalStats} />
               </Box>
             </Box>
           </Grid>
@@ -167,7 +181,7 @@ export default (props: any) => {
       <Box>
         <Grid container spacing={2} my={2}>
           <Grid item lg={12} md={12} sm={12} xs={12}>
-            <FeaturedFrobotSection />
+            <FeaturedFrobotSection featuredFrobots={featuredFrobots} />
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <JoinMatchBanner />
@@ -175,7 +189,7 @@ export default (props: any) => {
         </Grid>
       </Box>
       <Box width={'90%'} m={'auto'}>
-        <NewsAndUpdatesSection />
+        <NewsAndUpdatesSection blogPosts={blogPosts} />
       </Box>
     </>
   )
