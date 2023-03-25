@@ -1,7 +1,7 @@
 defmodule Frobots.Equipment do
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{Xframe, Missile, Scanner, Cannon}
+  alias Frobots.Assets.{XframeInst, MissileInst, ScannerInst, CannonInst}
   alias Frobots.Accounts
 
   @doc ~S"""
@@ -26,7 +26,24 @@ defmodule Frobots.Equipment do
       ...> do: cn.user.email == user_email
       true
 
+
+  ## TERMINOLOGY
+  Some terms:
+
+    Equipment: all things which are NFTs, currently, [parts, xframes]
+    Part: all things which can be installed into an xframe
+    Xframe: a class of equipment, each frobot can install one of these into it, which defines what parts it can install
+    Weapon: class of parts which do damage, xframes define how many weapon slots it can support
+    Sensor: class of parts which sense things, xframes define how many sensory slots it can support
+    Tank Mk1: a type of an xframe
+    Cannon: a type of weapon
+    Cannon Mk1: a type of Cannon
+    Scanner: a type of Sensor
+    Scanner Mk1: a type of Scanner
+
+    USER driven APIs should only be able to create instances of the leaf level types: "Tank Mk1", "Cannon Mk1", "Scanner Mk2", etc.
   """
+
   def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) do
     module = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_class <> "Inst")
     inst_struct = module.new(%{})
@@ -58,29 +75,30 @@ defmodule Frobots.Equipment do
   end
 
   def delete_equipment(equipment)
-      when equipment in [%Xframe{}, %Cannon{}, %Scanner{}, %Missile{}] do
+      when equipment in [%XframeInst{}, %CannonInst{}, %ScannerInst{}, %MissileInst{}] do
     Repo.delete(equipment)
   end
 
   # fetch frobot equipment by frobot
+  # this is how the frontend knows the ids for parts
   def list_frobot_equipment(frobot_id) do
     cannons =
-      from(c in Cannon,
+      from(c in CannonInst,
         where: c.frobot_id == ^frobot_id
       )
 
     scanners =
-      from(s in Scanner,
+      from(s in ScannerInst,
         where: s.frobot_id == ^frobot_id
       )
 
     xframes =
-      from(x in Xframe,
+      from(x in XframeInst,
         where: x.frobot_id == ^frobot_id
       )
 
     missiles =
-      from(m in Missile,
+      from(m in MissileInst,
         where: m.frobot_id == ^frobot_id
       )
 
