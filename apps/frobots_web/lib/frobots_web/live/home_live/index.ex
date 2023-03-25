@@ -86,7 +86,7 @@ defmodule FrobotsWeb.HomeLive.Index do
       "players_online" => 250,
       "matches_in_progress" => 65,
       "players_registered" => 1500,
-      "matches_completed" => 376
+      "matches_completed" => 376888
     }
   end
 
