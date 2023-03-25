@@ -32,12 +32,24 @@ defmodule Frobots do
     {"Dummy", :dummy}
   ]
 
+  # PUT ALL CONSTANT DATA AS ALIASES HERE
+  @default_frobot_loadout [
+    %{equipment_class: "Xframe", equipment_type: "Tank Mk1"},
+    %{equipment_class: "Cannon", equipment_type: "Mk1"},
+    %{equipment_class: "Scanner", equipment_type: "Mk1"},
+    %{equipment_class: "Missile", equipment_type: "Mk1"}
+  ]
+
   def frobot_paths() do
     @frobot_paths
   end
 
   def frobot_types() do
     @frobot_types
+  end
+
+  def default_frobot_loadout() do
+    @default_frobot_loadout
   end
 
   def update_template_frobot(type) when is_binary(type) do

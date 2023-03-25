@@ -12,6 +12,7 @@ defmodule Frobots.Accounts.User do
     field :confirmed_at, :naive_datetime
     field :hashed_password_old, :string, redact: true
     field :migrated_user, :boolean
+
     timestamps()
     has_many :frobots, Frobots.Assets.Frobot
     has_many :xframe_inst, Frobots.Assets.XframeInst
