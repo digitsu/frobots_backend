@@ -1,4 +1,14 @@
-defmodule Frobots.Api.Garage do
+defmodule Frobots.Api do
+  alias Frobots.Events
+  # this is the FE api for liveview pages
+
+  def create_match(match_details) do
+    Events.create_match(match_details)
+  end
+
+  def join_match(_user, _match) do
+  end
+
   def create_frobot(_user, _name, _prototype) do
     _default_loadout = Frobots.default_frobot_loadout()
 
@@ -10,4 +20,5 @@ defmodule Frobots.Api.Garage do
     # IF successful, UPDATE the user and decrement sparks - 1.
     # return a frobot_name and id as success
   end
+
 end
