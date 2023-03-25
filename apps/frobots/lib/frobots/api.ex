@@ -20,5 +20,4 @@ defmodule Frobots.Api do
     # IF successful, UPDATE the user and decrement sparks - 1.
     # return a frobot_name and id as success
   end
-
 end
