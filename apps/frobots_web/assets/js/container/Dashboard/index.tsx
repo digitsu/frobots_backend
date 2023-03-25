@@ -12,7 +12,7 @@ import NewsAndUpdatesSection from './NewsAndUpdatesSection'
 export default (props: any) => {
   const { playerStats, globalStats, blogPosts, featuredFrobots } = props
 
-  const handleOpenLiveMatches = useCallback(
+  const handleOpenGarage = useCallback(
     (event: MouseEvent<HTMLDivElement> | null) => {
       event?.preventDefault()
 
@@ -71,7 +71,7 @@ export default (props: any) => {
                       borderStyle: 'dotted',
                     }}
                   />
-                  <Box display={'flex'} gap={3} onClick={handleOpenLiveMatches}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenGarage}>
                     <Box
                       component={'img'}
                       src={'/images/frobot.svg'}
