@@ -3,10 +3,18 @@ import { Box, Grid, Typography, Button } from '@mui/material'
 import { useSelector } from 'react-redux'
 import Card from '../../components/generic/Card'
 
-export default () => {
-  const { starterMech, frobotName, bio } = useSelector(
+export default ({ createFrobot }) => {
+  const { starterMech, frobotName, bio, brainCode, blocklyCode } = useSelector(
     (store: any) => store.createFrobot
   )
+  const createFrobotHandler = () => {
+    createFrobot({
+      name: frobotName,
+      bio,
+      brain_code: brainCode?.brain_code,
+      blockly_code: blocklyCode,
+    })
+  }
   return (
     <Box width={'60%'} m={'auto'} mt={10}>
       <Card>
@@ -47,7 +55,12 @@ export default () => {
         </Grid>
       </Card>
       <Box mt={6} mb={10}>
-        <Button variant="contained" fullWidth sx={{ py: 1.5, mb: 10 }}>
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{ py: 1.5, mb: 10 }}
+          onClick={createFrobotHandler}
+        >
           Build Now
         </Button>
       </Box>

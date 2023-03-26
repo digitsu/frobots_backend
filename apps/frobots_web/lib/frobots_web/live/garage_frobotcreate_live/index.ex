@@ -2,11 +2,13 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
   alias Frobots.Assets
+  alias Frobots.Accounts
 
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
+  def mount(_params, %{"user_id" => id}, socket) do
     # set required data via assigns
-    {:ok, socket}
+    current_user = Accounts.get_user!(id)
+    {:ok, socket |> assign(:current_user, current_user)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -27,5 +29,21 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
      push_event(socket, "react.return_frobot_create_details", %{
        "templates" => templates
      })}
+  end
+
+  def handle_event("react.create_frobot", params, socket) do
+    current_user = socket.assigns.current_user
+
+    case Assets.create_frobot(current_user, params) do
+      {:ok, frobot} ->
+        {:noreply,
+         socket
+         |> push_redirect(to: "/garage/frobot?id=#{frobot.id}")}
+
+      {:error, changeset} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Could not create frobot")}
+    end
   end
 end

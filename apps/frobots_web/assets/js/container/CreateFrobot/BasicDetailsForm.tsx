@@ -143,6 +143,7 @@ export default (props: any) => {
       </Box>
       <Box mt={6}>
         <Button
+          disabled={!(frobotName && Object.keys(brainCode).length > 0)}
           variant="contained"
           fullWidth
           sx={{ py: 1.5, mb: 10 }}
