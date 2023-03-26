@@ -31,7 +31,8 @@ defmodule FrobotsUmbrella.MixProject do
       {:esbuild, "~> 0.3", runtime: Mix.env() == :dev},
       {:phoenix, "~> 1.6.5"},
       {:excoveralls, "~> 0.5.5", only: :test},
-      {:junit_formatter, "~> 3.3", only: [:test]}
+      {:junit_formatter, "~> 3.3", only: [:test]},
+      {:dialyxir, "~> 1.2"}
     ]
   end
 
