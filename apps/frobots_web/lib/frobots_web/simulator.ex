@@ -79,7 +79,7 @@ defmodule FrobotsWeb.Simulator do
 
   @impl true
   def handle_call({:request_match}, _from, state) do
-    {:ok, match_id} = Channel.push(state.lobby_channel, "request_match", "client_username")
+    {:ok, match_id} = Channel.push(state.lobby_channel, "request_match", %{})
 
     {:ok, _response, match_channel} =
       Channel.join(state.socket, "match:" <> Integer.to_string(match_id))
