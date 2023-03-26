@@ -40,7 +40,7 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
          socket
          |> push_redirect(to: "/garage/frobot?id=#{frobot.id}")}
 
-      {:error, changeset} ->
+      {:error, _changeset} ->
         {:noreply,
          socket
          |> put_flash(:error, "Could not create frobot")}
