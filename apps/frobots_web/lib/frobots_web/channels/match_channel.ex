@@ -52,8 +52,8 @@ defmodule FrobotsWeb.MatchChannel do
            Integer.to_string(Map.get(socket.assigns, :match_id)),
            self()
          ) do
-      {:ok, _super_name, _registry_name, _arena_name, match_name} -> {:ok, match_name}
-      {:error, err, _, _, _} -> {:error, err}
+      {:ok, match_name} -> {:ok, match_name}
+      {:error, err} -> {:error, "Could not start the services: " <> err}
     end
   end
 
@@ -137,14 +137,14 @@ defmodule FrobotsWeb.MatchChannel do
   end
 
   @impl true
-  @spec handle_info({atom, String.t(), String.t()}, Phoenix.Socket.t()) :: tuple
+  # @spec handle_info({atom, String.t(), String.t()}, Phoenix.Socket.t()) :: tuple
   def handle_info({:fsm_state, _frobot, _fsm_state} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({atom, String.t(), String.t()}, Phoenix.Socket.t()) :: tuple
+  # @spec handle_info({atom, String.t(), String.t()}, Phoenix.Socket.t()) :: tuple
   def handle_info({:fsm_debug, _frobot, _fsm_state} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
