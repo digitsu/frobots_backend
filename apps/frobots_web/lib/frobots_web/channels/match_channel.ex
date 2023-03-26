@@ -53,7 +53,7 @@ defmodule FrobotsWeb.MatchChannel do
            self()
          ) do
       {:ok, _super_name, _registry_name, _arena_name, match_name} -> {:ok, match_name}
-      {:error, error} -> {:error, error}
+      {:error, _, _, _, _} -> {:error, nil, nil, nil, nil}
     end
   end
 

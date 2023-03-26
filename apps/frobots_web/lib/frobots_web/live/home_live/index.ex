@@ -5,7 +5,6 @@ defmodule FrobotsWeb.HomeLive.Index do
   alias Frobots.Assets
 
   @impl Phoenix.LiveView
-  @spec mount(any, nil | maybe_improper_list | map, map) :: {:ok, map}
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     # get list of frobots and show
@@ -67,7 +66,7 @@ defmodule FrobotsWeb.HomeLive.Index do
         []
 
       {:error, err} ->
-        IO.puts("GhostBlog: no data posts! Err: " <> err)
+        IO.puts("GhostBlog: no data posts! Err: " <> IO.inspect(err))
         []
 
       :error ->
