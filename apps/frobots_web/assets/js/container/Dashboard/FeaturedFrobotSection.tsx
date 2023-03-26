@@ -1,36 +1,20 @@
-import { Grid, Box, Typography } from '@mui/material'
 import React from 'react'
-const featuredFrobots = [
-  {
-    id: 1,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot1.png',
-    name: 'X Tron',
-    xp: 5000000,
-  },
-  {
-    id: 2,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot2.png',
-    name: 'New Horizon',
-    xp: 1223500,
-  },
-  {
-    id: 3,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot3.png',
-    name: 'Bumble bee',
-    xp: 5231100,
-  },
-  {
-    id: 8,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot4.png',
-    name: 'Megatron',
-    xp: 5312100,
-  },
-]
-export default () => {
+import { Grid, Box, Typography } from '@mui/material'
+
+type FeaturedFrobot = {
+  id: number
+  name: string
+  image_path: string
+  xp: number
+}
+
+type FeaturedFrobotsProps = {
+  featuredFrobots: FeaturedFrobot[]
+}
+
+export default (props: FeaturedFrobotsProps) => {
+  const { featuredFrobots } = props
+
   const handleOpenDetails = (frobotId: number) => {
     window.location.href = `/garage/frobot?id=${frobotId}`
   }
@@ -49,7 +33,7 @@ export default () => {
           Featured Frobots
         </Typography>
         <Grid container spacing={3}>
-          {featuredFrobots.map((featuredFrobot) => (
+          {featuredFrobots.map((featuredFrobot: FeaturedFrobot) => (
             <Grid
               item
               lg={3}
@@ -64,7 +48,7 @@ export default () => {
                   <Box
                     component={'img'}
                     width={'100%'}
-                    src={featuredFrobot.bgUrl}
+                    src={'/images/frobot_bg.png'}
                   ></Box>
                   <Box
                     sx={{ transform: 'translate(-50%, -50%)' }}
@@ -73,7 +57,7 @@ export default () => {
                     zIndex={1}
                     position={'absolute'}
                     component={'img'}
-                    src={featuredFrobot.src}
+                    src={featuredFrobot.image_path}
                   />
                 </Box>
                 <Box textAlign={'center'} mt={3}>

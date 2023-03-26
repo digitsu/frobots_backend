@@ -64,18 +64,16 @@ defmodule Frobots.Events do
   end
 
   defp get_valid_frobots(id) when is_integer(id) do
-    case id do
-      # throw(~s/Invalid frobot name #{name}/)
+    case Repo.get_by(Frobots.Assets.Frobot, id: id) do
       nil -> nil
-      id -> Repo.get_by(Frobots.Assets.Frobot, id: id)
+      frobot -> frobot
     end
   end
 
   defp get_valid_frobots(name) when is_binary(name) do
-    case name do
-      # throw(~s/Invalid frobot name #{name}/)
+    case Repo.get_by(Frobots.Assets.Frobot, name: name) do
       nil -> nil
-      name -> Repo.get_by(Frobots.Assets.Frobot, name: name)
+      frobot -> frobot
     end
   end
 
