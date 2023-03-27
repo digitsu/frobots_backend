@@ -90,7 +90,7 @@ defmodule Frobots.Equipment do
 
     inst_struct = inst_module.new(%{})
     # we have to rely on the fact the type is the get_xxxxxx fn
-    get_fn = String.to_atom("get_" <> String.downcase(equipment_class))
+    get_fn = String.to_atom("get_" <> String.downcase(equipment_class) <> "!")
     master_struct = apply(Frobots.Assets, get_fn, [equipment_type])
 
     inst_struct
