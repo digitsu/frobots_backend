@@ -14,6 +14,7 @@ defmodule Frobots.Accounts.User do
     field :migrated_user, :boolean
 
     field :avatar, :string
+    field :sparx, :integer
 
     timestamps()
     has_many :frobots, Frobots.Assets.Frobot
@@ -46,7 +47,7 @@ defmodule Frobots.Accounts.User do
   # in cast list
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :name, :migrated_user, :hashed_password_old, :avatar])
+    |> cast(attrs, [:email, :password, :name, :migrated_user, :hashed_password_old, :avatar, :sparx])
     |> unique_constraint(:name)
     |> validate_email()
     |> validate_password(opts)

@@ -456,4 +456,51 @@ defmodule Frobots.Events do
       }
     }
   end
+
+
+  @doc ~S"""
+  fetch current user ranking details.
+
+  ## Example
+      #iex> get_current_user_ranking_details(%User{})
+      #%{username: "bob", //string
+      #   points: 44, //integer
+      #   xp: 100, //integer
+      #   attempts: 4, //integer
+      #   matches_won: 4, //integer
+      #   matches_participated: 4, //integer
+      #   frobots_count: 4,
+      # avatar: "path/user_avatar.png"
+      #}
+  """
+  def get_current_user_ranking_details(current_user) do
+    send_player_leaderboard_entries()
+      |> Enum.filter(fn x ->
+          x.username == current_user.name
+      end)
+  end
+
+
+  # get current frobot battlelogs
+  def get_frobot_battlelog(frobot_id, _match_status) do
+    q = from m in "matches",
+        join: s in "slots", on: m.id == s.match_id,
+        join: f in "frobots", on: s.frobot_id == f.id,
+        where: m.status in [ "pending", "running"] and s.frobot_id == ^frobot_id,
+        select: %{
+            "match_id" => m.id,
+            "match_name" => m.title,
+            "winner" => "TBD",
+            "xp" => f.xp,
+            "status" => m.status,
+            "time" => m.match_time
+        }
+
+        Repo.all(q)
+  end
+
+
+
+
+
 end

@@ -8,7 +8,8 @@ defmodule Frobots.Assets.Cannon do
              :type,
              :reload_time,
              :rate_of_fire,
-             :magazine_size
+             :magazine_size,
+             :image_path
            ]}
 
   schema "cannons" do
@@ -16,6 +17,7 @@ defmodule Frobots.Assets.Cannon do
     field :reload_time, :integer
     field :rate_of_fire, :integer
     field :magazine_size, :integer
+    field :image_path, :string
     has_many :cannon_inst, Frobots.Assets.CannonInst
     timestamps()
   end
@@ -24,7 +26,8 @@ defmodule Frobots.Assets.Cannon do
     :type,
     :reload_time,
     :rate_of_fire,
-    :magazine_size
+    :magazine_size,
+    :image_path
   ]
 
   @doc false

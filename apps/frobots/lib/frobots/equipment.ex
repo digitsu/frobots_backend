@@ -48,9 +48,16 @@ defmodule Frobots.Equipment do
     module = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_class <> "Inst")
     inst_struct = module.new(%{})
     # we have to rely on the fact the type is the get_ fn! not good.
-    get_fn = String.to_existing_atom("get_" <> String.downcase(equipment_class))
-    class = String.to_existing_atom(String.downcase(equipment_class))
-    master_struct = apply(__MODULE__, get_fn, [equipment_type])
+    get_fn = String.to_atom("get_" <> String.downcase(equipment_class))
+
+    IO.inspect get_fn
+
+    class = String.to_atom(String.downcase(equipment_class))
+    # class = String.to_existing_atom(String.downcase(equipment_class))
+
+    # master_struct = apply(__MODULE__, get_fn, [equipment_type])
+    my_module = String.to_existing_atom("Elixir.Frobots.Assets")
+    master_struct = apply(my_module, get_fn, [equipment_type])
 
     inst_struct
     |> module.changeset(Map.from_struct(master_struct))
@@ -110,12 +117,24 @@ defmodule Frobots.Equipment do
   """
   def equip_part(_equipment, _frobot) do
     # add a frobot association to the part, see how create_equipment uses Ecto.Changeset.put_assoc().
+    # weapons and scanners
+    # maybe break in to equip_scanner or equip_missile
+
+
+    # do we have sufficient slots to install said equipment
+
+
+    # add to cannon schema -- "type  = weapon"
+    # add to scanner schema -- "type  = sensor"
+
+
   end
 
   @doc """
   need to install an xframe onto a frobot. this needs to be done first, because equip_part() cannot be executed before a frobot has its xframe installed.
   """
   def equip_xframe(_xframe, _frobot) do
+    # ensure equiping xframe deequips all previuos attachements
   end
 
   @doc """

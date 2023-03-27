@@ -7,13 +7,15 @@ defmodule Frobots.Assets.Scanner do
            only: [
              :type,
              :max_range,
-             :resolution
+             :resolution,
+             :image_path
            ]}
 
   schema "scanners" do
     field :type, Ecto.Enum, values: ~w(Mk1 Mk2)a
     field :max_range, :integer
     field :resolution, :integer
+    field :image_path, :string
     has_many :scanner_inst, Frobots.Assets.ScannerInst
     timestamps()
   end
@@ -21,7 +23,8 @@ defmodule Frobots.Assets.Scanner do
   @fields [
     :type,
     :max_range,
-    :resolution
+    :resolution,
+    :image_path
   ]
 
   @doc false

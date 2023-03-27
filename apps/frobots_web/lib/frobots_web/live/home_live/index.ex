@@ -1,7 +1,7 @@
 defmodule FrobotsWeb.HomeLive.Index do
   use FrobotsWeb, :live_view
   require Logger
-  alias Frobots.UserStats
+  alias Frobots.{UserStats, GlobalStats}
   alias Frobots.{Accounts, Assets, Events}
 
 
@@ -18,8 +18,9 @@ defmodule FrobotsWeb.HomeLive.Index do
      |> assign(:frobots, Assets.list_user_frobots(current_user))
      |> assign(:featured_frobots, get_featured_frobots())
      |> assign(:current_user_stats, UserStats.get_user_stats(current_user))
+     |> assign(:current_user_ranking_details, Events.get_current_user_ranking_details(current_user))
      |> assign(:blog_posts, get_blog_posts())
-     |> assign(:global_stats, show_global_stats())
+     |> assign(:global_stats, GlobalStats.get_global_stats(current_user))
      |> assign(:frobot_leaderboard_stats, Events.send_leaderboard_entries())
      |> assign(:player_leaderboard_stats, Events.send_player_leaderboard_entries())}
   end
@@ -84,6 +85,7 @@ defmodule FrobotsWeb.HomeLive.Index do
   end
 
   def show_global_stats() do
+    # TODO:  call Frobots.GlobalStats.get_global_stats(current_use_frobots)
     %{
       "players_online" => 250,
       "matches_in_progress" => 65,

@@ -3,6 +3,18 @@ defmodule Frobots.UserStats do
 
   alias Frobots.{Accounts, Events, Assets}
 
+   @doc ~S"""
+    get current user stats.
+
+  ## Examples
+      #iex> get_user_stats((%Accounts.User{})
+      #%Frobots.UserStats{
+      # frobots_count: 4,
+      # total_xp: 6,
+      # matches_participated: 17,
+      # upcoming_matches: 0
+      #}
+  """
   def get_user_stats(%Accounts.User{} = user) do
     user_frobots = Assets.list_user_frobots(user)
 
