@@ -18,14 +18,48 @@ defmodule Frobots.Equipment do
   ## Examples
 
       # simple case to create a equipment (and assign to a user)
+      iex> alias Frobots.Equipment
       iex> alias Frobots.Assets
       iex> alias Frobots.AccountsFixtures, as: Fixtures
       iex> user_email = "dummy@example.com"
       iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: user_email}),
-      ...> {:ok, %Assets.CannonInst{} = cn} <- Assets.create_equipment( owner1, "Cannon", :Mk1),
+      ...> {:ok, %Assets.CannonInst{} = cn} <- Equipment.create_equipment( owner1, "cannon", "Mk1"),
       ...> do: cn.user.email == user_email
       true
 
+      # we can also pass atoms for the equipment_class
+      iex> alias Frobots.Equipment
+      iex> alias Frobots.Assets
+      iex> alias Frobots.AccountsFixtures, as: Fixtures
+      iex> user_email = "dummy@example.com"
+      iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: user_email}),
+      ...> {:ok, %Assets.CannonInst{} = cn} <- Equipment.create_equipment( owner1, :cannon, "Mk1"),
+      ...> do: cn.user.email == user_email
+      true
+
+      # we can also pass atoms for the equipment_type
+      iex> alias Frobots.Equipment
+      iex> alias Frobots.Assets
+      iex> alias Frobots.AccountsFixtures, as: Fixtures
+      iex> user_email = "dummy@example.com"
+      iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: user_email}),
+      ...> {:ok, %Assets.CannonInst{} = cn} <- Equipment.create_equipment( owner1, :cannon, :Mk1),
+      ...> do: cn.user.email == user_email
+      true
+
+      # but be careful as the equipment_type is CASE SENSITIVE! as it maps to an Enum of atoms
+      iex> alias Frobots.Equipment
+      iex> alias Frobots.Assets
+      iex> alias Frobots.AccountsFixtures, as: Fixtures
+      iex> user_email = "dummy@example.com"
+      iex> try do
+      ...>   with {:ok, owner1} <- Fixtures.user_fixture(%{email: user_email}),
+      ...>        {:ok, %Assets.CannonInst{} = cn} <- Equipment.create_equipment( owner1, :cannon, "mk1"),
+      ...>        do: cn.user.email == user_email
+      ...> rescue
+      ...>   Ecto.Query.CastError -> "equipment_type not found"
+      ...> end
+      "equipment_type not found"
 
   ## TERMINOLOGY
   Some terms:
@@ -43,19 +77,22 @@ defmodule Frobots.Equipment do
 
     USER driven APIs should only be able to create instances of the leaf level types: "Tank Mk1", "Cannon Mk1", "Scanner Mk2", etc.
   """
+  def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) when is_atom(equipment_class) do
+    create_equipment(user, Atom.to_string(equipment_class), equipment_type)
+  end
 
   def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) do
-    module = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_class <> "Inst")
-    inst_struct = module.new(%{})
-    # we have to rely on the fact the type is the get_ fn! not good.
-    get_fn = String.to_existing_atom("get_" <> String.downcase(equipment_class))
-    class = String.to_existing_atom(String.downcase(equipment_class))
-    master_struct = apply(__MODULE__, get_fn, [equipment_type])
+    inst_module = String.to_existing_atom("Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst")
+    inst_struct = inst_module.new(%{})
+    # we have to rely on the fact the type is the get_ fn!
+#    get_fn = String.to_atom("get_" <> String.downcase(equipment_class) <> "!")
+    get_fn = String.to_atom("get_" <> String.downcase(equipment_class) )
+    master_struct = apply(Frobots.Assets, get_fn, [equipment_type])
 
     inst_struct
-    |> module.changeset(Map.from_struct(master_struct))
+    |> inst_module.changeset(Map.from_struct(master_struct))
     |> Ecto.Changeset.put_assoc(:user, user)
-    |> Ecto.Changeset.put_assoc(class, master_struct)
+    |> Ecto.Changeset.put_assoc(String.to_existing_atom(String.downcase(equipment_class)), master_struct)
     |> Repo.insert()
   end
 
