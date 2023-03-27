@@ -1,6 +1,7 @@
 defmodule Frobots.AssetsTest do
   use Frobots.DataCase, async: true
   doctest Frobots.Assets
+  doctest Frobots.Equipment
 
   alias Frobots.Assets
 
@@ -122,7 +123,7 @@ defmodule Frobots.AssetsTest do
     end
 
     test "get_missiles fetches missiles rig data" do
-      {:ok, missile} = Assets.create_missile(@missile)
+      {:ok, _missile} = Assets.create_missile(@missile)
       missiles = Assets.get_missiles()
       assert Enum.count(missiles) > 0
 
@@ -131,7 +132,7 @@ defmodule Frobots.AssetsTest do
     end
 
     test "get_cannons fetches cannons rig data" do
-      {:ok, cannon} = Assets.create_cannon(@cannon)
+      {:ok, _cannon} = Assets.create_cannon(@cannon)
       cannons = Assets.get_cannons()
       assert Enum.count(cannons) > 0
 
@@ -140,7 +141,7 @@ defmodule Frobots.AssetsTest do
     end
 
     test "get_scanners fetches scanners rig data" do
-      {:ok, scanner} = Assets.create_scanner(@scanner)
+      {:ok, _scanner} = Assets.create_scanner(@scanner)
       scanners = Assets.get_scanners()
       assert Enum.count(scanners) > 0
 
@@ -149,7 +150,7 @@ defmodule Frobots.AssetsTest do
     end
 
     test "get_xframes fetches xframes rig data" do
-      {:ok, xframe} = Assets.create_xframe(@xframe)
+      {:ok, _xframe} = Assets.create_xframe(@xframe)
       xframes = Assets.get_xframes()
       assert Enum.count(xframes) > 0
 

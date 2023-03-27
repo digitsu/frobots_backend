@@ -3,7 +3,7 @@ defmodule Frobots.Repo.Migrations.RenameUsersToUsersOld do
 
   def up do
     # drop the indexes
-    drop index("users", [:username])
+    drop_if_exists index("users", [:username])
     drop_if_exists index("frobots", [:user_id])
     # rename
     rename table(:users), to: table(:users_old)
