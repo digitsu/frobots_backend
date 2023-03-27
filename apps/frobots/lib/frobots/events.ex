@@ -10,7 +10,6 @@ defmodule Frobots.Events do
   alias Frobots.Events.Battlelog
   alias Frobots.Events.Match
   alias Frobots.{Assets, Accounts}
-  alias Frobots.Accounts.User
   alias Frobots.Agents.WinnersBucket
 
   @topic inspect(__MODULE__)
@@ -141,25 +140,6 @@ defmodule Frobots.Events do
 
   defp _create_match(attrs) do
     attrs =
-      if attrs["slots"] && is_nil(attrs["match_template"]) do
-        frobot_ids =
-          attrs["slots"]
-          |> Enum.map(fn slot -> slot["frobot_id"] end)
-          |> Enum.reject(&is_nil/1)
-
-        attrs
-        |> Map.merge(
-          match_template(
-            frobot_ids,
-            attrs["max_player_frobot"],
-            attrs["min_player_frobot"]
-          )
-        )
-      else
-        attrs
-      end
-
-    attrs =
       attrs
       |> parse_frobots_to_ids()
       |> convert_map()
@@ -187,37 +167,7 @@ defmodule Frobots.Events do
     Match |> preload(^preload) |> order_by(^order_by) |> Repo.all(params)
   end
 
-  def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
-    query =
-      Match
-      |> join(:left, [match], u in User, on: match.user_id == u.id)
-
-    query =
-      case Keyword.get(params, :search_pattern, nil) do
-        nil ->
-          query
-
-        search_pattern ->
-          pattern = "%" <> search_pattern <> "%"
-
-          query
-          |> where(
-            [match, user],
-            ilike(user.name, ^pattern) or ilike(match.title, ^pattern) or
-              fragment("CAST( ? AS TEXT) LIKE ?", match.id, ^pattern)
-          )
-      end
-
-    query =
-      case Keyword.get(params, :match_status, nil) do
-        nil ->
-          query
-
-        match_status ->
-          query
-          |> where([match, user], match.status == ^match_status)
-      end
-
+  def list_paginated_matches(query, page_config, preload, order_by) do
     query
     |> preload(^preload)
     |> order_by(^order_by)
@@ -438,18 +388,4 @@ defmodule Frobots.Events do
   end
 
   defp broadcast_change(error, _event), do: error
-
-  defp match_template(frobot_ids, max_frobots, min_frobots) do
-    %{
-      "frobot_ids" => frobot_ids,
-      "match_template" => %{
-        "entry_fee" => 0,
-        "commission_rate" => 0,
-        "match_type" => "team",
-        "payout_map" => [100],
-        "max_frobots" => max_frobots,
-        "min_frobots" => min_frobots
-      }
-    }
-  end
 end

@@ -2,7 +2,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
   use FrobotsWeb, :live_view
 
   alias FrobotsWeb.Router.Helpers, as: Routes
-  alias Frobots.Events
+  alias Frobots.{Api, Events}
   alias Frobots.Accounts
 
   @impl Phoenix.LiveView
@@ -28,20 +28,18 @@ defmodule FrobotsWeb.ArenaLive.Index do
       page_size: page_size,
       total_entries: total_entries,
       total_pages: total_pages
-    } = Events.list_paginated_matches([], page_config, [:user], desc: :inserted_at)
+    } = Api.list_paginated_matches([], page_config, [:user], desc: :inserted_at)
 
     %{entries: upcoming_matches} =
-      Events.list_paginated_matches([match_status: :pending], page_config, [:user],
+      Api.list_paginated_matches([match_status: :pending], page_config, [:user],
         desc: :inserted_at
       )
 
     %{entries: completed_matches} =
-      Events.list_paginated_matches([match_status: :done], page_config, [:user],
-        desc: :inserted_at
-      )
+      Api.list_paginated_matches([match_status: :done], page_config, [:user], desc: :inserted_at)
 
     %{entries: live_matches} =
-      Events.list_paginated_matches([match_status: :running], page_config, [:user],
+      Api.list_paginated_matches([match_status: :running], page_config, [:user],
         desc: :inserted_at
       )
 
@@ -57,9 +55,9 @@ defmodule FrobotsWeb.ArenaLive.Index do
      |> assign(:page_size, page_size)
      |> assign(:total_entries, total_entries)
      |> assign(:total_pages, total_pages)
-     |> assign(:live_matches_count, Events.count_matches_by_status(:running))
-     |> assign(:completed_matches_count, Events.count_matches_by_status(:done))
-     |> assign(:upcoming_matches_count, Events.count_matches_by_status(:pending))}
+     |> assign(:live_matches_count, Api.count_matches_by_status(:running))
+     |> assign(:completed_matches_count, Api.count_matches_by_status(:done))
+     |> assign(:upcoming_matches_count, Api.count_matches_by_status(:pending))}
   end
 
   # %{
@@ -94,7 +92,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
       match_details
       |> Map.put_new("user_id", socket.assigns.current_user.id)
 
-    case Frobots.Api.create_match(match_details) do
+    case Api.create_match(match_details) do
       {:ok, match} ->
         {:noreply,
          push_redirect(socket, to: Routes.arena_lobby_index_path(socket, :index, match.id))}
@@ -137,7 +135,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
       page_size: page_size,
       total_entries: total_entries,
       total_pages: total_pages
-    } = Events.list_paginated_matches(filter_params, page_config, [:user], desc: :inserted_at)
+    } = Api.list_paginated_matches(filter_params, page_config, [:user], desc: :inserted_at)
 
     socket =
       case params["match_status"] do
