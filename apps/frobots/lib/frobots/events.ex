@@ -10,7 +10,6 @@ defmodule Frobots.Events do
   alias Frobots.Events.Battlelog
   alias Frobots.Events.Match
   alias Frobots.{Assets, Accounts}
-  alias Frobots.Accounts.User
   alias Frobots.Agents.WinnersBucket
 
   @topic inspect(__MODULE__)
