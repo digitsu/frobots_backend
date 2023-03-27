@@ -43,7 +43,7 @@ defmodule Frobots do
   # use this to check hardpoints on the xframe
   @equipment_hardpoint_map %{
     cannon: :weapon_hardpoints,
-    scanner: :sensor_hardpoints,
+    scanner: :sensor_hardpoints
   }
 
   @equipment_classes ~w(xframe cannon scanner missile)a
@@ -55,7 +55,6 @@ defmodule Frobots do
   def class_hardpoint_map() do
     @equipment_hardpoint_map
   end
-
 
   def frobot_paths() do
     @frobot_paths

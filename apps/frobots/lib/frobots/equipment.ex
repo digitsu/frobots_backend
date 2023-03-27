@@ -77,22 +77,29 @@ defmodule Frobots.Equipment do
 
     USER driven APIs should only be able to create instances of the leaf level types: "Tank Mk1", "Cannon Mk1", "Scanner Mk2", etc.
   """
-  def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) when is_atom(equipment_class) do
+  def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type)
+      when is_atom(equipment_class) do
     create_equipment(user, Atom.to_string(equipment_class), equipment_type)
   end
 
   def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) do
-    inst_module = String.to_existing_atom("Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst")
+    inst_module =
+      String.to_existing_atom(
+        "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
+      )
+
     inst_struct = inst_module.new(%{})
-    # we have to rely on the fact the type is the get_ fn!
-#    get_fn = String.to_atom("get_" <> String.downcase(equipment_class) <> "!")
-    get_fn = String.to_atom("get_" <> String.downcase(equipment_class) )
+    # we have to rely on the fact the type is the get_xxxxxx fn
+    get_fn = String.to_atom("get_" <> String.downcase(equipment_class))
     master_struct = apply(Frobots.Assets, get_fn, [equipment_type])
 
     inst_struct
     |> inst_module.changeset(Map.from_struct(master_struct))
     |> Ecto.Changeset.put_assoc(:user, user)
-    |> Ecto.Changeset.put_assoc(String.to_existing_atom(String.downcase(equipment_class)), master_struct)
+    |> Ecto.Changeset.put_assoc(
+      String.to_existing_atom(String.downcase(equipment_class)),
+      master_struct
+    )
     |> Repo.insert()
   end
 
