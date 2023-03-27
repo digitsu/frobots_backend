@@ -11,6 +11,7 @@ const BlankBlocklyCode =
 
 export default (props: any) => {
   const { frobot, updateFrobotCode } = props
+  const [isEditable, enableEdit] = useState(false)
   const [luaCode, setLuaCode] = useState(frobot.brain_code || '')
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState(
@@ -24,9 +25,10 @@ export default (props: any) => {
     }
   }
 
-  const [tabIndex, setTabIndex] = React.useState(luaCode ? 1 : 0)
+  const [tabIndex, setTabIndex] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    enableEdit(true)
     setTabIndex(newValue)
   }
 
@@ -49,17 +51,15 @@ export default (props: any) => {
       const code = luaGenerator.workspaceToCode(workspace)
       if (code != blocklyCode) {
         setBlocklyCode(code)
+
+        if (isEditable) {
+          setLuaCode(code)
+        }
       }
     } catch (err) {
       console.log(err)
     }
   }
-
-  useEffect(() => {
-    if (tabIndex === 0) {
-      setLuaCode(blocklyCode)
-    }
-  }, [blocklyCode])
 
   const saveConfig = () => {
     if (!luaCode || luaCode.trim() === '') {
