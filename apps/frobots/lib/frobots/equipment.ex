@@ -21,7 +21,7 @@ defmodule Frobots.Equipment do
       iex> alias Frobots.Equipment
       iex> alias Frobots.Assets
       iex> alias Frobots.AccountsFixtures, as: Fixtures
-      iex> user_email = "dummy@example.com"
+      iex> user_email = "dummy1@example.com"
       iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: user_email}),
       ...> {:ok, %Assets.CannonInst{} = cn} <- Equipment.create_equipment( owner1, "cannon", "Mk1"),
       ...> do: cn.user.email == user_email
@@ -31,7 +31,7 @@ defmodule Frobots.Equipment do
       iex> alias Frobots.Equipment
       iex> alias Frobots.Assets
       iex> alias Frobots.AccountsFixtures, as: Fixtures
-      iex> user_email = "dummy@example.com"
+      iex> user_email = "dummy2@example.com"
       iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: user_email}),
       ...> {:ok, %Assets.CannonInst{} = cn} <- Equipment.create_equipment( owner1, :cannon, "Mk1"),
       ...> do: cn.user.email == user_email
@@ -41,7 +41,7 @@ defmodule Frobots.Equipment do
       iex> alias Frobots.Equipment
       iex> alias Frobots.Assets
       iex> alias Frobots.AccountsFixtures, as: Fixtures
-      iex> user_email = "dummy@example.com"
+      iex> user_email = "dummy3@example.com"
       iex> with {:ok, owner1} <- Fixtures.user_fixture(%{email: user_email}),
       ...> {:ok, %Assets.CannonInst{} = cn} <- Equipment.create_equipment( owner1, :cannon, :Mk1),
       ...> do: cn.user.email == user_email
@@ -51,7 +51,7 @@ defmodule Frobots.Equipment do
       iex> alias Frobots.Equipment
       iex> alias Frobots.Assets
       iex> alias Frobots.AccountsFixtures, as: Fixtures
-      iex> user_email = "dummy@example.com"
+      iex> user_email = "dummy4@example.com"
       iex> try do
       ...>   with {:ok, owner1} <- Fixtures.user_fixture(%{email: user_email}),
       ...>        {:ok, %Assets.CannonInst{} = cn} <- Equipment.create_equipment( owner1, :cannon, "mk1"),
