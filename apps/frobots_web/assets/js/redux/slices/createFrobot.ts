@@ -6,6 +6,7 @@ const initialState = {
   frobotName: '',
   bio: '',
   brainCode: {},
+  blocklyCode: '',
 }
 
 const createFrobotSlice = createSlice({
@@ -29,6 +30,9 @@ const createFrobotSlice = createSlice({
     },
     setBrainCode: (state, action) => {
       state.brainCode = action.payload
+    },
+    setBlocklyCode: (state, action) => {
+      state.blocklyCode = action.payload
     },
   },
 })

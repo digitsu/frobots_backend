@@ -14,7 +14,9 @@ export default {
       }
     )
   },
-
+  createFrobot(frobot_params) {
+    this.pushEventTo(this.el, 'react.create_frobot', frobot_params)
+  },
   destroyed() {
     if (!this.unmountComponent) {
       console.error('Component unmounted')
@@ -26,6 +28,7 @@ export default {
   opts(createFrobotDetails) {
     return {
       name: 'CreateFrobot',
+      createFrobot: this.createFrobot.bind(this),
       ...createFrobotDetails,
     }
   },
