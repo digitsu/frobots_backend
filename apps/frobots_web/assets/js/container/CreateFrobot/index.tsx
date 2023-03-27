@@ -6,14 +6,19 @@ import BasicDetailsForm from './BasicDetailsForm'
 import EditBrainCode from './EditBrainCode'
 import PreviewFrobot from './PreviewFrobot'
 export default (props: any) => {
-  const { templates } = props
+  const { templates, createFrobot } = props
   const dispatch = useDispatch()
-  const { activeStep } = useSelector((store: any) => store.createFrobot)
+  const { activeStep, brainCode } = useSelector(
+    (store: any) => store.createFrobot
+  )
   const { incrementStep, decrementStep } = createFrobotActions
   const steps = [
     { label: 'Step 1', component: <BasicDetailsForm templates={templates} /> },
     { label: 'Step 2', component: <EditBrainCode /> },
-    { label: 'Step 3', component: <PreviewFrobot /> },
+    {
+      label: 'Step 3',
+      component: <PreviewFrobot createFrobot={createFrobot} />,
+    },
   ]
 
   const CustomStepIcon = ({ active, completed, icon }) => {
@@ -85,6 +90,7 @@ export default (props: any) => {
           </Box>
           <Box>
             <Button
+              disabled={activeStep === 1 && brainCode?.brain_code.length === 0}
               onClick={() => dispatch(incrementStep())}
               variant="contained"
               sx={{

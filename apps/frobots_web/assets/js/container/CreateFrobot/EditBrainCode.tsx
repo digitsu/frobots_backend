@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Box, Tab, Tabs, Button } from '@mui/material'
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
 import LuaEditor from '../Garage/LuaEditor'
+import { createFrobotActions } from '../../redux/slices/createFrobot'
 
 export default () => {
   const { brainCode } = useSelector((store: any) => store.createFrobot)
   const [luaCode, setLuaCode] = useState('')
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState('')
-
+  const { setBlocklyCode: setBlocklyCodeHandler, setBrainCode } =
+    createFrobotActions
+  const dispatch = useDispatch()
   function a11yProps(index: number) {
     return {
       id: `simple-tab-${index}`,
@@ -56,7 +59,7 @@ export default () => {
 
   function onEditorChange(code) {
     try {
-      console.log(code)
+      dispatch(setBrainCode({ ...brainCode, brain_code: code }))
     } catch (err) {
       console.log(err)
     }
@@ -75,6 +78,10 @@ export default () => {
     a.click()
     document.body.removeChild(a)
   }
+
+  useEffect(() => {
+    dispatch(setBlocklyCodeHandler(xmlText))
+  }, [xmlText])
   return (
     <Box mt={5}>
       <>

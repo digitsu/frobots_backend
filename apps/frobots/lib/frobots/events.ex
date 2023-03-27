@@ -12,6 +12,13 @@ defmodule Frobots.Events do
   alias Frobots.{Assets, Accounts}
   alias Frobots.Agents.WinnersBucket
 
+  @topic inspect(__MODULE__)
+  @pubsub_server Frobots.PubSub
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(@pubsub_server, @topic)
+  end
+
   defmodule FrobotLeaderboardStats do
     defstruct frobot: "",
               username: "",
@@ -55,18 +62,16 @@ defmodule Frobots.Events do
   end
 
   defp get_valid_frobots(id) when is_integer(id) do
-    case id do
-      # throw(~s/Invalid frobot name #{name}/)
+    case Repo.get_by(Frobots.Assets.Frobot, id: id) do
       nil -> nil
-      id -> Repo.get_by(Frobots.Assets.Frobot, id: id)
+      frobot -> frobot
     end
   end
 
   defp get_valid_frobots(name) when is_binary(name) do
-    case name do
-      # throw(~s/Invalid frobot name #{name}/)
+    case Repo.get_by(Frobots.Assets.Frobot, name: name) do
       nil -> nil
-      name -> Repo.get_by(Frobots.Assets.Frobot, name: name)
+      frobot -> frobot
     end
   end
 
@@ -120,6 +125,12 @@ defmodule Frobots.Events do
           |> Enum.reject(&(&1 == nil))
       end
 
+    frobot_ids =
+      case Map.get(attrs, "frobot_ids", nil) do
+        nil -> frobot_ids
+        ids when is_list(ids) -> ids
+      end
+
     Map.put(attrs, "frobots", frobot_ids)
   end
 
@@ -138,12 +149,8 @@ defmodule Frobots.Events do
     |> Match.changeset(attrs)
   end
 
-  def create_match!(attrs \\ %{}) do
-    _create_match(attrs) |> Repo.insert!()
-  end
-
   def create_match(attrs \\ %{}) do
-    _create_match(attrs) |> Repo.insert()
+    _create_match(attrs) |> Repo.insert() |> broadcast_change([:match, :created])
   end
 
   def change_match(%Match{} = match, attrs \\ %{}) do
@@ -156,8 +163,23 @@ defmodule Frobots.Events do
     Repo.get_by(Match, params)
   end
 
-  def list_match_by(params, preload \\ []) do
-    Match |> preload(^preload) |> Repo.all(params)
+  def list_match_by(params, preload \\ [], order_by \\ []) do
+    Match |> preload(^preload) |> order_by(^order_by) |> Repo.all(params)
+  end
+
+  def list_paginated_matches(query, page_config, preload, order_by) do
+    query
+    |> preload(^preload)
+    |> order_by(^order_by)
+    |> Repo.paginate(page_config)
+  end
+
+  def count_matches_by_status(status) do
+    Repo.one(
+      from m in Match,
+        where: m.status == ^status,
+        select: count(m.id)
+    )
   end
 
   def get_battlelog_by(params) do
@@ -359,4 +381,11 @@ defmodule Frobots.Events do
     |> Enum.map_reduce({nil, 0, 0}, &do_ranking/2)
     |> elem(0)
   end
+
+  defp broadcast_change({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(@pubsub_server, @topic, {__MODULE__, event, result})
+    {:ok, result}
+  end
+
+  defp broadcast_change(error, _event), do: error
 end

@@ -24,6 +24,7 @@ const notifications = [
     details: ' 11:45:00 28th February 2023 ',
   },
 ]
+
 export default () => {
   return (
     <Card sx={{ p: 3, pb: 0 }}>
@@ -37,8 +38,8 @@ export default () => {
         maxHeight={400}
         overflow={'scroll'}
       >
-        {notifications.map((playerDetails) => (
-          <Box>
+        {notifications.map((playerDetails, index) => (
+          <Box key={index}>
             <Typography variant="subtitle2" sx={{ pt: 0 }}>
               {playerDetails.name}
             </Typography>

@@ -32,12 +32,40 @@ defmodule Frobots do
     {"Dummy", :dummy}
   ]
 
+  # PUT ALL CONSTANT DATA AS ALIASES HERE
+  @default_frobot_loadout [
+    %{equipment_class: "xframe", equipment_type: "Tank Mk1"},
+    %{equipment_class: "cannon", equipment_type: "Mk1"},
+    %{equipment_class: "scanner", equipment_type: "Mk1"},
+    %{equipment_class: "missile", equipment_type: "Mk1"}
+  ]
+
+  # use this to check hardpoints on the xframe
+  @equipment_hardpoint_map %{
+    cannon: :weapon_hardpoints,
+    scanner: :sensor_hardpoints
+  }
+
+  @equipment_classes ~w(xframe cannon scanner missile)a
+
+  def equipment_classes() do
+    @equipment_classes
+  end
+
+  def class_hardpoint_map() do
+    @equipment_hardpoint_map
+  end
+
   def frobot_paths() do
     @frobot_paths
   end
 
   def frobot_types() do
     @frobot_types
+  end
+
+  def default_frobot_loadout() do
+    @default_frobot_loadout
   end
 
   def update_template_frobot(type) when is_binary(type) do

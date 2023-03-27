@@ -13,8 +13,9 @@ type GlobalStatsProps = {
   globalStats: GlobalStats
 }
 
-export default (props) => {
-  const { globalStats }: GlobalStatsProps = props
+export default (props: GlobalStatsProps) => {
+  const { globalStats } = props
+
   return (
     <Card>
       <Box px={2} py={2} maxHeight={240}>

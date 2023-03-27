@@ -47,6 +47,7 @@ defmodule Frobots.MixProject do
       {:swoosh, "~> 1.3"},
       {:hackney, "~> 1.18"},
       {:bsv, "~> 2.1.0"},
+      {:scrivener_ecto, "~> 2.0"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:sweet_xml, "~> 0.6"},
@@ -64,11 +65,16 @@ defmodule Frobots.MixProject do
         # "cmd source ../../.env",
         "ecto.create",
         "ecto.migrate",
-        "run priv/repo/seeds/seeds.exs",
-        "run priv/repo/seeds/seed_equipment.exs"
+        "run apps/frobots/priv/repo/seeds/seeds.exs",
+        "run apps/frobots/priv/repo/seeds/seed_equipment.exs"
       ],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      test: [
+        "ecto.create --quiet",
+        "ecto.migrate --quiet",
+        "run apps/frobots/priv/repo/seeds/seed_equipment.exs",
+        "test"
+      ],
       testenv: ["cmd source ../../.env", "cmd echo $TEST_ENV"]
     ]
   end

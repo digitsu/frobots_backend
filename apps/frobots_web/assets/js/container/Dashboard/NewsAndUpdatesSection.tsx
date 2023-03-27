@@ -1,37 +1,34 @@
-import { Grid, Box, Card, Typography } from '@mui/material'
 import React from 'react'
+import { Grid, Box, Typography } from '@mui/material'
 import ViewMore from '../../components/generic/Button/ViewMore'
-const championShipInfo = [
-  {
-    src: '/images/championship-mock-1.png',
-    label: 'Asian Champions Announced',
-  },
-  {
-    src: '/images/championship-mock-2.png',
-    label: 'Best performing Brain Codes this month',
-  },
-  {
-    src: '/images/championship-mock-3.png',
-    label: 'Europe Championship date Announced',
-  },
-  {
-    src: '/images/championship-mock-4.png',
-    label: 'Earn 2x XP with this match',
-  },
-]
-export default () => {
+
+type BlogPost = {
+  id: string
+  title: string
+  html: string
+  feature_image: string
+  url: string
+}
+
+type NewsAndUpdatesProps = {
+  blogPosts: BlogPost[]
+}
+
+export default (props: NewsAndUpdatesProps) => {
+  const { blogPosts } = props
+
   return (
     <Box my={4}>
       <Grid container spacing={3}>
-        {championShipInfo.map((featuredFrobot) => (
-          <Grid item lg={3} md={4} sm={6} xs={12}>
+        {blogPosts.map((post: BlogPost, index: number) => (
+          <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
             <Box position={'relative'}>
               <Box width={'100%'} m={'auto'}>
                 <Box
                   borderRadius={2}
                   component={'img'}
                   width={'100%'}
-                  src={featuredFrobot.src}
+                  src={post.feature_image}
                 />
                 <Box
                   position={'absolute'}
@@ -65,12 +62,12 @@ export default () => {
                     <Box>
                       {' '}
                       <Typography variant="h6" fontWeight={'bold'}>
-                        {featuredFrobot.label}
+                        {post.title}
                       </Typography>
                     </Box>
                     <Box textAlign={'right'}>
                       {' '}
-                      <ViewMore label={'Learn More'} />
+                      <ViewMore label={'Learn More'} link={post.url} />
                     </Box>
                   </Box>
                 </Box>

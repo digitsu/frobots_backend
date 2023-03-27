@@ -122,20 +122,22 @@ export const MatchListSearch: FC<MatchListSearchProps> = (props) => {
           </Tabs>
         </Box>
         <Box>
-          <Button
-            sx={{
-              textTransform: 'capitalize',
-              backgroundColor: 'transparent',
-              color: '#00AB55',
-              borderColor: '#00AB55',
-              '&:hover': {
-                borderColor: '#13D273',
-              },
-            }}
-            variant="outlined"
-          >
-            Create Match
-          </Button>
+          <a href={'/arena/create'}>
+            <Button
+              sx={{
+                textTransform: 'capitalize',
+                backgroundColor: 'transparent',
+                color: '#00AB55',
+                borderColor: '#00AB55',
+                '&:hover': {
+                  borderColor: '#13D273',
+                },
+              }}
+              variant="outlined"
+            >
+              Create Match
+            </Button>
+          </a>
         </Box>
       </Box>
 
