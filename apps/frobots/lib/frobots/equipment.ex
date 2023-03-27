@@ -82,6 +82,11 @@ defmodule Frobots.Equipment do
     create_equipment(user, Atom.to_string(equipment_class), equipment_type)
   end
 
+  def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type)
+      when is_atom(equipment_type) do
+    create_equipment(user, equipment_class, Atom.to_string(equipment_type))
+  end
+
   def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) do
     inst_module =
       String.to_existing_atom(
