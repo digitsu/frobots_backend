@@ -13,9 +13,11 @@ defmodule FrobotsWeb.HomeLive.Index do
     # this data should really come from db
     Events.prep_leaderboard_entries()
 
+
     {:ok,
      socket
      |> assign(:frobots, Assets.list_user_frobots(current_user))
+     |> assign(:current_user, current_user)
      |> assign(:featured_frobots, get_featured_frobots())
      |> assign(:current_user_stats, UserStats.get_user_stats(current_user))
      |> assign(:current_user_ranking_details, Events.get_current_user_ranking_details(current_user))
@@ -84,23 +86,26 @@ defmodule FrobotsWeb.HomeLive.Index do
     end
   end
 
-  def show_global_stats() do
-    # TODO:  call Frobots.GlobalStats.get_global_stats(current_use_frobots)
-    %{
-      "players_online" => 250,
-      "matches_in_progress" => 65,
-      "players_registered" => 1500,
-      "matches_completed" => 376888
-    }
-  end
+  # def show_global_stats() do
+  #   # TODO:  call Frobots.GlobalStats.get_global_stats(current_use_frobots)
+  #   %{
+  #     "players_online" => 250,
+  #     "matches_in_progress" => 65,
+  #     "players_registered" => 1500,
+  #     "matches_completed" => 376888
+  #   }
+  # end
 
   @impl true
   def handle_event("react.fetch_dashboard_details", _params, socket) do
     currentUserStatus = socket.assigns.current_user_stats
+    {:ok, global_stats} = socket.assigns.global_stats
+                  |> Map.from_struct()
+                  |> Jason.encode()
 
     {:noreply,
      push_event(socket, "react.return_dashboard_details", %{
-       "globalStats" => show_global_stats(),
+       "globalStats" => global_stats,
        "blogPosts" => socket.assigns.blog_posts,
        "featuredFrobots" => socket.assigns.featured_frobots,
        "playerStats" => %{

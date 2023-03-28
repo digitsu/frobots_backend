@@ -15,7 +15,6 @@ defmodule Frobots.Assets.Xframe do
              :max_health,
              :max_throttle,
              :accel_speed_mss,
-             :image_path
            ]}
 
   schema "xframes" do
@@ -29,7 +28,6 @@ defmodule Frobots.Assets.Xframe do
     field(:max_health, :integer)
     field(:max_throttle, :integer)
     field(:accel_speed_mss, :integer)
-    field(:image_path, :string)
     has_many(:xframe_inst, Frobots.Assets.XframeInst)
     timestamps()
   end
@@ -44,7 +42,6 @@ defmodule Frobots.Assets.Xframe do
     :max_health,
     :max_throttle,
     :accel_speed_mss,
-    :image_path
   ]
 
   @doc false

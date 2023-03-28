@@ -10,8 +10,7 @@ defmodule Frobots.Assets.Missile do
              :damage_near,
              :damage_far,
              :speed,
-             :range,
-             :image_path
+             :range
            ]}
 
   schema "missiles" do
@@ -21,7 +20,6 @@ defmodule Frobots.Assets.Missile do
     field(:damage_far, {:array, :integer})
     field(:speed, :integer)
     field(:range, :integer)
-    field(:image_path, :string)
     has_many(:missile_inst, Frobots.Assets.MissileInst)
     timestamps()
   end
@@ -32,8 +30,7 @@ defmodule Frobots.Assets.Missile do
     :damage_near,
     :damage_far,
     :speed,
-    :range,
-    :image_path
+    :range
   ]
 
   @doc false

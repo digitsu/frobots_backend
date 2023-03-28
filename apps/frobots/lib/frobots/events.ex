@@ -21,6 +21,7 @@ defmodule Frobots.Events do
   end
 
   defmodule FrobotLeaderboardStats do
+    @derive {Jason.Encoder, only: [:frobot, :username, :points, :xp, :attempts, :matches_won, :matches_participated, :avatar]}
     defstruct frobot: "",
               username: "",
               points: 0,
@@ -498,9 +499,4 @@ defmodule Frobots.Events do
 
         Repo.all(q)
   end
-
-
-
-
-
 end
