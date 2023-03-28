@@ -3,7 +3,7 @@ defmodule Frobots.Repo.Migrations.AddDefaultUserSparks do
 
   def change do
     alter table(:users) do
-      add :sparks, :integer, default: 6
+      add :sparks, :integer
     end
   end
 end
