@@ -8,7 +8,7 @@ defmodule Frobots.Events do
   alias Frobots.Repo
 
   alias Frobots.Events.Battlelog
-  alias Frobots.Events.Match
+  alias Frobots.Events.{Match, Slot}
   alias Frobots.{Assets, Accounts}
   alias Frobots.Agents.WinnersBucket
 
@@ -157,6 +157,7 @@ defmodule Frobots.Events do
     Repo.preload(match, :battlelog)
     |> Match.changeset(attrs)
     |> Repo.update()
+    |> broadcast_change([:match, :updated])
   end
 
   def get_match_by(params) do
@@ -180,6 +181,17 @@ defmodule Frobots.Events do
         where: m.status == ^status,
         select: count(m.id)
     )
+  end
+
+  def update_slot(%Slot{} = slot, attrs \\ %{}) do
+    slot
+    |> Slot.update_changeset(attrs)
+    |> Repo.update()
+    |> broadcast_change([:slot, :updated])
+  end
+
+  def get_slot_by(params) do
+    Repo.get_by(Slot, params)
   end
 
   def get_battlelog_by(params) do
