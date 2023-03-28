@@ -66,6 +66,9 @@ defmodule Frobots.Api do
 
   def count_matches_by_status(status), do: Events.count_matches_by_status(status)
 
+  def get_match_details_by_id(match_id),
+    do: Events.list_match_by([id: match_id], slots: [frobot: :user]) |> List.first()
+
   def join_match(_user, _match) do
   end
 

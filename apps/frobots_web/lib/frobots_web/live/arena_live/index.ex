@@ -256,4 +256,6 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     {:noreply, socket}
   end
+
+  def handle_info(_, socket), do: {:noreply, socket}
 end
