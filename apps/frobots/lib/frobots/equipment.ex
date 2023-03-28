@@ -4,6 +4,8 @@ defmodule Frobots.Equipment do
   alias Frobots.Assets.{XframeInst, MissileInst, ScannerInst, CannonInst}
   alias Frobots.Accounts
 
+  alias Frobots.Assets
+
   @doc ~S"""
   EQUIPMENT INTERFACE APIs
   create an instance of an equipment for the frobot.
@@ -87,6 +89,8 @@ defmodule Frobots.Equipment do
     create_equipment(user, equipment_class, Atom.to_string(equipment_type))
   end
 
+
+
   def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) do
     inst_module =
       String.to_existing_atom(
@@ -97,6 +101,7 @@ defmodule Frobots.Equipment do
     # we have to rely on the fact the type is the get_xxxxxx fn
     get_fn = String.to_atom("get_" <> String.downcase(equipment_class) <> "!")
     master_struct = apply(Frobots.Assets, get_fn, [equipment_type])
+
 
     inst_struct
     |> inst_module.changeset(Map.from_struct(master_struct))

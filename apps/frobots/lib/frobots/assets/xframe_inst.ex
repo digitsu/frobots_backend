@@ -33,12 +33,14 @@ defmodule Frobots.Assets.XframeInst do
     field(:max_throttle, :integer)
     field(:accel_speed_mss, :integer)
 
+
+
+
+
     timestamps()
   end
 
   @fields [
-    :frobot_id,
-    :xframe_id,
     :max_speed_ms,
     :turn_speed,
     :sensor_hardpoints,
