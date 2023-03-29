@@ -55,6 +55,9 @@ defmodule Frobots do
 
   @parts_classes @weapon_classes ++ @sensor_classes ++ @ammo_classes ++ @cpu_classes
 
+  def parts_classes() do
+    @parts_classes
+  end
   def weapon_classes() do
     @weapon_classes
   end
