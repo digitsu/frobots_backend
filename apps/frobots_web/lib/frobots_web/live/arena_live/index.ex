@@ -1,11 +1,9 @@
 defmodule FrobotsWeb.ArenaLive.Index do
   use FrobotsWeb, :live_view
-  require Logger
 
   alias FrobotsWeb.Router.Helpers, as: Routes
   alias Frobots.{Api, Events}
   alias Frobots.Accounts
-  require Logger
 
   @impl Phoenix.LiveView
   def mount(params, session, socket) do
@@ -102,8 +100,6 @@ defmodule FrobotsWeb.ArenaLive.Index do
   end
 
   def handle_event("react.update_arena_match_search", params, socket) do
-    Logger.debug("\n\n inside update_arena_home params : #{inspect(params)} \n")
-
     filter_params = Keyword.new()
 
     filter_params =
@@ -136,7 +132,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
     } = Api.list_paginated_matches(filter_params, page_config, [:user], desc: :inserted_at)
 
     {:noreply,
-     push_event(socket, "react.updated_arena_match_search", %{
+     push_event(socket, "react.return_arena_home", %{
        "live_matches_count" => socket.assigns.live_matches_count,
        "completed_matches_count" => socket.assigns.completed_matches_count,
        "upcoming_matches_count" => socket.assigns.upcoming_matches_count,
