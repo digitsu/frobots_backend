@@ -60,8 +60,7 @@ defmodule Frobots.ApiTest do
           "slot_type" => "protobot"
         },
         %{
-          "status" => "closed",
-          "slot_type" => "closed"
+          "status" => "closed"
         }
       ]
     }

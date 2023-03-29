@@ -8,7 +8,7 @@ defmodule Frobots.Events.Slot do
   @derive {Jason.Encoder, only: [:status, :match_id, :frobot_id, :slot_type]}
 
   schema "slots" do
-    field(:slot_type, Ecto.Enum, values: [:host, :protobot, :closed])
+    field(:slot_type, Ecto.Enum, values: [:host, :protobot])
     field(:status, Ecto.Enum, values: [:open, :closed, :joining, :ready])
 
     belongs_to(:frobot, Frobot)
@@ -16,12 +16,12 @@ defmodule Frobots.Events.Slot do
     timestamps()
   end
 
-  @fields [:status, :slot_type]
+  @fields [:status]
 
   @doc false
   def changeset(slot, attrs) do
     slot
-    |> cast(attrs, @fields ++ [:frobot_id, :match_id])
+    |> cast(attrs, @fields ++ [:slot_type, :frobot_id, :match_id])
     |> cast_assoc(:match)
     |> validate_required(@fields)
     |> unique_constraint(:frobot_id, name: :unique_frobot_id_slot)

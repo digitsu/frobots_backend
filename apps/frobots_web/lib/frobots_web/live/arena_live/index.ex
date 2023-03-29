@@ -81,8 +81,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
   #       "slot_type" => "protobot"
   #     },
   #     %{
-  #       "status" => "closed",
-  #       "slot_type" => "closed"
+  #       "status" => "closed"
   #     }
   #   ]
   # }

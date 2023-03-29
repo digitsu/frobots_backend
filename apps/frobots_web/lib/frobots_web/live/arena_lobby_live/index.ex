@@ -16,7 +16,8 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_event(event, %{"slot_id" => slot_id}, socket) when event in ["joining", "ready"] do
+  def handle_event(event, %{"slot_id" => slot_id}, socket)
+      when event in ["joining", "ready", "closed"] do
     match = socket.assigns.match
 
     case Api.update_slot(match.id, slot_id, %{status: event}) do
