@@ -14,13 +14,14 @@ defmodule Frobots.Assets.Missile do
            ]}
 
   schema "missiles" do
-    field(:type, Ecto.Enum, values: ~w(Mk1 Mk2)a)
-    field(:damage_direct, {:array, :integer})
-    field(:damage_near, {:array, :integer})
-    field(:damage_far, {:array, :integer})
-    field(:speed, :integer)
-    field(:range, :integer)
-    has_many(:missile_inst, Frobots.Assets.MissileInst)
+    field :type, Ecto.Enum, values: ~w(Mk1 Mk2)a
+    field :damage_direct, {:array, :integer}
+    field :damage_near, {:array, :integer}
+    field :damage_far, {:array, :integer}
+    field :speed, :integer
+    field :range, :integer
+    has_many :missile_inst, Frobots.Assets.MissileInst
+    field :class, Ecto.Enum, values: ~w(missile)a
     timestamps()
   end
 
