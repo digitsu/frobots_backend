@@ -58,6 +58,7 @@ defmodule Frobots do
   def parts_classes() do
     @parts_classes
   end
+
   def weapon_classes() do
     @weapon_classes
   end
