@@ -31,6 +31,12 @@ defmodule Frobots.Assets do
     |> Repo.all()
   end
 
+  def user_frobots_count(%Accounts.User{} = user) do
+    Frobot
+    |> frobots_user_query(user)
+    |> Repo.aggregate(:count)
+  end
+
   def get_user_frobot!(%Accounts.User{} = user, id) do
     Frobot
     |> frobots_user_query(user)
