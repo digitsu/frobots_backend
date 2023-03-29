@@ -115,14 +115,13 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   def handle_event("start_match", match_data, socket) do
     ## Start The Match
     player_frobot = match_data["name"]
-    assigns = socket.assigns()
-    opponent = socket.assigns.opponent_frobot
+    protobot = socket.assigns.protobot
 
     ## Have to get this from FE
     match_data = %{
       commission_rate: 10,
       entry_fee: 100,
-      frobots: [%{name: player_frobot}, %{name: opponent}],
+      frobots: [%{name: player_frobot}, %{name: protobot}],
       match_type: :individual,
       max_frobots: 4,
       min_frobots: 2,
@@ -130,7 +129,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     }
 
     ## TODO :: SEND Frobots DATA so the game will be constructed based on that
-    case Simulator.start_match(assigns.simulator, match_data) do
+    case Simulator.start_match(socket.assigns.simulator, match_data) do
       {:ok, frobots_data} ->
         {:noreply,
          socket
@@ -150,12 +149,12 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     {:noreply, socket |> assign(:match_id, nil) |> assign(:frobots_data, %{})}
   end
 
-  def handle_event("react.change-opponent-frobot", params, socket) do
-    opponent_frobot = params
+  def handle_event("react.change-protobot", params, socket) do
+    protobot = params
 
     socket =
       socket
-      |> assign(:opponent_frobot, opponent_frobot)
+      |> assign(:protobot, protobot)
 
     {:noreply, socket}
   end

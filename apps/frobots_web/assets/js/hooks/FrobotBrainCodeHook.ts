@@ -52,14 +52,14 @@ export default {
     })
   },
 
-  changeOpponentFrobot(params) {
-    this.pushEventTo(this.el, 'react.change-opponent-frobot', params)
+  changeProtobot(params) {
+    this.pushEventTo(this.el, 'react.change-protobot', params)
     this.handleEvent(
-      'react.change-opponent-frobot',
-      (changeOpponentFrobotDetails) => {
+      'react.change-protobot-frobot',
+      (changeProtobotDetails) => {
         this.unmountComponent = mount(FrobotBrainCode)(
           this.el.id,
-          this.opts({ ...changeOpponentFrobotDetails })
+          this.opts({ ...changeProtobotDetails })
         )
       }
     )
@@ -81,7 +81,7 @@ export default {
       requestMatch: this.requestMatch.bind(this),
       runSimulation: this.runSimulation.bind(this),
       cancelSimulation: this.cancelSimulation.bind(this),
-      changeOpponentFrobot: this.changeOpponentFrobot.bind(this),
+      changeProtobot: this.changeProtobot.bind(this),
     }
   },
 }
