@@ -33,16 +33,6 @@ defmodule Frobots.ApiTest do
     assert length(matches) == 0
   end
 
-#   def get_match_details_by_id(match_id),
-#   do: Events.list_match_by([id: match_id], slots: [frobot: :user]) |> List.first()
-
-# def update_slot(match_id, slot_id, attrs) do
-#   case Events.get_slot_by(id: slot_id, match_id: match_id) do
-#     nil -> {:error, :slot_not_found}
-#     %Slot{} = slot -> Events.update_slot(slot, attrs)
-#   end
-# end
-
   test "get match details", context do
     created_match = context.created_match
     match = Api.get_match_details_by_id(created_match.id)
@@ -64,12 +54,13 @@ defmodule Frobots.ApiTest do
         slot.status == :open
       end)
 
-    Api.update_slot(created_match.id, open_slot.id, %{status: :closed, slot_type: :nil})
+    Api.update_slot(created_match.id, open_slot.id, %{status: :closed, slot_type: nil})
 
     match = Api.get_match_details_by_id(created_match.id)
     assert match.id == created_match.id
     assert match.status == :pending
     assert length(match.slots) == 4
+
     updated_slot =
       Enum.find(match.slots, fn slot ->
         slot.id == open_slot.id
@@ -77,7 +68,6 @@ defmodule Frobots.ApiTest do
 
     assert is_nil(updated_slot.slot_type)
     assert updated_slot.status == :closed
-
   end
 
   defp create_match_params(owner, n1, n2) do
