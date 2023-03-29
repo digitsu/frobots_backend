@@ -191,7 +191,7 @@ defmodule Frobots.Equipment do
   """
   def dequip_xframe(_frobot) do
     # when you dequip an xframe, it Must dequip everything
-    #dequip_all(_frobot)
+    # dequip_all(_frobot)
   end
 
   @doc """
