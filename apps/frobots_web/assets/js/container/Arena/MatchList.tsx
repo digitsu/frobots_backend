@@ -15,8 +15,8 @@ import {
 } from '@mui/material'
 
 interface MatchListTableProps {
-  matchs: any[]
-  matchsCount: number
+  matches: any[]
+  matchesCount: number
   onPageChange: (
     event: MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -26,12 +26,21 @@ interface MatchListTableProps {
   rowsPerPage: number
 }
 
-const getStatusName = (status: string) => {
+const getStatus = (status: string) => {
   const statusColors = {
-    live: '#37A6E4',
-    upcoming: '#FFD600',
-    completed: '#5BE584',
+    running: '#37A6E4',
+    pending: '#FFD600',
+    done: '#5BE584',
     cancelled: '#FF5630',
+    timeout: '#FF5630',
+  }
+
+  const statusName = {
+    running: 'live',
+    pending: 'upcoming',
+    done: 'completed',
+    cancelled: 'cancelled',
+    timeout: 'timeout',
   }
 
   return (
@@ -39,15 +48,15 @@ const getStatusName = (status: string) => {
       color={statusColors[status] || 'gray'}
       sx={{ textTransform: 'capitalize' }}
     >
-      {status}
+      {statusName[status]}
     </Typography>
   )
 }
 
 export const MatchList: FC<MatchListTableProps> = (props) => {
   const {
-    matchs,
-    matchsCount,
+    matches,
+    matchesCount,
     onPageChange,
     onRowsPerPageChange,
     page,
@@ -141,28 +150,30 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
             </TableRow>
           </TableHead>
           <TableBody sx={{ color: '#fff' }}>
-            {matchs?.length === 0 && (
+            {matches?.length === 0 && (
               <TableRow>
                 <TableCell>No Data Found</TableCell>
               </TableRow>
             )}
 
-            {matchs.map((match) => {
+            {matches.map((match) => {
               return (
-                <TableRow hover key={match.matchId}>
+                <TableRow hover key={match.id}>
                   <TableCell sx={{ color: '#fff' }}>
                     <Stack alignItems="center" direction="row" spacing={1}>
-                      {match.matchId}
+                      {match.id}
                     </Stack>
                   </TableCell>
                   <TableCell sx={{ color: '#fff' }}>
                     <Stack alignItems="center" direction="row" spacing={1}>
-                      {match.name}
+                      {match.title}
                     </Stack>
                   </TableCell>
-                  <TableCell sx={{ color: '#fff' }}>{match.host}</TableCell>
                   <TableCell sx={{ color: '#fff' }}>
-                    {getStatusName(match.status)}
+                    {match.user?.name}
+                  </TableCell>
+                  <TableCell sx={{ color: '#fff' }}>
+                    {getStatus(match.status)}
                   </TableCell>
                   <TableCell sx={{ color: '#fff' }}>{match.time}</TableCell>
                   <TableCell
@@ -236,7 +247,7 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
       </TableContainer>
       <TablePagination
         component="div"
-        count={matchsCount}
+        count={matchesCount}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
         page={page}
@@ -249,8 +260,8 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
 }
 
 MatchList.propTypes = {
-  matchs: PropTypes.any,
-  matchsCount: PropTypes.number.isRequired,
+  matches: PropTypes.any,
+  matchesCount: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number.isRequired,
