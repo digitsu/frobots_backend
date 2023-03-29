@@ -214,14 +214,13 @@ defmodule Frobots.Equipment do
   def get_weapon_loadout(_frobot) do
     # return a list of the weapons equipped, in the form
     # [ %{type: "Mk1", reload_time: 5, rate_of_fire: 1, magazine_size: 2} ]
-
   end
 
   @doc """
   getting the stats of the sensors
   """
   def get_sensor_loadout(_frobot) do
-  # [ %{type: "Mk1", max_range: 700, resolution: 10} ]
+    # [ %{type: "Mk1", max_range: 700, resolution: 10} ]
   end
 
   @doc """
