@@ -199,7 +199,9 @@ const useMatches = (search: Search): { matchs: any[]; matchsCount: number } => {
   return state
 }
 
-export default () => {
+export default (props: any) => {
+  const { completed_matches_count, live_matches_count, upcoming_matches_count } = props
+
   const { search, updateSearch } = useSearch()
   const { matchs, matchsCount } = useMatches(search)
 
@@ -237,7 +239,7 @@ export default () => {
     (event: MouseEvent<HTMLDivElement> | null) => {
       event?.preventDefault()
 
-      window.location.href = '/arena/live-matches'
+      window.location.href = '/arena/running/matches'
     },
     []
   )
@@ -246,7 +248,7 @@ export default () => {
     (event: MouseEvent<HTMLDivElement> | null) => {
       event?.preventDefault()
 
-      window.location.href = '/arena/past-matches'
+      window.location.href = '/arena/done/matches'
     },
     []
   )
@@ -255,7 +257,7 @@ export default () => {
     (event: MouseEvent<HTMLDivElement> | null) => {
       event?.preventDefault()
 
-      window.location.href = '/arena/upcoming-matches'
+      window.location.href = '/arena/pending/matches'
     },
     []
   )
@@ -298,7 +300,7 @@ export default () => {
                       flexDirection={'column'}
                     >
                       <Typography variant="h6" fontWeight={'bold'}>
-                        12
+                        {live_matches_count || 0}
                       </Typography>
                       <Typography variant="caption">Live Matches</Typography>
                     </Box>
@@ -339,7 +341,7 @@ export default () => {
                       flexDirection={'column'}
                     >
                       <Typography variant="h6" fontWeight={'bold'}>
-                        12
+                        {upcoming_matches_count || 0}
                       </Typography>
                       <Typography variant="caption">
                         Upcoming Matches
@@ -378,7 +380,7 @@ export default () => {
                       flexDirection={'column'}
                     >
                       <Typography variant="h6" fontWeight={'bold'}>
-                        625
+                        {completed_matches_count || 0}
                       </Typography>
                       <Typography variant="caption">Past Matches</Typography>
                     </Box>

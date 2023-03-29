@@ -3,6 +3,7 @@ defmodule FrobotsWeb.ArenaMatchesLive.Index do
   use FrobotsWeb, :live_view
 
   alias FrobotsWeb.Router.Helpers, as: Routes
+  alias Frobots.Api
   alias Frobots.Events
   alias Frobots.Accounts
 
@@ -20,7 +21,7 @@ defmodule FrobotsWeb.ArenaMatchesLive.Index do
       page_size: page_size,
       total_entries: total_entries,
       total_pages: total_pages
-    } = Events.list_paginated_matches([status: match_status], [], [:user], desc: :inserted_at)
+    } = Api.list_paginated_matches([match_status: match_status], [], [:user], desc: :inserted_at)
 
     {:ok,
      socket
@@ -48,7 +49,7 @@ defmodule FrobotsWeb.ArenaMatchesLive.Index do
       total_entries: total_entries,
       total_pages: total_pages
     } =
-      Events.list_paginated_matches([status: match_status], [page: page], [:user],
+    Api.list_paginated_matches([match_status: match_status], [page: page], [:user],
         desc: :inserted_at
       )
 

@@ -1,9 +1,11 @@
 defmodule FrobotsWeb.ArenaLive.Index do
   use FrobotsWeb, :live_view
+  require Logger
 
   alias FrobotsWeb.Router.Helpers, as: Routes
   alias Frobots.{Api, Events}
   alias Frobots.Accounts
+  require Logger
 
   @impl Phoenix.LiveView
   def mount(params, session, socket) do
@@ -30,27 +32,12 @@ defmodule FrobotsWeb.ArenaLive.Index do
       total_pages: total_pages
     } = Api.list_paginated_matches([], page_config, [:user], desc: :inserted_at)
 
-    %{entries: upcoming_matches} =
-      Api.list_paginated_matches([match_status: :pending], page_config, [:user],
-        desc: :inserted_at
-      )
-
-    %{entries: completed_matches} =
-      Api.list_paginated_matches([match_status: :done], page_config, [:user], desc: :inserted_at)
-
-    %{entries: live_matches} =
-      Api.list_paginated_matches([match_status: :running], page_config, [:user],
-        desc: :inserted_at
-      )
 
     {:ok,
      socket
      |> assign(:current_user, current_user)
      |> assign(:match_status, params["match_status"])
      |> assign(:matches, matches)
-     |> assign(:upcoming_matches_list, upcoming_matches)
-     |> assign(:completed_matches_list, completed_matches)
-     |> assign(:live_matches_list, live_matches)
      |> assign(:page, page)
      |> assign(:page_size, page_size)
      |> assign(:total_entries, total_entries)
@@ -255,5 +242,14 @@ defmodule FrobotsWeb.ArenaLive.Index do
       end
 
     {:noreply, socket}
+  end
+
+  def handle_event("react.mount_arena_home", _params, socket) do
+    {:noreply,
+     push_event(socket, "react.return_arena_home", %{
+       "live_matches_count" => socket.assigns.live_matches_count,
+       "completed_matches_count" => socket.assigns.completed_matches_count,
+       "upcoming_matches_count" => socket.assigns.upcoming_matches_count
+     })}
   end
 end
