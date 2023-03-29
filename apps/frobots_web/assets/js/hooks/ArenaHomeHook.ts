@@ -3,7 +3,17 @@ import ArenaHome from '../container/Arena'
 
 export default {
   mounted() {
-    this.unmountComponent = mount(ArenaHome)(this.el.id, this.opts())
+    this.pushEventTo(this.el, 'react.mount_arena_home')
+    this.handleEvent('react.return_arena_home', (details: any) => {
+      this.unmountComponent = mount(ArenaHome)(
+        this.el.id,
+        this.opts({ ...details })
+      )
+    })
+  },
+
+  updateMatchSearch(params: any) {
+    this.pushEventTo(this.el, 'react.update_arena_match_search', params)
   },
 
   destroyed() {
@@ -14,9 +24,12 @@ export default {
 
     this.unmountComponent(this.el)
   },
-  opts() {
+
+  opts(details: any) {
     return {
       name: 'ArenaHome',
+      ...details,
+      updateMatchSearch: this.updateMatchSearch.bind(this),
     }
   },
 }

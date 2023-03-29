@@ -1,11 +1,4 @@
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-} from 'react'
+import React, { ChangeEvent, FC, useCallback, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Search } from '@mui/icons-material'
 import {
@@ -18,14 +11,7 @@ import {
   Tabs,
 } from '@mui/material'
 
-interface Filters {
-  query?: string
-  isUpcoming?: boolean
-  isLive?: boolean
-  isCompleted?: boolean
-}
-
-type TabValue = 'all' | 'isUpcoming' | 'isLive' | 'isCompleted'
+type TabValue = 'all' | 'pending' | 'running' | 'done'
 
 interface TabOption {
   label: string
@@ -39,62 +25,38 @@ const tabs: TabOption[] = [
   },
   {
     label: 'Upcoming',
-    value: 'isUpcoming',
+    value: 'pending',
   },
   {
     label: 'Live',
-    value: 'isLive',
+    value: 'running',
   },
   {
     label: 'Completed',
-    value: 'isCompleted',
+    value: 'done',
   },
 ]
 
 interface MatchListSearchProps {
-  onFiltersChange?: (filters: Filters) => void
+  onTabChange?: (value?: string) => void
+  onQueryChange?: (value?: string) => void
 }
 
 export const MatchListSearch: FC<MatchListSearchProps> = (props) => {
-  const { onFiltersChange } = props
+  const { onTabChange, onQueryChange } = props
   const queryRef = useRef<HTMLInputElement | null>(null)
   const [currentTab, setCurrentTab] = useState<TabValue>('all')
-  const [filters, setFilters] = useState<Filters>({})
-
-  const handleFiltersUpdate = useCallback(() => {
-    onFiltersChange?.(filters)
-  }, [filters, onFiltersChange])
-
-  useEffect(() => {
-    handleFiltersUpdate()
-  }, [filters, handleFiltersUpdate])
 
   const handleTabsChange = useCallback(
     (event: ChangeEvent<{}>, value: TabValue): void => {
       setCurrentTab(value)
-      setFilters((prevState: any) => {
-        const updatedFilters: Filters = {
-          ...prevState,
-          isUpcoming: undefined,
-          isLive: undefined,
-          isCompleted: undefined,
-        }
-
-        if (value !== 'all') {
-          updatedFilters[value] = true
-        }
-
-        return updatedFilters
-      })
+      onTabChange?.(value === 'all' ? undefined : value)
     },
     []
   )
 
   const handleQueryChange = useCallback((): void => {
-    setFilters((prevState: any) => ({
-      ...prevState,
-      query: queryRef.current?.value,
-    }))
+    onQueryChange?.(queryRef.current?.value)
   }, [])
 
   return (
@@ -178,5 +140,6 @@ export const MatchListSearch: FC<MatchListSearchProps> = (props) => {
 }
 
 MatchListSearch.propTypes = {
-  onFiltersChange: PropTypes.func,
+  onTabChange: PropTypes.func,
+  onQueryChange: PropTypes.func,
 }
