@@ -65,8 +65,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
   #       "slot_type" => "protobot"
   #     },
   #     %{
-  #       "status" => "closed",
-  #       "slot_type" => "closed"
+  #       "status" => "closed"
   #     }
   #   ]
   # }
@@ -299,6 +298,8 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     {:noreply, socket}
   end
+
+  def handle_info(_, socket), do: {:noreply, socket}
 
   def extract_matches(matches) do
     Enum.map(

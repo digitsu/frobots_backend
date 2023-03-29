@@ -1,6 +1,6 @@
 defmodule Frobots.Api do
   alias Frobots.Events
-  alias Frobots.Events.Match
+  alias Frobots.Events.{Match, Slot}
   alias Frobots.Accounts.User
 
   require Logger
@@ -65,6 +65,16 @@ defmodule Frobots.Api do
   end
 
   def count_matches_by_status(status), do: Events.count_matches_by_status(status)
+
+  def get_match_details_by_id(match_id),
+    do: Events.list_match_by([id: match_id], slots: [frobot: :user]) |> List.first()
+
+  def update_slot(match_id, slot_id, attrs) do
+    case Events.get_slot_by(id: slot_id, match_id: match_id) do
+      nil -> {:error, :slot_not_found}
+      %Slot{} = slot -> Events.update_slot(slot, attrs)
+    end
+  end
 
   def join_match(_user, _match) do
   end
