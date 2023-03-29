@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Stepper, Step, Box, StepLabel, Button } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
 import { createMatchActions } from '../../redux/slices/createMatch'
@@ -6,16 +6,20 @@ import CreateMatchDetails from './CreateMatchDetails'
 import ChooseArena from './ChooseArena'
 import SlotManagement from './SlotManagement'
 export default (props: any) => {
-  const { templates } = props
+  const { templates, userFrobots } = props
   const dispatch = useDispatch()
   const { activeStep } = useSelector((store: any) => store.createMatch)
-  const { incrementStep, decrementStep } = createMatchActions
+  const { incrementStep, decrementStep, setProtobots, setUserFrobots } =
+    createMatchActions
   const steps = [
     { label: 'Step 1', component: <CreateMatchDetails /> },
     { label: 'Step 2', component: <ChooseArena /> },
     { label: 'Step 3', component: <SlotManagement /> },
   ]
-
+  useEffect(() => {
+    dispatch(setProtobots(templates))
+    dispatch(setUserFrobots(userFrobots))
+  }, [templates, userFrobots])
   const CustomStepIcon = ({ active, completed, icon }) => {
     return (
       <Box
