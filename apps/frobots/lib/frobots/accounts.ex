@@ -7,6 +7,7 @@ defmodule Frobots.Accounts do
   alias Frobots.Repo
 
   alias Frobots.Accounts.{User, UserToken, UserNotifier}
+  alias Frobots.Assets
   @admin_user_name "god"
 
   ## Database getters
@@ -410,4 +411,15 @@ defmodule Frobots.Accounts do
   def admin_user_name() do
     @admin_user_name
   end
+
+  def user_available_sparks(%User{sparks: max_sparks} = user) do
+    frobots_count = Assets.user_frobots_count(user)
+    max_sparks - frobots_count
+  end
+
+  def user_available_sparks(user_id) do
+    user = get_user!(user_id)
+    user_available_sparks(user)
+  end
+
 end
