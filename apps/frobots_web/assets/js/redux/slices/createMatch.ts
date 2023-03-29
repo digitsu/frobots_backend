@@ -15,7 +15,7 @@ const initialState = {
     id: index,
     type: 'open',
     url: '/images/frobot.svg',
-    label: `#Frobot ${index + 1}`,
+    name: `#Frobot ${index + 1}`,
     slotDetails: null,
   })),
   slotOptions: [
@@ -52,50 +52,8 @@ const initialState = {
       url: '/images/grey_frobot.svg',
     },
   ],
-  userFrobots: [
-    {
-      id: 1,
-      label: 'My Frobot',
-      brain_code: '',
-      avatar: 'https://via.placeholder.com/50.png',
-      xp: 3440,
-      blockly_code: '',
-      bio: 'Armor points: 80, Turn Speed: 65%, Max Speed: 40m/s,  Acceleration: 7m/s2',
-      type: 'host',
-    },
-    {
-      id: 2,
-      label: 'My Frobot 2',
-      brain_code: '',
-      avatar: 'https://via.placeholder.com/50.png',
-      xp: 312,
-      blockly_code: '',
-      bio: 'Armor points: 80, Turn Speed: 65%, Max Speed: 40m/s,  Acceleration: 7m/s2',
-      type: 'host',
-    },
-  ],
-  protobots: [
-    {
-      id: 1,
-      label: 'Protobot',
-      brain_code: '',
-      avatar: 'https://via.placeholder.com/50.png',
-      xp: 3440,
-      blockly_code: '',
-      bio: 'Armor points: 80, Turn Speed: 65%, Max Speed: 40m/s,  Acceleration: 7m/s2',
-      type: 'host',
-    },
-    {
-      id: 2,
-      label: 'Protobot 2',
-      brain_code: '',
-      avatar: 'https://via.placeholder.com/50.png',
-      xp: 312,
-      blockly_code: '',
-      bio: 'Armor points: 80, Turn Speed: 65%, Max Speed: 40m/s,  Acceleration: 7m/s2',
-      type: 'host',
-    },
-  ],
+  userFrobots: [],
+  protobots: [],
   currentActiveSlot: null,
 }
 
@@ -137,6 +95,12 @@ const createMatchSlice = createSlice({
       state.slots = state.slots.map((slot) =>
         slot.id === action.payload.id ? action.payload : slot
       )
+    },
+    setProtobots: (state, action) => {
+      state.protobots = action.payload
+    },
+    setUserFrobots: (state, action) => {
+      state.userFrobots = action.payload
     },
   },
 })

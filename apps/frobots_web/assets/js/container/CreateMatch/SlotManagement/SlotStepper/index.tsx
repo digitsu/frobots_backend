@@ -11,7 +11,7 @@ export default ({ slotDetails }) => {
   const { slotOptions, protobots, userFrobots, currentActiveSlot } =
     useSelector((store) => store.createMatch)
   const { updateSlot } = createMatchActions
-  const [currentSlot, setCurrentSlot] = useState({ type: '' })
+  const [currentSlot, setCurrentSlot] = useState({ type: '', url: '' })
   const [currentStep, setCurrentStep] = useState(0)
   const dispatch = useDispatch()
   const slotSelectionHandler = () => {
@@ -23,10 +23,7 @@ export default ({ slotDetails }) => {
           ...currentActiveSlot,
           type: currentSlot.type,
           label: currentSlot.type === 'open' ? 'Open Slot' : 'Closed Slot',
-          url:
-            currentSlot.type === 'open'
-              ? '/images/frobot.svg'
-              : '/images/grey_frobot.svg',
+          url: currentSlot.url,
           slotDetails: currentSlot,
         })
       )
