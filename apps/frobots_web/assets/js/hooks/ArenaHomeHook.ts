@@ -12,6 +12,16 @@ export default {
     })
   },
 
+  updateMatchSearch(params: any) {
+    this.pushEventTo(this.el, 'react.update_arena_match_search', params)
+    this.handleEvent('react.updated_arena_match_search', (details: any) => {
+      this.unmountComponent = mount(ArenaHome)(
+        this.el.id,
+        this.opts({ ...details })
+      )
+    })
+  },
+
   destroyed() {
     if (!this.unmountComponent) {
       console.error('Component unmounted')
@@ -25,6 +35,7 @@ export default {
     return {
       name: 'ArenaHome',
       ...details,
+      updateMatchSearch: this.updateMatchSearch.bind(this),
     }
   },
 }

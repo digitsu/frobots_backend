@@ -49,7 +49,7 @@ defmodule FrobotsWeb.ArenaMatchesLive.Index do
       total_entries: total_entries,
       total_pages: total_pages
     } =
-    Api.list_paginated_matches([match_status: match_status], [page: page], [:user],
+      Api.list_paginated_matches([match_status: match_status], [page: page], [:user],
         desc: :inserted_at
       )
 
