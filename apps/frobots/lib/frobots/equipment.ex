@@ -205,5 +205,34 @@ defmodule Frobots.Equipment do
   """
   def xfer_frobot(_frobot, _fromuser, _touser) do
     # how should we expect the caller to refer to the user?
+    # dequip(all) before any transfer
+  end
+
+  @doc """
+  getting the stats of weapons, this is used by the frobot when it is creating its 'tank'
+  """
+  def get_weapon_loadout(_frobot) do
+    # return a list of the weapons equipped, in the form
+    # [ %{type: "Mk1", reload_time: 5, rate_of_fire: 1, magazine_size: 2} ]
+
+  end
+
+  @doc """
+  getting the stats of the sensors
+  """
+  def get_sensor_loadout(_frobot) do
+  # [ %{type: "Mk1", max_range: 700, resolution: 10} ]
+  end
+
+  @doc """
+  get the stats of the ammunition equipped
+  """
+  def get_ammo_loadout(_frobot) do
+    # [%{type: "Mk1",
+    # damage_direct: [5,10],
+    # damage_near: [20,5],
+    # damage_far: [40,3],
+    # speed: 400,
+    # range: 900}]
   end
 end
