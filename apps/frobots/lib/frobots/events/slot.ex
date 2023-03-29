@@ -30,7 +30,7 @@ defmodule Frobots.Events.Slot do
   @doc false
   def update_changeset(slot, attrs) do
     slot
-    |> cast(attrs, @fields ++ [:frobot_id])
+    |> cast(attrs, @fields ++ [:frobot_id, :slot_type])
     |> validate_status(attrs)
     |> unique_constraint(:frobot_id, name: :unique_frobot_id_slot)
   end

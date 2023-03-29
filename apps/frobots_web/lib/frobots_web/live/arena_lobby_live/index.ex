@@ -16,11 +16,17 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_event(event, %{"slot_id" => slot_id}, socket)
+  def handle_event(event, %{"slot_id" => slot_id} = params, socket)
       when event in ["joining", "ready", "closed"] do
     match = socket.assigns.match
+    attrs =
+      case event do
+        "joining" -> %{status: "joining"}
+        "ready" -> %{status: "ready", frobot_id: params["frobot_id"]}
+        "closed" -> %{status: "closed", slot_type: :nil}
+      end
 
-    case Api.update_slot(match.id, slot_id, %{status: event}) do
+    case Api.update_slot(match.id, slot_id, attrs) do
       {:ok, updated_slot} ->
         updated_slots =
           Enum.reduce(match.slots |> Enum.reverse(), [], fn slot, acc ->
