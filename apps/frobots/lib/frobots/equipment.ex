@@ -187,6 +187,14 @@ defmodule Frobots.Equipment do
   end
 
   @doc """
+  dequip an xframe
+  """
+  def dequip_xframe(_frobot) do
+    # when you dequip an xframe, it Must dequip everything
+    #dequip_all(_frobot)
+  end
+
+  @doc """
   should change the user_id of the part to someone else.... but before doing so via update_equipment() the part needs to be removed from any frobot it is currency equipped to. Call the previous dequip() API fn to do so first.
   """
   def xfer_equipment(_equipment, _touser) do
