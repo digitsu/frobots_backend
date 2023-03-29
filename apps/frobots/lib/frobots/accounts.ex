@@ -421,5 +421,4 @@ defmodule Frobots.Accounts do
     user = get_user!(user_id)
     user_available_sparks(user)
   end
-
 end
