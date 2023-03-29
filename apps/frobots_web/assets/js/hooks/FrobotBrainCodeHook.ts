@@ -22,6 +22,49 @@ export default {
     })
   },
 
+  requestMatch(params) {
+    this.pushEventTo(this.el, 'request_match', params)
+    this.handleEvent('request_match', (requestMatchDetails) => {
+      this.unmountComponent = mount(FrobotBrainCode)(
+        this.el.id,
+        this.opts({ ...requestMatchDetails })
+      )
+    })
+  },
+
+  runSimulation(params) {
+    this.pushEventTo(this.el, 'start_match', params)
+    this.handleEvent('start_match', (startMatchDetails) => {
+      this.unmountComponent = mount(FrobotBrainCode)(
+        this.el.id,
+        this.opts({ ...startMatchDetails })
+      )
+    })
+  },
+
+  cancelSimulation(params) {
+    this.pushEventTo(this.el, 'cancel_match', params)
+    this.handleEvent('cancel_match', (cancelMatchDetails) => {
+      this.unmountComponent = mount(FrobotBrainCode)(
+        this.el.id,
+        this.opts({ ...cancelMatchDetails })
+      )
+    })
+  },
+
+  changeProtobot(params) {
+    this.pushEventTo(this.el, 'react.change-protobot', params)
+    this.handleEvent(
+      'react.change-protobot-frobot',
+      (changeProtobotDetails) => {
+        this.unmountComponent = mount(FrobotBrainCode)(
+          this.el.id,
+          this.opts({ ...changeProtobotDetails })
+        )
+      }
+    )
+  },
+
   destroyed() {
     if (!this.unmountComponent) {
       console.error('Component unmounted')
@@ -35,6 +78,10 @@ export default {
       name: 'FrobotBrainCode',
       ...brainCodeDetails,
       updateFrobotCode: this.updateFrobotCode.bind(this),
+      requestMatch: this.requestMatch.bind(this),
+      runSimulation: this.runSimulation.bind(this),
+      cancelSimulation: this.cancelSimulation.bind(this),
+      changeProtobot: this.changeProtobot.bind(this),
     }
   },
 }
