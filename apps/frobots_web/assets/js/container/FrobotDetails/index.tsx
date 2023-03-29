@@ -213,7 +213,7 @@ const getFrobotDetails = () => {
   return result
 }
 
-export default () => {
+export default (props:any) => {
   const frobotDetails = getFrobotDetails()
   const isOwnedFrobot = frobotDetails.user_id === currentUser.id
 

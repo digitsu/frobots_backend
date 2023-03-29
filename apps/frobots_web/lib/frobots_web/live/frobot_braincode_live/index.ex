@@ -4,10 +4,19 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   require Logger
 
   alias Frobots.{Assets}
+  alias FrobotsWeb.Simulator
 
   @impl Phoenix.LiveView
   def mount(params, _session, socket) do
     frobot_id = params["id"]
+
+    simulator =
+      case Simulator.start_link([]) do
+        {:ok, simulator} -> simulator
+        {:error, {:already_started, simulator}} -> simulator
+      end
+
+    templates = Assets.list_template_frobots()
 
     case Assets.get_frobot(String.to_integer(frobot_id)) do
       nil ->
@@ -19,6 +28,8 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       frobot ->
         {:ok,
          socket
+         |> assign(:templates, templates)
+         |> assign(:simulator, simulator)
          |> assign(:frobot, frobot)}
     end
   end
@@ -47,7 +58,11 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       "xp" => frobot.xp
     }
 
-    {:noreply, push_event(socket, "react.return_bot_braincode", %{"frobot" => frobotDetails})}
+    {:noreply,
+     push_event(socket, "react.return_bot_braincode", %{
+       "frobot" => frobotDetails,
+       "templates" => socket.assigns.templates
+     })}
   end
 
   def handle_event("react.update_bot_braincode", params, socket) do
@@ -85,5 +100,63 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
           {:noreply, socket |> put_flash(:error, "Error while updating brain code")}
       end
     end
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("request_match", _value, socket) do
+    ## Request Match & Join Match ID Channel
+    assigns = socket.assigns()
+    {:ok, match_id} = Simulator.request_match(assigns.simulator)
+    {:noreply, socket |> assign(:match_id, match_id) |> push_event(:match, %{id: match_id})}
+  end
+
+  # move to arena_liveview
+  @impl Phoenix.LiveView
+  def handle_event("start_match", match_data, socket) do
+    ## Start The Match
+    player_frobot = match_data["name"]
+    assigns = socket.assigns()
+    opponent = socket.assigns.opponent_frobot
+
+    ## Have to get this from FE
+    match_data = %{
+      commission_rate: 10,
+      entry_fee: 100,
+      frobots: [%{name: player_frobot}, %{name: opponent}],
+      match_type: :individual,
+      max_frobots: 4,
+      min_frobots: 2,
+      payout_map: 'd'
+    }
+
+    ## TODO :: SEND Frobots DATA so the game will be constructed based on that
+    case Simulator.start_match(assigns.simulator, match_data) do
+      {:ok, frobots_data} ->
+        {:noreply,
+         socket
+         |> assign(:frobots_data, frobots_data)}
+
+      {:error, error} ->
+        Logger.error("Error in starting the match #{error}")
+        {:noreply, socket}
+    end
+  end
+
+  # @impl true
+  def handle_event("cancel_match", _, socket) do
+    ## Cancel the Match
+    assigns = socket.assigns()
+    :ok = Simulator.cancel_match(assigns.simulator)
+    {:noreply, socket |> assign(:match_id, nil) |> assign(:frobots_data, %{})}
+  end
+
+  def handle_event("react.change-opponent-frobot", params, socket) do
+    opponent_frobot = params
+
+    socket =
+      socket
+      |> assign(:opponent_frobot, opponent_frobot)
+
+    {:noreply, socket}
   end
 end
