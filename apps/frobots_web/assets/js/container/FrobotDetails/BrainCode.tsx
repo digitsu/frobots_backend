@@ -16,7 +16,7 @@ export default (props: any) => {
     requestMatch,
     runSimulation,
     cancelSimulation,
-    changeOpponentFrobot,
+    changeProtobot,
     templates,
   } = props
   const [isEditable, enableEdit] = useState(false)
@@ -25,7 +25,7 @@ export default (props: any) => {
   const [blocklyCode, setBlocklyCode] = useState(
     frobot.blockly_code || BlankBlocklyCode
   )
-  const [isSelectedOpponent, setIsSelectedOpponent] = useState(false)
+  const [isSelectedProtobot, setIsSelectedProtobot] = useState(false)
   const [isRequestedMatch, setIsRequestedMatch] = useState(false)
   const [isSimulationStarted, setIsSimulationStarted] = useState(false)
 
@@ -114,13 +114,13 @@ export default (props: any) => {
     cancelSimulation()
     setIsRequestedMatch(false)
     setIsSimulationStarted(false)
-    setIsSelectedOpponent(false)
+    setIsSelectedProtobot(false)
   }
 
-  const handleChangeOpponent = (event, option) => {
+  const handleChangeProtobot = (event, option) => {
     if (option.id) {
-      changeOpponentFrobot(option.id)
-      setIsSelectedOpponent(true)
+      changeProtobot(option.id)
+      setIsSelectedProtobot(true)
     }
   }
 
@@ -183,20 +183,20 @@ export default (props: any) => {
                     pr: 1,
                     width: 200,
                   }}
-                  onChange={handleChangeOpponent}
+                  onChange={handleChangeProtobot}
                   options={templateFrobots}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Select an opponent"
+                      label="Select protobot"
                       variant="outlined"
                       size="small"
-                      name="list-opponents"
+                      name="list-protobot"
                     />
                   )}
                 />
                 {''}
-                {isSelectedOpponent && (
+                {isSelectedProtobot && (
                   <Button
                     variant="outlined"
                     color="inherit"
