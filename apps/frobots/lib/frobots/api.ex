@@ -15,7 +15,6 @@ defmodule Frobots.Api do
   import Ecto.Query, warn: false
   # this is the FE api for liveview pages
 
-
   def create_match(attrs) do
     match_details =
       if attrs["slots"] && is_nil(attrs["match_template"]) do
@@ -88,19 +87,17 @@ defmodule Frobots.Api do
   def join_match(_user, _match) do
   end
 
-
   def create_frobot(user, _name, _brain_code, _extra_params) when user.sparks == 0 do
     {:error, "User does not have enough sparks."}
   end
 
   def create_frobot(user, name, brain_code, _extra_params)
-                            when user.sparks > 0
-                            and name === ""
-                            and brain_code === "" do
-    IO.inspect "Name and prototype required"
+      when user.sparks > 0 and
+             name === "" and
+             brain_code === "" do
+    IO.inspect("Name and prototype required")
     {:error, "Frobot name and braincode are required."}
   end
-
 
   @doc ~S"""
     Create Frobot
@@ -108,19 +105,17 @@ defmodule Frobots.Api do
 
   """
   def create_frobot(user, name, brain_code, extra_params)
-                          when user.sparks > 0
-                          and name !== ""
-                          and brain_code !== "" do
+      when user.sparks > 0 and
+             name !== "" and
+             brain_code !== "" do
     # _default_loadout = Frobots.default_frobot_loadout()
     # extra_params may contain bio, pixellated_img, avatar, blockly_code
-    frobot_attrs = Map.merge(extra_params, %{"name" => name,
-                        "brain_code" => brain_code,
-                        "class" => "U"})
+    frobot_attrs =
+      Map.merge(extra_params, %{"name" => name, "brain_code" => brain_code, "class" => "U"})
 
     build_multi(user, frobot_attrs)
     |> run_multi()
   end
-
 
   @doc ~S"""
 
@@ -134,23 +129,23 @@ defmodule Frobots.Api do
   """
   def build_multi(user, frobot_attrs) do
     Multi.new()
-      |> Multi.insert(:frobot, create_frobot_changeset(user, frobot_attrs))
-      |> Multi.insert(:xframe_inst, Equipment.create_equipment_changeset(user, "Xframe", :Tank_Mk1))
-      |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
-      |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
-      |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
-      |> Multi.update(:equip_xframe, fn %{frobot: frobot, xframe_inst: xframe_inst } ->
-          Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
-        end)
-      |> Multi.update(:equip_cannon, fn %{frobot: frobot, cannon_inst: cannon_inst } ->
-          Equipment.equip_part_changeset(cannon_inst.id, frobot.id, "Cannon")
-        end)
-      |> Multi.update(:equip_scanner, fn %{frobot: frobot, scanner_inst: scanner_inst } ->
-        Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
-        end)
-      |> Multi.update(:update_user, fn %{frobot: frobot} ->
-          update_user_changeset(frobot.user_id)
-        end)
+    |> Multi.insert(:frobot, create_frobot_changeset(user, frobot_attrs))
+    |> Multi.insert(:xframe_inst, Equipment.create_equipment_changeset(user, "Xframe", :Tank_Mk1))
+    |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
+    |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
+    |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
+    |> Multi.update(:equip_xframe, fn %{frobot: frobot, xframe_inst: xframe_inst} ->
+      Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
+    end)
+    |> Multi.update(:equip_cannon, fn %{frobot: frobot, cannon_inst: cannon_inst} ->
+      Equipment.equip_part_changeset(cannon_inst.id, frobot.id, "Cannon")
+    end)
+    |> Multi.update(:equip_scanner, fn %{frobot: frobot, scanner_inst: scanner_inst} ->
+      Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
+    end)
+    |> Multi.update(:update_user, fn %{frobot: frobot} ->
+      update_user_changeset(frobot.user_id)
+    end)
   end
 
   @doc ~S"""
@@ -164,32 +159,40 @@ defmodule Frobots.Api do
     case Repo.transaction(multi) do
       {:ok, result} ->
         {:ok, result.frobot.id}
-      {:error, :frobot, %Ecto.Changeset{} = cs, _changes}  ->
+
+      {:error, :frobot, %Ecto.Changeset{} = cs, _changes} ->
         return_errors(cs)
-      {:error, :xframe_inst, %Ecto.Changeset{} = cs, _changes}  ->
+
+      {:error, :xframe_inst, %Ecto.Changeset{} = cs, _changes} ->
         return_errors(cs)
-      {:error, :cannon_inst, %Ecto.Changeset{} = cs, _changes}  ->
+
+      {:error, :cannon_inst, %Ecto.Changeset{} = cs, _changes} ->
         return_errors(cs)
-      {:error, :scanner_inst, %Ecto.Changeset{} = cs, _changes}  ->
+
+      {:error, :scanner_inst, %Ecto.Changeset{} = cs, _changes} ->
         return_errors(cs)
-      {:error, :missile_inst, %Ecto.Changeset{} = cs, _changes}  ->
+
+      {:error, :missile_inst, %Ecto.Changeset{} = cs, _changes} ->
         return_errors(cs)
-      {:error, :equip_xframe, %Ecto.Changeset{} = cs, _changes}  ->
+
+      {:error, :equip_xframe, %Ecto.Changeset{} = cs, _changes} ->
         return_errors(cs)
-      {:error, :equip_cannon, %Ecto.Changeset{} = cs, _changes}  ->
+
+      {:error, :equip_cannon, %Ecto.Changeset{} = cs, _changes} ->
         return_errors(cs)
-      {:error, :equip_scanner, %Ecto.Changeset{} = cs, _changes}  ->
+
+      {:error, :equip_scanner, %Ecto.Changeset{} = cs, _changes} ->
         return_errors(cs)
-      {:error, :update_user, %Ecto.Changeset{} = cs, _changes}  ->
+
+      {:error, :update_user, %Ecto.Changeset{} = cs, _changes} ->
         return_errors(cs)
     end
   end
 
   defp return_errors(%Ecto.Changeset{} = cs) do
     errors = changeset_error_to_string(cs)
-        {:error, errors}
+    {:error, errors}
   end
-
 
   defp create_frobot_changeset(user, attrs) do
     %Frobot{}
@@ -198,7 +201,7 @@ defmodule Frobots.Api do
   end
 
   defp update_user_changeset(user_id) do
-    user = Accounts.get_user_by([id: user_id])
+    user = Accounts.get_user_by(id: user_id)
     attrs = %{"sparks" => user.sparks - 1}
 
     user
@@ -230,5 +233,4 @@ defmodule Frobots.Api do
       "#{acc}#{k}: #{joined_errors}\n"
     end)
   end
-
 end

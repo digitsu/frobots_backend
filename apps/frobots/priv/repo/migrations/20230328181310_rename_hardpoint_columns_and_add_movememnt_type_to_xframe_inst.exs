@@ -17,5 +17,4 @@ defmodule Frobots.Repo.Migrations.RenameHardpointColumnsAndAddMovememntTypeToXfr
     execute "ALTER TABLE xframe_inst DROP COLUMN cpu_hardpoints"
     execute "ALTER TABLE xframe_inst DROP COLUMN movement_type"
   end
-
 end
