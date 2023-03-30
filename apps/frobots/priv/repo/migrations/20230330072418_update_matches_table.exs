@@ -3,7 +3,7 @@ defmodule Frobots.Repo.Migrations.UpdateMatchesTable do
 
   def up do
     execute(
-      "update matches m SET user_id = (select id from users where name = 'god' and email = 'frobots'), title = 'Default Match', Description = 'Migrated Matches', match_time = inserted_at, timer = 3600, arena_id = 1, min_player_frobot = CAST (match_template ->> 'min_frobots' AS INTEGER), max_player_frobot = CAST (match_template ->> 'max_frobots' AS INTEGER);"
+      "update matches m SET user_id = (select id from users where name = 'god' and email = 'frobots'), match_time = inserted_at, timer = 3600, arena_id = 1, min_player_frobot = CAST (match_template ->> 'min_frobots' AS INTEGER), max_player_frobot = CAST (match_template ->> 'max_frobots' AS INTEGER);"
     )
   end
 
