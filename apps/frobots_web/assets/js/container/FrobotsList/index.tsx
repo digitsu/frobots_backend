@@ -6,6 +6,8 @@ import { FrobotListContainer } from './FrobotListContainer'
 export default (props: any) => {
   const { frobotList, ...others } = props
 
+  console.log("From container ",props)
+
   return (
     <Box>
       <Box

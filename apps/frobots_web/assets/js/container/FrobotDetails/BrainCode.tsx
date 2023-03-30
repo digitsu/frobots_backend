@@ -117,7 +117,7 @@ export default (props: any) => {
     setIsSelectedProtobot(false)
   }
 
-  const handleChangeProtobot = (event, option) => {
+  const handleChangeOpponent = (event, option) => {
     if (option.id) {
       changeProtobot(option.id)
       setIsSelectedProtobot(true)
@@ -183,15 +183,15 @@ export default (props: any) => {
                     pr: 1,
                     width: 200,
                   }}
-                  onChange={handleChangeProtobot}
+                  onChange={handleChangeOpponent}
                   options={templateFrobots}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Select protobot"
+                      label="Select an opponent"
                       variant="outlined"
                       size="small"
-                      name="list-protobot"
+                      name="list-opponent"
                     />
                   )}
                 />

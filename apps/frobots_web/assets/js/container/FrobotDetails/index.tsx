@@ -1,8 +1,9 @@
 import React from 'react'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import AttachedEquipments from './AttachedEquipments'
 import BattlesTable from './BattlesTable'
 import FrobotDetailsContainer from './FrobotDetailsContainer'
+import SlideBarGrid from './SlideBarGrid'
 
 const currentUser = {
   id: 3,
@@ -191,6 +192,8 @@ const getFrobotDetails = () => {
         id: 2,
         user_id: 2,
         avatar: '/images/frobot2.png',
+        name: 'New Horizon',
+        bio: 'New Horizon is a versatile robot designed to explore and analyze new frontiers. Equipped with advanced sensors and communication systems, this machine is capable of gathering and transmitting vast amounts of data from even the most remote and challenging environments. Its modular design allows for easy customization to suit any mission, and its advanced AI enables it to adapt and learn on the fly. With New Horizon, the possibilities for discovery are endless.',
       }
       break
 
@@ -200,6 +203,8 @@ const getFrobotDetails = () => {
         id: 3,
         user_id: 3,
         avatar: '/images/frobot3.png',
+        name:"Titan",
+        bio:'Titan is a formidable fighting robot built for combat with incredible strength and durability. Standing at 10 feet tall, this menacing machine is equipped with advanced weaponry and impenetrable armor, making it nearly invincible in battle. Its programming allows it to quickly analyze and strategize against opponents, making Titan a feared competitor in the arena.'
       }
       break
 
@@ -215,25 +220,40 @@ const getFrobotDetails = () => {
 
 export default (props:any) => {
   const frobotDetails = getFrobotDetails()
-  const isOwnedFrobot = frobotDetails.user_id === currentUser.id
-
+  const isOwnedFrobot =
+    frobotDetails.user_id === currentUser.id || location.search.split('?id=')[1] ==='1'
+  const pl = isOwnedFrobot?0:4;
+  
   return (
     <>
-      <Box width={'100%'} m={'auto'}>
-        <FrobotDetailsContainer
-          frobotDetails={frobotDetails}
-          currentUser={currentUser}
-          isOwnedFrobot={isOwnedFrobot}
-        />
-        <AttachedEquipments
-          equipments={[
-            ...frobotDetails.cannon_inst,
-            ...frobotDetails.scanner_inst,
-            ...frobotDetails.missile_inst,
-          ]}
-          isOwnedFrobot={isOwnedFrobot}
-        />
-        <BattlesTable battleLogs={frobotDetails.battlelogs} />
+      <Box display={'flex'} sx={{pl:pl}}>
+        <SlideBarGrid isOwnedFrobot={isOwnedFrobot} />
+
+        <Box width={'100%'} m={'auto'} pr={3}>
+          <Typography
+            sx={{
+              pb: 2,
+              pt: 2,
+            }}
+            variant="h5"
+          >
+            {frobotDetails.name}
+          </Typography>
+          <FrobotDetailsContainer
+            frobotDetails={frobotDetails}
+            currentUser={currentUser}
+            isOwnedFrobot={isOwnedFrobot}
+          />
+          <AttachedEquipments
+            equipments={[
+              ...frobotDetails.cannon_inst,
+              ...frobotDetails.scanner_inst,
+              ...frobotDetails.missile_inst,
+            ]}
+            isOwnedFrobot={isOwnedFrobot}
+          />
+          <BattlesTable battleLogs={frobotDetails.battlelogs} />
+        </Box>
       </Box>
     </>
   )

@@ -26,6 +26,8 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
 
   @impl Phoenix.LiveView
   def handle_event("react.fetch_user_frobots", _params, socket) do
+    IO.inspect("FROM ELX")
+    IO.inspect(socket.assigns.user_frobots)
     {:noreply,
      push_event(socket, "react.return_user_frobots", %{
        "frobotList" => socket.assigns.user_frobots
