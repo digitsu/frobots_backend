@@ -13,6 +13,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material'
+import moment from 'moment'
 
 interface MatchListTableProps {
   matches: any[]
@@ -51,6 +52,18 @@ const getStatus = (status: string) => {
       {statusName[status]}
     </Typography>
   )
+}
+
+const getHostName = (user: any) => {
+  let hostName = '-'
+
+  if (user?.name) {
+    hostName = user.name
+  } else if (user?.email) {
+    hostName = user.email.split('@')[0]
+  }
+
+  return hostName
 }
 
 export const MatchList: FC<MatchListTableProps> = (props) => {
@@ -170,12 +183,14 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                     </Stack>
                   </TableCell>
                   <TableCell sx={{ color: '#fff' }}>
-                    {match.user?.name}
+                    {getHostName(match.user)}
                   </TableCell>
                   <TableCell sx={{ color: '#fff' }}>
                     {getStatus(match.status)}
                   </TableCell>
-                  <TableCell sx={{ color: '#fff' }}>{match.time}</TableCell>
+                  <TableCell sx={{ color: '#fff' }}>
+                    {moment(match.match_time).format('DD MMM YYYY HH:mm:ss')}
+                  </TableCell>
                   <TableCell
                     sx={{
                       color: '#fff',

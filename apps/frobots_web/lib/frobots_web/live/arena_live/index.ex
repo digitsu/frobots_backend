@@ -332,11 +332,20 @@ defmodule FrobotsWeb.ArenaLive.Index do
           status: status,
           arena_id: arena_id,
           inserted_at: inserted_at,
-          user: %{
-            "id" => user.id,
-            "email" => user.email,
-            "name" => user.name
-          }
+          user:
+            if user !== nil do
+              %{
+                "id" => user.id,
+                "email" => user.email,
+                "name" => user.name
+              }
+            else
+              %{
+                "id" => nil,
+                "email" => nil,
+                "name" => nil
+              }
+            end
         }
       end
     )
