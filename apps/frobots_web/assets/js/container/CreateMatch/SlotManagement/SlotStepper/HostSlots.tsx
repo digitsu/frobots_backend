@@ -95,8 +95,10 @@ export default ({ userFrobots, currentStep, setCurrentStep, slotDetails }) => {
             <Typography variant="h6">
               {slotDetails.slotDetails?.name}
             </Typography>
-            <Box my={1} maxHeight={120} overflow={'scroll'}>
-              <Typography>{slotDetails.slotDetails?.bio}</Typography>
+            <Box my={1} maxHeight={72} overflow={'scroll'}>
+              <Typography variant="caption">
+                {slotDetails.slotDetails?.bio}
+              </Typography>
             </Box>
           </Box>
           <Box

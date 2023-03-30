@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import moment from 'moment'
 
 const initialState = {
-  activeStep: 2,
+  activeStep: 0,
   matchTitle: '',
   matchDescription: '',
   matchTime: moment(new Date()).format('YYYY-MM-DDTHH:mm'),

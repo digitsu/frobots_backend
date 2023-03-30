@@ -23,6 +23,7 @@ export default ({ slotDetails }) => {
           ...currentActiveSlot,
           type: currentSlot.type,
           label: currentSlot.type === 'open' ? 'Open Slot' : 'Closed Slot',
+          name: currentSlot.type === 'open' ? 'Open' : 'Closed',
           url: currentSlot.url,
           slotDetails: currentSlot,
         })
