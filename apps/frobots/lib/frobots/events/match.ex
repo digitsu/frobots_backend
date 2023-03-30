@@ -46,7 +46,15 @@ defmodule Frobots.Events.Match do
     |> cast(attrs, @fields)
     |> cast_embed(:match_template)
     |> cast_assoc(:slots, with: &Slot.changeset/2)
-    |> validate_required([:status])
+    |> validate_required([
+      :status,
+      :user_id,
+      :match_time,
+      :timer,
+      :arena_id,
+      :min_player_frobot,
+      :max_player_frobot
+    ])
     |> unique_constraint([:battlelog])
   end
 end
