@@ -3,4 +3,4 @@
 
 alias Frobots.Accounts
 
-Accounts.update_user(Accounts.get_user_by(username: "jerry@frobots.io"), %{admin: true})
+Accounts.update_profile(Accounts.get_user_by(email: "jerry@frobots.io"), %{admin: true})
