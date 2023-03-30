@@ -53,7 +53,7 @@ export default (props: any) => {
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6">12378</Typography>
+                      <Typography variant="h6">12345</Typography>
                       <Typography variant="caption">
                         Total XP : {playerStats.total_xp}
                       </Typography>

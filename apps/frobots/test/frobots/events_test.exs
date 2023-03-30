@@ -20,7 +20,17 @@ defmodule Frobots.EventsTest do
         frobots: [n1, n2, n3, n4]
       }
 
-      {:ok, mt} = match_fixture()
+      {:ok, mt} =
+        match_fixture(%{
+          "user_id" => owner.id,
+          "match_time" => DateTime.utc_now(),
+          "timer" => 3600,
+          "arena_id" => 1,
+          "min_player_frobot" => 1,
+          "max_player_frobot" => 5,
+          "status" => "done"
+        })
+
       {:ok, bl} = Events.create_battlelog(mt, params)
       assert bl
     end
@@ -79,8 +89,7 @@ defmodule Frobots.EventsTest do
           "slot_type" => "protobot"
         },
         %{
-          "status" => "closed",
-          "slot_type" => "closed"
+          "status" => "closed"
         }
       ],
       "frobot_ids" => [n1, n2],

@@ -13,12 +13,12 @@ defmodule FrobotsWeb.ArenaLive.Index do
     page_config =
       if params["page"],
         do: Keyword.put(page_config, :page, params["page"]),
-        else: page_config
+        else: Keyword.put(page_config, :page, 1)
 
     page_config =
       if params["page_size"],
         do: Keyword.put(page_config, :page_size, params["page_size"]),
-        else: page_config
+        else: Keyword.put(page_config, :page_size, 5)
 
     if connected?(socket), do: Events.subscribe()
 
@@ -30,27 +30,11 @@ defmodule FrobotsWeb.ArenaLive.Index do
       total_pages: total_pages
     } = Api.list_paginated_matches([], page_config, [:user], desc: :inserted_at)
 
-    %{entries: upcoming_matches} =
-      Api.list_paginated_matches([match_status: :pending], page_config, [:user],
-        desc: :inserted_at
-      )
-
-    %{entries: completed_matches} =
-      Api.list_paginated_matches([match_status: :done], page_config, [:user], desc: :inserted_at)
-
-    %{entries: live_matches} =
-      Api.list_paginated_matches([match_status: :running], page_config, [:user],
-        desc: :inserted_at
-      )
-
     {:ok,
      socket
      |> assign(:current_user, current_user)
      |> assign(:match_status, params["match_status"])
      |> assign(:matches, matches)
-     |> assign(:upcoming_matches_list, upcoming_matches)
-     |> assign(:completed_matches_list, completed_matches)
-     |> assign(:live_matches_list, live_matches)
      |> assign(:page, page)
      |> assign(:page_size, page_size)
      |> assign(:total_entries, total_entries)
@@ -81,8 +65,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
   #       "slot_type" => "protobot"
   #     },
   #     %{
-  #       "status" => "closed",
-  #       "slot_type" => "closed"
+  #       "status" => "closed"
   #     }
   #   ]
   # }
@@ -100,6 +83,65 @@ defmodule FrobotsWeb.ArenaLive.Index do
       {:error, changeset} ->
         {:noreply, assign(socket, match_changeset: changeset)}
     end
+  end
+
+  def handle_event("react.mount_arena_home", _params, socket) do
+    {:noreply,
+     push_event(socket, "react.return_arena_home", %{
+       "live_matches_count" => socket.assigns.live_matches_count,
+       "completed_matches_count" => socket.assigns.completed_matches_count,
+       "upcoming_matches_count" => socket.assigns.upcoming_matches_count,
+       "matches" => extract_matches(socket.assigns.matches),
+       "total_entries" => socket.assigns.total_entries,
+       "page" => socket.assigns.page,
+       "page_size" => socket.assigns.page_size
+     })}
+  end
+
+  def handle_event("react.update_arena_match_search", params, socket) do
+    filter_params = Keyword.new()
+
+    filter_params =
+      if params["match_status"],
+        do: Keyword.put(filter_params, :match_status, params["match_status"]),
+        else: filter_params
+
+    filter_params =
+      if params["search_pattern"],
+        do: Keyword.put(filter_params, :search_pattern, params["search_pattern"]),
+        else: filter_params
+
+    page_config = Keyword.new()
+
+    page_config =
+      if params["page"],
+        do: Keyword.put(page_config, :page, params["page"]),
+        else: Keyword.put(page_config, :page, 1)
+
+    page_config =
+      if params["page_size"],
+        do: Keyword.put(page_config, :page_size, params["page_size"]),
+        else: Keyword.put(page_config, :page_size, 5)
+
+    %{
+      entries: matches,
+      page_number: page,
+      page_size: page_size,
+      total_entries: total_entries
+    } = Api.list_paginated_matches(filter_params, page_config, [:user], desc: :inserted_at)
+
+    {:noreply,
+     push_event(socket, "react.return_arena_home", %{
+       "live_matches_count" => socket.assigns.live_matches_count,
+       "completed_matches_count" => socket.assigns.completed_matches_count,
+       "upcoming_matches_count" => socket.assigns.upcoming_matches_count,
+       "matches" => extract_matches(matches),
+       "total_entries" => total_entries,
+       "page" => page,
+       "page_size" => page_size,
+       "match_status" => params["match_status"],
+       "search_pattern" => params["search_pattern"]
+     })}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -255,5 +297,57 @@ defmodule FrobotsWeb.ArenaLive.Index do
       end
 
     {:noreply, socket}
+  end
+
+  def handle_info(_, socket), do: {:noreply, socket}
+
+  def extract_matches(matches) do
+    Enum.map(
+      matches,
+      fn %{
+           id: id,
+           title: title,
+           description: description,
+           user_id: user_id,
+           frobots: frobots,
+           match_time: match_time,
+           max_player_frobot: max_player_frobot,
+           min_player_frobot: min_player_frobot,
+           timer: timer,
+           status: status,
+           arena_id: arena_id,
+           inserted_at: inserted_at,
+           user: user
+         } ->
+        %{
+          id: id,
+          title: title,
+          description: description,
+          user_id: user_id,
+          frobots: frobots,
+          match_time: match_time,
+          max_player_frobot: max_player_frobot,
+          min_player_frobot: min_player_frobot,
+          timer: timer,
+          status: status,
+          arena_id: arena_id,
+          inserted_at: inserted_at,
+          user:
+            if user !== nil do
+              %{
+                "id" => user.id,
+                "email" => user.email,
+                "name" => user.name
+              }
+            else
+              %{
+                "id" => nil,
+                "email" => nil,
+                "name" => nil
+              }
+            end
+        }
+      end
+    )
   end
 end

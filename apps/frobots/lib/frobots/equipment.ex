@@ -6,6 +6,16 @@ defmodule Frobots.Equipment do
 
   alias Frobots.Assets
 
+  # Returns the (CRUD) getter function for this equipment
+  defp _get_fn(equipment_class) do
+    String.to_atom("get_" <> String.downcase(equipment_class) <> "!")
+  end
+
+  # return the master template for this equipment class and type
+  defp _get_template(equipment_class, equipment_type) do
+    apply(Frobots.Assets, _get_fn(equipment_class), [equipment_type])
+  end
+
   @doc ~S"""
   EQUIPMENT INTERFACE APIs
   create an instance of an equipment for the frobot.
@@ -95,10 +105,15 @@ defmodule Frobots.Equipment do
     #     "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
     #   )
 
+
     # inst_struct = inst_module.new(%{})
     # # we have to rely on the fact the type is the get_xxxxxx fn
     # get_fn = String.to_atom("get_" <> String.downcase(equipment_class) <> "!")
     # master_struct = apply(Frobots.Assets, get_fn, [equipment_type])
+
+    inst_struct = inst_module.new(%{})
+    master_struct = _get_template(equipment_class, equipment_type)
+
 
     # inst_struct
     # |> inst_module.changeset(Map.from_struct(master_struct))
@@ -162,6 +177,7 @@ defmodule Frobots.Equipment do
   """
   def equip_part(equipment_instance_id, frobot_id, equipment_class) do
     # add a frobot association to the part, see how create_equipment uses Ecto.Changeset.put_assoc().
+
     inst_module =String.to_existing_atom(
           "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
         )
@@ -207,6 +223,10 @@ defmodule Frobots.Equipment do
     else
       {:error, "Xframe needs to be installed first"}
     end
+
+    # figure out what kind of equipment it is. use Frobot.parts_classes()
+    # need to check if there is a slot for it use Frobot.equipment_hardpoint_map()
+
   end
 
 
@@ -248,6 +268,14 @@ defmodule Frobots.Equipment do
   end
 
   @doc """
+  dequip an xframe
+  """
+  def dequip_xframe(_frobot) do
+    # when you dequip an xframe, it Must dequip everything
+    # dequip_all(_frobot)
+  end
+
+  @doc """
   should change the user_id of the part to someone else.... but before doing so via update_equipment() the part needs to be removed from any frobot it is currency equipped to. Call the previous dequip() API fn to do so first.
   """
   def xfer_equipment(_equipment, _touser) do
@@ -258,6 +286,44 @@ defmodule Frobots.Equipment do
   """
   def xfer_frobot(_frobot, _fromuser, _touser) do
     # how should we expect the caller to refer to the user?
+    # dequip(all) before any transfer
+  end
+
+  #############################################################################
+  ## loadout API
+  ##
+  ## API needed for a frobot to create its 'tank' for FUBARs.
+  #############################################################################
+
+  @doc """
+  getting the stats of weapons, this is used by the frobot when it is creating its 'tank'
+  """
+  def get_weapon_loadout(_frobot) do
+    # return a list of the weapons equipped, in the form
+    # find all weapons which is equipped to this frobot from the db
+    # iterate through all the weapon classes... Frobots.weapon_classes()
+    # with the class of the weapon, get the weapon instance from the db using the _get_fn(equipment_class)
+    # the output should be as below pass back with class so that frobot can display this in FUBARs status display
+    # [ %{class: :cannon, type: "Mk1", reload_time: 5, rate_of_fire: 1, magazine_size: 2} ]
+  end
+
+  @doc """
+  getting the stats of the sensors
+  """
+  def get_sensor_loadout(_frobot) do
+    # [ %{type: "Mk1", max_range: 700, resolution: 10} ]
+  end
+
+  @doc """
+  get the stats of the ammunition equipped
+  """
+  def get_ammo_loadout(_frobot) do
+    # [%{type: "Mk1",
+    # damage_direct: [5,10],
+    # damage_near: [20,5],
+    # damage_far: [40,3],
+    # speed: 400,
+    # range: 900}]
   end
 
   # functions returning changesets..
