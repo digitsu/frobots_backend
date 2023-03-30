@@ -26,11 +26,44 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
 
   @impl Phoenix.LiveView
   def handle_event("react.fetch_user_frobots", _params, socket) do
-    IO.inspect("FROM ELX")
-    IO.inspect(socket.assigns.user_frobots)
     {:noreply,
      push_event(socket, "react.return_user_frobots", %{
-       "frobotList" => socket.assigns.user_frobots
+       "frobotList" => extract_frobots(socket.assigns.user_frobots)
      })}
+  end
+
+  def extract_frobots(frobots) do
+    Enum.map(
+      frobots,
+      fn %{
+           id: id,
+           name: name,
+           brain_code: brain_code,
+           class: class,
+           xp: xp,
+           blockly_code: blockly_code,
+           avatar: avatar,
+           bio: bio,
+           pixellated_img: pixellated_img,
+           user_id: user_id,
+           inserted_at: inserted_at,
+           updated_at: updated_at
+         } ->
+        %{
+          id: id,
+          name: name,
+          brain_code: brain_code,
+          class: class,
+          xp: xp,
+          blockly_code: blockly_code,
+          avatar: avatar,
+          bio: bio,
+          pixellated_img: pixellated_img,
+          user_id: user_id,
+          inserted_at: inserted_at,
+          updated_at: updated_at
+        }
+      end
+    )
   end
 end

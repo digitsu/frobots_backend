@@ -106,7 +106,7 @@ const frobotDetails = {
   cannon_inst: [
     {
       id: 1,
-      avatar: '/images/frobot_bg.png',
+      avatar: '/images/equipment_canon_mk_2.png',
       name: 'Cannon MK II',
       props: {
         maxRange: '700m',
@@ -118,7 +118,7 @@ const frobotDetails = {
     },
     {
       id: 2,
-      avatar: '/images/frobot_bg.png',
+      avatar: '/images/equipment_canon_mk_3.png',
       name: 'Cannon MK III',
       props: {
         maxRange: '700m',
@@ -132,7 +132,7 @@ const frobotDetails = {
   scanner_inst: [
     {
       id: 1,
-      avatar: '/images/frobot_bg.png',
+      avatar: '/images/equipment_scanner_mk_1.png',
       name: 'Scanner MK I',
       props: {
         maxRange: '700m',
@@ -144,7 +144,7 @@ const frobotDetails = {
     },
     {
       id: 2,
-      avatar: '/images/frobot_bg.png',
+      avatar: '/images/equipment_scanner_mk_2.png',
       name: 'Scanner MK II',
       props: {
         maxRange: '700m',
@@ -226,16 +226,21 @@ export default (props:any) => {
   
   return (
     <>
-      <Box display={'flex'} sx={{pl:pl}}>
+      <Box display={'flex'} sx={{ pl: pl }}>
         <SlideBarGrid isOwnedFrobot={isOwnedFrobot} />
 
-        <Box width={'100%'} m={'auto'} pr={3}>
+        <Box
+          width={'100%'}
+          m={'auto'}
+          pr={6}
+          sx={{ borderLeft: isOwnedFrobot?'2px solid #2C333C':'none' ,paddingLeft:isOwnedFrobot?1.5:0}}
+        >
           <Typography
             sx={{
               pb: 2,
               pt: 2,
             }}
-            variant="h5"
+            variant="h4"
           >
             {frobotDetails.name}
           </Typography>
