@@ -3,7 +3,7 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.Assets
   alias Frobots.Accounts
-  alias Frobots.Api
+  alias Frobots.{Api,Equipment}
 
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
@@ -35,46 +35,28 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   def handle_event("react.create_frobot", params, socket) do
     current_user = socket.assigns.current_user
 
-    IO.inspect params
-
-    #TODO: update API to accept braincode istead of prototype
-
-    params = %{
-      "name" => "tomtom", "prototype" => "sniper", "bio" => "i am tom"
-    }
-
-    if Map.has_key?(params, "name") && Map.has_key?(params, "prototype") do
+    if Map.has_key?(params, "name") && Map.has_key?(params, "brain_code") do
       name = Map.get(params,"name")
-      prototype = Map.get(params,"prototype")
+      brain_code = Map.get(params,"brain_code")
+      optional_params = Map.delete(params, "name") |> Map.delete("brain_code")
 
-      optional_params = Map.delete(params, "name") |> Map.delete("prototype")
-
-      case Api.create_frobot(current_user, name, prototype, optional_params) do
+      case Api.create_frobot(current_user, name, brain_code, optional_params) do
         {:ok, frobot_id} ->
-          {:noreply,
-          socket
-            |> push_redirect(to: "/garage/frobot?id=#{frobot_id}")}
-        {:error, errors} ->
+          # get frobot equipment
+          frobot_equipment = Equipment.list_frobot_equipment(frobot_id)
           {:noreply,
             socket
-            |> assign(:errors, errors)
-            |> put_flash(:error, "Could not create frobot")}
+            |> assign(:frobot_equipment, frobot_equipment)
+            |> push_redirect(to: "/garage/frobot?id=#{frobot_id}")}
+        {:error, error} ->
+          {:noreply,
+            socket
+            |> assign(:errors, error)
+            |> put_flash(:error, "Could not create frobot. #{error}")}
       end
     else
         {:noreply, socket
-                |> put_flash(:error, "Frobot name and prototype are required")}
+          |> put_flash(:error, "Frobot name and prototype are required")}
     end
-
-    # case Assets.create_frobot(current_user, params) do
-    #   {:ok, frobot} ->
-    #     {:noreply,
-    #      socket
-    #      |> push_redirect(to: "/garage/frobot?id=#{frobot.id}")}
-
-    #   {:error, _changeset} ->
-    #     {:noreply,
-    #      socket
-    #      |> put_flash(:error, "Could not create frobot")}
-    # end
   end
 end

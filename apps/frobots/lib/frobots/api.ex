@@ -3,7 +3,7 @@ defmodule Frobots.Api do
   alias Frobots.Events.{Match, Slot}
   alias Frobots.Accounts.User
 
-  alias Frobots.{Assets, Equipment, Accounts}
+  alias Frobots.{Equipment, Accounts}
 
   # alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
   alias Frobots.Assets.Frobot
@@ -89,73 +89,106 @@ defmodule Frobots.Api do
   end
 
 
-  def create_frobot(user, _name, _prototype, _extra_params) when user.sparks == 0 do
-    {:error, "User does not have any more sparks left."}
+  def create_frobot(user, _name, _brain_code, _extra_params) when user.sparks == 0 do
+    {:error, "User does not have enough sparks."}
   end
 
-  def create_frobot(user, name, prototype, _extra_params)
+  def create_frobot(user, name, brain_code, _extra_params)
                             when user.sparks > 0
                             and name === ""
-                            and prototype === "" do
+                            and brain_code === "" do
     IO.inspect "Name and prototype required"
-    {:error, "Frobot name and prototype are required."}
+    {:error, "Frobot name and braincode are required."}
   end
 
-  def create_frobot(user, name, prototype, extra_params)
+
+  @doc ~S"""
+    Create Frobot
+    We pass name and brain code so that we pattern match on required fieldsby checking guard functions
+
+  """
+  def create_frobot(user, name, brain_code, extra_params)
                           when user.sparks > 0
                           and name !== ""
-                          and prototype !== "" do
+                          and brain_code !== "" do
     # _default_loadout = Frobots.default_frobot_loadout()
     # extra_params may contain bio, pixellated_img, avatar, blockly_code
-    protobot = Assets.list_template_frobots()
-                |> Enum.find(fn x -> x.name == prototype end)
-
     frobot_attrs = Map.merge(extra_params, %{"name" => name,
-                        "brain_code" => protobot.brain_code,
+                        "brain_code" => brain_code,
                         "class" => "U"})
 
-    # start transaction here...
-    multi = Multi.new()
-    |> Multi.insert(:frobot, create_frobot_changeset(user, frobot_attrs))
-    |> Multi.insert(:xframe_inst, Equipment.create_equipment_changeset(user, "Xframe", :Tank_Mk1))
-    |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
-    |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
-    |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
-    |> Multi.update(:equip_xframe, fn %{frobot: frobot, xframe_inst: xframe_inst } ->
-        Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
-      end)
-    |> Multi.update(:equip_cannon, fn %{frobot: frobot, cannon_inst: cannon_inst } ->
-        Equipment.equip_part_changeset(cannon_inst.id, frobot.id, "Cannon")
-      end)
-    |> Multi.update(:equip_scanner, fn %{frobot: frobot, scanner_inst: scanner_inst } ->
-       Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
-      end)
-    |> Multi.update(:update_user, fn %{frobot: frobot} ->
-        update_user_changeset(frobot.user_id)
-      end)
-
-    case Repo.transaction(multi) do
-      {:ok, result} ->
-        frobot = result.frobot
-        # IO.inspect "This is the frobot id: #{frobot.id}"
-        {:ok, frobot.id}
-      {:error, :frobot, %Ecto.Changeset{} = cs, _changes}  ->
-        errors = changeset_error_to_string(cs)
-        IO.inspect errors
-        {:error, errors}
-      {:error, :frobot, _cs}  ->
-          IO.inspect "there was an error"
-    end
-
-    # |> Multi.run(:equip_missile, fn %{repo: repo, frobot: frobot, missile_inst: missile_inst } ->
-    #     changeset = Equipment.equip_part_changeset(missile_inst.id, frobot.id, "Missile")
-    #     # if !is_nil(changeset) do
-    #     #   changeset |> repo.update()
-    #     # end
-    # end)
+    build_multi(user, frobot_attrs)
+    |> run_multi()
   end
 
 
+  @doc ~S"""
+
+    This is called internally called from create_frobot to build an Ecto.multi structure.
+    Building Ecto.multi structure in separate function makes testing easier.
+
+    ex: multi_list = Api.build_multi(user, @valid_frobot_attrs) |> Ecto.Multi.to_list()
+
+    Where multi_list is a list of changesets that can asserted for validity.
+
+  """
+  def build_multi(user, frobot_attrs) do
+    Multi.new()
+      |> Multi.insert(:frobot, create_frobot_changeset(user, frobot_attrs))
+      |> Multi.insert(:xframe_inst, Equipment.create_equipment_changeset(user, "Xframe", :Tank_Mk1))
+      |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
+      |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
+      |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
+      |> Multi.update(:equip_xframe, fn %{frobot: frobot, xframe_inst: xframe_inst } ->
+          Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
+        end)
+      |> Multi.update(:equip_cannon, fn %{frobot: frobot, cannon_inst: cannon_inst } ->
+          Equipment.equip_part_changeset(cannon_inst.id, frobot.id, "Cannon")
+        end)
+      |> Multi.update(:equip_scanner, fn %{frobot: frobot, scanner_inst: scanner_inst } ->
+        Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
+        end)
+      |> Multi.update(:update_user, fn %{frobot: frobot} ->
+          update_user_changeset(frobot.user_id)
+        end)
+  end
+
+  @doc ~S"""
+    Runs Multi structure
+    This is function is called after build_multi.
+
+    The actual db operations are run in this step as a transaction and any failures are rolld back.any()
+    Function returns {:ok, frobot_id} or {:error, reason} to caller
+  """
+  def run_multi(multi) do
+    case Repo.transaction(multi) do
+      {:ok, result} ->
+        {:ok, result.frobot.id}
+      {:error, :frobot, %Ecto.Changeset{} = cs, _changes}  ->
+        return_errors(cs)
+      {:error, :xframe_inst, %Ecto.Changeset{} = cs, _changes}  ->
+        return_errors(cs)
+      {:error, :cannon_inst, %Ecto.Changeset{} = cs, _changes}  ->
+        return_errors(cs)
+      {:error, :scanner_inst, %Ecto.Changeset{} = cs, _changes}  ->
+        return_errors(cs)
+      {:error, :missile_inst, %Ecto.Changeset{} = cs, _changes}  ->
+        return_errors(cs)
+      {:error, :equip_xframe, %Ecto.Changeset{} = cs, _changes}  ->
+        return_errors(cs)
+      {:error, :equip_cannon, %Ecto.Changeset{} = cs, _changes}  ->
+        return_errors(cs)
+      {:error, :equip_scanner, %Ecto.Changeset{} = cs, _changes}  ->
+        return_errors(cs)
+      {:error, :update_user, %Ecto.Changeset{} = cs, _changes}  ->
+        return_errors(cs)
+    end
+  end
+
+  defp return_errors(%Ecto.Changeset{} = cs) do
+    errors = changeset_error_to_string(cs)
+        {:error, errors}
+  end
 
 
   defp create_frobot_changeset(user, attrs) do
