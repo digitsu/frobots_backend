@@ -40,7 +40,7 @@ export default (props: SlideBarGridProps) => {
     } else {
       setSelectedImage(location.search.split('?id=')[1])
     }
-  }, [1])
+  }, [])
 
   const handleImageClick = (image) => {
     setSelectedImage(image.id)
