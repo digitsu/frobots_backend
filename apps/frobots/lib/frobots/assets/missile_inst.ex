@@ -27,9 +27,8 @@ defmodule Frobots.Assets.MissileInst do
     timestamps()
   end
 
-  # sri
+
   @fields [
-    # :missile_id,
     :damage_direct,
     :damage_near,
     :damage_far,

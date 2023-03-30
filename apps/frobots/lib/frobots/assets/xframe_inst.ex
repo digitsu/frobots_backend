@@ -32,11 +32,6 @@ defmodule Frobots.Assets.XframeInst do
     field(:max_health, :integer)
     field(:max_throttle, :integer)
     field(:accel_speed_mss, :integer)
-
-
-
-
-
     timestamps()
   end
 

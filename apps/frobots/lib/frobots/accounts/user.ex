@@ -45,7 +45,7 @@ defmodule Frobots.Accounts.User do
   # in cast list
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :name, :migrated_user, :hashed_password_old])
+    |> cast(attrs, [:email, :password, :name, :migrated_user, :hashed_password_old, :sparks])
     |> unique_constraint(:name)
     |> validate_email()
     |> validate_password(opts)
@@ -53,7 +53,7 @@ defmodule Frobots.Accounts.User do
 
   def profile_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :name])
+    |> cast(attrs, [:email, :name, :sparks])
     |> unique_constraint(:name)
     |> validate_email()
   end

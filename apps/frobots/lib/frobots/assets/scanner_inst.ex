@@ -21,10 +21,7 @@ defmodule Frobots.Assets.ScannerInst do
     timestamps()
   end
 
-  # sri
   @fields [
-    # :frobot_id,
-    # :scanner_id,
     :max_range,
     :resolution
   ]

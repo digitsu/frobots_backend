@@ -11,21 +11,13 @@ defmodule Frobots.Repo.Migrations.RemoveEquipmentTable do
 
       add :max_speed_ms, :integer
       add :turn_speed, :integer
-
-
-      # sri: change from scanner_hardpoints to sensor_hardpoits
-      add :sensor_hardpoints, :integer
-      add :weapon_hardpoints, :integer
-      add :cpu_hardpoints, :integer #new
-
+      add :scanner_hardpoint, :integer
+      add :weapon_hardpoint, :integer
       add :max_health, :integer
       add :max_throttle, :integer
       add :accel_speed_mss, :integer
       # persisted state
       add :health, :integer
-
-      add :movement_type, :string
-
       timestamps()
     end
 

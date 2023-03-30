@@ -131,6 +131,9 @@ defmodule Frobots.Accounts do
 
   """
   def register_user(attrs) do
+    # users get a default of 6 sparx
+    attrs = Map.put(attrs, "sparks", 6)
+
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()

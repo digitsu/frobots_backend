@@ -89,32 +89,30 @@ defmodule Frobots.Equipment do
     create_equipment(user, equipment_class, Atom.to_string(equipment_type))
   end
 
-
-
   def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) do
-    inst_module =
-      String.to_existing_atom(
-        "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
-      )
+    # inst_module =
+    #   String.to_existing_atom(
+    #     "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
+    #   )
 
-    inst_struct = inst_module.new(%{})
-    # we have to rely on the fact the type is the get_xxxxxx fn
-    get_fn = String.to_atom("get_" <> String.downcase(equipment_class) <> "!")
-    master_struct = apply(Frobots.Assets, get_fn, [equipment_type])
+    # inst_struct = inst_module.new(%{})
+    # # we have to rely on the fact the type is the get_xxxxxx fn
+    # get_fn = String.to_atom("get_" <> String.downcase(equipment_class) <> "!")
+    # master_struct = apply(Frobots.Assets, get_fn, [equipment_type])
 
-
-    inst_struct
-    |> inst_module.changeset(Map.from_struct(master_struct))
-    |> Ecto.Changeset.put_assoc(:user, user)
-    |> Ecto.Changeset.put_assoc(
-      String.to_existing_atom(String.downcase(equipment_class)),
-      master_struct
-    )
+    # inst_struct
+    # |> inst_module.changeset(Map.from_struct(master_struct))
+    # |> Ecto.Changeset.put_assoc(:user, user)
+    # |> Ecto.Changeset.put_assoc(
+    #   String.to_existing_atom(String.downcase(equipment_class)),
+    #   master_struct
+    # )
+    create_equipment_changeset(%Accounts.User{} = user, equipment_class, equipment_type)
     |> Repo.insert()
   end
 
   def get_equipment(equipment_class, id) do
-    module = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_class <> "Inst")
+    module = String.to_existing_atom("Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst")
 
     from(eqp in module, where: eqp.id == ^id)
     |> Repo.one()
@@ -162,14 +160,72 @@ defmodule Frobots.Equipment do
   @doc """
   which should assign the equipment (equipe it) to that frobot, which should also incorporate logic to check the number of slots in the currently equipped xframe for the frobot.
   """
-  def equip_part(_equipment, _frobot) do
+  def equip_part(equipment_instance_id, frobot_id, equipment_class) do
     # add a frobot association to the part, see how create_equipment uses Ecto.Changeset.put_assoc().
+    inst_module =String.to_existing_atom(
+          "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
+        )
+
+    xframe = from(x in XframeInst, where: x.frobot_id == ^frobot_id) |> Repo.one()
+    frobot = Assets.get_frobot(frobot_id)
+
+    if !is_nil(xframe) do
+      # now check how many scanner and weapon endopoints are on xframe
+      scanner_endpoints = xframe.sensor_hardpoints
+      weapon_endpoints = xframe.weapon_hardpoints
+
+      cannons =  from(c in CannonInst, where: c.frobot_id == ^frobot_id ) |> Repo.all()  |> Enum.count()
+      scanners = from(s in ScannerInst, where: s.frobot_id == ^frobot_id) |> Repo.all()  |> Enum.count()
+      missiles = from(m in MissileInst, where: m.frobot_id == ^frobot_id) |> Repo.all()  |> Enum.count()
+
+      total_weapons = cannons + missiles
+
+      equipment = get_equipment(equipment_class, equipment_instance_id) |> Repo.preload(:frobot)
+
+      if equipment_class in ["cannon", "missile"] do
+        if total_weapons == weapon_endpoints do
+          IO.inspect "There are no empty slots for cannons or missiles"
+          {:error, "There are no empty slots for cannons or missiles"}
+        else
+          # ok to equip
+          inst_module.changeset(equipment, %{})
+          |> Ecto.Changeset.put_assoc(:frobot, frobot)
+          |> Repo.update()
+        end
+      end
+
+      if equipment_class == "scanner" do
+        if scanners == weapon_endpoints do
+          IO.inspect "There are no empty slots for scanners"
+          {:error, "There are no empty slots for scanners"}
+        else
+          inst_module.changeset(equipment, %{})
+          |> Ecto.Changeset.put_assoc(:frobot, frobot)
+          |> Repo.update()
+        end
+      end
+    else
+      {:error, "Xframe needs to be installed first"}
+    end
   end
+
 
   @doc """
   need to install an xframe onto a frobot. this needs to be done first, because equip_part() cannot be executed before a frobot has its xframe installed.
   """
-  def equip_xframe(_xframe, _frobot) do
+  def equip_xframe(xframe_inst_id, frobot_id) do
+    inst_module =
+      String.to_existing_atom(
+        "Elixir.Frobots.Assets." <> String.capitalize("Xframe") <> "Inst"
+      )
+    # get xframeInst
+    current_frobot = Assets.get_frobot(frobot_id)
+    xframe = get_equipment("Xframe", xframe_inst_id)  |> Repo.preload(:frobot)
+
+    inst_module.changeset(xframe, %{})
+    |> Ecto.Changeset.put_assoc(:frobot, current_frobot)
+    |> Repo.update()
+
   end
 
   @doc """
@@ -203,4 +259,92 @@ defmodule Frobots.Equipment do
   def xfer_frobot(_frobot, _fromuser, _touser) do
     # how should we expect the caller to refer to the user?
   end
+
+  # functions returning changesets..
+  # create equipment changeset
+  def create_equipment_changeset(%Accounts.User{} = user, equipment_class, equipment_type) do
+    inst_module =
+      String.to_existing_atom(
+        "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
+      )
+
+    inst_struct = inst_module.new(%{})
+    # we have to rely on the fact the type is the get_xxxxxx fn
+    get_fn = String.to_atom("get_" <> String.downcase(equipment_class) <> "!")
+    master_struct = apply(Frobots.Assets, get_fn, [equipment_type])
+
+    inst_struct
+    |> inst_module.changeset(Map.from_struct(master_struct))
+    |> Ecto.Changeset.put_assoc(:user, user)
+    |> Ecto.Changeset.put_assoc(
+      String.to_existing_atom(String.downcase(equipment_class)),
+      master_struct
+    )
+  end
+
+  # get xframe changeset
+  def equip_xframe_changeset(xframe_inst_id, frobot_id) do
+    inst_module =
+      String.to_existing_atom(
+        "Elixir.Frobots.Assets." <> String.capitalize("Xframe") <> "Inst"
+      )
+    # get xframeInst
+    current_frobot = Assets.get_frobot(frobot_id)
+    xframe = get_equipment("Xframe", xframe_inst_id)  |> Repo.preload(:frobot)
+
+    inst_module.changeset(xframe, %{})
+    |> Ecto.Changeset.put_assoc(:frobot, current_frobot)
+  end
+
+  # equip part changeset
+  def equip_part_changeset(equipment_instance_id, frobot_id, equipment_class) do
+    # add a frobot association to the part, see how create_equipment uses Ecto.Changeset.put_assoc().
+    inst_module =String.to_existing_atom(
+          "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
+        )
+    xframe = from(x in XframeInst, where: x.frobot_id == ^frobot_id) |> Repo.one()
+    frobot = Assets.get_frobot(frobot_id)
+
+    if !is_nil(xframe) do
+      # now check how many scanner and weapon endopoints are on xframe
+      scanner_endpoints = xframe.sensor_hardpoints
+      weapon_endpoints = xframe.weapon_hardpoints
+
+      cannons =  from(c in CannonInst, where: c.frobot_id == ^frobot_id ) |> Repo.all()  |> Enum.count()
+      scanners = from(s in ScannerInst, where: s.frobot_id == ^frobot_id) |> Repo.all()  |> Enum.count()
+      missiles = from(m in MissileInst, where: m.frobot_id == ^frobot_id) |> Repo.all()  |> Enum.count()
+
+      total_weapons = cannons + missiles
+      equipment = get_equipment(equipment_class, equipment_instance_id) |> Repo.preload(:frobot)
+
+      build_equipment_part_changeset(scanners, scanner_endpoints, total_weapons, weapon_endpoints,frobot, equipment, equipment_class, inst_module)
+    else
+      {:error, "Xframe needs to be installed first"}
+    end
+  end
+
+
+
+  defp build_equipment_part_changeset(scanners, scanner_endpoints,total_weapons, weapon_endpoints, frobot, equipment, equipment_class, inst_module)
+          when equipment_class in ["Cannon", "Missile"] do
+      if total_weapons == weapon_endpoints do
+        nil
+      else
+        inst_module.changeset(equipment, %{})
+        |> Ecto.Changeset.put_assoc(:frobot, frobot)
+      end
+
+  end
+
+  defp build_equipment_part_changeset(scanners, scanner_endpoints,total_weapons, weapon_endpoints, frobot, equipment, equipment_class, inst_module)
+          when equipment_class == "Scanner" do
+      if scanners == scanner_endpoints do
+        nil
+      else
+        inst_module.changeset(equipment, %{})
+        |> Ecto.Changeset.put_assoc(:frobot, frobot)
+      end
+
+  end
+
 end
