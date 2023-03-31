@@ -67,7 +67,7 @@ defmodule FrobotsWeb.MatchChannel do
         case Fubars.Match.start_match(
                via_tuple(match_name),
                ## Removed
-               #  match_data |> Map.get("frobots", nil) |> Frobots.Assets.load_frobots_from_db(),
+               match_data |> Map.get("frobots", nil) |> Frobots.Assets.load_frobots_from_db(),
                match_data
              ) do
           {:ok, frobots_map} ->
