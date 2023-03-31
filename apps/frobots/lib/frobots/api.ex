@@ -103,6 +103,13 @@ defmodule Frobots.Api do
     Create Frobot
     We pass name and brain code so that we pattern match on required fieldsby checking guard functions
 
+    Here is an example of how to create a frobot and associated equipmet instances
+    #iex>alias Frobots.{Accounts, Assets,Equipment,Api}
+    #iex>usr = %{"email" => "sriram@mail.com", "password" => "Password123", "sparks" => 6}
+    #iex>{:ok, user} = Accounts.register_user(usr)
+
+    #iex>extra_params=%{"bio" => "bio", "blobkly_code" => "boo"}
+    #iex>Api.create_frobot(user, "bulbul" ,"sniper",extra_params)
   """
   def create_frobot(user, name, brain_code, extra_params)
       when user.sparks > 0 and
