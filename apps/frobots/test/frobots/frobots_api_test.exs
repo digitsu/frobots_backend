@@ -17,7 +17,7 @@ defmodule Frobots.FrobotsApiTest do
   test "Calling Api.create_frobot with valid attributes creates frobot" do
     {:ok, user} = user_fixture(%{sparks: 6})
 
-    multi = Api.build_multi(user, @valid_frobot_attrs)
+    multi = Api._create_frobot_build_multi(user, @valid_frobot_attrs)
 
     assert [
              {:frobot, {:insert, frobot_cs, []}},
@@ -32,7 +32,7 @@ defmodule Frobots.FrobotsApiTest do
            ] = Ecto.Multi.to_list(multi)
 
     assert frobot_cs.valid?
-    assert {:ok, frobot_id} = Api.run_multi(multi)
+    assert {:ok, frobot_id} = Api._create_frobot_run_multi(multi)
     assert frobot_id > 0
 
     refresh_user = Accounts.get_user_by(id: user.id)
@@ -42,7 +42,7 @@ defmodule Frobots.FrobotsApiTest do
   test "Calling Api.create_frobot with invalid attributes returns error" do
     {:ok, user} = user_fixture(%{sparks: 6})
 
-    multi = Api.build_multi(user, @invalid_frobot_attrs)
+    multi = Api._create_frobot_build_multi(user, @invalid_frobot_attrs)
 
     assert [
              {:frobot, {:insert, frobot_cs, []}},
@@ -57,8 +57,7 @@ defmodule Frobots.FrobotsApiTest do
            ] = Ecto.Multi.to_list(multi)
 
     refute frobot_cs.valid?
-    assert {:error, errors} = Api.run_multi(multi)
-    # assert {:ok, result} = Api.run_multi(multi)
+    assert {:error, errors} = Api._create_frobot_run_multi(multi)
   end
 
   test "User with insufficient sparks cannot create frobot" do

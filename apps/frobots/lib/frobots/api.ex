@@ -3,7 +3,7 @@ defmodule Frobots.Api do
   alias Frobots.Events.{Match, Slot}
   alias Frobots.Accounts.User
 
-  alias Frobots.{Equipment, Accounts}
+  alias Frobots.{Equipment, Accounts, Assets}
 
   # alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
   alias Frobots.Assets.Frobot
@@ -87,15 +87,14 @@ defmodule Frobots.Api do
   def join_match(_user, _match) do
   end
 
-  def create_frobot(user, _name, _brain_code, _extra_params) when user.sparks == 0 do
+  def create_frobot(user, _name, _brain_code, _extra_params) when user.sparks <= 0 do
     {:error, "User does not have enough sparks."}
   end
 
-  def create_frobot(user, name, brain_code, _extra_params)
-      when user.sparks > 0 and
-             name === "" and
-             brain_code === "" do
-    IO.inspect("Name and prototype required")
+  def create_frobot(_user, name, brain_code, _extra_params)
+      when name == "" or
+             brain_code == "" do
+    IO.inspect("Name and Braincode required to create frobot")
     {:error, "Frobot name and braincode are required."}
   end
 
@@ -111,17 +110,18 @@ defmodule Frobots.Api do
     #iex>extra_params=%{"bio" => "bio", "blobkly_code" => "boo"}
     #iex>Api.create_frobot(user, "bulbul" ,"sniper",extra_params)
   """
-  def create_frobot(user, name, brain_code, extra_params)
-      when user.sparks > 0 and
-             name !== "" and
-             brain_code !== "" do
+  def create_frobot(user, name, brain_code, extra_params) do
     # _default_loadout = Frobots.default_frobot_loadout()
     # extra_params may contain bio, pixellated_img, avatar, blockly_code
     frobot_attrs =
-      Map.merge(extra_params, %{"name" => name, "brain_code" => brain_code, "class" => "U"})
+      Map.merge(extra_params, %{
+        "name" => name,
+        "brain_code" => brain_code,
+        "class" => Assets.default_user_class()
+      })
 
-    build_multi(user, frobot_attrs)
-    |> run_multi()
+    _create_frobot_build_multi(user, frobot_attrs)
+    |> _create_frobot_run_multi()
   end
 
   @doc ~S"""
@@ -129,12 +129,12 @@ defmodule Frobots.Api do
     This is called internally called from create_frobot to build an Ecto.multi structure.
     Building Ecto.multi structure in separate function makes testing easier.
 
-    ex: multi_list = Api.build_multi(user, @valid_frobot_attrs) |> Ecto.Multi.to_list()
+    ex: multi_list = Api._create_frobot_build_multi(user, @valid_frobot_attrs) |> Ecto.Multi.to_list()
 
     Where multi_list is a list of changesets that can asserted for validity.
 
   """
-  def build_multi(user, frobot_attrs) do
+  def _create_frobot_build_multi(user, frobot_attrs) do
     Multi.new()
     |> Multi.insert(:frobot, create_frobot_changeset(user, frobot_attrs))
     |> Multi.insert(:xframe_inst, Equipment.create_equipment_changeset(user, "Xframe", :Tank_Mk1))
@@ -157,12 +157,12 @@ defmodule Frobots.Api do
 
   @doc ~S"""
     Runs Multi structure
-    This is function is called after build_multi.
+    This is function is called after _create_frobot_build_multi.
 
     The actual db operations are run in this step as a transaction and any failures are rolld back.any()
     Function returns {:ok, frobot_id} or {:error, reason} to caller
   """
-  def run_multi(multi) do
+  def _create_frobot_run_multi(multi) do
     case Repo.transaction(multi) do
       {:ok, result} ->
         {:ok, result.frobot.id}
