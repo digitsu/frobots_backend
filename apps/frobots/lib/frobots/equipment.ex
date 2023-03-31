@@ -212,7 +212,7 @@ defmodule Frobots.Equipment do
   end
 
   def call_equip_part_update(changeset) when is_nil(changeset) do
-    {:error, "unable to equip part"}
+    {:error, "unable to equip part, there are no open slots"}
   end
 
   defp send_db_response(response) do
@@ -235,7 +235,7 @@ defmodule Frobots.Equipment do
 
     case result do
       {:ok, _xframe_inst} ->
-        {:ok, "frobot equipped with xframe instane"}
+        {:ok, "frobot equipped with xframe instanse"}
 
       {:error, %Ecto.Changeset{}} ->
         {:error, "There was an error"}
