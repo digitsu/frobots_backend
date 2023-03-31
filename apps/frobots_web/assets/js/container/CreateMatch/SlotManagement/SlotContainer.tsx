@@ -31,7 +31,7 @@ export default () => {
         <Typography variant="subtitle1">Frobot Slots</Typography>
       </Box>
       <Card sx={{ height: '100%' }}>
-        <Box py={9} px={2}>
+        <Box pt={9} px={2} pb={0}>
           <Grid container spacing={1}>
             {slots.map((slot) => (
               <Grid item lg={4}>
@@ -41,7 +41,7 @@ export default () => {
                   flexDirection={'column'}
                 >
                   <Box my={1}>
-                    <Typography variant="subtitle2">{slot.label}</Typography>
+                    <Typography variant="subtitle2">{slot.name}</Typography>
                   </Box>
                   <Box
                     sx={{

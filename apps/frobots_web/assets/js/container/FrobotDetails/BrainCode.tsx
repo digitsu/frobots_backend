@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
-import { Box, Tab, Tabs, Button } from '@mui/material'
+import { Box, Tab, Tabs, Button, Autocomplete, TextField } from '@mui/material'
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
@@ -10,12 +10,30 @@ const BlankBlocklyCode =
   '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
 
 export default (props: any) => {
-  const { frobot, updateFrobotCode } = props
+  const {
+    frobot,
+    updateFrobotCode,
+    requestMatch,
+    runSimulation,
+    cancelSimulation,
+    changeProtobot,
+    templates,
+  } = props
+  const [isEditable, enableEdit] = useState(false)
   const [luaCode, setLuaCode] = useState(frobot.brain_code || '')
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState(
     frobot.blockly_code || BlankBlocklyCode
   )
+  const [isSelectedProtobot, setIsSelectedProtobot] = useState(false)
+  const [isRequestedMatch, setIsRequestedMatch] = useState(false)
+  const [isSimulationStarted, setIsSimulationStarted] = useState(false)
+
+  const templateFrobots =
+    templates?.map(({ name}, index) => ({
+      label: name,
+      id: name,
+    })) || []
 
   function a11yProps(index: number) {
     return {
@@ -24,9 +42,10 @@ export default (props: any) => {
     }
   }
 
-  const [tabIndex, setTabIndex] = React.useState(luaCode ? 1 : 0)
+  const [tabIndex, setTabIndex] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    enableEdit(true)
     setTabIndex(newValue)
   }
 
@@ -49,17 +68,15 @@ export default (props: any) => {
       const code = luaGenerator.workspaceToCode(workspace)
       if (code != blocklyCode) {
         setBlocklyCode(code)
+
+        if (isEditable) {
+          setLuaCode(code)
+        }
       }
     } catch (err) {
       console.log(err)
     }
   }
-
-  useEffect(() => {
-    if (tabIndex === 0) {
-      setLuaCode(blocklyCode)
-    }
-  }, [blocklyCode])
 
   const saveConfig = () => {
     if (!luaCode || luaCode.trim() === '') {
@@ -75,10 +92,39 @@ export default (props: any) => {
     updateFrobotCode(requestBody)
   }
 
-  // TODO : [FRO-383 brain code simulation logic]
-  const simulateConfig = () => {}
+  const handleRequestMatch = () => {
+    if (!luaCode || luaCode.trim() === '') {
+      return alert("Match can't be requested with empty lua code")
+    } else {
+      requestMatch()
+      setIsRequestedMatch(true)
+    }
+  }
 
-  return (
+  const handleRunSimulation = () => {
+    if (!luaCode || luaCode.trim() === '') {
+      return alert("Simulation can't be started with empty lua code")
+    } else {
+      runSimulation(frobot)
+      setIsSimulationStarted(true)
+    }
+  }
+
+  const handleCancelSimulation = () => {
+    cancelSimulation()
+    setIsRequestedMatch(false)
+    setIsSimulationStarted(false)
+    setIsSelectedProtobot(false)
+  }
+
+  const handleChangeOpponent = (event, option) => {
+    if (option.id) {
+      changeProtobot(option.id)
+      setIsSelectedProtobot(true)
+    }
+  }
+
+  return !isRequestedMatch ? (
     <Box mt={8}>
       <>
         <Box
@@ -122,7 +168,7 @@ export default (props: any) => {
                   />
                 </Tabs>
               </Box>
-              <Box>
+              <Box display={'flex'}>
                 <Button
                   variant="outlined"
                   color="inherit"
@@ -131,14 +177,35 @@ export default (props: any) => {
                 >
                   Save
                 </Button>{' '}
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  size="small"
-                  onClick={simulateConfig}
-                >
-                  Simulate
-                </Button>
+                <Autocomplete
+                  sx={{
+                    pl: 1,
+                    pr: 1,
+                    width: 200,
+                  }}
+                  onChange={handleChangeOpponent}
+                  options={templateFrobots}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select an opponent"
+                      variant="outlined"
+                      size="small"
+                      name="list-opponent"
+                    />
+                  )}
+                />
+                {''}
+                {isSelectedProtobot && (
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                    onClick={handleRequestMatch}
+                  >
+                    Request Simulation
+                  </Button>
+                )}{' '}
               </Box>
             </Box>
           </Box>
@@ -158,6 +225,35 @@ export default (props: any) => {
           }
         </Box>
       </>
+    </Box>
+  ) : (
+    <Box display="flex" justifyContent="flex-end" pb={5}>
+      {isRequestedMatch && !isSimulationStarted ? (
+        <Box pr={1}>
+          <Button
+            variant="outlined"
+            color="inherit"
+            size="small"
+            onClick={handleRunSimulation}
+          >
+            Run Simulation
+          </Button>
+        </Box>
+      ) : (
+        <></>
+      )}
+      {isSimulationStarted && (
+        <Box>
+          <Button
+            variant="outlined"
+            color="inherit"
+            size="small"
+            onClick={handleCancelSimulation}
+          >
+            Cancel Simulation
+          </Button>
+        </Box>
+      )}
     </Box>
   )
 }

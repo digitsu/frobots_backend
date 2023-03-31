@@ -12,6 +12,7 @@ defmodule Frobots.Accounts.User do
     field :confirmed_at, :naive_datetime
     field :hashed_password_old, :string, redact: true
     field :migrated_user, :boolean
+    field :sparks, :integer, default: 6
 
     field :avatar, :string
 
@@ -46,7 +47,7 @@ defmodule Frobots.Accounts.User do
   # in cast list
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :name, :migrated_user, :hashed_password_old, :avatar])
+    |> cast(attrs, [:email, :password, :name, :migrated_user, :hashed_password_old, :sparks, :avatar])
     |> unique_constraint(:name)
     |> validate_email()
     |> validate_password(opts)
@@ -54,7 +55,7 @@ defmodule Frobots.Accounts.User do
 
   def profile_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :name])
+    |> cast(attrs, [:email, :name, :sparks, :avatar])
     |> unique_constraint(:name)
     |> validate_email()
   end

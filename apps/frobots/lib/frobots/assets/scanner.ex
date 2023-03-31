@@ -15,6 +15,7 @@ defmodule Frobots.Assets.Scanner do
     field :max_range, :integer
     field :resolution, :integer
     has_many :scanner_inst, Frobots.Assets.ScannerInst
+    field :class, Ecto.Enum, values: ~w(scanner)a
     timestamps()
   end
 

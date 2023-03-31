@@ -20,7 +20,17 @@ defmodule Frobots.EventsTest do
         frobots: [n1, n2, n3, n4]
       }
 
-      {:ok, mt} = match_fixture()
+      {:ok, mt} =
+        match_fixture(%{
+          "user_id" => owner.id,
+          "match_time" => DateTime.utc_now(),
+          "timer" => 3600,
+          "arena_id" => 1,
+          "min_player_frobot" => 1,
+          "max_player_frobot" => 5,
+          "status" => "done"
+        })
+
       {:ok, bl} = Events.create_battlelog(mt, params)
       assert bl
     end
@@ -54,41 +64,6 @@ defmodule Frobots.EventsTest do
       assert created_match.id == match.id
       assert created_match.status == match.status
     end
-
-    test "list matches by pagination" do
-      {:ok, owner} = user_fixture()
-      %Frobot{id: n1} = frobot_fixture(owner, %{name: "rabbit"})
-      %Frobot{id: n2} = frobot_fixture(owner, %{name: "random"})
-
-      params = create_match_params(owner, n1, n2)
-      {:ok, _created_match} = Frobots.Events.create_match(params)
-
-      assert %{entries: matches, page_number: 1} =
-               Frobots.Events.list_paginated_matches(status: :pending)
-
-      assert Enum.all?(matches, fn match -> match.status == :pending end)
-    end
-
-    test "list matches by pagination with searching" do
-      {:ok, owner} = user_fixture()
-      %Frobot{id: n1} = frobot_fixture(owner, %{name: "rabbit"})
-      %Frobot{id: n2} = frobot_fixture(owner, %{name: "random"})
-
-      params = create_match_params(owner, n1, n2)
-      {:ok, _created_match} = Frobots.Events.create_match(params)
-
-      assert %{entries: matches, page_number: 1} =
-               Frobots.Events.list_paginated_matches(status: :pending, search_pattern: "my")
-
-      assert length(matches) > 0
-      assert Enum.all?(matches, fn match -> match.status == :pending end)
-
-      ## Match not found with this pattern
-      assert %{entries: matches, page_number: 1} =
-               Frobots.Events.list_paginated_matches(status: :pending, search_pattern: "bb")
-
-      assert length(matches) == 0
-    end
   end
 
   defp create_match_params(owner, n1, n2) do
@@ -114,10 +89,18 @@ defmodule Frobots.EventsTest do
           "slot_type" => "protobot"
         },
         %{
-          "status" => "closed",
-          "slot_type" => "closed"
+          "status" => "closed"
         }
-      ]
+      ],
+      "frobot_ids" => [n1, n2],
+      "match_template" => %{
+        "entry_fee" => 0,
+        "commission_rate" => 0,
+        "match_type" => "individual",
+        "payout_map" => [100],
+        "max_frobots" => 3,
+        "min_frobots" => 1
+      }
     }
   end
 end

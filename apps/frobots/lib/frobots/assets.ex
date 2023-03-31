@@ -12,8 +12,14 @@ defmodule Frobots.Assets do
   @target_class "Target"
   @user_class_u "U"
 
+  @spec user_classes :: [<<_::8>>, ...]
   def user_classes() do
     [@user_class_u]
+  end
+
+  @spec default_user_class :: <<_::8>>
+  def default_user_class() do
+    @user_class_u
   end
 
   @spec prototype_class :: <<_::40>>
@@ -21,6 +27,7 @@ defmodule Frobots.Assets do
     @prototype_class
   end
 
+  @spec target_class :: <<_::48>>
   def target_class() do
     @target_class
   end
@@ -29,6 +36,12 @@ defmodule Frobots.Assets do
     Frobot
     |> frobots_user_query(user)
     |> Repo.all()
+  end
+
+  def user_frobots_count(%Accounts.User{} = user) do
+    Frobot
+    |> frobots_user_query(user)
+    |> Repo.aggregate(:count)
   end
 
   def get_user_frobot!(%Accounts.User{} = user, id) do

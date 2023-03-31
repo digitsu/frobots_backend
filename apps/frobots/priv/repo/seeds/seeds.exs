@@ -47,7 +47,7 @@ Frobots.Assets.create_xframe!(%{
   sensor_hardpoints: 1,
   weapon_hardpoints: 1,
   cpu_hardpoints: 1,
-  movement_type: "tracks",
+  movement_type: :tracks,
   max_throttle: 100,
   accel_speed_mss: 5,
   max_health: 100

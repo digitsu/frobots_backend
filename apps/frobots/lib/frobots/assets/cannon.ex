@@ -17,6 +17,7 @@ defmodule Frobots.Assets.Cannon do
     field :rate_of_fire, :integer
     field :magazine_size, :integer
     has_many :cannon_inst, Frobots.Assets.CannonInst
+    field :class, Ecto.Enum, values: ~w(cannon)a
     timestamps()
   end
 

@@ -53,7 +53,7 @@ export default (props: any) => {
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6">12378</Typography>
+                      <Typography variant="h6">12345</Typography>
                       <Typography variant="caption">
                         Total XP : {playerStats.total_xp}
                       </Typography>
@@ -189,7 +189,11 @@ export default (props: any) => {
         </Grid>
       </Box>
       <Box width={'90%'} m={'auto'}>
-        <NewsAndUpdatesSection blogPosts={blogPosts} />
+        <Grid container spacing={2} my={2}>
+          <Grid item lg={12} md={12} sm={12} xs={12}>
+            <NewsAndUpdatesSection blogPosts={blogPosts} />
+          </Grid>
+        </Grid>
       </Box>
     </>
   )

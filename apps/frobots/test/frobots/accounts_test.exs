@@ -657,6 +657,11 @@ defmodule Frobots.AccountsTest do
       {:ok, _} = Accounts.reset_user_password(user, %{password: "new valid password"})
       refute Repo.get_by(UserToken, user_id: user.id)
     end
+
+    test "Checks for default sparks for new user", %{user: user} do
+      _ = frobot_fixture(user)
+      assert Accounts.user_available_sparks(user) == 5
+    end
   end
 
   describe "inspect/2" do

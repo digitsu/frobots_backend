@@ -1,243 +1,76 @@
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  type ChangeEvent,
-  type MouseEvent,
-} from 'react'
+import React, { useCallback, type ChangeEvent, type MouseEvent } from 'react'
 import { Grid, Box, Typography, CardContent } from '@mui/material'
 import Card from '../../components/generic/Card'
 import { MatchList } from './MatchList'
 import { MatchListSearch } from './MatchListSearch'
 
-const matchesList = [
-  {
-    matchId: '7f54cf1e315d',
-    name: 'Battle 7',
-    host: 'Kaztro',
-    status: 'live',
-    time: '20th Feb 2022 20:00:00',
-  },
-  {
-    matchId: '7f54cf1e3153',
-    name: 'Battle 7',
-    host: 'Kaztro',
-    status: 'upcoming',
-    time: '20th Feb 2022 20:00:00',
-  },
-  {
-    matchId: '7f54cf1e315e',
-    name: 'Battle 3',
-    host: 'Kakashi Hatake',
-    status: 'completed',
-    time: '20th Feb 2022 20:00:00',
-  },
-  {
-    matchId: '7f54cf1e3146',
-    name: 'Battle 7',
-    host: 'Kaztro',
-    status: 'live',
-    time: '20th Feb 2022 20:00:00',
-  },
-  {
-    matchId: '7f54cf1e3156',
-    name: 'Battle 9',
-    host: 'Satoru Gojo',
-    status: 'cancelled',
-    time: '21th March 2023 20:00:00',
-  },
-  {
-    matchId: '7f54cf1e325j',
-    name: 'Battle 2',
-    host: 'Kaztro',
-    status: 'completed',
-    time: '20th Feb 2022 20:00:00',
-  },
-  {
-    matchId: '3f54cf1e315e',
-    name: 'Battle 12',
-    host: 'Naruto',
-    status: 'upcoming',
-    time: '20th Feb 2022 20:00:00',
-  },
-  {
-    matchId: 'Lf54cf1e315d',
-    name: 'Battle 7',
-    host: 'Kaztro',
-    status: 'live',
-    time: '20th Feb 2022 20:00:00',
-  },
-]
-interface Filters {
-  query?: string
-  isUpcoming?: boolean
-  isLive?: boolean
-  isCompleted?: boolean
-}
+export default (props: any) => {
+  const {
+    completed_matches_count,
+    live_matches_count,
+    upcoming_matches_count,
+    total_entries,
+    matches,
+    updateMatchSearch,
+    page,
+    page_size,
+    match_status,
+    search_pattern,
+  } = props
 
-interface Search {
-  filters: Filters
-  page: number
-  rowsPerPage: number
-}
-
-export function applyPagination<T = any>(
-  documents: T[],
-  page: number,
-  rowsPerPage: number
-): T[] {
-  return documents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-}
-
-const getMatchesAPI = (request: Search) => {
-  const { filters, page, rowsPerPage } = request
-
-  let data = matchesList
-  let count = data.length
-
-  if (typeof filters !== 'undefined') {
-    data = matchesList.filter((match) => {
-      if (typeof filters.query !== 'undefined' && filters.query !== '') {
-        let queryMatched = false
-        const properties: ('host' | 'name' | 'status')[] = [
-          'host',
-          'name',
-          'status',
-        ]
-
-        properties.forEach((property) => {
-          if (
-            match[property].toLowerCase().includes(filters.query!.toLowerCase())
-          ) {
-            queryMatched = true
-          }
-        })
-
-        if (!queryMatched) {
-          return false
-        }
-      }
-
-      if (typeof filters.isCompleted !== 'undefined') {
-        if (match.status !== 'completed') {
-          return false
-        }
-      }
-
-      if (typeof filters.isLive !== 'undefined') {
-        if (match.status !== 'live') {
-          return false
-        }
-      }
-
-      if (typeof filters.isUpcoming !== 'undefined') {
-        if (match.status !== 'upcoming') {
-          return false
-        }
-      }
-
-      return true
-    })
-
-    count = data.length
-  }
-
-  if (typeof page !== 'undefined' && typeof rowsPerPage !== 'undefined') {
-    data = applyPagination(data, page, rowsPerPage)
-  }
-
-  return {
-    data,
-    count,
-  }
-}
-
-const useSearch = () => {
-  const [search, setSearch] = useState<Search>({
-    filters: {
-      query: undefined,
-      isUpcoming: undefined,
-      isLive: undefined,
-      isCompleted: undefined,
-    },
-    page: 0,
-    rowsPerPage: 5,
-  })
-
-  return {
-    search,
-    updateSearch: setSearch,
-  }
-}
-
-const useMatches = (search: Search): { matchs: any[]; matchsCount: number } => {
-  const [state, setState] = useState<{
-    matchs: any[]
-    matchsCount: number
-  }>({
-    matchs: [],
-    matchsCount: 0,
-  })
-
-  const getMatches = useCallback(async () => {
-    try {
-      const response = getMatchesAPI(search)
-
-      setState({
-        matchs: response.data,
-        matchsCount: response.count,
+  const handleSearchChange = useCallback(
+    (searchQuery?: string): void => {
+      updateMatchSearch({
+        match_status: match_status,
+        search_pattern: searchQuery,
+        page: page,
+        page_size: page_size,
       })
-    } catch (err) {
-      console.error(err)
-    }
-  }, [search])
-
-  useEffect(() => {
-    getMatches()
-  }, [search, getMatches])
-
-  return state
-}
-
-export default () => {
-  const { search, updateSearch } = useSearch()
-  const { matchs, matchsCount } = useMatches(search)
-
-  const handleFiltersChange = useCallback(
-    (filters: Filters): void => {
-      updateSearch((prevState) => ({
-        ...prevState,
-        filters,
-      }))
     },
-    [updateSearch]
+    [updateMatchSearch]
+  )
+
+  const handleTabsChange = useCallback(
+    (tab?: string): void => {
+      updateMatchSearch({
+        match_status: tab,
+        search_pattern: search_pattern,
+        page: page,
+        page_size: page_size,
+      })
+    },
+    [updateMatchSearch]
   )
 
   const handlePageChange = useCallback(
-    (event: MouseEvent<HTMLButtonElement> | null, page: number): void => {
-      updateSearch((prevState) => ({
-        ...prevState,
-        page,
-      }))
+    (event: MouseEvent<HTMLButtonElement> | null, pageCount: number): void => {
+      updateMatchSearch({
+        match_status: match_status,
+        search_pattern: search_pattern,
+        page: pageCount + 1,
+        page_size: page_size,
+      })
     },
-    [updateSearch]
+    [updateMatchSearch]
   )
 
   const handleRowsPerPageChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>): void => {
-      updateSearch((prevState) => ({
-        ...prevState,
-        rowsPerPage: parseInt(event.target.value, 10),
-      }))
+      updateMatchSearch({
+        match_status: match_status,
+        search_pattern: search_pattern,
+        page: page,
+        page_size: parseInt(event.target.value, 10),
+      })
     },
-    [updateSearch]
+    [updateMatchSearch]
   )
 
   const handleOpenLiveMatches = useCallback(
     (event: MouseEvent<HTMLDivElement> | null) => {
       event?.preventDefault()
 
-      window.location.href = '/arena/live-matches'
+      window.location.href = '/arena/running/matches'
     },
     []
   )
@@ -246,7 +79,7 @@ export default () => {
     (event: MouseEvent<HTMLDivElement> | null) => {
       event?.preventDefault()
 
-      window.location.href = '/arena/past-matches'
+      window.location.href = '/arena/done/matches'
     },
     []
   )
@@ -255,7 +88,7 @@ export default () => {
     (event: MouseEvent<HTMLDivElement> | null) => {
       event?.preventDefault()
 
-      window.location.href = '/arena/upcoming-matches'
+      window.location.href = '/arena/pending/matches'
     },
     []
   )
@@ -298,7 +131,7 @@ export default () => {
                       flexDirection={'column'}
                     >
                       <Typography variant="h6" fontWeight={'bold'}>
-                        12
+                        {live_matches_count || 0}
                       </Typography>
                       <Typography variant="caption">Live Matches</Typography>
                     </Box>
@@ -339,7 +172,7 @@ export default () => {
                       flexDirection={'column'}
                     >
                       <Typography variant="h6" fontWeight={'bold'}>
-                        12
+                        {upcoming_matches_count || 0}
                       </Typography>
                       <Typography variant="caption">
                         Upcoming Matches
@@ -378,7 +211,7 @@ export default () => {
                       flexDirection={'column'}
                     >
                       <Typography variant="h6" fontWeight={'bold'}>
-                        625
+                        {completed_matches_count || 0}
                       </Typography>
                       <Typography variant="caption">Past Matches</Typography>
                     </Box>
@@ -398,14 +231,17 @@ export default () => {
             <Box>
               <Card>
                 <CardContent>
-                  <MatchListSearch onFiltersChange={handleFiltersChange} />
+                  <MatchListSearch
+                    onQueryChange={handleSearchChange}
+                    onTabChange={handleTabsChange}
+                  />
                 </CardContent>
                 <CardContent>
                   <MatchList
-                    matchs={matchs}
-                    matchsCount={matchsCount}
-                    page={search.page}
-                    rowsPerPage={search.rowsPerPage}
+                    matches={matches}
+                    matchesCount={total_entries}
+                    page={page - 1}
+                    rowsPerPage={page_size}
                     onPageChange={handlePageChange}
                     onRowsPerPageChange={handleRowsPerPageChange}
                   />

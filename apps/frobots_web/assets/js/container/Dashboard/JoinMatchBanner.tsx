@@ -27,14 +27,8 @@ export default () => {
                   <Typography variant="h5">FROBOT WARS</Typography>
                 </Box>
                 <Typography variant="body2" color={'lightslategray'}>
-                  Coming soon to world blockchain conference. Click to join
-                  match
+                  Coming soon to world blockchain conference.
                 </Typography>
-              </Box>
-              <Box>
-                <Button variant="contained" sx={{ px: 5, py: 1 }}>
-                  Join Match
-                </Button>
               </Box>
             </Box>
             <Box>

@@ -7,9 +7,10 @@ import {Missile} from "./missile.js"
 
 export class Game {
     constructor(tanks, missiles) {
-        this.app = new PIXI.Application({ width: 1000, height: 1000, background: '#000000' });
+        this.app = new PIXI.Application({ width: 1000, height: 1000, background: '#000000', });
         this.tanks = tanks;
         this.missiles = missiles;
+        this.app.view.classList.add('garage-pixy-simulation')
 
         for (var i=1; i<1000; i=i+10) {
           var vertical = new PIXI.Graphics()
@@ -165,7 +166,7 @@ export class Game {
         // Not sure how to get the tank class here.....
         console.log(tank_name);
         var asset = tankHead(tank_name);
-        var tank_sprite = new PIXI.Sprite(PIXI.Texture.from('images/' + asset + '.png'));
+        var tank_sprite = new PIXI.Sprite(PIXI.Texture.from('/images/' + asset + '.png'));
         tank_sprite.x = x;
         tank_sprite.y = y;
 

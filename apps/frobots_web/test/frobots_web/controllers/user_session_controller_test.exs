@@ -103,7 +103,6 @@ defmodule FrobotsWeb.UserSessionControllerTest do
       conn = delete(conn, Routes.user_session_path(conn, :delete))
       assert redirected_to(conn) == "/users/log_in"
       refute get_session(conn, :user_token)
-
     end
   end
 end

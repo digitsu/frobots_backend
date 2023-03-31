@@ -2,11 +2,14 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
   alias Frobots.Assets
+  alias Frobots.Accounts
+  alias Frobots.{Api, Equipment}
 
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
+  def mount(_params, %{"user_id" => id}, socket) do
     # set required data via assigns
-    {:ok, socket}
+    current_user = Accounts.get_user!(id)
+    {:ok, socket |> assign(:current_user, current_user)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -27,5 +30,36 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
      push_event(socket, "react.return_frobot_create_details", %{
        "templates" => templates
      })}
+  end
+
+  def handle_event("react.create_frobot", params, socket) do
+    current_user = socket.assigns.current_user
+
+    if Map.has_key?(params, "name") && Map.has_key?(params, "brain_code") do
+      name = Map.get(params, "name")
+      brain_code = Map.get(params, "brain_code")
+      optional_params = Map.delete(params, "name") |> Map.delete("brain_code")
+
+      case Api.create_frobot(current_user, name, brain_code, optional_params) do
+        {:ok, frobot_id} ->
+          # get frobot equipment
+          frobot_equipment = Equipment.list_frobot_equipment(frobot_id)
+
+          {:noreply,
+           socket
+           |> assign(:frobot_equipment, frobot_equipment)
+           |> push_redirect(to: "/garage/frobot?id=#{frobot_id}")}
+
+        {:error, error} ->
+          {:noreply,
+           socket
+           |> assign(:errors, error)
+           |> put_flash(:error, "Could not create frobot. #{error}")}
+      end
+    else
+      {:noreply,
+       socket
+       |> put_flash(:error, "Frobot name and prototype are required")}
+    end
   end
 end

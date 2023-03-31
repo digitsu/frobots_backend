@@ -13,7 +13,7 @@ export default ({ userFrobots, currentStep, setCurrentStep, slotDetails }) => {
       updateSlot({
         ...currentActiveSlot,
         type: 'host',
-        label: currentSlot.label,
+        name: currentSlot.name,
         url: '/images/red_frobot.svg',
         slotDetails: currentSlot,
       })
@@ -23,7 +23,7 @@ export default ({ userFrobots, currentStep, setCurrentStep, slotDetails }) => {
   return (
     <>
       {currentStep === 1 && (
-        <Box sx={{ p: 3, pb: 1 }}>
+        <Box sx={{ p: 3, pb: 1, maxHeight: 490, overflowY: 'scroll' }}>
           <Grid container spacing={3}>
             {userFrobots.map((slot) => (
               <Grid item width={'100%'}>
@@ -50,7 +50,7 @@ export default ({ userFrobots, currentStep, setCurrentStep, slotDetails }) => {
                 >
                   <Box component={'img'} src={slot.avatar} />
                   <Box>
-                    <Typography variant="subtitle1">{slot.label}</Typography>
+                    <Typography variant="subtitle1">{slot.name}</Typography>
                     <Typography variant="caption">{slot.bio}</Typography>
                   </Box>
                 </Box>
@@ -93,10 +93,12 @@ export default ({ userFrobots, currentStep, setCurrentStep, slotDetails }) => {
           />
           <Box mx={2} my={1}>
             <Typography variant="h6">
-              {slotDetails.slotDetails?.label}
+              {slotDetails.slotDetails?.name}
             </Typography>
-            <Box my={1} maxHeight={60} overflow={'scroll'}>
-              <Typography>{slotDetails.slotDetails?.bio}</Typography>
+            <Box my={1} maxHeight={72} overflow={'scroll'}>
+              <Typography variant="caption">
+                {slotDetails.slotDetails?.bio}
+              </Typography>
             </Box>
           </Box>
           <Box

@@ -5,7 +5,7 @@ type OccupiedComponentProps = {
   modifyHandler: () => any
   slotDetails: {
     avatar: string
-    label: string
+    name: string
     bio: string
   }
 }
@@ -20,9 +20,9 @@ export default ({ slotDetails, modifyHandler }: OccupiedComponentProps) => {
         m={'auto'}
       />
       <Box mx={2} my={1}>
-        <Typography variant="h6">{slotDetails?.label}</Typography>
-        <Box my={1} maxHeight={60} overflow={'scroll'}>
-          <Typography>{slotDetails?.bio}</Typography>
+        <Typography variant="h6">{slotDetails?.name}</Typography>
+        <Box my={1} maxHeight={72} overflow={'scroll'}>
+          <Typography variant="caption">{slotDetails?.bio}</Typography>
         </Box>
       </Box>
       <Box

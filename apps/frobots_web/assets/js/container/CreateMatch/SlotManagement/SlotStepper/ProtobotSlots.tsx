@@ -13,7 +13,7 @@ export default ({ protobots, currentStep, setCurrentStep, slotDetails }) => {
       updateSlot({
         ...currentActiveSlot,
         type: 'proto',
-        label: currentSlot.label,
+        name: currentSlot.name,
         url: '/images/yellow_frobot.svg',
         slotDetails: currentSlot,
       })
@@ -23,7 +23,15 @@ export default ({ protobots, currentStep, setCurrentStep, slotDetails }) => {
   return (
     <>
       {currentStep === 1 && (
-        <Box sx={{ p: 3, pb: 1, height: '100%' }}>
+        <Box
+          sx={{
+            p: 3,
+            pb: 1,
+            height: '100%',
+            maxHeight: 490,
+            overflowY: 'scroll',
+          }}
+        >
           <Grid container spacing={3}>
             {protobots.map((slot) => (
               <Grid item width={'100%'}>
@@ -50,7 +58,7 @@ export default ({ protobots, currentStep, setCurrentStep, slotDetails }) => {
                 >
                   <Box component={'img'} src={slot.avatar} />
                   <Box>
-                    <Typography variant="subtitle1">{slot.label}</Typography>
+                    <Typography variant="subtitle1">{slot.name}</Typography>
                     <Typography variant="caption">{slot.bio}</Typography>
                   </Box>
                 </Box>
@@ -94,10 +102,12 @@ export default ({ protobots, currentStep, setCurrentStep, slotDetails }) => {
           />
           <Box mx={2} my={1}>
             <Typography variant="h6">
-              {slotDetails.slotDetails?.label}
+              {slotDetails.slotDetails?.name}
             </Typography>
-            <Box my={1} maxHeight={60} overflow={'scroll'}>
-              <Typography>{slotDetails.slotDetails?.bio}</Typography>
+            <Box my={1} maxHeight={72} overflow={'scroll'}>
+              <Typography variant="caption">
+                {slotDetails.slotDetails?.bio}
+              </Typography>
             </Box>
           </Box>
           <Box
@@ -112,7 +122,7 @@ export default ({ protobots, currentStep, setCurrentStep, slotDetails }) => {
           >
             <Button
               fullWidth
-              variant="outlined"
+              variant="contained"
               onClick={() => setCurrentStep(0)}
             >
               Modify
