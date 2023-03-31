@@ -76,6 +76,7 @@ defmodule Frobots.ApiTest do
       "title" => "My Match",
       "description" => "Match description",
       "match_time" => DateTime.utc_now() |> DateTime.to_string(),
+      "type" => "real",
       # 1 hour
       "timer" => 3600,
       "arena_id" => 1,
@@ -93,8 +94,7 @@ defmodule Frobots.ApiTest do
           "slot_type" => "protobot"
         },
         %{
-          "status" => "open",
-          "slot_type" => "host"
+          "status" => "open"
         },
         %{
           "status" => "closed"

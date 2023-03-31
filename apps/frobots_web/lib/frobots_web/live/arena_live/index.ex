@@ -73,6 +73,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
   def handle_event("create", %{"match" => match_details}, socket) do
     match_details =
       match_details
+      |> Map.put_new("type", "real")
       |> Map.put_new("user_id", socket.assigns.current_user.id)
 
     case Api.create_match(match_details) do

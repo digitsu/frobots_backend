@@ -56,7 +56,8 @@ defmodule Frobots.BattleLogsTest do
           "timer" => 3600,
           "arena_id" => 1,
           "min_player_frobot" => 2,
-          "max_player_frobot" => 4
+          "max_player_frobot" => 4,
+          "type" => "real"
         })
 
       {:ok, bl1} = battlelog_fixture(mt, params1)
@@ -121,6 +122,7 @@ defmodule Frobots.BattleLogsTest do
           "min_player_frobot" => 2,
           "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot1.name, "id" => frobot1.id},
             %{"name" => frobot2.name, "id" => frobot2.id},
@@ -155,6 +157,7 @@ defmodule Frobots.BattleLogsTest do
           "min_player_frobot" => 2,
           "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot5.name, "id" => frobot5.id},
             %{"name" => frobot6.name, "id" => frobot6.id},
@@ -209,6 +212,7 @@ defmodule Frobots.BattleLogsTest do
           "min_player_frobot" => 2,
           "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot1.name, "id" => frobot1.id},
             %{"name" => frobot2.name, "id" => frobot2.id},
@@ -243,6 +247,7 @@ defmodule Frobots.BattleLogsTest do
           "min_player_frobot" => 2,
           "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot5.name, "id" => frobot5.id},
             %{"name" => frobot6.name, "id" => frobot6.id},
@@ -260,6 +265,7 @@ defmodule Frobots.BattleLogsTest do
           "min_player_frobot" => 2,
           "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot1.name, "id" => frobot1.id},
             %{"name" => frobot2.name, "id" => frobot2.id},
@@ -278,6 +284,7 @@ defmodule Frobots.BattleLogsTest do
           "min_player_frobot" => 2,
           "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot4.name, "id" => frobot4.id},
             %{"name" => frobot5.name, "id" => frobot5.id},

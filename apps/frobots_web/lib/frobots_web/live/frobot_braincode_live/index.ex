@@ -122,10 +122,11 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     %{
       "user_id" => socket.assigns.user.id,
       "match_time" => DateTime.utc_now() |> DateTime.to_string(),
-      "timer" => 0,
+      "timer" => 3600,
       "arena_id" => 1,
       "min_player_frobot" => 1,
       "max_player_frobot" => 2,
+      "type" => :simulation,
       "slots" => [
         %{
           "frobot_id" => player_frobot.id,
