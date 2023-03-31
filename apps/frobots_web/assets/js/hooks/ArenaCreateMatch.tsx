@@ -13,6 +13,9 @@ export default {
       }
     )
   },
+  createMatch(match_params) {
+    this.pushEventTo(this.el, 'react.create_match', { match: match_params })
+  },
   destroyed() {
     if (!this.unmountComponent) {
       console.error('Component unmounted')
@@ -24,6 +27,7 @@ export default {
     return {
       name: 'ArenaCreateMatch',
       ...createMatchDetails,
+      createMatch: this.createMatch.bind(this),
     }
   },
 }

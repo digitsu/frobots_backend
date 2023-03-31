@@ -3,6 +3,7 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.Assets
   alias Frobots.Accounts
+  alias Frobots.Api
 
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
@@ -54,5 +55,21 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
        "templates" => templateFrobots,
        "userFrobots" => userFrobots
      })}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("react.create_match", %{"match" => match_details}, socket) do
+    match_details =
+      match_details
+      |> Map.put_new("user_id", socket.assigns.current_user.id)
+
+    case Api.create_match(match_details) do
+      {:ok, match} ->
+        {:noreply,
+         push_redirect(socket, to: Routes.arena_lobby_index_path(socket, :index, match.id))}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, match_changeset: changeset)}
+    end
   end
 end
