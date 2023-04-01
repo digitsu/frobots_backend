@@ -73,8 +73,7 @@ defmodule Frobots.MixProject do
         "ecto.drop --quiet",
         "ecto.create --quiet",
         "ecto.migrate --quiet",
-        # "run apps/frobots/priv/repo/seeds/seed_equipment.exs --quiet",
-        "run priv/repo/seeds/seed_equipment.exs --quiet",
+        "run apps/frobots/priv/repo/seeds/seed_equipment.exs --quiet",
         "test"
       ],
       testenv: ["cmd source ../../.env", "cmd echo $TEST_ENV"]

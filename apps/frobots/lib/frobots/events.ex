@@ -406,22 +406,6 @@ defmodule Frobots.Events do
 
   defp broadcast_change(error, _event), do: error
 
-
-  defp match_template(frobot_ids, max_frobots, min_frobots) do
-    %{
-      "frobot_ids" => frobot_ids,
-      "match_template" => %{
-        "entry_fee" => 0,
-        "commission_rate" => 0,
-        "match_type" => "team",
-        "payout_map" => [100],
-        "max_frobots" => max_frobots,
-        "min_frobots" => min_frobots
-      }
-    }
-  end
-
-
   @doc ~S"""
   fetch current user ranking details.
 
