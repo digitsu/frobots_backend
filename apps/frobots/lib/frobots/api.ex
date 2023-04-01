@@ -157,9 +157,9 @@ defmodule Frobots.Api do
 
   @doc ~S"""
     Runs Multi structure
-    This is function is called after _create_frobot_build_multi.
+    This function is called after _create_frobot_build_multi.
 
-    The actual db operations are run in this step as a transaction and any failures are rolld back.any()
+    The actual db operations are run in this step as a transaction and any failures are rolled back
     Function returns {:ok, frobot_id} or {:error, reason} to caller
   """
   def _create_frobot_run_multi(multi) do

@@ -199,6 +199,7 @@ defmodule Frobots.Equipment do
   @doc """
   need to install an xframe onto a frobot. this needs to be done first, because equip_part() cannot be executed before a frobot has its xframe installed.
   """
+
   def equip_xframe(xframe_inst_id, frobot_id) do
     result =
       equip_xframe_changeset(xframe_inst_id, frobot_id)

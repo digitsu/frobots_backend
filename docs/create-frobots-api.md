@@ -93,7 +93,7 @@ upcoming_matches: 0
 
 
 **show global stats**
-show_global_stats(): This function currently returns a static map. It is TBD where these details come from now that nakama is out of scope at least for now.
+show_global_stats(): This function currently returns a static map. With updated Matches and Slots tables, we will be able to get the data below from the DB. **This is new code to be written.**
 
 
 
@@ -129,7 +129,9 @@ This is shape of data of frobot leaderboard stats:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matches_participated: 4, //integer
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frobots_count: 4
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frobots_count: 4,
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;avatar: "path/frobot.png"
 
 }]
 
@@ -149,7 +151,11 @@ matches_won: 4, //integer
 
 matches_participated: 4, //integer
 
-frobots_count: 4
+frobots_count: 4,
+
+avatar: "path/user_avatar.png"
+
+
 
 }]
 

@@ -19,7 +19,8 @@ defmodule Frobots.AssetsTest do
     @scanner %{
       type: "Mk1",
       max_range: 700,
-      resolution: 10
+      resolution: 10,
+      image_path: "https://via.placeholder.com/50.png"
     }
 
     @missile %{
@@ -28,14 +29,16 @@ defmodule Frobots.AssetsTest do
       damage_near: [20, 5],
       damage_far: [40, 3],
       speed: 400,
-      range: 900
+      range: 900,
+      image_path: "https://via.placeholder.com/50.png"
     }
 
     @cannon %{
       type: "Mk1",
       reload_time: 5,
       rate_of_fire: 1,
-      magazine_size: 2
+      magazine_size: 2,
+      image_path: "https://via.placeholder.com/50.png"
     }
 
     @xframe %{
@@ -47,7 +50,8 @@ defmodule Frobots.AssetsTest do
       movement_type: "tracks",
       max_health: 100,
       max_throttle: 100,
-      accel_speed_mss: 5
+      accel_speed_mss: 5,
+      image_path: "https://via.placeholder.com/50.png"
     }
 
     test "list_frobots/0 returns all frobots" do
