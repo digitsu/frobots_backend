@@ -20,7 +20,17 @@ defmodule Frobots.Events do
   end
 
   defmodule FrobotLeaderboardStats do
-    @derive {Jason.Encoder, only: [:frobot, :username, :points, :xp, :attempts, :matches_won, :matches_participated, :avatar]}
+    @derive {Jason.Encoder,
+             only: [
+               :frobot,
+               :username,
+               :points,
+               :xp,
+               :attempts,
+               :matches_won,
+               :matches_participated,
+               :avatar
+             ]}
     defstruct frobot: "",
               username: "",
               points: 0,
@@ -370,7 +380,15 @@ defmodule Frobots.Events do
         x.username == name
       end)
       |> Enum.reduce(
-        %{username: "", xp: 0, points: 0, attempts: 0, matches_won: 0, matches_participated: 0, avatar: ""},
+        %{
+          username: "",
+          xp: 0,
+          points: 0,
+          attempts: 0,
+          matches_won: 0,
+          matches_participated: 0,
+          avatar: ""
+        },
         fn x, acc ->
           current_points = acc.points
           current_attempts = acc.attempts
@@ -423,28 +441,29 @@ defmodule Frobots.Events do
   """
   def get_current_user_ranking_details(current_user) do
     send_player_leaderboard_entries()
-      |> Enum.filter(fn x ->
-          x.username == current_user.name
-      end)
+    |> Enum.filter(fn x ->
+      x.username == current_user.name
+    end)
   end
-
 
   # get current frobot battlelogs
   def get_frobot_battlelog(frobot_id, _match_status) do
-    q = from m in "matches",
-        join: s in "slots", on: m.id == s.match_id,
-        join: f in "frobots", on: s.frobot_id == f.id,
-        where: m.status in [ "pending", "running"] and s.frobot_id == ^frobot_id,
+    q =
+      from m in "matches",
+        join: s in "slots",
+        on: m.id == s.match_id,
+        join: f in "frobots",
+        on: s.frobot_id == f.id,
+        where: m.status in ["pending", "running"] and s.frobot_id == ^frobot_id,
         select: %{
-            "match_id" => m.id,
-            "match_name" => m.title,
-            "winner" => "TBD",
-            "xp" => f.xp,
-            "status" => m.status,
-            "time" => m.match_time
+          "match_id" => m.id,
+          "match_name" => m.title,
+          "winner" => "TBD",
+          "xp" => f.xp,
+          "status" => m.status,
+          "time" => m.match_time
         }
 
-        Repo.all(q)
+    Repo.all(q)
   end
-
 end

@@ -3,7 +3,7 @@ defmodule Frobots.UserStats do
 
   alias Frobots.{Accounts, Events, Assets}
 
-   @doc ~S"""
+  @doc ~S"""
     get current user stats.
 
   ## Examples

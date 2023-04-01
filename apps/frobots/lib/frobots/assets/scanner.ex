@@ -22,7 +22,7 @@ defmodule Frobots.Assets.Scanner do
   @fields [
     :type,
     :max_range,
-    :resolution,
+    :resolution
   ]
 
   @doc false

@@ -1,8 +1,22 @@
 defmodule Frobots.GlobalStats do
-  @derive {Jason.Encoder, only: [:matches_played, :upcoming_matches, :completed_matches, :current_matches, :players_online, :players_registered]}
-   defstruct matches_played: 0, upcoming_matches: 0, completed_matches: 0, current_matches: 0, players_online: 0, players_registered: 0
+  @derive {Jason.Encoder,
+           only: [
+             :matches_played,
+             :upcoming_matches,
+             :completed_matches,
+             :current_matches,
+             :players_online,
+             :players_registered
+           ]}
+  defstruct matches_played: 0,
+            upcoming_matches: 0,
+            completed_matches: 0,
+            current_matches: 0,
+            players_online: 0,
+            players_registered: 0
 
   alias Frobots.{Events, Assets}
+
   @doc ~S"""
   fetch current user global stats details.
 
@@ -18,7 +32,7 @@ defmodule Frobots.GlobalStats do
       #}
   """
   def get_global_stats(current_user) do
-    #TODO: where to get these - players_online and players_registered
+    # TODO: where to get these - players_online and players_registered
     user_frobots = Assets.get_user_frobots(current_user.id)
 
     %Frobots.GlobalStats{

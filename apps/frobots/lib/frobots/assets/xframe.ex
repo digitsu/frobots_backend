@@ -14,7 +14,7 @@ defmodule Frobots.Assets.Xframe do
              :movement_type,
              :max_health,
              :max_throttle,
-             :accel_speed_mss,
+             :accel_speed_mss
            ]}
 
   schema "xframes" do
@@ -42,7 +42,7 @@ defmodule Frobots.Assets.Xframe do
     :movement_type,
     :max_health,
     :max_throttle,
-    :accel_speed_mss,
+    :accel_speed_mss
   ]
 
   @doc false
