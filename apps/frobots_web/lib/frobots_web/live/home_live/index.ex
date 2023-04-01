@@ -13,7 +13,6 @@ defmodule FrobotsWeb.HomeLive.Index do
     # this data should really come from db
     Events.prep_leaderboard_entries()
 
-
     {:ok,
      socket
      |> assign(:frobots, Assets.list_user_frobots(current_user))
@@ -85,16 +84,6 @@ defmodule FrobotsWeb.HomeLive.Index do
         []
     end
   end
-
-  # def show_global_stats() do
-  #   # TODO:  call Frobots.GlobalStats.get_global_stats(current_use_frobots)
-  #   %{
-  #     "players_online" => 250,
-  #     "matches_in_progress" => 65,
-  #     "players_registered" => 1500,
-  #     "matches_completed" => 376888
-  #   }
-  # end
 
   @impl true
   def handle_event("react.fetch_dashboard_details", _params, socket) do

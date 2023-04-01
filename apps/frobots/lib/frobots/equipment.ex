@@ -117,28 +117,7 @@ defmodule Frobots.Equipment do
   end
 
   def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) do
-<<<<<<< HEAD
-    module = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_class <> "Inst")
-    inst_struct = module.new(%{})
-    # we have to rely on the fact the type is the get_ fn! not good.
-    get_fn = String.to_atom("get_" <> String.downcase(equipment_class))
-
-    IO.inspect get_fn
-
-    class = String.to_atom(String.downcase(equipment_class))
-    # class = String.to_existing_atom(String.downcase(equipment_class))
-
-    # master_struct = apply(__MODULE__, get_fn, [equipment_type])
-    my_module = String.to_existing_atom("Elixir.Frobots.Assets")
-    master_struct = apply(my_module, get_fn, [equipment_type])
-
-    inst_struct
-    |> module.changeset(Map.from_struct(master_struct))
-    |> Ecto.Changeset.put_assoc(:user, user)
-    |> Ecto.Changeset.put_assoc(class, master_struct)
-=======
     create_equipment_changeset(%Accounts.User{} = user, equipment_class, equipment_type)
->>>>>>> dev
     |> Repo.insert()
   end
 
