@@ -4,7 +4,6 @@ defmodule FrobotsWeb.HomeLive.Index do
   alias Frobots.{UserStats, GlobalStats}
   alias Frobots.{Accounts, Assets, Events}
 
-
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
@@ -19,7 +18,10 @@ defmodule FrobotsWeb.HomeLive.Index do
      |> assign(:current_user, current_user)
      |> assign(:featured_frobots, get_featured_frobots())
      |> assign(:current_user_stats, UserStats.get_user_stats(current_user))
-     |> assign(:current_user_ranking_details, Events.get_current_user_ranking_details(current_user))
+     |> assign(
+       :current_user_ranking_details,
+       Events.get_current_user_ranking_details(current_user)
+     )
      |> assign(:blog_posts, get_blog_posts())
      |> assign(:global_stats, GlobalStats.get_global_stats(current_user))
      |> assign(:frobot_leaderboard_stats, Events.send_leaderboard_entries())
@@ -88,9 +90,11 @@ defmodule FrobotsWeb.HomeLive.Index do
   @impl true
   def handle_event("react.fetch_dashboard_details", _params, socket) do
     currentUserStatus = socket.assigns.current_user_stats
-    {:ok, global_stats} = socket.assigns.global_stats
-                  |> Map.from_struct()
-                  |> Jason.encode()
+
+    {:ok, global_stats} =
+      socket.assigns.global_stats
+      |> Map.from_struct()
+      |> Jason.encode()
 
     {:noreply,
      push_event(socket, "react.return_dashboard_details", %{
