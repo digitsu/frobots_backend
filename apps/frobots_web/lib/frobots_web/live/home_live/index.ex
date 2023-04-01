@@ -90,14 +90,19 @@ defmodule FrobotsWeb.HomeLive.Index do
   @impl true
   def handle_event("react.fetch_dashboard_details", _params, socket) do
     currentUserStatus = socket.assigns.current_user_stats
-
-    {:ok, global_stats} =
-      socket.assigns.global_stats
-      |> Map.from_struct()
-      |> Jason.encode()
+    current_user_ranking_details = socket.assigns.current_user_ranking_details
+    frobot_leaderboard_stats = socket.assigns.frobot_leaderboard_stats
+    player_leaderboard_stats = socket.assigns.player_leaderboard_stats
+    current_user = socket.assigns.current_user
+    global_stats = socket.assigns.global_stats
 
     {:noreply,
      push_event(socket, "react.return_dashboard_details", %{
+       "current_user_name" => current_user.name,
+       "current_user_avatar" => current_user.avatar,
+       "current_user_ranking_details" => current_user_ranking_details,
+       "frobot_leaderboard_stats" => frobot_leaderboard_stats,
+       "player_leaderboard_stats" => player_leaderboard_stats,
        "globalStats" => global_stats,
        "blogPosts" => socket.assigns.blog_posts,
        "featuredFrobots" => socket.assigns.featured_frobots,
