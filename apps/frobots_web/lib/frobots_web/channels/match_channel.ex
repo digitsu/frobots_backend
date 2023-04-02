@@ -66,6 +66,7 @@ defmodule FrobotsWeb.MatchChannel do
         # now pass the match service the frobots and the match_template
         case Fubars.Match.start_match(
                via_tuple(match_name),
+               ## Removed
                match_data |> Map.get("frobots", nil) |> Frobots.Assets.load_frobots_from_db(),
                match_data
              ) do

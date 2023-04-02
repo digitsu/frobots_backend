@@ -42,6 +42,7 @@ defmodule Frobots.Api do
     query =
       Match
       |> join(:left, [match], u in User, on: match.user_id == u.id)
+      |> where([match], match.type == :real)
 
     query =
       case Keyword.get(params, :search_pattern, nil) do

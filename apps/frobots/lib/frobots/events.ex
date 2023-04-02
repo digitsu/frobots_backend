@@ -172,8 +172,8 @@ defmodule Frobots.Events do
     |> broadcast_change([:match, :updated])
   end
 
-  def get_match_by(params) do
-    Repo.get_by(Match, params)
+  def get_match_by(params, preload \\ []) do
+    Match |> where(^params) |> preload(^preload) |> Repo.one()
   end
 
   def list_match_by(params, preload \\ [], order_by \\ []) do

@@ -24,6 +24,7 @@ defmodule Frobots.Events.Slot do
     |> cast(attrs, @fields ++ [:slot_type, :frobot_id, :match_id])
     |> cast_assoc(:match)
     |> validate_required(@fields)
+    |> validate_slot_type(attrs)
     |> unique_constraint(:frobot_id, name: :unique_frobot_id_slot)
   end
 
@@ -32,6 +33,7 @@ defmodule Frobots.Events.Slot do
     slot
     |> cast(attrs, @fields ++ [:frobot_id, :slot_type])
     |> validate_status(attrs)
+    |> validate_slot_type(attrs)
     |> unique_constraint(:frobot_id, name: :unique_frobot_id_slot)
   end
 
@@ -60,4 +62,24 @@ defmodule Frobots.Events.Slot do
   defp validate_status_fsm(:closed, :open), do: true
   defp validate_status_fsm(:joining, :ready), do: true
   defp validate_status_fsm(_, _), do: false
+
+  defp validate_slot_type(%Ecto.Changeset{valid?: true} = changeset, attrs) do
+    if attrs["slot_type"] do
+      case get_change(changeset, :status) do
+        :ready ->
+          changeset
+
+        _ ->
+          add_error(
+            changeset,
+            :slot_type,
+            "unable to update the slot type for #{get_change(changeset, :status)}"
+          )
+      end
+    else
+      changeset
+    end
+  end
+
+  defp validate_slot_type(changeset, _attrs), do: changeset
 end

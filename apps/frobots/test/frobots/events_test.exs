@@ -28,7 +28,8 @@ defmodule Frobots.EventsTest do
           "arena_id" => 1,
           "min_player_frobot" => 1,
           "max_player_frobot" => 5,
-          "status" => "done"
+          "status" => "done",
+          "type" => "real"
         })
 
       {:ok, bl} = Events.create_battlelog(mt, params)
@@ -92,6 +93,7 @@ defmodule Frobots.EventsTest do
           "status" => "closed"
         }
       ],
+      "type" => "real",
       "frobot_ids" => [n1, n2],
       "match_template" => %{
         "entry_fee" => 0,

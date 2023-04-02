@@ -3,11 +3,12 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   use FrobotsWeb, :live_view
   require Logger
 
-  alias Frobots.{Assets}
+  alias Frobots.{Assets, Accounts}
   alias FrobotsWeb.Simulator
 
   @impl Phoenix.LiveView
-  def mount(params, _session, socket) do
+  def mount(params, session, socket) do
+    current_user = Accounts.get_user_by_session_token(session["user_token"])
     frobot_id = params["id"]
 
     simulator =
@@ -30,7 +31,8 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
          socket
          |> assign(:templates, templates)
          |> assign(:simulator, simulator)
-         |> assign(:frobot, frobot)}
+         |> assign(:frobot, frobot)
+         |> assign(:user, current_user)}
     end
   end
 
@@ -117,15 +119,35 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     player_frobot = match_data["name"]
     protobot = socket.assigns.protobot
 
-    ## Have to get this from FE
-    match_data = %{
-      commission_rate: 10,
-      entry_fee: 100,
-      frobots: [%{name: player_frobot}, %{name: protobot}],
-      match_type: :individual,
-      max_frobots: 4,
-      min_frobots: 2,
-      payout_map: 'd'
+    %{
+      "user_id" => socket.assigns.user.id,
+      "match_time" => DateTime.utc_now() |> DateTime.to_string(),
+      "timer" => 3600,
+      "arena_id" => 1,
+      "min_player_frobot" => 1,
+      "max_player_frobot" => 2,
+      "type" => :simulation,
+      "slots" => [
+        %{
+          "frobot_id" => player_frobot.id,
+          "status" => "ready",
+          "slot_type" => "host"
+        },
+        %{
+          "frobot_id" => protobot.id,
+          "status" => "ready",
+          "slot_type" => "protobot"
+        }
+      ],
+      "frobot_ids" => [player_frobot.id, protobot.id],
+      "match_template" => %{
+        "entry_fee" => 0,
+        "commission_rate" => 0,
+        "match_type" => "individual",
+        "payout_map" => [100],
+        "max_frobots" => 3,
+        "min_frobots" => 1
+      }
     }
 
     ## TODO :: SEND Frobots DATA so the game will be constructed based on that
