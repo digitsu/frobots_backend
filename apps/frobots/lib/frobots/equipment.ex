@@ -292,6 +292,11 @@ defmodule Frobots.Equipment do
     # range: 900}]
   end
 
+  def get_current_xframe(_frobot) do
+    #return the installed xframe_inst, nil if none installed.
+    #this is needed for frobot startup as it needs to get the info from its specific xframe (such as current health)
+  end
+
   # functions returning changesets..we need these as Ecto.multi requires changesets
   # create equipment changeset - called by create_equipment
   def create_equipment_changeset(%Accounts.User{} = user, equipment_class, equipment_type) do
