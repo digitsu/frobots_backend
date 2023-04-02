@@ -14,7 +14,10 @@ export default (props: any) => {
   const steps = [
     { label: 'Step 1', component: <CreateMatchDetails /> },
     { label: 'Step 2', component: <ChooseArena /> },
-    { label: 'Step 3', component: <SlotManagement /> },
+    {
+      label: 'Step 3',
+      component: <SlotManagement createMatch={props.createMatch} />,
+    },
   ]
   useEffect(() => {
     dispatch(setProtobots(templates))

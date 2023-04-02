@@ -28,7 +28,6 @@ defmodule Frobots.Assets.MissileInst do
   end
 
   @fields [
-    :missile_id,
     :damage_direct,
     :damage_near,
     :damage_far,

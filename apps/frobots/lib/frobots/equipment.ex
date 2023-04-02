@@ -3,6 +3,12 @@ defmodule Frobots.Equipment do
   alias Frobots.Repo
   alias Frobots.Assets.{XframeInst, MissileInst, ScannerInst, CannonInst}
   alias Frobots.Accounts
+  alias Frobots.Assets
+
+  @equipment_structs [%XframeInst{}, %CannonInst{}, %ScannerInst{}, %MissileInst{}]
+  def equipment_structs() do
+    @equipment_structs
+  end
 
   # Returns the (CRUD) getter function for this equipment
   defp _get_fn(equipment_class) do
@@ -12,6 +18,19 @@ defmodule Frobots.Equipment do
   # return the master template for this equipment class and type
   defp _get_template(equipment_class, equipment_type) do
     apply(Frobots.Assets, _get_fn(equipment_class), [equipment_type])
+  end
+
+  defp _get_inst_module(equipment_class) do
+    String.to_existing_atom(
+      "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
+    )
+  end
+
+  defp _is_ordinance_class?(equipment_class) do
+    String.downcase(equipment_class) in Enum.map(
+      Frobots.ordinance_classes(),
+      &Atom.to_string(&1)
+    )
   end
 
   @doc ~S"""
@@ -98,33 +117,19 @@ defmodule Frobots.Equipment do
   end
 
   def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type) do
-    inst_module =
-      String.to_existing_atom(
-        "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
-      )
-
-    inst_struct = inst_module.new(%{})
-    master_struct = _get_template(equipment_class, equipment_type)
-
-    inst_struct
-    |> inst_module.changeset(Map.from_struct(master_struct))
-    |> Ecto.Changeset.put_assoc(:user, user)
-    |> Ecto.Changeset.put_assoc(
-      String.to_existing_atom(String.downcase(equipment_class)),
-      master_struct
-    )
+    create_equipment_changeset(%Accounts.User{} = user, equipment_class, equipment_type)
     |> Repo.insert()
   end
 
   def get_equipment(equipment_class, id) do
-    module = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_class <> "Inst")
+    module = _get_inst_module(equipment_class)
 
     from(eqp in module, where: eqp.id == ^id)
     |> Repo.one()
   end
 
   def update_equipment(equipment, equipment_class, attrs) do
-    module = String.to_existing_atom("Elixir.Frobots.Assets." <> equipment_class <> "Inst")
+    module = _get_inst_module(equipment_class)
 
     equipment
     |> module.changeset(attrs)
@@ -132,7 +137,7 @@ defmodule Frobots.Equipment do
   end
 
   def delete_equipment(equipment)
-      when equipment in [%XframeInst{}, %CannonInst{}, %ScannerInst{}, %MissileInst{}] do
+      when equipment in @equipment_structs do
     Repo.delete(equipment)
   end
 
@@ -165,16 +170,48 @@ defmodule Frobots.Equipment do
   @doc """
   which should assign the equipment (equipe it) to that frobot, which should also incorporate logic to check the number of slots in the currently equipped xframe for the frobot.
   """
-  def equip_part(_equipment, _frobot) do
-    # add a frobot association to the part, see how create_equipment uses Ecto.Changeset.put_assoc().
-    # figure out what kind of equipment it is. use Frobot.parts_classes()
-    # need to check if there is a slot for it use Frobot.equipment_hardpoint_map()
+  def equip_part(equipment_instance_id, frobot_id, equipment_class) do
+    call_equip_part_update(
+      equip_part_changeset(equipment_instance_id, frobot_id, equipment_class)
+    )
+  end
+
+  def call_equip_part_update(changeset) when changeset.valid? do
+    changeset
+    |> Repo.update()
+    |> send_db_response()
+  end
+
+  def call_equip_part_update(changeset) when is_nil(changeset) do
+    {:error, "unable to equip part, there are no open slots"}
+  end
+
+  defp send_db_response(response) do
+    case response do
+      {:ok, _equip_inst} ->
+        {:ok, "frobot equipped with part instance"}
+
+      {:error, %Ecto.Changeset{}} ->
+        {:error, "There was an error"}
+    end
   end
 
   @doc """
   need to install an xframe onto a frobot. this needs to be done first, because equip_part() cannot be executed before a frobot has its xframe installed.
   """
-  def equip_xframe(_xframe, _frobot) do
+
+  def equip_xframe(xframe_inst_id, frobot_id) do
+    result =
+      equip_xframe_changeset(xframe_inst_id, frobot_id)
+      |> Repo.update()
+
+    case result do
+      {:ok, _xframe_inst} ->
+        {:ok, "frobot equipped with xframe instance"}
+
+      {:error, %Ecto.Changeset{}} ->
+        {:error, "There was an error in equip_xframe"}
+    end
   end
 
   @doc """
@@ -253,5 +290,117 @@ defmodule Frobots.Equipment do
     # damage_far: [40,3],
     # speed: 400,
     # range: 900}]
+  end
+
+  # functions returning changesets..we need these as Ecto.multi requires changesets
+  # create equipment changeset - called by create_equipment
+  def create_equipment_changeset(%Accounts.User{} = user, equipment_class, equipment_type) do
+    inst_module = _get_inst_module(equipment_class)
+
+    inst_struct = inst_module.new(%{})
+    master_struct = _get_template(equipment_class, equipment_type)
+
+    inst_struct
+    |> inst_module.changeset(Map.from_struct(master_struct))
+    |> Ecto.Changeset.put_assoc(:user, user)
+    |> Ecto.Changeset.put_assoc(
+      String.to_existing_atom(String.downcase(equipment_class)),
+      master_struct
+    )
+  end
+
+  # get xframe changeset -- called by equip_xframe
+  def equip_xframe_changeset(xframe_inst_id, frobot_id) do
+    inst_module = _get_inst_module("Xframe")
+
+    # get xframeInst
+    current_frobot = Assets.get_frobot(frobot_id)
+    xframe = get_equipment("Xframe", xframe_inst_id) |> Repo.preload(:frobot)
+
+    inst_module.changeset(xframe, %{})
+    |> Ecto.Changeset.put_assoc(:frobot, current_frobot)
+  end
+
+  # equip part changeset - called by equip_part
+  def equip_part_changeset(equipment_instance_id, frobot_id, equipment_class) do
+    inst_module = _get_inst_module(equipment_class)
+
+    xframe = from(xfi in XframeInst, where: xfi.frobot_id == ^frobot_id) |> Repo.one()
+    frobot = Assets.get_frobot(frobot_id)
+
+    xframe_class =
+      from(xf in Frobots.Assets.Xframe, where: xf.id == ^xframe.xframe_id) |> Repo.one()
+
+    if !is_nil(xframe_class) do
+      # now check how many scanner and weapon endpoints are on xframe
+      max_sensor_hardpoints = xframe_class.sensor_hardpoints
+      max_weapon_endpoints = xframe_class.weapon_hardpoints
+      {weapon_count, sensor_count, _ammo_count} = get_equipment_count(frobot.id)
+
+      equipment = get_equipment(equipment_class, equipment_instance_id) |> Repo.preload(:frobot)
+
+      if _is_ordinance_class?(equipment_class) do
+        build_weapon_equipment_part_changeset(
+          weapon_count,
+          max_weapon_endpoints,
+          frobot,
+          equipment,
+          inst_module
+        )
+      else
+        build_scanner_equipment_part_changeset(
+          sensor_count,
+          max_sensor_hardpoints,
+          frobot,
+          equipment,
+          inst_module
+        )
+      end
+    else
+      {:error, "Xframe needs to be installed first"}
+    end
+  end
+
+  defp build_weapon_equipment_part_changeset(
+         total_weapons,
+         weapon_hardpoints,
+         frobot,
+         equipment,
+         inst_module
+       ) do
+    if total_weapons == weapon_hardpoints do
+      nil
+    else
+      inst_module.changeset(equipment, %{})
+      |> Ecto.Changeset.put_assoc(:frobot, frobot)
+    end
+  end
+
+  defp build_scanner_equipment_part_changeset(
+         total_sensors,
+         sensor_hardpoints,
+         frobot,
+         equipment,
+         inst_module
+       ) do
+    if total_sensors == sensor_hardpoints do
+      nil
+    else
+      inst_module.changeset(equipment, %{})
+      |> Ecto.Changeset.put_assoc(:frobot, frobot)
+    end
+  end
+
+  defp get_equipment_count(frobot_id) do
+    weapon_count =
+      from(c in CannonInst, where: c.frobot_id == ^frobot_id) |> Repo.all() |> Enum.count()
+
+    sensor_count =
+      from(s in ScannerInst, where: s.frobot_id == ^frobot_id) |> Repo.all() |> Enum.count()
+
+    ammo_count =
+      from(m in MissileInst, where: m.frobot_id == ^frobot_id) |> Repo.all() |> Enum.count()
+
+    {weapon_count, sensor_count, ammo_count}
   end
 end

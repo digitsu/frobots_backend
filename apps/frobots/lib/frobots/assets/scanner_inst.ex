@@ -22,8 +22,6 @@ defmodule Frobots.Assets.ScannerInst do
   end
 
   @fields [
-    :frobot_id,
-    :scanner_id,
     :max_range,
     :resolution
   ]

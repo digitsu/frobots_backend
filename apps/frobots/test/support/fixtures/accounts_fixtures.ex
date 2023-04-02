@@ -14,7 +14,8 @@ defmodule Frobots.AccountsFixtures do
       admin: false,
       active: true,
       migrated_user: false,
-      hashed_password_old: "$pbkdf2-sha512$160000$abc123$abcd123def"
+      hashed_password_old: "$pbkdf2-sha512$160000$abc123$abcd123def",
+      avatar: "https://via.placeholder.com/50.png"
     }
 
     # note: hashed_password_old must be in the following pattern -  $pbkdf2-sha512$99999$abcd12ef
