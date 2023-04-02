@@ -7,6 +7,7 @@ defmodule Frobots.Repo.Migrations.RemoveXframeInstanceFields do
       remove :scanner_hardpoint
     end
   end
+
   def down do
     alter table(:xframe_inst) do
       add :weapon_hardpoint, :integer
