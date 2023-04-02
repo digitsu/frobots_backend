@@ -172,8 +172,8 @@ defmodule Frobots.Events do
     |> broadcast_change([:match, :updated])
   end
 
-  def get_match_by(params) do
-    Repo.get_by(Match, params)
+  def get_match_by(params, preload \\ []) do
+    Match |> where(^params) |> preload(^preload) |> Repo.one()
   end
 
   def list_match_by(params, preload \\ [], order_by \\ []) do
@@ -448,7 +448,7 @@ defmodule Frobots.Events do
   end
 
   # get current frobot battlelogs
-  def get_frobot_battlelog(frobot_id, _match_status) do
+  def get_frobot_battlelogs(frobot_id, _match_status) do
     q =
       from m in "matches",
         join: s in "slots",
