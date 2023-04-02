@@ -447,7 +447,7 @@ defmodule Frobots.Events do
   end
 
   # get current frobot battlelogs
-  def get_frobot_battlelog(frobot_id, _match_status) do
+  def get_frobot_battlelogs(frobot_id, _match_status) do
     q =
       from m in "matches",
         join: s in "slots",
