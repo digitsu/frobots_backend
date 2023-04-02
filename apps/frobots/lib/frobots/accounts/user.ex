@@ -63,7 +63,7 @@ defmodule Frobots.Accounts.User do
 
   def profile_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :name, :sparks, :avatar])
+    |> cast(attrs, [:email, :name, :sparks, :avatar, :admin])
     |> unique_constraint(:name)
     |> validate_email()
   end
