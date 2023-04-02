@@ -11,6 +11,7 @@ defmodule Frobots.Assets.XframeInst do
              :max_speed_ms,
              :turn_speed,
              :max_health,
+             :health,
              :max_throttle,
              :accel_speed_mss
            ]}
@@ -24,6 +25,7 @@ defmodule Frobots.Assets.XframeInst do
     field(:max_speed_ms, :integer)
     field(:turn_speed, :integer)
     field(:max_health, :integer)
+    field(:health, :integer)
     field(:max_throttle, :integer)
     field(:accel_speed_mss, :integer)
     timestamps()
@@ -40,7 +42,7 @@ defmodule Frobots.Assets.XframeInst do
   @doc false
   def changeset(xframe, attrs) do
     xframe
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:health])
     |> validate_required(@fields)
   end
 end
