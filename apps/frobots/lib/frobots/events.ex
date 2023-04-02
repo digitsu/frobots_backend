@@ -444,6 +444,7 @@ defmodule Frobots.Events do
     |> Enum.filter(fn x ->
       x.username == current_user.name
     end)
+    |> Enum.at(0)
   end
 
   # get current frobot battlelogs
