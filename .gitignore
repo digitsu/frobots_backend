@@ -46,3 +46,5 @@ loadenv.sh
 #elixir_LS vscode plugin
 .elixir_ls/
 
+#scratch file
+scratch.txt

@@ -188,7 +188,7 @@ defmodule Frobots.Events do
   end
 
   def count_matches_by_status(status) when is_atom(status) do
-    count_matches_by_status( Atom.to_string(status))
+    count_matches_by_status(Atom.to_string(status))
   end
 
   def count_matches_by_status(status) do
@@ -198,8 +198,6 @@ defmodule Frobots.Events do
         select: count(m.id)
     )
   end
-
-
 
   def update_slot(%Slot{} = slot, attrs \\ %{}) do
     slot
@@ -455,12 +453,13 @@ defmodule Frobots.Events do
 
   # get current frobot battlelogs
   def get_frobot_battlelogs(frobot_id, match_status \\ ["pending", "running"]) do
-    match_status = Enum.flat_map(match_status, fn status ->
-      case is_atom(status) do
-        true -> [Atom.to_string(status)]
-        false -> [status]
-      end
-    end)
+    match_status =
+      Enum.flat_map(match_status, fn status ->
+        case is_atom(status) do
+          true -> [Atom.to_string(status)]
+          false -> [status]
+        end
+      end)
 
     q =
       from m in "matches",
@@ -468,7 +467,7 @@ defmodule Frobots.Events do
         on: m.id == s.match_id,
         join: f in "frobots",
         on: s.frobot_id == f.id,
-        where: m.status in match_status and s.frobot_id == ^frobot_id,
+        where: m.status in ^match_status and s.frobot_id == ^frobot_id,
         select: %{
           "match_id" => m.id,
           "match_name" => m.title,

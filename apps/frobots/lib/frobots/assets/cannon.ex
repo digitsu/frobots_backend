@@ -27,14 +27,13 @@ defmodule Frobots.Assets.Cannon do
     :type,
     :reload_time,
     :rate_of_fire,
-    :magazine_size,
-    :image
+    :magazine_size
   ]
 
   @doc false
   def changeset(cannon, attrs) do
     cannon
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:image])
     |> validate_required(@fields)
     |> unique_constraint([:type])
   end

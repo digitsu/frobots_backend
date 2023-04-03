@@ -33,14 +33,13 @@ defmodule Frobots.Assets.Missile do
     :damage_near,
     :damage_far,
     :speed,
-    :range,
-    :image
+    :range
   ]
 
   @doc false
   def changeset(missile, attrs) do
     missile
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:image])
     |> validate_required(@fields)
     |> unique_constraint([:type])
   end

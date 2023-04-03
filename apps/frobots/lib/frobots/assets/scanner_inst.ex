@@ -25,14 +25,13 @@ defmodule Frobots.Assets.ScannerInst do
 
   @fields [
     :max_range,
-    :resolution,
-    :image
+    :resolution
   ]
 
   @doc false
   def changeset(scanner, attrs) do
     scanner
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:image])
     |> validate_required(@fields)
   end
 end

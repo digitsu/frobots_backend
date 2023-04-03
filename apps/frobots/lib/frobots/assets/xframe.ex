@@ -44,14 +44,13 @@ defmodule Frobots.Assets.Xframe do
     :movement_type,
     :max_health,
     :max_throttle,
-    :accel_speed_mss,
-    :image
+    :accel_speed_mss
   ]
 
   @doc false
   def changeset(xframe, attrs) do
     xframe
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:image])
     |> validate_required(@fields)
     |> unique_constraint([:type])
   end
