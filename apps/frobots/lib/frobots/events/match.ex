@@ -54,8 +54,7 @@ defmodule Frobots.Events.Match do
       :match_time,
       :arena_id,
       :min_player_frobot,
-      :max_player_frobot,
-      :type
+      :max_player_frobot
     ])
     |> unique_constraint([:battlelog])
   end

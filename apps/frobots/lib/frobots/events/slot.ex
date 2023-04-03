@@ -8,7 +8,7 @@ defmodule Frobots.Events.Slot do
   @derive {Jason.Encoder, only: [:status, :match_id, :frobot_id, :slot_type]}
 
   schema "slots" do
-    field(:slot_type, Ecto.Enum, values: [:host, :protobot])
+    field(:slot_type, Ecto.Enum, values: [:host, :protobot, :player])
     field(:status, Ecto.Enum, values: [:open, :closed, :joining, :ready])
 
     belongs_to(:frobot, Frobot)
