@@ -293,8 +293,8 @@ defmodule Frobots.Equipment do
   end
 
   def get_current_xframe(_frobot) do
-    #return the installed xframe_inst, nil if none installed.
-    #this is needed for frobot startup as it needs to get the info from its specific xframe (such as current health)
+    # return the installed xframe_inst, nil if none installed.
+    # this is needed for frobot startup as it needs to get the info from its specific xframe (such as current health)
   end
 
   # functions returning changesets..we need these as Ecto.multi requires changesets

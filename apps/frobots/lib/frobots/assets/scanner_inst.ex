@@ -9,7 +9,8 @@ defmodule Frobots.Assets.ScannerInst do
              :scanner_id,
              :frobot_id,
              :max_range,
-             :resolution
+             :resolution,
+             :image
            ]}
 
   schema "scanner_inst" do
@@ -18,12 +19,14 @@ defmodule Frobots.Assets.ScannerInst do
     belongs_to :frobot, Frobots.Assets.Frobot
     field :max_range, :integer
     field :resolution, :integer
+    field :image, :string, default: "https://via.placeholder.com/50.png"
     timestamps()
   end
 
   @fields [
     :max_range,
-    :resolution
+    :resolution,
+    :image
   ]
 
   @doc false

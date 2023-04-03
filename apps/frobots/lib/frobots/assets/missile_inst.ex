@@ -12,7 +12,8 @@ defmodule Frobots.Assets.MissileInst do
              :damage_near,
              :damage_far,
              :speed,
-             :range
+             :range,
+             :image
            ]}
 
   schema "missile_inst" do
@@ -24,6 +25,7 @@ defmodule Frobots.Assets.MissileInst do
     field :damage_far, {:array, :integer}
     field :speed, :integer
     field :range, :integer
+    field :image, :string, default: "https://via.placeholder.com/50.png"
     timestamps()
   end
 
@@ -32,7 +34,8 @@ defmodule Frobots.Assets.MissileInst do
     :damage_near,
     :damage_far,
     :speed,
-    :range
+    :range,
+    :image
   ]
 
   @doc false

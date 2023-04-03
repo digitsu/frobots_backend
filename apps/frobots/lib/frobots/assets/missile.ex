@@ -10,7 +10,8 @@ defmodule Frobots.Assets.Missile do
              :damage_near,
              :damage_far,
              :speed,
-             :range
+             :range,
+             :image
            ]}
 
   schema "missiles" do
@@ -22,6 +23,7 @@ defmodule Frobots.Assets.Missile do
     field :range, :integer
     has_many :missile_inst, Frobots.Assets.MissileInst
     field :class, Ecto.Enum, values: ~w(missile)a
+    field :image, :string, default: "https://via.placeholder.com/50.png"
     timestamps()
   end
 
@@ -31,7 +33,8 @@ defmodule Frobots.Assets.Missile do
     :damage_near,
     :damage_far,
     :speed,
-    :range
+    :range,
+    :image
   ]
 
   @doc false

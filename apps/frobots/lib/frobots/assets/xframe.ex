@@ -14,7 +14,8 @@ defmodule Frobots.Assets.Xframe do
              :movement_type,
              :max_health,
              :max_throttle,
-             :accel_speed_mss
+             :accel_speed_mss,
+             :image
            ]}
 
   schema "xframes" do
@@ -28,6 +29,7 @@ defmodule Frobots.Assets.Xframe do
     field :max_health, :integer
     field :max_throttle, :integer
     field :accel_speed_mss, :integer
+    field :image, :string, default: "https://via.placeholder.com/50.png"
     has_many :xframe_inst, Frobots.Assets.XframeInst
     field :class, Ecto.Enum, values: ~w(xframe)a
     timestamps()
@@ -42,7 +44,8 @@ defmodule Frobots.Assets.Xframe do
     :movement_type,
     :max_health,
     :max_throttle,
-    :accel_speed_mss
+    :accel_speed_mss,
+    :image
   ]
 
   @doc false
