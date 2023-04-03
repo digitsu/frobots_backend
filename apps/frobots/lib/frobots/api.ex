@@ -138,7 +138,10 @@ defmodule Frobots.Api do
   def _create_frobot_build_multi(user, frobot_attrs) do
     Multi.new()
     |> Multi.insert(:frobot, create_frobot_changeset(user, frobot_attrs))
-    |> Multi.insert(:xframe_inst, Equipment.create_equipment_changeset(user, "Xframe", :Tank_Mk1))
+    |> Multi.insert(
+      :xframe_inst,
+      Equipment.create_equipment_changeset(user, "Xframe", :Chassis_Mk1)
+    )
     |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
     |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
     |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))

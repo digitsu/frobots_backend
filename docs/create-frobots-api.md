@@ -234,7 +234,7 @@ Assets.get_xframes(): Returns list of xframes
 
 &nbsp;&nbsp;&nbsp;&nbsp;id: 10,
 
-&nbsp;&nbsp;&nbsp;&nbsp;xframe_type: :Tank_Mk3,
+&nbsp;&nbsp;&nbsp;&nbsp;xframe_type: :Chassis_Mk3,
 
 &nbsp;&nbsp;&nbsp;&nbsp;max_speed_ms: 40,
 

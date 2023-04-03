@@ -223,12 +223,12 @@ defmodule Frobots.Assets do
       # a contrived example, seeing as the schema has type a enum, which means you have to add it to the schema before you can call this fn on a new type. BUT at least we show all the needed fields for validation to pass...
       # iex> alias Frobots.Assets.Xframe
       # iex> with {:ok, %Xframe{} = xf } <- Frobots.Assets.create_xframe(
-      # ...> %{type: :Tank_Mk1,
+      # ...> %{type: :Chassis_Mk1,
       # ...>   weapon_hardpoints: 1,
       # ...>   max_speed_ms: 10,
       # ...>   turn_speed: 10,
       # ...>   sensor_hardpoints: 1,
-      # ...>   movement_type: "tracks",
+      # ...>   movement_type: "bipedal",
       # ...>   max_health: 999,
       # ...>   max_throttle: 100,
       # ...>   accel_speed_mss: 4,
