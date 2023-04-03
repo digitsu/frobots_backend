@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
-import { Box, Tab, Tabs, Button, Autocomplete, TextField } from '@mui/material'
+import {
+  Box,
+  Grid,
+  Tab,
+  Tabs,
+  Button,
+  Autocomplete,
+  TextField,
+} from '@mui/material'
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
@@ -12,6 +20,7 @@ const BlankBlocklyCode =
 export default (props: any) => {
   const {
     frobot,
+    currentUser,
     updateFrobotCode,
     requestMatch,
     runSimulation,
@@ -19,18 +28,19 @@ export default (props: any) => {
     changeProtobot,
     templates,
   } = props
-  const [isEditable, enableEdit] = useState(false)
+  const isOwnFrobot = frobot.user_id === currentUser.id
   const [luaCode, setLuaCode] = useState(frobot.brain_code || '')
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState(
     frobot.blockly_code || BlankBlocklyCode
   )
+  const [blocklyLuaCode, setBlocklyLuaCode] = useState('')
   const [isSelectedProtobot, setIsSelectedProtobot] = useState(false)
   const [isRequestedMatch, setIsRequestedMatch] = useState(false)
   const [isSimulationStarted, setIsSimulationStarted] = useState(false)
 
   const templateFrobots =
-    templates?.map(({ name}, index) => ({
+    templates?.map(({ name }, index) => ({
       label: name,
       id: name,
     })) || []
@@ -45,7 +55,6 @@ export default (props: any) => {
   const [tabIndex, setTabIndex] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    enableEdit(true)
     setTabIndex(newValue)
   }
 
@@ -54,6 +63,10 @@ export default (props: any) => {
     window.Blockly = Blockly
     customFunctions()
   }, [])
+
+  useEffect(() => {
+    setBlocklyLuaCode(blocklyCode)
+  }, [blocklyCode])
 
   function onEditorChange(code: string) {
     try {
@@ -68,10 +81,6 @@ export default (props: any) => {
       const code = luaGenerator.workspaceToCode(workspace)
       if (code != blocklyCode) {
         setBlocklyCode(code)
-
-        if (isEditable) {
-          setLuaCode(code)
-        }
       }
     } catch (err) {
       console.log(err)
@@ -125,7 +134,7 @@ export default (props: any) => {
   }
 
   return !isRequestedMatch ? (
-    <Box mt={8}>
+    <Box mt={5}>
       <>
         <Box
           sx={{
@@ -169,14 +178,16 @@ export default (props: any) => {
                 </Tabs>
               </Box>
               <Box display={'flex'}>
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  size="small"
-                  onClick={saveConfig}
-                >
-                  Save
-                </Button>{' '}
+                {isOwnFrobot && (
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                    onClick={saveConfig}
+                  >
+                    Save
+                  </Button>
+                )}{' '}
                 <Autocomplete
                   sx={{
                     pl: 1,
@@ -211,11 +222,21 @@ export default (props: any) => {
           </Box>
           {
             <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
-              <BlocklyEditor
-                defaultXml={blocklyCode}
-                setXmlText={setXmlText}
-                workspaceDidChange={workspaceDidChange}
-              />
+              <Grid container>
+                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                  <BlocklyEditor
+                    defaultXml={blocklyCode}
+                    setXmlText={setXmlText}
+                    workspaceDidChange={workspaceDidChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                  <LuaEditor
+                    luaCode={blocklyLuaCode}
+                    onEditorChange={() => {}}
+                  />
+                </Grid>
+              </Grid>
             </Box>
           }
           {
