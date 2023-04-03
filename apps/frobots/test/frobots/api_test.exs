@@ -102,4 +102,28 @@ defmodule Frobots.ApiTest do
       ]
     }
   end
+
+  test "get frobot details" do
+    {:ok, myuser} = user_fixture()
+    # currently fixtures only create prototype bots. (non-equipped)
+    frobot1 =
+      Frobots.AssetsFixtures.frobot_fixture(myuser, %{
+        name: "sniper",
+        brain_code: "return()",
+        class: Frobots.Assets.prototype_class()
+      })
+
+    frobot2 =
+      Frobots.AssetsFixtures.frobot_fixture(myuser, %{
+        name: "necron99",
+        brain_code: "return()",
+        class: Frobots.Assets.prototype_class()
+      })
+
+    assert {:ok, _details} = Api.get_frobot_details("sniper")
+    assert {:ok, _details} = Api.get_frobot_details("necron99")
+  end
+
+  # need to add a test for Api.create_frobot()
+  # and then augment the frobot_fixtures with a version which is takes as arg the class, and does the right thing (create low level or create API level and equip all default equipment)
 end
