@@ -194,7 +194,7 @@ defmodule Frobots.Events do
   def count_matches_by_status(status) do
     Repo.one(
       from m in Match,
-        where: m.status == ^status,
+        where: m.status == ^status and m.type == :real,
         select: count(m.id)
     )
   end
