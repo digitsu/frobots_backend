@@ -292,20 +292,10 @@ defmodule Frobots.Api do
     ```
 
   """
-  def get_frobot_details(name) when is_bitstring(name) do
-    case Assets.get_frobot(name) do
+  def get_frobot_details(id_or_name) do
+    case Assets.get_frobot(id_or_name) do
       nil ->
-        {:error, "There are no frobots with given name"}
-
-      frobot ->
-        _preload_equipment_instances(frobot)
-    end
-  end
-
-  def get_frobot_details(id) do
-    case Assets.get_frobot(id) do
-      nil ->
-        {:error, "There are no frobots with given id"}
+        {:error, "There are no frobots with given id/name"}
 
       frobot ->
         _preload_equipment_instances(frobot)
@@ -332,16 +322,22 @@ defmodule Frobots.Api do
       "bio" => frobot.bio
     }
 
-    xframe_inst = _get_xframe_inst_details(frobot)
-    cannon_inst = _get_cannon_inst_details(frobot)
-    scanner_inst = _get_scanner_inst_details(frobot)
-    missile_inst = _get_missile_inst_details(frobot)
-
     frobot_details =
-      Map.put(frobot_details, "xframe_inst", xframe_inst)
-      |> Map.put("cannon_inst", cannon_inst)
-      |> Map.put("scanner_inst", scanner_inst)
-      |> Map.put("missile_inst", missile_inst)
+      cond do
+        frobot.class in [Assets.prototype_class(), Assets.target_class()] ->
+          frobot_details
+
+        true ->
+          xframe_inst = _get_xframe_inst_details(frobot)
+          cannon_inst = _get_cannon_inst_details(frobot)
+          scanner_inst = _get_scanner_inst_details(frobot)
+          missile_inst = _get_missile_inst_details(frobot)
+
+          Map.put(frobot_details, "xframe_inst", xframe_inst)
+          |> Map.put("cannon_inst", cannon_inst)
+          |> Map.put("scanner_inst", scanner_inst)
+          |> Map.put("missile_inst", missile_inst)
+      end
 
     {:ok, frobot_details}
   end

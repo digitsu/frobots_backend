@@ -18,7 +18,7 @@ Assets.list_user_frobots(current_user)).  Note:  current_user is extracted from 
 
 &nbsp;&nbsp;&nbsp;&nbsp;brain_code: "-- lua code-- ",
 
-&nbsp;&nbsp;&nbsp;&nbsp;class: "Proto",
+&nbsp;&nbsp;&nbsp;&nbsp;class: "P",
 
 &nbsp;&nbsp;&nbsp;&nbsp;xp: 0,
 
@@ -176,7 +176,7 @@ Assets.list_user_frobots(current_user): Fetches frobots owned by current user
 
 &nbsp;&nbsp;&nbsp;&nbsp;brain_code: "-- lua code-- ",
 
-&nbsp;&nbsp;&nbsp;&nbsp;class: "Proto",
+&nbsp;&nbsp;&nbsp;&nbsp;class: "P",
 
 &nbsp;&nbsp;&nbsp;&nbsp;xp: 0,
 
