@@ -67,7 +67,7 @@ defmodule FrobotsWeb.Simulator do
   end
 
   @impl true
-  def handle_call({:start_match, match_data}, _from, state) do
+  def handle_call({:slot, match_data}, _from, state) do
     case Channel.push(state.match_channel, "start_match", match_data) do
       {:ok, frobots_map} ->
         {:reply, {:ok, frobots_map}, Map.put(state, :frobots_map, frobots_map)}
