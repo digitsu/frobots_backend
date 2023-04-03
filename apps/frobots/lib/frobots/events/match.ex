@@ -15,7 +15,7 @@ defmodule Frobots.Events.Match do
     field :min_player_frobot, :integer
     field :max_player_frobot, :integer
     field :status, Ecto.Enum, values: [:pending, :running, :done, :timeout, :cancelled]
-    field :type, Ecto.Enum, values: [:simulation, :real]
+    field :type, Ecto.Enum, values: [:simulation, :real], default: :real
 
     ## legacy column
     field :frobots, {:array, :integer}
@@ -54,7 +54,8 @@ defmodule Frobots.Events.Match do
       :match_time,
       :arena_id,
       :min_player_frobot,
-      :max_player_frobot
+      :max_player_frobot,
+      :type
     ])
     |> unique_constraint([:battlelog])
   end
