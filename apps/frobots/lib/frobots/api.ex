@@ -42,7 +42,6 @@ defmodule Frobots.Api do
     query =
       Match
       |> join(:left, [match], u in User, on: match.user_id == u.id)
-      |> where([match], match.type == :real)
 
     query =
       case Keyword.get(params, :search_pattern, nil) do
@@ -68,6 +67,17 @@ defmodule Frobots.Api do
         match_status ->
           query
           |> where([match, user], match.status == ^match_status)
+      end
+
+    query =
+      case Keyword.get(params, :match_type, nil) do
+        nil ->
+          query
+          |> where([match], match.type == :real)
+
+        match_type ->
+          query
+          |> where([match], match.type == ^match_type)
       end
 
     Events.list_paginated_matches(query, page_config, preload, order_by)
