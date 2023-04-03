@@ -49,6 +49,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   @impl Phoenix.LiveView
   def handle_event("react.fetch_bot_braincode", _params, socket) do
     frobot = socket.assigns.frobot
+    user = socket.assigns.user
 
     frobotDetails = %{
       "frobot_id" => frobot.id,
@@ -57,12 +58,24 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       "blockly_code" => frobot.blockly_code,
       "brain_code" => frobot.brain_code,
       "class" => frobot.class,
-      "xp" => frobot.xp
+      "xp" => frobot.xp,
+      "user_id" => frobot.user_id
+    }
+
+    currentUser = %{
+      "active" => user.active,
+      "admin" => user.admin,
+      "avatar" => user.avatar,
+      "email" => user.email,
+      "id" => user.id,
+      "name" => user.name,
+      "sparks" => user.sparks
     }
 
     {:noreply,
      push_event(socket, "react.return_bot_braincode", %{
        "frobot" => frobotDetails,
+       "currentUser" => currentUser,
        "templates" => socket.assigns.templates
      })}
   end
