@@ -11,7 +11,9 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
       {:noreply, put_flash(socket, :error, "invalid match id")}
     else
       if connected?(socket), do: Events.subscribe()
-      {:ok, socket |> assign(:match, match)}
+      time_left = DateTime.diff(match.match_time, DateTime.utc_now())
+      Process.send_after(self(), :time_left, 1_000)
+      {:ok, socket |> assign(:match, match) |> assign(:time_left, time_left)}
     end
   end
 
@@ -70,5 +72,12 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
 
     updated_match = Map.put(match, :slots, updated_slots)
     {:noreply, socket |> assign(:match, updated_match)}
+  end
+
+  def handle_info(:time_left, socket) do
+    match = socket.assigns.match
+    time_left = DateTime.diff(match.match_time, DateTime.utc_now())
+    Process.send_after(self(), :time_left, 1_000)
+    {:noreply, socket |> assign(:time_left, time_left)}
   end
 end
