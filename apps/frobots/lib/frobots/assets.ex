@@ -6,7 +6,6 @@ defmodule Frobots.Assets do
   import Ecto.Query, warn: false
   alias Frobots.Repo
   alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
-  alias Frobots.Events.{Match, Slot}
   alias Frobots.Accounts
 
   @prototype_class "P"
