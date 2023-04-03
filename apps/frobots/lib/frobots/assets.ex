@@ -8,8 +8,8 @@ defmodule Frobots.Assets do
   alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
   alias Frobots.Accounts
 
-  @prototype_class "Proto"
-  @target_class "Target"
+  @prototype_class "P"
+  @target_class "T"
   @user_class_u "U"
 
   @spec user_classes :: [<<_::8>>, ...]
