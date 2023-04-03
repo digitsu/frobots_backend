@@ -42,12 +42,12 @@ defmodule Frobots.AssetsTest do
     }
 
     @xframe %{
-      type: "Tank_Mk1",
+      type: "Chassis_Mk1",
       max_speed_ms: 30,
       turn_speed: 50,
       sensor_hardpoints: 1,
       weapon_hardpoints: 1,
-      movement_type: "tracks",
+      movement_type: "bipedal",
       max_health: 100,
       max_throttle: 100,
       accel_speed_mss: 5,
@@ -159,8 +159,8 @@ defmodule Frobots.AssetsTest do
       assert Enum.count(xframes) > 0
 
       item = Enum.at(xframes, 0)
-      assert item.type == :Tank_Mk1
-      assert item.movement_type == :tracks
+      assert item.type == :Chassis_Mk1
+      assert item.movement_type == :bipedal
     end
   end
 end

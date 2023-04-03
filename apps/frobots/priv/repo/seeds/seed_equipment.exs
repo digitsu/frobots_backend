@@ -1,6 +1,6 @@
 alias Frobots.Assets
 xframes = [
-  %{type: "Tank_Mk1",
+  %{type: "Chassis_Mk1",
     weapon_hardpoints: 1,
     sensor_hardpoints: 1,
     cpu_hardpoints: 1,
@@ -8,10 +8,10 @@ xframes = [
     turn_speed: 50,
     max_speed_ms: 30,
     accel_speed_mss: 5,
-    movement_type: "tracks",
+    movement_type: "bipedal",
     max_throttle: 100},
 
-    %{type: "Tank_Mk2",
+    %{type: "Chassis_Mk2",
     weapon_hardpoints: 2,
     sensor_hardpoints: 1,
     cpu_hardpoints: 1,
@@ -19,10 +19,10 @@ xframes = [
     turn_speed: 40,
     max_speed_ms: 30,
     accel_speed_mss: 4,
-    movement_type: "tracks",
+    movement_type: "bipedal",
     max_throttle: 100},
 
-    %{type: "Tank_Mk3",
+    %{type: "Chassis_Mk3",
     weapon_hardpoints: 1,
     sensor_hardpoints: 2,
     cpu_hardpoints: 1,
@@ -30,7 +30,7 @@ xframes = [
     turn_speed: 65,
     max_speed_ms: 40,
     accel_speed_mss: 7,
-    movement_type: "tracks",
+    movement_type: "bipedal",
     max_throttle: 100},
 ]
 

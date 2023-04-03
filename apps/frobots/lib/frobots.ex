@@ -34,7 +34,7 @@ defmodule Frobots do
 
   # PUT ALL CONSTANT DATA AS ALIASES HERE
   @default_frobot_loadout [
-    %{equipment_class: "xframe", equipment_type: "Tank Mk1"},
+    %{equipment_class: "xframe", equipment_type: "Chassis Mk1"},
     %{equipment_class: "cannon", equipment_type: "Mk1"},
     %{equipment_class: "scanner", equipment_type: "Mk1"},
     %{equipment_class: "missile", equipment_type: "Mk1"}
