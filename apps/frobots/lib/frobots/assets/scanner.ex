@@ -7,7 +7,8 @@ defmodule Frobots.Assets.Scanner do
            only: [
              :type,
              :max_range,
-             :resolution
+             :resolution,
+             :image
            ]}
 
   schema "scanners" do
@@ -16,13 +17,15 @@ defmodule Frobots.Assets.Scanner do
     field :resolution, :integer
     has_many :scanner_inst, Frobots.Assets.ScannerInst
     field :class, Ecto.Enum, values: ~w(scanner)a
+    field :image, :string, default: "https://via.placeholder.com/50.png"
     timestamps()
   end
 
   @fields [
     :type,
     :max_range,
-    :resolution
+    :resolution,
+    :image
   ]
 
   @doc false

@@ -208,6 +208,219 @@ defmodule Frobots.Api do
     |> Ecto.Changeset.put_assoc(:user, user)
   end
 
+  @doc ~S"""
+    Given frobot name or id, fetches frobot details along with equipment instances
+    Usage
+    #iex> {:ok, frobot} = Api.get_frobot_details("piper")
+
+    #iex>{:error, "There are no frobots with given name"} = Api.get_frobot_details("unknown")
+
+    Successful response looks like this
+    ```
+     %{
+      "avatar" => "https://via.placeholder.com/50.png"",
+      "bio" => "bio",
+      "brain_code" => "sniper",
+      "cannon_inst" => [
+        %{
+          "cannon_id" => 1,
+          "id" => 1,
+          "image" => "https://via.placeholder.com/50.png",
+          "magazine_size" => 2,
+          "rate_of_fire" => 1,
+          "reload_time" => 5
+        },
+        %{
+          "cannon_id" => 2,
+          "id" => 2,
+          "image" => "https://via.placeholder.com/50.png",
+          "magazine_size" => 2,
+          "rate_of_fire" => 1,
+          "reload_time" => 5
+        }
+      ],
+      "frobot_id" => 8,
+      "missile_inst" => [
+        %{
+          "damage_direct" => [5, 10],
+          "damage_far" => [40, 3],
+          "damage_near" => [20, 5],
+          "id" => 1,
+          "image" => "https://via.placeholder.com/50.png",
+          "missile_id" => 1,
+          "range" => 900,
+          "speed" => 400
+        }
+      ],
+      "name" => "piper",
+      "pixellated_img" => "https://via.placeholder.com/50.png",
+      "scanner_inst" => [
+        %{
+          "id" => 1,
+          "image" => "https://via.placeholder.com/50.png",
+          "max_range" => 700,
+          "resolution" => 10,
+          "scanner_id" => 1
+        }
+      ],
+      "xframe_inst" => %{
+        "accel_speed_mss" => 5,
+        "health" => nil,
+        "id" => 1,
+        "image" => "https://via.placeholder.com/50.png",
+        "max_health" => 100,
+        "max_speed_ms" => 30,
+        "max_throttle" => 100,
+        "turn_speed" => 50,
+        "xframe_id" => 1
+      },
+      "xp" => 0
+     }
+    ```
+
+  """
+  def get_frobot_details(name) when is_bitstring(name) do
+    case Assets.get_frobot(name) do
+      nil ->
+        {:error, "There are no frobots with given name"}
+
+      frobot ->
+        _preload_equipment_instances(frobot)
+    end
+  end
+
+  def get_frobot_details(id) do
+    case Assets.get_frobot(id) do
+      nil ->
+        {:error, "There are no frobots with given name"}
+
+      frobot ->
+        _preload_equipment_instances(frobot)
+    end
+  end
+
+  def _preload_equipment_instances(frobot) do
+    frobot
+    |> Repo.preload(:xframe_inst)
+    |> Repo.preload(:cannon_inst)
+    |> Repo.preload(:scanner_inst)
+    |> Repo.preload(:missile_inst)
+    |> _parse_frobot_details()
+  end
+
+  defp _parse_frobot_details(frobot) do
+    frobot_details = %{
+      "frobot_id" => frobot.id,
+      "name" => frobot.name,
+      "brain_code" => frobot.brain_code,
+      "pixellated_img" => frobot.pixellated_img,
+      "avatar" => frobot.avatar,
+      "xp" => frobot.xp,
+      "bio" => frobot.bio
+    }
+
+    xframe_inst = _get_xframe_inst_details(frobot)
+    cannon_inst = _get_cannon_inst_details(frobot)
+    scanner_inst = _get_scanner_inst_details(frobot)
+    missile_inst = _get_missile_inst_details(frobot)
+
+    frobot_details =
+      Map.put(frobot_details, "xframe_inst", xframe_inst)
+      |> Map.put("cannon_inst", cannon_inst)
+      |> Map.put("scanner_inst", scanner_inst)
+      |> Map.put("missile_inst", missile_inst)
+
+    {:ok, frobot_details}
+  end
+
+  defp _get_xframe_inst_details(frobot) do
+    if Map.has_key?(frobot, :xframe_inst) do
+      %{
+        "id" => frobot.xframe_inst.id,
+        "xframe_id" => frobot.xframe_inst.xframe_id,
+        "max_speed_ms" => frobot.xframe_inst.max_speed_ms,
+        "turn_speed" => frobot.xframe_inst.turn_speed,
+        "max_health" => frobot.xframe_inst.max_health,
+        "health" => frobot.xframe_inst.health,
+        "max_throttle" => frobot.xframe_inst.max_throttle,
+        "accel_speed_mss" => frobot.xframe_inst.accel_speed_mss,
+        "image" => frobot.xframe_inst.image
+      }
+    else
+      []
+    end
+  end
+
+  defp _get_cannon_inst_details(frobot) do
+    if Map.has_key?(frobot, :cannon_inst) do
+      cannon_inst_list = Map.get(frobot, :cannon_inst)
+
+      if Enum.empty?(cannon_inst_list) do
+        []
+      else
+        Enum.map(cannon_inst_list, fn cannon_inst ->
+          %{
+            "id" => cannon_inst.id,
+            "cannon_id" => cannon_inst.cannon_id,
+            "reload_time" => cannon_inst.reload_time,
+            "rate_of_fire" => cannon_inst.rate_of_fire,
+            "magazine_size" => cannon_inst.magazine_size,
+            "image" => cannon_inst.image
+          }
+        end)
+      end
+    else
+      []
+    end
+  end
+
+  defp _get_scanner_inst_details(frobot) do
+    if Map.has_key?(frobot, :scanner_inst) do
+      scanner_inst_list = Map.get(frobot, :scanner_inst)
+
+      if Enum.empty?(scanner_inst_list) do
+        []
+      else
+        Enum.map(scanner_inst_list, fn scanner_inst ->
+          %{
+            "id" => scanner_inst.id,
+            "scanner_id" => scanner_inst.scanner_id,
+            "max_range" => scanner_inst.max_range,
+            "resolution" => scanner_inst.resolution,
+            "image" => scanner_inst.image
+          }
+        end)
+      end
+    else
+      []
+    end
+  end
+
+  defp _get_missile_inst_details(frobot) do
+    if Map.has_key?(frobot, :missile_inst) do
+      missile_inst_list = Map.get(frobot, :missile_inst)
+
+      if Enum.empty?(missile_inst_list) do
+        []
+      else
+        Enum.map(missile_inst_list, fn missile_inst ->
+          %{
+            "id" => missile_inst.id,
+            "missile_id" => missile_inst.missile_id,
+            "damage_direct" => missile_inst.damage_direct,
+            "damage_near" => missile_inst.damage_near,
+            "damage_far" => missile_inst.damage_far,
+            "speed" => missile_inst.speed,
+            "range" => missile_inst.range,
+            "image" => missile_inst.image
+          }
+        end)
+      end
+    else
+      []
+    end
+  end
+
   defp update_user_changeset(user_id) do
     user = Accounts.get_user_by(id: user_id)
     attrs = %{"sparks" => user.sparks - 1}

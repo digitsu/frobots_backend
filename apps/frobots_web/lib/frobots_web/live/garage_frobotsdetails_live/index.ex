@@ -1,7 +1,7 @@
 defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
-  alias Frobots.{Accounts, Assets}
+  alias Frobots.{Accounts, Assets, Api}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -22,12 +22,20 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
   @impl true
   def handle_event("react.fetch_frobot_details", params, socket) do
     # find the frobot in the list which you are looking for in params.frobot_name
-    frobot = Enum.find(socket.assigns.user_frobots, nil, fn f -> f.name == params.frobot_name end)
+    # frobot = Enum.find(socket.assigns.user_frobots, nil, fn f -> f.name == params.frobot_name end)
+    case Api.get_frobot_details(params.frobot_name) do
+      {:ok, frobot_details} ->
+        {:noreply,
+         push_event(socket, "react.return_frobot_details", %{
+           "frobot_details" => frobot_details
+         })}
 
-    {:noreply,
-     push_event(socket, "react.return_frobot_details", %{
-       params.frobot_name => frobot
-     })}
+      {:error, message} ->
+        {:noreply,
+         push_event(socket, "react.return_frobot_details", %{
+           "error" => message
+         })}
+    end
   end
 
   defp apply_action(socket, :index, _params) do
