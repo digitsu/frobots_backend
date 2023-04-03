@@ -463,4 +463,13 @@ defmodule Frobots.Api do
       "#{acc}#{k}: #{joined_errors}\n"
     end)
   end
+
+  def list_arena() do
+    [
+      %{
+        id: 1,
+        image_url: ""
+      }
+    ]
+  end
 end
