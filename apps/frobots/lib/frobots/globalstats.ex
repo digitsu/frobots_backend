@@ -37,9 +37,9 @@ defmodule Frobots.GlobalStats do
 
     %Frobots.GlobalStats{
       matches_played: Events.get_match_participation_count(user_frobots),
-      upcoming_matches: Events.count_matches_by_status("pending"),
-      completed_matches: Events.count_matches_by_status("done"),
-      current_matches: Events.count_matches_by_status("running"),
+      upcoming_matches: Events.count_matches_by_status(:pending),
+      completed_matches: Events.count_matches_by_status(:done),
+      current_matches: Events.count_matches_by_status(:running),
       players_online: 0,
       players_registered: 0
     }
