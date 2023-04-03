@@ -98,13 +98,13 @@ defmodule Frobots.Equipment do
     Xframe: a class of equipment, each frobot can install one of these into it, which defines what parts it can install
     Weapon: class of parts which do damage, xframes define how many weapon slots it can support
     Sensor: class of parts which sense things, xframes define how many sensory slots it can support
-    Tank Mk1: a type of an xframe
+    Chassis Mk1: a type of an xframe
     Cannon: a type of weapon
     Cannon Mk1: a type of Cannon
     Scanner: a type of Sensor
     Scanner Mk1: a type of Scanner
 
-    USER driven APIs should only be able to create instances of the leaf level types: "Tank Mk1", "Cannon Mk1", "Scanner Mk2", etc.
+    USER driven APIs should only be able to create instances of the leaf level types: "Chassis Mk1", "Cannon Mk1", "Scanner Mk2", etc.
   """
   def create_equipment(%Accounts.User{} = user, equipment_class, equipment_type)
       when is_atom(equipment_class) do

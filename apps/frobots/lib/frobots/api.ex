@@ -295,7 +295,7 @@ defmodule Frobots.Api do
   def get_frobot_details(id) do
     case Assets.get_frobot(id) do
       nil ->
-        {:error, "There are no frobots with given name"}
+        {:error, "There are no frobots with given id"}
 
       frobot ->
         _preload_equipment_instances(frobot)
