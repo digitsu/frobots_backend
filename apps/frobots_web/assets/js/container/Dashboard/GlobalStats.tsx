@@ -3,10 +3,12 @@ import { Typography, Box, Card } from '@mui/material'
 import GlobalStatsItem from '../../components/Dashboard/GlobalStatsItem'
 
 type GlobalStats = {
-  matches_completed: number
-  matches_in_progress: number
+  completed_matches: number
+  current_matches: number
+  matches_played: number
   players_online: number
   players_registered: number
+  upcoming_matches: number
 }
 
 type GlobalStatsProps = {
@@ -32,7 +34,7 @@ export default (props: GlobalStatsProps) => {
           <GlobalStatsItem
             color={'#FFAB00'}
             subtitle={'Matches In Progress'}
-            label={globalStats?.matches_in_progress}
+            label={globalStats?.current_matches}
             index={1}
           />
           <GlobalStatsItem
@@ -44,7 +46,7 @@ export default (props: GlobalStatsProps) => {
           <GlobalStatsItem
             color={'#FFAB00'}
             subtitle={'Matches Completed'}
-            label={globalStats?.matches_completed}
+            label={globalStats?.completed_matches}
             index={3}
           />
         </Box>
