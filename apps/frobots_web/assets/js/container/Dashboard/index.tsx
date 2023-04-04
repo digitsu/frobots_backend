@@ -10,7 +10,16 @@ import JoinMatchBanner from './JoinMatchBanner'
 import NewsAndUpdatesSection from './NewsAndUpdatesSection'
 
 export default (props: any) => {
-  const { playerStats, globalStats, blogPosts, featuredFrobots } = props
+  const {
+    playerStats,
+    globalStats,
+    current_user_ranking_details,
+    current_user_name,
+    current_user_avatar,
+    current_user_sparks,
+    blogPosts,
+    featuredFrobots,
+  } = props
 
   const handleOpenGarage = useCallback(
     (event: MouseEvent<HTMLDivElement> | null) => {
@@ -53,7 +62,9 @@ export default (props: any) => {
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6">12345</Typography>
+                      <Typography variant="h6">
+                        {current_user_ranking_details?.rank || 0}
+                      </Typography>
                       <Typography variant="caption">
                         Total XP : {playerStats.total_xp}
                       </Typography>
@@ -83,11 +94,9 @@ export default (props: any) => {
                       flexDirection={'column'}
                     >
                       <Typography variant="h6">
-                        {playerStats.frobots_count}
+                        {current_user_sparks || 0}
                       </Typography>
-                      <Typography variant="caption">
-                        Sparkling Frobots
-                      </Typography>
+                      <Typography variant="caption">Total Sparks</Typography>
                     </Box>
                   </Box>
                 </Box>
@@ -161,7 +170,11 @@ export default (props: any) => {
               flexDirection={'column'}
               height={'100%'}
             >
-              <ProfileDetails />
+              <ProfileDetails
+                ranking_details={current_user_ranking_details}
+                user_name={current_user_name}
+                user_avatar={current_user_avatar}
+              />
               <Box>
                 <GlobalStats globalStats={globalStats} />
               </Box>
