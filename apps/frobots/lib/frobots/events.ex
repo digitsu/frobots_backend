@@ -180,13 +180,6 @@ defmodule Frobots.Events do
     Match |> where(^params) |> preload(^preload) |> order_by(^order_by) |> Repo.all()
   end
 
-  def list_paginated_matches(query, page_config, preload, order_by) do
-    query
-    |> preload(^preload)
-    |> order_by(^order_by)
-    |> Repo.paginate(page_config)
-  end
-
   def count_matches_by_status(status) when is_atom(status) do
     count_matches_by_status(Atom.to_string(status))
   end
@@ -478,5 +471,17 @@ defmodule Frobots.Events do
         }
 
     Repo.all(q)
+  end
+
+  def list_paginated(query, page_config) do
+    query
+    |> Repo.paginate(page_config)
+  end
+
+  def list_paginated(query, page_config, preload, order_by) do
+    query
+    |> preload(^preload)
+    |> order_by(^order_by)
+    |> Repo.paginate(page_config)
   end
 end
