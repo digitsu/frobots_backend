@@ -102,6 +102,7 @@ defmodule FrobotsWeb.HomeLive.Index do
      push_event(socket, "react.return_dashboard_details", %{
        "current_user_name" => current_user.name,
        "current_user_avatar" => current_user.avatar,
+       "current_user_sparks" => current_user.sparks,
        "current_user_ranking_details" => current_user_ranking_details,
        "frobot_leaderboard_stats" => frobot_leaderboard_stats,
        "player_leaderboard_stats" => player_leaderboard_stats,

@@ -1,4 +1,4 @@
-import React, { useCallback, type MouseEvent } from 'react'
+import React from 'react'
 import { Grid, Box, Typography, Card } from '@mui/material'
 import FrobotsLeaderBoard from './FrobotsLeaderBoard'
 import PlayerLeaderBoard from './PlayerLeaderBoard'
@@ -10,16 +10,18 @@ import JoinMatchBanner from './JoinMatchBanner'
 import NewsAndUpdatesSection from './NewsAndUpdatesSection'
 
 export default (props: any) => {
-  const { playerStats, globalStats, blogPosts, featuredFrobots } = props
-
-  const handleOpenGarage = useCallback(
-    (event: MouseEvent<HTMLDivElement> | null) => {
-      event?.preventDefault()
-
-      window.location.href = '/garage'
-    },
-    []
-  )
+  const {
+    playerStats,
+    globalStats,
+    current_user_ranking_details,
+    current_user_name,
+    current_user_avatar,
+    current_user_sparks,
+    blogPosts,
+    featuredFrobots,
+    frobot_leaderboard_stats,
+    player_leaderboard_stats,
+  } = props
 
   return (
     <>
@@ -53,7 +55,9 @@ export default (props: any) => {
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6">12345</Typography>
+                      <Typography variant="h6">
+                        {current_user_ranking_details?.rank || 0}
+                      </Typography>
                       <Typography variant="caption">
                         Total XP : {playerStats.total_xp}
                       </Typography>
@@ -71,7 +75,7 @@ export default (props: any) => {
                       borderStyle: 'dotted',
                     }}
                   />
-                  <Box display={'flex'} gap={3} onClick={handleOpenGarage}>
+                  <Box display={'flex'} gap={3}>
                     <Box
                       component={'img'}
                       src={'/images/frobot.svg'}
@@ -83,11 +87,9 @@ export default (props: any) => {
                       flexDirection={'column'}
                     >
                       <Typography variant="h6">
-                        {playerStats.frobots_count}
+                        {current_user_sparks || 0}
                       </Typography>
-                      <Typography variant="caption">
-                        Sparkling Frobots
-                      </Typography>
+                      <Typography variant="caption">Total Sparks</Typography>
                     </Box>
                   </Box>
                 </Box>
@@ -161,17 +163,21 @@ export default (props: any) => {
               flexDirection={'column'}
               height={'100%'}
             >
-              <ProfileDetails />
+              <ProfileDetails
+                ranking_details={current_user_ranking_details}
+                user_name={current_user_name}
+                user_avatar={current_user_avatar}
+              />
               <Box>
                 <GlobalStats globalStats={globalStats} />
               </Box>
             </Box>
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>
-            <FrobotsLeaderBoard />
+            <FrobotsLeaderBoard leaderBoardData={frobot_leaderboard_stats} />
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>
-            <PlayerLeaderBoard />
+            <PlayerLeaderBoard leaderBoardData={player_leaderboard_stats} />
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <Notifications />

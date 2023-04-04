@@ -273,6 +273,18 @@ defmodule Frobots.Assets do
     Repo.all(q)
   end
 
+  def get_available_user_frobots(user_id) do
+    Repo.all(
+      from(f in Frobot,
+        where:
+          f.user_id == ^user_id and
+            fragment(
+              "id NOT IN (select frobot_id from slots as s left join matches as m on s.match_id = m.id where (m.status = 'pending' or m.status = 'running') and s.status = 'ready')"
+            )
+      )
+    )
+  end
+
   @doc ~S"""
   Creates a cannon.
 

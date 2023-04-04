@@ -1,6 +1,27 @@
 import React from 'react'
 import { Box, Grid, Typography, Card } from '@mui/material'
-export default () => {
+
+interface RankingDetails {
+  attempts: number
+  avatar: string
+  frobots_count: number
+  matches_participated: number
+  matches_won: number
+  points: number
+  rank: number
+  username: string
+  xp: number
+}
+
+interface ProfileDetailsProps {
+  user_name: string
+  user_avatar: string
+  ranking_details?: RankingDetails
+}
+
+export default (props: ProfileDetailsProps) => {
+  const { user_name, user_avatar, ranking_details } = props
+
   return (
     <Card>
       <Box p={3} height={240}>
@@ -8,7 +29,7 @@ export default () => {
           <Grid item xs={9} sm={9} md={9} lg={9}>
             <Box mt={2}>
               {' '}
-              <Typography variant="h6">DJC</Typography>
+              <Typography variant="h6">{user_name}</Typography>
               <Box display={'flex'} flexDirection={'column'} gap={1} mt={1}>
                 <Box
                   display={'flex'}
@@ -22,7 +43,7 @@ export default () => {
                     :
                   </Typography>
                   <Typography flex={2} variant="caption">
-                    #46
+                    # {ranking_details?.rank || 0}
                   </Typography>
                 </Box>
                 <Box
@@ -37,7 +58,8 @@ export default () => {
                     :
                   </Typography>
                   <Typography flex={2} variant="caption">
-                    193/200
+                    {ranking_details?.matches_won || 0} /{' '}
+                    {ranking_details?.matches_participated || 0}
                   </Typography>
                 </Box>
                 <Box
@@ -52,7 +74,7 @@ export default () => {
                     :
                   </Typography>
                   <Typography flex={2} variant="caption">
-                    12312346 XP
+                    {ranking_details?.xp || 0} XP
                   </Typography>
                 </Box>
                 <Box
@@ -67,7 +89,7 @@ export default () => {
                     :
                   </Typography>
                   <Typography flex={2} variant="caption">
-                    312346 Q
+                    {ranking_details?.points || 0} Q
                   </Typography>
                 </Box>
               </Box>
@@ -76,7 +98,9 @@ export default () => {
           <Grid item xs={3} sm={3} md={3} lg={3}>
             <Box
               margin={'auto'}
-              src={'/images/user_logo.png'}
+              height={'190px'}
+              width={'250px'}
+              src={user_avatar || '/images/user_logo.png'}
               component={'img'}
             />
           </Grid>
