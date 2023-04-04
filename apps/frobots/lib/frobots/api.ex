@@ -468,7 +468,7 @@ defmodule Frobots.Api do
     [
       %{
         id: 1,
-        image_url: ""
+        image_url: "https://ap-south-1.linodeobjects.com/frobots-assests/arena.png"
       }
     ]
   end
