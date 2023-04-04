@@ -51,5 +51,5 @@ Frobots.Assets.create_xframe!(%{
   max_throttle: 100,
   accel_speed_mss: 5,
   max_health: 100,
-  image: "/chassis/chassis_mk1.png"
+  image: "/equipment/chassis_mk1.png"
 })
