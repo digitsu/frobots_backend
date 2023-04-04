@@ -27,9 +27,6 @@ type TableProps = {
 
 export default (props: TableProps) => {
   const { tableData, tableTitle, tableHeads } = props
-  const handleOpenDetails = (frobotId: number) => {
-    window.location.href = `/garage/frobot?id=${frobotId}`
-  }
 
   return (
     <>
@@ -62,7 +59,7 @@ export default (props: TableProps) => {
 
           <TableBody>
             {tableData.map((row, index) => (
-              <TableRow key={index} onClick={() => handleOpenDetails(row.id)}>
+              <TableRow key={index}>
                 <TableCell
                   sx={{
                     color: '#fff',

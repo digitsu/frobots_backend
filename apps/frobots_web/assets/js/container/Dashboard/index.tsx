@@ -19,6 +19,8 @@ export default (props: any) => {
     current_user_sparks,
     blogPosts,
     featuredFrobots,
+    frobot_leaderboard_stats,
+    player_leaderboard_stats,
   } = props
 
   const handleOpenGarage = useCallback(
@@ -181,10 +183,10 @@ export default (props: any) => {
             </Box>
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>
-            <FrobotsLeaderBoard />
+            <FrobotsLeaderBoard leaderBoardData={frobot_leaderboard_stats} />
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>
-            <PlayerLeaderBoard />
+            <PlayerLeaderBoard leaderBoardData={player_leaderboard_stats} />
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <Notifications />
