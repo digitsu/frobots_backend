@@ -1,4 +1,4 @@
-import React, { useCallback, type MouseEvent } from 'react'
+import React from 'react'
 import { Grid, Box, Typography, Card } from '@mui/material'
 import FrobotsLeaderBoard from './FrobotsLeaderBoard'
 import PlayerLeaderBoard from './PlayerLeaderBoard'
@@ -22,15 +22,6 @@ export default (props: any) => {
     frobot_leaderboard_stats,
     player_leaderboard_stats,
   } = props
-
-  const handleOpenGarage = useCallback(
-    (event: MouseEvent<HTMLDivElement> | null) => {
-      event?.preventDefault()
-
-      window.location.href = '/garage'
-    },
-    []
-  )
 
   return (
     <>
@@ -84,7 +75,7 @@ export default (props: any) => {
                       borderStyle: 'dotted',
                     }}
                   />
-                  <Box display={'flex'} gap={3} onClick={handleOpenGarage}>
+                  <Box display={'flex'} gap={3}>
                     <Box
                       component={'img'}
                       src={'/images/frobot.svg'}
