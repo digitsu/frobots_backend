@@ -276,6 +276,7 @@ defmodule Frobots.Api do
           "scanner_id" => 1
         }
       ],
+      "user_id" => 2,
       "xframe_inst" => %{
         "accel_speed_mss" => 5,
         "health" => nil,
@@ -319,7 +320,8 @@ defmodule Frobots.Api do
       "pixellated_img" => frobot.pixellated_img,
       "avatar" => frobot.avatar,
       "xp" => frobot.xp,
-      "bio" => frobot.bio
+      "bio" => frobot.bio,
+      "user_id" => frobot.user_id
     }
 
     frobot_details =
