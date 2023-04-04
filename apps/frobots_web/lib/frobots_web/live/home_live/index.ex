@@ -1,12 +1,13 @@
 defmodule FrobotsWeb.HomeLive.Index do
   use FrobotsWeb, :live_view
   require Logger
-  alias Frobots.{UserStats, GlobalStats}
+  alias Frobots.{UserStats, GlobalStats, Api}
   alias Frobots.{Accounts, Assets, Events}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
+    {:ok, s3_base_url} = Api.get_image_base_url()
 
     # gets battlelogs info and stores in agent for further processing for player and leaderboard entries
     # this data should really come from db
@@ -25,7 +26,8 @@ defmodule FrobotsWeb.HomeLive.Index do
      |> assign(:blog_posts, get_blog_posts())
      |> assign(:global_stats, GlobalStats.get_global_stats(current_user))
      |> assign(:frobot_leaderboard_stats, Events.send_leaderboard_entries())
-     |> assign(:player_leaderboard_stats, Events.send_player_leaderboard_entries())}
+     |> assign(:player_leaderboard_stats, Events.send_player_leaderboard_entries())
+     |> assign(:s3_base_url, s3_base_url)}
   end
 
   # add additional handle param events as needed to handle button clicks etc

@@ -1,7 +1,18 @@
 defmodule Frobots.Equipment do
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{XframeInst, MissileInst, ScannerInst, CannonInst}
+
+  alias Frobots.Assets.{
+    XframeInst,
+    MissileInst,
+    ScannerInst,
+    CannonInst,
+    Xframe,
+    Cannon,
+    Scanner,
+    Missile
+  }
+
   alias Frobots.Accounts
   alias Frobots.Assets
 
@@ -32,6 +43,15 @@ defmodule Frobots.Equipment do
       &Atom.to_string(&1)
     )
   end
+
+  # functions to get master template data
+  def get_xframes(), do: Repo.all(Xframe)
+
+  def get_cannons(), do: Repo.all(Cannon)
+
+  def get_scanners(), do: Repo.all(Scanner)
+
+  def get_missiles(), do: Repo.all(Missile)
 
   @doc ~S"""
   EQUIPMENT INTERFACE APIs

@@ -9,7 +9,8 @@ xframes = [
     max_speed_ms: 30,
     accel_speed_mss: 5,
     movement_type: "bipedal",
-    max_throttle: 100},
+    max_throttle: 100,
+    image: "/chassis/chassis_mk1.png"},
 
     %{type: "Chassis_Mk2",
     weapon_hardpoints: 2,
@@ -20,7 +21,8 @@ xframes = [
     max_speed_ms: 30,
     accel_speed_mss: 4,
     movement_type: "bipedal",
-    max_throttle: 100},
+    max_throttle: 100,
+    image: "/chassis/chassis_mk2.png"},
 
     %{type: "Chassis_Mk3",
     weapon_hardpoints: 1,
@@ -31,7 +33,8 @@ xframes = [
     max_speed_ms: 40,
     accel_speed_mss: 7,
     movement_type: "bipedal",
-    max_throttle: 100},
+    max_throttle: 100,
+    image: "/chassis/chassis_mk3.png"}
 ]
 
 for xframe <- xframes do
@@ -45,12 +48,14 @@ cannons = [
   %{type: "Mk1",
     reload_time: 5,
     rate_of_fire: 1,
-    magazine_size: 2},
+    magazine_size: 2,
+    image: "/chassis/cannon_mk1.png"},
 
   %{type: "Mk2",
     reload_time: 7,
     rate_of_fire: 2,
-    magazine_size: 3}
+    magazine_size: 3,
+    image: "/chassis/cannon_mk2.png"}
 ]
 
 for cannon <- cannons do
@@ -66,7 +71,8 @@ missiles = [
     damage_near: [20,5],
     damage_far: [40,3],
     speed: 400,
-    range: 900}
+    range: 900,
+    image: "/chassis/missile_mk1.png"}
 ]
 
 for missile <- missiles do
@@ -76,15 +82,15 @@ for missile <- missiles do
   end
 end
 
-
-
 scanners = [
   %{type: "Mk1",
     max_range: 700,
-    resolution: 10},
+    resolution: 10,
+    image: "/chassis/scanner_mk1.png"},
   %{type: "Mk2",
     max_range: 300,
-    resolution: 15},
+    resolution: 15,
+    image: "/chassis/scanner_mk2.png"},
 ]
 for scanner <- scanners do
   case Assets.get_scanner(scanner.type) do

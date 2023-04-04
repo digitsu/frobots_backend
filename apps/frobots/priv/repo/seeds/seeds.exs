@@ -50,5 +50,6 @@ Frobots.Assets.create_xframe!(%{
   movement_type: :bipedal,
   max_throttle: 100,
   accel_speed_mss: 5,
-  max_health: 100
+  max_health: 100,
+  image: "/chassis/chassis_mk1.png"
 })

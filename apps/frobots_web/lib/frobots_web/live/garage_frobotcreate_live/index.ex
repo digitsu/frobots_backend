@@ -9,7 +9,30 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   def mount(_params, %{"user_id" => id}, socket) do
     # set required data via assigns
     current_user = Accounts.get_user!(id)
-    {:ok, socket |> assign(:current_user, current_user)}
+    {:ok, s3_base_url} = Api.get_image_base_url()
+
+    # get templates data and store in socket
+    chassis = Equipment.get_xframes()
+    cannons = Equipment.get_cannons()
+    scanners = Equipment.get_scanners()
+    missiles = Equipment.get_missiles()
+
+    frobot_starter_images = [
+      "#{s3_base_url}/frobots/1.png",
+      "#{s3_base_url}/frobots/2.png",
+      "#{s3_base_url}/frobots/3.png",
+      "#{s3_base_url}/frobots/4.png"
+    ]
+
+    {:ok,
+     socket
+     |> assign(:current_user, current_user)
+     |> assign(:chassis, chassis)
+     |> assign(:scanners, scanners)
+     |> assign(:cannons, cannons)
+     |> assign(:missiles, missiles)
+     |> assign(:s3_base_url, s3_base_url)
+     |> assign(:frobot_starter_images, frobot_starter_images)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
