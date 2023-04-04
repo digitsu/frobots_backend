@@ -175,11 +175,11 @@ export default (props: FrobotDetailsProps) => {
               currentUser={currentUser}
               isOwnedFrobot={isOwnedFrobot}
             />
-            <AttachedEquipments
+            {/* <AttachedEquipments
               equipments={[...cannon_inst, ...scanner_inst, ...missile_inst]}
               isOwnedFrobot={isOwnedFrobot}
-            />
-            <BattlesTable battleLogs={battlelogs} />
+            /> */}
+            {/* <BattlesTable battleLogs={battlelogs} /> */}
           </Box>
         </Box>
       </>
