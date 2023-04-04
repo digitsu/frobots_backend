@@ -1,36 +1,38 @@
 import Config
 
-s3_store_url =
-  System.get_env("S3_URL") ||
-    raise """
-    environment variable S3_URL is missing.
-    Did you forget to source env vars?
-    """
+if config_env() == :prod || config_env() == :staging || config_env() == :dev do
+  s3_store_url =
+    System.get_env("S3_URL") ||
+      raise """
+      environment variable S3_URL is missing.
+      Did you forget to source env vars?
+      """
 
-s3_store_bucket =
-  System.get_env("S3_BUCKET") ||
-    raise """
-    environment variable S3_BUCKET is missing.
-    Did you forget to source env vars?
-    """
+  s3_store_bucket =
+    System.get_env("S3_BUCKET") ||
+      raise """
+      environment variable S3_BUCKET is missing.
+      Did you forget to source env vars?
+      """
 
-config :ex_aws, :s3,
-  scheme: "https://",
-  host: s3_store_url,
-  region: "US",
-  bucket: s3_store_bucket
+  config :ex_aws, :s3,
+    scheme: "https://",
+    host: s3_store_url,
+    region: "US",
+    bucket: s3_store_bucket
 
-config :ex_aws,
-  debug_requests: true,
-  access_key_id: [{:system, "S3_ACCESS_KEY"}, :instance_role],
-  secret_access_key: [{:system, "S3_SECRET_KEY"}, :instance_role],
-  region: "US"
+  config :ex_aws,
+    debug_requests: true,
+    access_key_id: [{:system, "S3_ACCESS_KEY"}, :instance_role],
+    secret_access_key: [{:system, "S3_SECRET_KEY"}, :instance_role],
+    region: "US"
 
-config :ex_aws, :s3,
-  scheme: "https://",
-  host: s3_store_url,
-  region: "US",
-  bucket: s3_store_bucket
+  config :ex_aws, :s3,
+    scheme: "https://",
+    host: s3_store_url,
+    region: "US",
+    bucket: s3_store_bucket
+end
 
 if config_env() == :prod || config_env() == :staging do
   # The secret key base is used to sign/encrypt cookies and other secrets.
