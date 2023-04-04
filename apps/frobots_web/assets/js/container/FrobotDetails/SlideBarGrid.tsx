@@ -1,50 +1,43 @@
-import { Box, Button, Grid, styled } from '@mui/material'
+import { Box, Grid, styled } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
-
-const StyledImg = styled('img')({
-  maxWidth: '100%',
-  height: 'auto',
-})
-
 
 const PlusIcon = styled(AddIcon)({
   color: '#637381',
 })
 
-const sliderImages = [
-  { id: '1', src: '/images/frobot_slider_1.png' },
-  // { id: '2', src: '/images/frobot_slider_2.png' },
-  { id: '3', src: '/images/frobot_slider_3.png' },
-  { id: '4', src: '/images/frobot_slider_4.png' },
-  { id: '5', src: '/images/frobot_slider_5.png' },
-  { id: '6', src: '/images/frobot_slider_6.png' },
-  { id: '7', src: '/images/frobot_slider_7.png' },
-]
+export interface UserFrobot {
+  name: string
+  avatar: string
+  bio: string
+  blockly_code: string
+  brain_code: string
+  class: string
+  id: number
+  inserted_at: Date
+  pixellated_img: string
+  user_id: number
+  updated_at: Date
+  xp: number
+}
 
 interface SlideBarGridProps {
-  isOwnedFrobot: boolean
+  userFrobots: UserFrobot[]
+  currentFrobot: any
+  currentUser: any
 }
 
 export default (props: SlideBarGridProps) => {
-  const [selectedImage, setSelectedImage] = useState('')
-  const { isOwnedFrobot } = props
+  const [selectedImage, setSelectedImage] = useState(0)
+  const { userFrobots, currentFrobot, currentUser } = props
 
   useEffect(() => {
-    if (
-      location.search.split('?id=')[1] == 'undefined' ||
-      location.search.split('?id=')[1] == '' ||
-      location.search.split('?id=')[1] == undefined
-    ) {
-      setSelectedImage('1')
-    } else {
-      setSelectedImage(location.search.split('?id=')[1])
-    }
+    setSelectedImage(currentFrobot.frobot_id)
   }, [])
 
-  const handleImageClick = (image) => {
-    setSelectedImage(image.id)
-    window.location.href = `/garage/frobot?id=${image.id}`
+  const handleImageClick = (frobot: UserFrobot) => {
+    setSelectedImage(frobot.id)
+    window.location.href = `/garage/frobot?id=${frobot.id}`
   }
 
   const handleAddFrobot = () => {
@@ -53,21 +46,26 @@ export default (props: SlideBarGridProps) => {
 
   return (
     <>
-      {isOwnedFrobot && (
-        <Grid spacing={2} pl={2} pr={1} pt={8}>
-          {sliderImages.map((image) => (
-            <Grid item key={image.id} xs={12} pb={3}>
-              <Box
-                sx={{
-                  border:
-                    selectedImage === image.id ? '4px solid #00AB55' : 'none',
-                }}
-                onClick={() => handleImageClick(image)}
-              >
-                <StyledImg src={image.src} alt={`Image ${image.id}`} />
-              </Box>
-            </Grid>
-          ))}
+      <Grid spacing={2} pl={2} pr={1}>
+        {userFrobots.map((frobot) => (
+          <Grid item key={frobot.id} xs={12} pb={3}>
+            <Box
+              component={'img'}
+              src={frobot.pixellated_img}
+              sx={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: '10px',
+                width: 50,
+                height: 50,
+                border:
+                  selectedImage === frobot.id ? '4px solid #00AB55' : 'none',
+              }}
+              onClick={() => handleImageClick(frobot)}
+            ></Box>
+          </Grid>
+        ))}
+        {currentUser.sparks && (
           <Box
             sx={{
               display: 'flex',
@@ -82,8 +80,8 @@ export default (props: SlideBarGridProps) => {
           >
             <PlusIcon />
           </Box>
-        </Grid>
-      )}
+        )}
+      </Grid>
     </>
   )
 }

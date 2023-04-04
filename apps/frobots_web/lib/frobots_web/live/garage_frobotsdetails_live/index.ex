@@ -3,8 +3,6 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.{Accounts, Assets, Api, Events}
 
-  require Logger
-
   @impl Phoenix.LiveView
   def mount(%{"id" => frobot_id} = _params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
@@ -59,7 +57,7 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
 
     {:noreply,
      push_event(socket, "react.return_frobot_details", %{
-       "frobot" => frobot,
+       "frobotDetails" => frobot,
        "currentUser" => currentUser,
        "userFrobots" => user_frobots
      })}
