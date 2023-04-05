@@ -1,7 +1,7 @@
 defmodule FrobotsWeb.AdminLive.Index do
   use FrobotsWeb, :live_view
   require Logger
-  alias Frobots.{Api,Accounts}
+  alias Frobots.{Api, Accounts}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -13,21 +13,23 @@ defmodule FrobotsWeb.AdminLive.Index do
 
     {:ok,
      socket
-      |> assign(:current_user, current_user)
-      |> assign(:uploaded_files, [])
-      |> assign(:image_files, files)
-      |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 2)}
+     |> assign(:current_user, current_user)
+     |> assign(:uploaded_files, [])
+     |> assign(:image_files, files)
+     |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 2)}
   end
 
   def get_files(bucket, base_url) do
-    case  ExAws.S3.list_objects_v2(bucket) |> ExAws.request do
+    case ExAws.S3.list_objects_v2(bucket) |> ExAws.request() do
       {:ok, response} ->
-        response.body.contents |> Enum.map(fn x ->
+        response.body.contents
+        |> Enum.map(fn x ->
           %{
             "file_name" => x.key,
             "file_path" => "#{base_url}/#{x.key}"
           }
         end)
+
       {:error, _error} ->
         []
     end
@@ -60,22 +62,20 @@ defmodule FrobotsWeb.AdminLive.Index do
 
     # uploaded_files =
     consume_uploaded_entries(socket, :avatar, fn %{path: path}, entry ->
-        path
-        |> ExAws.S3.Upload.stream_file()
-        |> ExAws.S3.upload(s3_bucket, "images/#{entry.client_name}", acl: :public_read)
-        |> ExAws.request()
+      path
+      |> ExAws.S3.Upload.stream_file()
+      |> ExAws.S3.upload(s3_bucket, "images/#{entry.client_name}", acl: :public_read)
+      |> ExAws.request()
 
-        {:ok, Path.basename(path)}
-      end)
+      {:ok, Path.basename(path)}
+    end)
 
     files = get_files(s3_bucket, base_url)
 
-    {:noreply,  socket |> assign(:image_files, files)}
-
+    {:noreply, socket |> assign(:image_files, files)}
   end
 
   defp error_to_string(:too_large), do: "Too large"
   defp error_to_string(:too_many_files), do: "You have selected too many files"
   defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
-
 end

@@ -1,6 +1,5 @@
 defmodule FrobotsWeb.UploadImages do
-
-   @doc ~S"""
+  @doc ~S"""
     Uploads images from a local folder to S3.
 
     This function fetches list of images from respective folders and uploads to s3 under "images" folder
@@ -16,19 +15,19 @@ defmodule FrobotsWeb.UploadImages do
   def upload_to_s3(uploads_path) do
     # get bucket
     s3_bucket = Application.get_env(:ex_aws, :s3)[:bucket]
-    #**** uploads_path must exists ****
+    # **** uploads_path must exists ****
     equipment_images = File.ls!(Path.join(uploads_path, "equipment"))
-    frobots_images =  File.ls!(Path.join(uploads_path, "frobots"))
+    frobots_images = File.ls!(Path.join(uploads_path, "frobots"))
     protobots_images = File.ls!(Path.join(uploads_path, "protobots"))
 
-    upload_files(s3_bucket, "equipment", equipment_images,  uploads_path )
+    upload_files(s3_bucket, "equipment", equipment_images, uploads_path)
     upload_files(s3_bucket, "frobots", frobots_images, uploads_path)
-    upload_files(s3_bucket, "protobots", protobots_images,  uploads_path)
+    upload_files(s3_bucket, "protobots", protobots_images, uploads_path)
 
     {:ok, "success"}
   end
 
-  def upload_files(bucket, prefix, file_list,  upload_file_path) do
+  def upload_files(bucket, prefix, file_list, upload_file_path) do
     file_list
     |> Enum.map(fn file_name ->
       "#{upload_file_path}/#{prefix}/#{file_name}"
