@@ -66,21 +66,18 @@ defmodule FrobotsWeb.MatchChannel do
         # now pass the match service the frobots and the match_template
         case Fubars.Match.start_match(
                via_tuple(match_name),
-               ## Removed
-               match_data |> Map.get("frobots", nil) |> Frobots.Assets.load_frobots_from_db(),
                match_data
              ) do
           {:ok, frobots_map} ->
             {:reply, {:ok, frobots_map}, socket}
 
           {:error, error} ->
-            Logger.error(error)
-            {:reply, :error, socket}
+            {:reply, {:error, error}, socket}
         end
 
       {:error, error} ->
         Logger.error(error)
-        {:reply, :error, socket}
+        {:reply, {:error, error}, socket}
     end
   end
 

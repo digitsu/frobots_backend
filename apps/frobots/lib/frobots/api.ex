@@ -35,7 +35,10 @@ defmodule Frobots.Api do
         attrs
       end
 
-    Events.create_match(match_details)
+    case Events.create_match(match_details) do
+      {:error, cs} -> {:error, Jason.encode!(Frobots.ChangesetError.translate_errors(cs))}
+      {:ok, match} -> {:ok, match}
+    end
   end
 
   ## params = [search_pattern: "as", match_status: :done, match_type: :real]
