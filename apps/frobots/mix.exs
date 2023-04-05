@@ -40,6 +40,7 @@ defmodule Frobots.MixProject do
       # {:fubars, in_umbrella: true},
       {:logger_file_backend, "~> 0.0.12"},
       {:phoenix_pubsub, "~> 2.0"},
+      {:gettext, "~> 0.18"},
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
       {:pbkdf2_elixir, "~> 1.0"},
