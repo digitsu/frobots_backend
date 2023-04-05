@@ -38,6 +38,7 @@ defmodule Frobots.Api do
     Events.create_match(match_details)
   end
 
+  ## params = [search_pattern: "as", match_status: :done, match_type: :real]
   def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
     query =
       Match
@@ -80,7 +81,49 @@ defmodule Frobots.Api do
           |> where([match], match.type == ^match_type)
       end
 
-    Events.list_paginated_matches(query, page_config, preload, order_by)
+    Events.list_paginated(query, page_config, preload, order_by)
+  end
+
+  ## params = [frobot_id: 1, match_status: [:done]]
+  def list_paginated_frobot_battlelog(params \\ [], page_config \\ []) do
+    query =
+      Match
+      |> join(:left, [m], s in Slot, on: m.id == s.match_id)
+      |> join(:left, [m, s], f in Frobot, on: s.frobot_id == f.id)
+
+    match_status = Keyword.get(params, :match_status, ["pending", "running"])
+
+    query =
+      if is_list(match_status) do
+        query
+        |> where([m, s, f], m.status in ^match_status)
+      else
+        query
+        |> where([m, s, f], m.status == ^match_status)
+      end
+
+    query =
+      case Keyword.get(params, :frobot_id, nil) do
+        nil ->
+          query
+
+        frobot_id ->
+          query
+          |> where([m, s, f], f.id == ^frobot_id)
+      end
+
+    query =
+      query
+      |> select([m, s, f], %{
+        "match_id" => m.id,
+        "match_name" => m.title,
+        "winner" => "TBD",
+        "xp" => f.xp,
+        "status" => m.status,
+        "time" => m.match_time
+      })
+
+    Events.list_paginated(query, page_config)
   end
 
   def count_matches_by_status(status), do: Events.count_matches_by_status(status)
