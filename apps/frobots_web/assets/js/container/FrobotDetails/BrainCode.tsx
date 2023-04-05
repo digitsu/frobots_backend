@@ -93,7 +93,7 @@ export default (props: any) => {
     }
 
     const requestBody = {
-      frobot_id: frobot.frobot_id,
+      frobot_id: frobot.id,
       blockly_code: xmlText,
       brain_code: luaCode,
     }

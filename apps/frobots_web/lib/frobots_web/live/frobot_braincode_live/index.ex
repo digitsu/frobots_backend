@@ -56,7 +56,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     user = socket.assigns.user
 
     frobotDetails = %{
-      "frobot_id" => frobot.id,
+      "id" => frobot.id,
       "name" => frobot.name,
       "avatar" => frobot.avatar,
       "blockly_code" => frobot.blockly_code,
@@ -96,7 +96,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       case Assets.update_frobot(frobot, params) do
         {:ok, updatedFrobot} ->
           frobotDetails = %{
-            "frobot_id" => updatedFrobot.id,
+            "id" => updatedFrobot.id,
             "name" => updatedFrobot.name,
             "avatar" => updatedFrobot.avatar,
             "blockly_code" => updatedFrobot.blockly_code,
