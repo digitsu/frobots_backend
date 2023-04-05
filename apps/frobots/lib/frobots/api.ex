@@ -288,6 +288,7 @@ defmodule Frobots.Api do
           "magazine_size" => 2,
           "rate_of_fire" => 1,
           "reload_time" => 5,
+          "equipment" => "cannon",
           "type" => :Mk1
         },
         %{
@@ -297,6 +298,7 @@ defmodule Frobots.Api do
           "magazine_size" => 2,
           "rate_of_fire" => 1,
           "reload_time" => 5,
+          "equipment" => "cannon",
           "type" => :Mk2
         }
       ],
@@ -311,6 +313,7 @@ defmodule Frobots.Api do
           "missile_id" => 1,
           "range" => 900,
           "speed" => 400,
+          "equipment" => "missile",
           "type" => :Mk1
         }
       ],
@@ -323,6 +326,7 @@ defmodule Frobots.Api do
           "max_range" => 700,
           "resolution" => 10,
           "scanner_id" => 1,
+          "equipment" => "scanner",
           "type" => :Mk1,
         }
       ],
@@ -336,6 +340,7 @@ defmodule Frobots.Api do
         "max_speed_ms" => 30,
         "max_throttle" => 100,
         "turn_speed" => 50,
+        "equipment" => "xframe",
         "type" => :Chassis_Mk1,
         "xframe_id" => 1
       },
@@ -427,6 +432,7 @@ defmodule Frobots.Api do
         "max_throttle" => frobot.xframe_inst.max_throttle,
         "accel_speed_mss" => frobot.xframe_inst.accel_speed_mss,
         "image" => frobot.xframe_inst.image,
+        "equipment" => "xframe",
         "type" => frobot.xframe_inst.xframe.type
       }
     else
@@ -449,6 +455,7 @@ defmodule Frobots.Api do
             "rate_of_fire" => cannon_inst.rate_of_fire,
             "magazine_size" => cannon_inst.magazine_size,
             "image" => cannon_inst.image,
+            "equipment" => "cannon",
             "type" => cannon_inst.cannon.type
           }
         end)
@@ -472,6 +479,7 @@ defmodule Frobots.Api do
             "max_range" => scanner_inst.max_range,
             "resolution" => scanner_inst.resolution,
             "image" => scanner_inst.image,
+            "equipment" => "scanner",
             "type" => scanner_inst.scanner.type
           }
         end)
@@ -498,6 +506,7 @@ defmodule Frobots.Api do
             "speed" => missile_inst.speed,
             "range" => missile_inst.range,
             "image" => missile_inst.image,
+            "equipment" => "missile",
             "type" => missile_inst.missile.type
           }
         end)
