@@ -62,8 +62,6 @@ defmodule Frobots.Events.Match do
   end
 
   def update_changeset(match, attrs) do
-    IO.inspect(match, label: "Match in Update")
-
     match
     |> cast(attrs, [:status])
     |> cast_assoc(:slots, with: &Slot.update_changeset/2)
