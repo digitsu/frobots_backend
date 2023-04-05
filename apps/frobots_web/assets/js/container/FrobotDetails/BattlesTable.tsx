@@ -1,165 +1,53 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, type ChangeEvent, type MouseEvent } from 'react'
 import { Grid, Box, Typography, CardContent, Card } from '@mui/material'
-
 import { MatchList } from './MatchList'
 import { MatchListSearch } from './MatchListSearch'
 
-interface Filters {
-  query?: string
-  isUpcoming?: boolean
-  isLive?: boolean
-  isLost?: boolean
-  isWon?: boolean
-  isCompleted?: boolean
-}
-
-interface Search {
-  filters: Filters
-  page: number
-  rowsPerPage: number
-}
-
-export function applyPagination<T = any>(
-  documents: T[],
-  page: number,
-  rowsPerPage: number
-): T[] {
-  return documents.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-}
-
-const getMatchesAPI = (request: Search, battleLogs: any[]) => {
-  const { filters, page, rowsPerPage } = request
-
-  let data = battleLogs
-  let count = data.length
-
-  if (typeof filters !== 'undefined') {
-    data = battleLogs.filter((match) => {
-      if (typeof filters.query !== 'undefined' && filters.query !== '') {
-        let queryMatched = false
-        const properties: ('winner' | 'name' | 'status')[] = [
-          'winner',
-          'name',
-          'status',
-        ]
-
-        properties.forEach((property) => {
-          if (
-            match[property].toLowerCase().includes(filters.query!.toLowerCase())
-          ) {
-            queryMatched = true
-          }
-        })
-
-        if (!queryMatched) {
-          return false
-        }
-      }
-
-      if (typeof filters.isUpcoming !== 'undefined') {
-        if (match.status !== 'upcoming') {
-          return false
-        }
-      }
-
-      if (typeof filters.isLive !== 'undefined') {
-        if (match.status !== 'live') {
-          return false
-        }
-      }
-
-      if (typeof filters.isWon !== 'undefined') {
-        if (match.status !== 'won') {
-          return false
-        }
-      }
-
-      if (typeof filters.isLost !== 'undefined') {
-        if (match.status !== 'lost') {
-          return false
-        }
-      }
-      if (typeof filters.isCompleted !== 'undefined') {
-        if (match.status == 'live' || match.status == 'upcoming') {
-          return false
-        }
-      }
-
-      return true
-    })
-
-    count = data.length
-  }
-
-  if (typeof page !== 'undefined' && typeof rowsPerPage !== 'undefined') {
-    data = applyPagination(data, page, rowsPerPage)
-  }
-
-  return {
-    data,
-    count,
-  }
-}
-
-const useSearch = () => {
-  const [search, setSearch] = useState<Search>({
-    filters: {
-      query: undefined,
-      isLost: undefined,
-      isLive: undefined,
-      isWon: undefined,
-      isUpcoming: undefined,
-      isCompleted: undefined,
-    },
-    page: 0,
-    rowsPerPage: 5,
-  })
-
-  return {
-    search,
-    updateSearch: setSearch,
-  }
-}
-
-const useMatches = (search: Search, battleLogs: any[]): { matchs: any[] } => {
-  const [state, setState] = useState<{
-    matchs: any[]
-  }>({
-    matchs: [],
-  })
-
-  const getMatches = useCallback(async () => {
-    try {
-      const response = getMatchesAPI(search, battleLogs)
-
-      setState({
-        matchs: response.data,
-      })
-    } catch (err) {
-      console.error(err)
-    }
-  }, [search])
-
-  useEffect(() => {
-    getMatches()
-  }, [search, getMatches])
-
-  return state
-}
-
 export default (props: any) => {
-  const { battleLogs } = props
-  const { search, updateSearch } = useSearch()
-  const { matchs } = useMatches(search, battleLogs)
+  const {
+    frobotDetails,
+    battles,
+    total_entries,
+    updateBattleSearch,
+    page,
+    page_size,
+    match_status,
+  } = props
 
-  const handleFiltersChange = useCallback(
-    (filters: Filters): void => {
-      updateSearch((prevState) => ({
-        ...prevState,
-        filters,
-      }))
+  const handleTabsChange = useCallback(
+    (tab?: string): void => {
+      updateBattleSearch({
+        frobot_id: frobotDetails.frobot_id,
+        match_status: tab,
+        page: page,
+        page_size: page_size,
+      })
     },
-    [updateSearch]
+    [updateBattleSearch]
+  )
+
+  const handlePageChange = useCallback(
+    (event: MouseEvent<HTMLButtonElement> | null, pageCount: number): void => {
+      updateBattleSearch({
+        frobot_id: frobotDetails.frobot_id,
+        match_status: match_status,
+        page: pageCount + 1,
+        page_size: page_size,
+      })
+    },
+    [updateBattleSearch]
+  )
+
+  const handleRowsPerPageChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>): void => {
+      updateBattleSearch({
+        frobot_id: frobotDetails.frobot_id,
+        match_status: match_status,
+        page: page,
+        page_size: parseInt(event.target.value, 10),
+      })
+    },
+    [updateBattleSearch]
   )
 
   return (
@@ -177,10 +65,17 @@ export default (props: any) => {
             <Box>
               <Card>
                 <CardContent>
-                  <MatchListSearch onFiltersChange={handleFiltersChange} />
+                  <MatchListSearch onTabChange={handleTabsChange} />
                 </CardContent>
                 <CardContent>
-                  <MatchList matchs={matchs} />
+                  <MatchList
+                    matches={battles}
+                    matchesCount={total_entries}
+                    page={page - 1}
+                    rowsPerPage={page_size}
+                    onPageChange={handlePageChange}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                  />
                 </CardContent>
               </Card>
             </Box>

@@ -143,6 +143,11 @@ interface FrobotDetailsProps {
   frobotDetails: any
   currentUser: any
   userFrobots: UserFrobot[]
+  battles: any[]
+  total_entries: number
+  page: number
+  page_size: number
+  updateBattleSearch: any
 }
 
 export default (props: FrobotDetailsProps) => {
@@ -179,7 +184,8 @@ export default (props: FrobotDetailsProps) => {
               equipments={[...cannon_inst, ...scanner_inst, ...missile_inst]}
               isOwnedFrobot={isOwnedFrobot}
             /> */}
-            {/* <BattlesTable battleLogs={battlelogs} /> */}
+
+            <BattlesTable {...props} />
           </Box>
         </Box>
       </>
