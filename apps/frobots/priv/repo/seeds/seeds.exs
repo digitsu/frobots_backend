@@ -10,9 +10,10 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Frobots.Assets
+alias Frobots.{Assets,Accounts, Api}
 alias Frobots
-alias Frobots.Accounts
+
+{:ok, base_url} = Api.get_s3_base_url()
 
 admin_user = System.get_env("ADMIN_USER")
 admin_pass = System.get_env("ADMIN_PASS")
@@ -50,5 +51,6 @@ Frobots.Assets.create_xframe!(%{
   movement_type: :bipedal,
   max_throttle: 100,
   accel_speed_mss: 5,
-  max_health: 100
+  max_health: 100,
+  image: "#{base_url}/images/equipment/chassis_mk1.png"
 })

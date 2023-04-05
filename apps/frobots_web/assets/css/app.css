@@ -165,6 +165,7 @@ body {
   padding: 0 2rem;
   /* position: relative; */
   width: 70%;
+ 
 }
 header section {
   align-items: center;
@@ -196,3 +197,26 @@ header section {
   border: 25px solid #323332;
   
 }
+
+.form-background {
+  padding: 20px;
+  margin: 20px;
+  background-color: #fff;
+}
+
+.form-background button {
+  /* border: 1px solid red; */
+  background-color: #48bb78;
+  color: white;
+  padding: 5px;
+  border-radius: 5px; 
+   
+}
+.form-background p {
+  color: #000000;
+}
+.upload-entry {
+  width: 200px;
+  height: auto;
+}
+
