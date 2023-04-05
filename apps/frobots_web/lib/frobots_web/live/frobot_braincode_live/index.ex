@@ -184,7 +184,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   end
 
   # params = %{"protobot_id" => protobot_id}
-  def handle_event("react.change-protobot", %{"protobot_id" => protobot_id} = params, socket) do
+  def handle_event("react.change-protobot", %{"protobot_id" => protobot_id} = _params, socket) do
     socket =
       socket
       |> assign(:protobot_id, protobot_id)
