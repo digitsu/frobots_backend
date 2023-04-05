@@ -2,7 +2,7 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
 
-  alias Frobots.{Accounts, Assets}
+  alias Frobots.{Accounts, Assets, Events}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -11,6 +11,10 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
     {:ok,
      socket
      |> assign(:current_user, current_user)
+     |> assign(
+       :current_user_ranking_details,
+       Events.get_current_user_ranking_details(current_user)
+     )
      |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
   end
 
@@ -26,8 +30,19 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
 
   @impl Phoenix.LiveView
   def handle_event("react.fetch_user_frobots", _params, socket) do
+    current_user = socket.assigns.current_user
+
+    currentUser = %{
+      "id" => current_user.id,
+      "avatar" => current_user.avatar,
+      "email" => current_user.email,
+      "name" => current_user.name,
+      "sparks" => current_user.sparks
+    }
+
     {:noreply,
      push_event(socket, "react.return_user_frobots", %{
+       "currentUser" => currentUser,
        "frobotList" => extract_frobots(socket.assigns.user_frobots)
      })}
   end

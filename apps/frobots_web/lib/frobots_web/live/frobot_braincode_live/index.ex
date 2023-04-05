@@ -3,7 +3,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   use FrobotsWeb, :live_view
   require Logger
 
-  alias Frobots.{Assets, Accounts}
+  alias Frobots.{Assets, Accounts, Events}
   alias FrobotsWeb.Simulator
 
   @impl Phoenix.LiveView
@@ -32,7 +32,11 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
          |> assign(:templates, templates)
          |> assign(:simulator, simulator)
          |> assign(:frobot, frobot)
-         |> assign(:user, current_user)}
+         |> assign(:user, current_user)
+         |> assign(
+           :current_user_ranking_details,
+           Events.get_current_user_ranking_details(current_user)
+         )}
     end
   end
 

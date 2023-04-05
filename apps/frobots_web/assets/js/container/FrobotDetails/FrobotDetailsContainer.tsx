@@ -92,7 +92,7 @@ export default (props: frobotDetailsProps) => {
             </Typography>
             <Box display={'flex'} alignItems={'baseline'}>
               <Typography pr={2} variant="body2" gutterBottom>
-                {frobotDetails.mech}
+                {frobotDetails.mech || '-'}
               </Typography>
               {frobotDetails.isBoost && (
                 <Button
@@ -116,7 +116,7 @@ export default (props: frobotDetailsProps) => {
               }}
             >
               <Typography variant="body2" gutterBottom>
-                {frobotDetails.bio}
+                {frobotDetails.bio || '-'}
               </Typography>
             </Box>
           </Box>
