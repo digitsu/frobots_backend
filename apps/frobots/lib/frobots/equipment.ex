@@ -1,7 +1,7 @@
 defmodule Frobots.Equipment do
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{XframeInst, MissileInst, ScannerInst, CannonInst}
+  alias Frobots.Assets.{Frobot, XframeInst, MissileInst, ScannerInst, CannonInst}
   alias Frobots.Accounts
   alias Frobots.Assets
 
@@ -167,6 +167,31 @@ defmodule Frobots.Equipment do
     Repo.all(cannons) ++ Repo.all(scanners) ++ Repo.all(xframes) ++ Repo.all(missiles)
   end
 
+  # Fetch all the equipments owned by User
+  def list_user_equipment(user_id) do
+    cannons =
+      from(c in CannonInst,
+        where: c.user_id == ^user_id
+      )
+
+    scanners =
+      from(s in ScannerInst,
+        where: s.user_id == ^user_id
+      )
+
+    xframes =
+      from(x in XframeInst,
+        where: x.user_id == ^user_id
+      )
+
+    missiles =
+      from(m in MissileInst,
+        where: m.user_id == ^user_id
+      )
+
+    Repo.all(cannons) ++ Repo.all(scanners) ++ Repo.all(xframes) ++ Repo.all(missiles)
+  end
+
   @doc """
   which should assign the equipment (equipe it) to that frobot, which should also incorporate logic to check the number of slots in the currently equipped xframe for the frobot.
   """
@@ -292,9 +317,15 @@ defmodule Frobots.Equipment do
     # range: 900}]
   end
 
-  def get_current_xframe(_frobot) do
+  def get_current_xframe(%Frobot{id: frobot_id}) do
     # return the installed xframe_inst, nil if none installed.
     # this is needed for frobot startup as it needs to get the info from its specific xframe (such as current health)
+    xframes =
+      from(x in XframeInst,
+        where: x.frobot_id == ^frobot_id
+      )
+    xframes
+    |> Repo.one()
   end
 
   # functions returning changesets..we need these as Ecto.multi requires changesets
