@@ -166,8 +166,9 @@ defmodule Frobots.Events do
   end
 
   def change_match(%Match{} = match, attrs \\ %{}) do
-    Repo.preload(match, :battlelog)
-    |> Match.changeset(attrs)
+    match
+    |> Repo.preload([:slots, :battlelog])
+    |> Match.update_changeset(attrs)
     |> Repo.update()
     |> broadcast_change([:match, :updated])
   end

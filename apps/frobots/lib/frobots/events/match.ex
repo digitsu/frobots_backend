@@ -5,6 +5,7 @@ defmodule Frobots.Events.Match do
 
   alias Frobots.Events.Slot
 
+  @derive Jason.Encoder
   # a battlelog is written after a match is completed, and there are winners declared.
   schema "matches" do
     field :title, :string
@@ -56,6 +57,18 @@ defmodule Frobots.Events.Match do
       :min_player_frobot,
       :max_player_frobot,
       :type
+    ])
+    |> unique_constraint([:battlelog])
+  end
+
+  def update_changeset(match, attrs) do
+    IO.inspect(match, label: "Match in Update")
+
+    match
+    |> cast(attrs, [:status])
+    |> cast_assoc(:slots, with: &Slot.update_changeset/2)
+    |> validate_required([
+      :status
     ])
     |> unique_constraint([:battlelog])
   end

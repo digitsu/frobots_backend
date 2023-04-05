@@ -129,41 +129,40 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   @impl Phoenix.LiveView
   def handle_event("start_match", match_data, socket) do
     ## Start The Match
-    player_frobot = match_data["name"]
-    protobot = socket.assigns.protobot
+    player_frobot_id = match_data["frobot_id"]
+    protobot_id = socket.assigns.protobot_id
 
-    %{
+    match_data = %{
       "user_id" => socket.assigns.user.id,
       "match_time" => DateTime.utc_now() |> DateTime.to_string(),
-      "timer" => 3600,
+      "timer" => 30,
       "arena_id" => 1,
-      "min_player_frobot" => 1,
+      "min_player_frobot" => 2,
       "max_player_frobot" => 2,
       "type" => :simulation,
       "slots" => [
         %{
-          "frobot_id" => player_frobot.id,
+          "frobot_id" => player_frobot_id,
           "status" => "ready",
           "slot_type" => "host"
         },
         %{
-          "frobot_id" => protobot.id,
+          "frobot_id" => protobot_id,
           "status" => "ready",
           "slot_type" => "protobot"
         }
       ],
-      "frobot_ids" => [player_frobot.id, protobot.id],
+      "frobot_ids" => [player_frobot_id, protobot_id],
       "match_template" => %{
         "entry_fee" => 0,
         "commission_rate" => 0,
         "match_type" => "individual",
-        "payout_map" => [100],
-        "max_frobots" => 3,
-        "min_frobots" => 1
+        "payout_map" => [0],
+        "max_frobots" => 2,
+        "min_frobots" => 2
       }
     }
 
-    ## TODO :: SEND Frobots DATA so the game will be constructed based on that
     case Simulator.start_match(socket.assigns.simulator, match_data) do
       {:ok, frobots_data} ->
         {:noreply,
@@ -172,7 +171,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
 
       {:error, error} ->
         Logger.error("Error in starting the match #{error}")
-        {:noreply, socket}
+        {:noreply, socket |> put_flash(:error, error)}
     end
   end
 
@@ -184,12 +183,11 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     {:noreply, socket |> assign(:match_id, nil) |> assign(:frobots_data, %{})}
   end
 
-  def handle_event("react.change-protobot", params, socket) do
-    protobot = params
-
+  # params = %{"protobot_id" => protobot_id}
+  def handle_event("react.change-protobot", %{"protobot_id" => protobot_id} = params, socket) do
     socket =
       socket
-      |> assign(:protobot, protobot)
+      |> assign(:protobot_id, protobot_id)
 
     {:noreply, socket}
   end
