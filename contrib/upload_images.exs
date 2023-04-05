@@ -21,10 +21,12 @@ defmodule UploadImages do
    equipment_images = File.ls!(Path.join(uploads_path, "equipment"))
    frobots_images =  File.ls!(Path.join(uploads_path, "frobots"))
    protobots_images = File.ls!(Path.join(uploads_path, "protobots"))
+   avatar_images = File.ls!(Path.join(uploads_path, "avatars"))
 
    upload_files(s3_bucket, "equipment", equipment_images,  uploads_path )
    upload_files(s3_bucket, "frobots", frobots_images, uploads_path)
    upload_files(s3_bucket, "protobots", protobots_images,  uploads_path)
+   upload_files(s3_bucket, "avatars", avatar_images,  uploads_path)
 
    {:ok, "success"}
  end

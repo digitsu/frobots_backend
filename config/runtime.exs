@@ -1,6 +1,6 @@
 import Config
 
-if config_env() == :prod || config_env() == :staging || config_env() == :dev do
+if config_env() == :prod || config_env() == :staging do
   s3_store_url =
     System.get_env("S3_URL") ||
       raise """
