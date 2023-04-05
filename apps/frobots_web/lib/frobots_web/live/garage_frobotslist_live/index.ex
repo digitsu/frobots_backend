@@ -2,7 +2,7 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
 
-  alias Frobots.{Accounts, Assets, Events}
+  alias Frobots.{Accounts, Assets}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -11,10 +11,6 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
     {:ok,
      socket
      |> assign(:current_user, current_user)
-     |> assign(
-       :current_user_ranking_details,
-       Events.get_current_user_ranking_details(current_user)
-     )
      |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
   end
 

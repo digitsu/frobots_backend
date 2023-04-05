@@ -99,7 +99,7 @@ export default (props: ProfileDetailsProps) => {
             <Box
               margin={'auto'}
               height={'190px'}
-              width={'250px'}
+              width={'190px'}
               src={user_avatar || '/images/user_logo.png'}
               component={'img'}
             />

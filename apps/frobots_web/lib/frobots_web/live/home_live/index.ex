@@ -1,6 +1,5 @@
 defmodule FrobotsWeb.HomeLive.Index do
   use FrobotsWeb, :live_view
-  require Logger
   alias Frobots.{UserStats, GlobalStats, Api}
   alias Frobots.{Accounts, Assets, Events}
 
@@ -15,6 +14,7 @@ defmodule FrobotsWeb.HomeLive.Index do
 
     {:ok,
      socket
+     |> assign(:username, get_user_name(current_user))
      |> assign(:frobots, Assets.list_user_frobots(current_user))
      |> assign(:current_user, current_user)
      |> assign(:featured_frobots, get_featured_frobots())
@@ -92,21 +92,17 @@ defmodule FrobotsWeb.HomeLive.Index do
   @impl true
   def handle_event("react.fetch_dashboard_details", _params, socket) do
     currentUserStatus = socket.assigns.current_user_stats
-    current_user_ranking_details = socket.assigns.current_user_ranking_details
-    frobot_leaderboard_stats = socket.assigns.frobot_leaderboard_stats
-    player_leaderboard_stats = socket.assigns.player_leaderboard_stats
     current_user = socket.assigns.current_user
-    global_stats = socket.assigns.global_stats
 
     {:noreply,
      push_event(socket, "react.return_dashboard_details", %{
-       "current_user_name" => current_user.name,
+       "current_user_name" => socket.assigns.username,
        "current_user_avatar" => current_user.avatar,
        "current_user_sparks" => current_user.sparks,
-       "current_user_ranking_details" => current_user_ranking_details,
-       "frobot_leaderboard_stats" => frobot_leaderboard_stats,
-       "player_leaderboard_stats" => player_leaderboard_stats,
-       "globalStats" => global_stats,
+       "current_user_ranking_details" => socket.assigns.current_user_ranking_details,
+       "frobot_leaderboard_stats" => socket.assigns.frobot_leaderboard_stats,
+       "player_leaderboard_stats" => socket.assigns.player_leaderboard_stats,
+       "globalStats" => socket.assigns.global_stats,
        "blogPosts" => socket.assigns.blog_posts,
        "featuredFrobots" => socket.assigns.featured_frobots,
        "playerStats" => %{
@@ -116,5 +112,9 @@ defmodule FrobotsWeb.HomeLive.Index do
          "upcoming_matches" => currentUserStatus.upcoming_matches
        }
      })}
+  end
+
+  def get_user_name(current_user) do
+    current_user.name || List.first(String.split(current_user.email, "@"))
   end
 end
