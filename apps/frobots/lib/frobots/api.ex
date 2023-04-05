@@ -287,7 +287,8 @@ defmodule Frobots.Api do
           "image" => "https://via.placeholder.com/50.png",
           "magazine_size" => 2,
           "rate_of_fire" => 1,
-          "reload_time" => 5
+          "reload_time" => 5,
+          "type" => :Mk1
         },
         %{
           "cannon_id" => 2,
@@ -295,7 +296,8 @@ defmodule Frobots.Api do
           "image" => "https://via.placeholder.com/50.png",
           "magazine_size" => 2,
           "rate_of_fire" => 1,
-          "reload_time" => 5
+          "reload_time" => 5,
+          "type" => :Mk2
         }
       ],
       "frobot_id" => 8,
@@ -308,7 +310,8 @@ defmodule Frobots.Api do
           "image" => "https://via.placeholder.com/50.png",
           "missile_id" => 1,
           "range" => 900,
-          "speed" => 400
+          "speed" => 400,
+          "type" => :Mk1
         }
       ],
       "name" => "piper",
@@ -319,7 +322,8 @@ defmodule Frobots.Api do
           "image" => "https://via.placeholder.com/50.png",
           "max_range" => 700,
           "resolution" => 10,
-          "scanner_id" => 1
+          "scanner_id" => 1,
+          "type" => :Mk1,
         }
       ],
       "user_id" => 2,
@@ -332,6 +336,7 @@ defmodule Frobots.Api do
         "max_speed_ms" => 30,
         "max_throttle" => 100,
         "turn_speed" => 50,
+        "type" => :Chassis_Mk1,
         "xframe_id" => 1
       },
       "xp" => 0
@@ -371,10 +376,10 @@ defmodule Frobots.Api do
 
   def _preload_equipment_instances(frobot) do
     frobot
-    |> Repo.preload(:xframe_inst)
-    |> Repo.preload(:cannon_inst)
-    |> Repo.preload(:scanner_inst)
-    |> Repo.preload(:missile_inst)
+    |> Repo.preload(xframe_inst: [:xframe])
+    |> Repo.preload(cannon_inst: [:cannon])
+    |> Repo.preload(scanner_inst: [:scanner])
+    |> Repo.preload(missile_inst: [:missile])
     |> _parse_frobot_details()
   end
 
@@ -421,7 +426,8 @@ defmodule Frobots.Api do
         "health" => frobot.xframe_inst.health,
         "max_throttle" => frobot.xframe_inst.max_throttle,
         "accel_speed_mss" => frobot.xframe_inst.accel_speed_mss,
-        "image" => frobot.xframe_inst.image
+        "image" => frobot.xframe_inst.image,
+        "type" => frobot.xframe_inst.xframe.type
       }
     else
       []
@@ -442,7 +448,8 @@ defmodule Frobots.Api do
             "reload_time" => cannon_inst.reload_time,
             "rate_of_fire" => cannon_inst.rate_of_fire,
             "magazine_size" => cannon_inst.magazine_size,
-            "image" => cannon_inst.image
+            "image" => cannon_inst.image,
+            "type" => cannon_inst.cannon.type
           }
         end)
       end
@@ -464,7 +471,8 @@ defmodule Frobots.Api do
             "scanner_id" => scanner_inst.scanner_id,
             "max_range" => scanner_inst.max_range,
             "resolution" => scanner_inst.resolution,
-            "image" => scanner_inst.image
+            "image" => scanner_inst.image,
+            "type" => scanner_inst.scanner.type
           }
         end)
       end
@@ -489,7 +497,8 @@ defmodule Frobots.Api do
             "damage_far" => missile_inst.damage_far,
             "speed" => missile_inst.speed,
             "range" => missile_inst.range,
-            "image" => missile_inst.image
+            "image" => missile_inst.image,
+            "type" => missile_inst.missile.type
           }
         end)
       end
