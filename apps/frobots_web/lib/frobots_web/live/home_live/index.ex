@@ -7,7 +7,7 @@ defmodule FrobotsWeb.HomeLive.Index do
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
-    {:ok, s3_base_url} = Api.get_image_base_url()
+    {:ok, s3_base_url} = Api.get_s3_base_url()
 
     # gets battlelogs info and stores in agent for further processing for player and leaderboard entries
     # this data should really come from db

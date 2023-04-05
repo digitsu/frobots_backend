@@ -1,4 +1,7 @@
-alias Frobots.Assets
+alias Frobots.{Assets,Api}
+
+{:ok, base_url} = Api.get_s3_base_url()
+
 xframes = [
   %{type: "Chassis_Mk1",
     weapon_hardpoints: 1,
@@ -10,7 +13,7 @@ xframes = [
     accel_speed_mss: 5,
     movement_type: "bipedal",
     max_throttle: 100,
-    image: "/equipment/chassis_mk1.png"},
+    image: "#{base_url}/images/equipment/chassis_mk1.png"},
 
     %{type: "Chassis_Mk2",
     weapon_hardpoints: 2,
@@ -22,7 +25,7 @@ xframes = [
     accel_speed_mss: 4,
     movement_type: "bipedal",
     max_throttle: 100,
-    image: "/equipment/chassis_mk2.png"},
+    image: "#{base_url}/images/equipment/chassis_mk2.png"},
 
     %{type: "Chassis_Mk3",
     weapon_hardpoints: 1,
@@ -34,7 +37,7 @@ xframes = [
     accel_speed_mss: 7,
     movement_type: "bipedal",
     max_throttle: 100,
-    image: "/equipment/chassis_mk3.png"}
+    image: "#{base_url}/images/equipment/chassis_mk3.png"}
 ]
 
 for xframe <- xframes do
@@ -49,13 +52,13 @@ cannons = [
     reload_time: 5,
     rate_of_fire: 1,
     magazine_size: 2,
-    image: "/equipment/cannon_mk1.png"},
+    image: "#{base_url}/images/equipment/cannon_mk1.png"},
 
   %{type: "Mk2",
     reload_time: 7,
     rate_of_fire: 2,
     magazine_size: 3,
-    image: "/equipment/cannon_mk2.png"}
+    image: "#{base_url}/images/equipment/cannon_mk2.png"}
 ]
 
 for cannon <- cannons do
@@ -72,7 +75,7 @@ missiles = [
     damage_far: [40,3],
     speed: 400,
     range: 900,
-    image: "/equipment/missile_mk1.png"}
+    image: "#{base_url}/images/equipment/missile_mk1.png"}
 ]
 
 for missile <- missiles do
@@ -86,11 +89,11 @@ scanners = [
   %{type: "Mk1",
     max_range: 700,
     resolution: 10,
-    image: "/equipment/scanner_mk1.png"},
+    image: "#{base_url}/images/equipment/scanner_mk1.png"},
   %{type: "Mk2",
     max_range: 300,
     resolution: 15,
-    image: "/equipment/scanner_mk2.png"},
+    image: "#{base_url}/images/equipment/scanner_mk2.png"},
 ]
 for scanner <- scanners do
   case Assets.get_scanner(scanner.type) do

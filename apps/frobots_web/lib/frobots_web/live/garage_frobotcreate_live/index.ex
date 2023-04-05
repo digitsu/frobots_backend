@@ -9,7 +9,7 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   def mount(_params, %{"user_id" => id}, socket) do
     # set required data via assigns
     current_user = Accounts.get_user!(id)
-    {:ok, s3_base_url} = Api.get_image_base_url()
+    {:ok, s3_base_url} = Api.get_s3_base_url()
 
     # get templates data and store in socket
     chassis = Equipment.get_xframes()

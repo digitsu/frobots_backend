@@ -21,6 +21,13 @@
                 <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/garage">Garage</a> </p>
                 <p class="tracking-wider leading-relaxed text-gray-400"><a href="/arena">Arena</a></p>
                 <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/docs">Docs</a> </p>
+
+                <%= if @current_user.admin == true do %>
+                <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/admin">Admin</a> </p>
+
+                <% end %>
+
+
                 <p><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></p>
             </div>
           </nav>
