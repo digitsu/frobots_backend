@@ -1,6 +1,13 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Typography, Autocomplete, TextField, Button } from '@mui/material'
+import {
+  Box,
+  Typography,
+  Autocomplete,
+  TextField,
+  Button,
+  Grid,
+} from '@mui/material'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
 export default (props: any) => {
   const { templates, starterImages } = props
@@ -34,7 +41,7 @@ export default (props: any) => {
     name: '',
   }))
   return (
-    <Box width={'60%'} m={'auto'} mt={10}>
+    <Box width={'65%'} m={'auto'} mt={10}>
       <Typography mb={2} variant={'body1'} fontWeight={'bold'}>
         Enter Basic Details
       </Typography>
@@ -62,23 +69,25 @@ export default (props: any) => {
       <Box my={2}>
         <Box mb={1}>
           <Typography variant="body2" color={'lightslategray'}>
-            Select Starter Mech
+            Select Frobot Avatar
           </Typography>
         </Box>
-        <Box
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'flex-start'}
-          gap={4}
-        >
+        <Grid container spacing={2}>
           {starterMechs.map((starterMech, index) => (
-            <Box onClick={() => changeStarterMechHandler(starterMech)}>
+            <Grid
+              item
+              xs={4}
+              sm={3}
+              md={2}
+              lg={12 / 7}
+              onClick={() => changeStarterMechHandler(starterMech)}
+            >
               <Box
                 position={'relative'}
-                width={100}
-                height={100}
+                width={'100%'}
+                height={'100%'}
                 m={'auto'}
-                sx={{ cursor: 'pointer' }}
+                sx={{ cursor: 'pointer', p: 1 }}
               >
                 <Box
                   component={'img'}
@@ -97,8 +106,8 @@ export default (props: any) => {
                   zIndex={1}
                   position={'absolute'}
                   component={'img'}
-                  width={'70%'}
-                  height={'70%'}
+                  width={'65%'}
+                  height={'65%'}
                   src={starterMech.src}
                 />
               </Box>
@@ -107,9 +116,9 @@ export default (props: any) => {
                   {starterMech.name}
                 </Typography>
               </Box>
-            </Box>
+            </Grid>
           ))}
-        </Box>
+        </Grid>
       </Box>
       <Box my={2}>
         <Autocomplete
