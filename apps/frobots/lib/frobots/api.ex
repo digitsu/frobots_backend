@@ -288,8 +288,8 @@ defmodule Frobots.Api do
           "magazine_size" => 2,
           "rate_of_fire" => 1,
           "reload_time" => 5,
-          "equipment" => "cannon",
-          "type" => :Mk1
+          "equipment_class" => "cannon",
+          "equipment_type" => :Mk1
         },
         %{
           "cannon_id" => 2,
@@ -298,8 +298,8 @@ defmodule Frobots.Api do
           "magazine_size" => 2,
           "rate_of_fire" => 1,
           "reload_time" => 5,
-          "equipment" => "cannon",
-          "type" => :Mk2
+          "equipment_class" => "cannon",
+          "equipment_type" => :Mk2
         }
       ],
       "frobot_id" => 8,
@@ -313,8 +313,8 @@ defmodule Frobots.Api do
           "missile_id" => 1,
           "range" => 900,
           "speed" => 400,
-          "equipment" => "missile",
-          "type" => :Mk1
+          "equipment_class" => "missile",
+          "equipment_type" => :Mk1
         }
       ],
       "name" => "piper",
@@ -326,8 +326,8 @@ defmodule Frobots.Api do
           "max_range" => 700,
           "resolution" => 10,
           "scanner_id" => 1,
-          "equipment" => "scanner",
-          "type" => :Mk1,
+          "equipment_class" => "scanner",
+          "equipment_type" => :Mk1,
         }
       ],
       "user_id" => 2,
@@ -340,8 +340,8 @@ defmodule Frobots.Api do
         "max_speed_ms" => 30,
         "max_throttle" => 100,
         "turn_speed" => 50,
-        "equipment" => "xframe",
-        "type" => :Chassis_Mk1,
+        "equipment_class" => "xframe",
+        "equipment_type" => :Chassis_Mk1,
         "xframe_id" => 1
       },
       "xp" => 0
@@ -432,8 +432,8 @@ defmodule Frobots.Api do
         "max_throttle" => frobot.xframe_inst.max_throttle,
         "accel_speed_mss" => frobot.xframe_inst.accel_speed_mss,
         "image" => frobot.xframe_inst.image,
-        "equipment" => frobot.xframe_inst.xframe.class,
-        "type" => frobot.xframe_inst.xframe.type
+        "equipment_class" => frobot.xframe_inst.xframe.class,
+        "equipment_type" => frobot.xframe_inst.xframe.type
       }
     else
       []
@@ -455,8 +455,8 @@ defmodule Frobots.Api do
             "rate_of_fire" => cannon_inst.rate_of_fire,
             "magazine_size" => cannon_inst.magazine_size,
             "image" => cannon_inst.image,
-            "equipment" => cannon_inst.cannon.class,
-            "type" => cannon_inst.cannon.type
+            "equipment_class" => cannon_inst.cannon.class,
+            "equipment_type" => cannon_inst.cannon.type
           }
         end)
       end
@@ -479,8 +479,8 @@ defmodule Frobots.Api do
             "max_range" => scanner_inst.max_range,
             "resolution" => scanner_inst.resolution,
             "image" => scanner_inst.image,
-            "equipment" => scanner_inst.scanner.class,
-            "type" => scanner_inst.scanner.type
+            "equipment_class" => scanner_inst.scanner.class,
+            "equipment_type" => scanner_inst.scanner.type
           }
         end)
       end
@@ -506,8 +506,8 @@ defmodule Frobots.Api do
             "speed" => missile_inst.speed,
             "range" => missile_inst.range,
             "image" => missile_inst.image,
-            "equipment" => missile_inst.missile.class,
-            "type" => missile_inst.missile.type
+            "equipment_class" => missile_inst.missile.class,
+            "equipment_type" => missile_inst.missile.type
           }
         end)
       end
