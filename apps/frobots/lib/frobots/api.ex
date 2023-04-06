@@ -302,6 +302,7 @@ defmodule Frobots.Api do
           "equipment_type" => :Mk2
         }
       ],
+      "class" => "U",
       "frobot_id" => 8,
       "missile_inst" => [
         %{
