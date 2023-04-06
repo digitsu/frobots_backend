@@ -10,6 +10,7 @@ defmodule Frobots.Repo.Migrations.UpdateEquipmentClasses do
 
     execute "update xframes set class = 'xframe' returning xframes.id, xframes.type, xframes.class"
   end
+
   def down do
     IO.inspect("no rollback")
   end
