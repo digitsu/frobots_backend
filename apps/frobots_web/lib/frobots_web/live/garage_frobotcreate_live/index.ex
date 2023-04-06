@@ -33,6 +33,18 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
       %{
         avatar: "#{s3_base_url}/images/frobots/4.png",
         pixellated_img: "#{s3_base_url}/images/frobots/P-4.png"
+      },
+      %{
+        avatar: "#{s3_base_url}/images/frobots/5.png",
+        pixellated_img: "#{s3_base_url}/images/frobots/P-5.png"
+      },
+      %{
+        avatar: "#{s3_base_url}/images/frobots/6.png",
+        pixellated_img: "#{s3_base_url}/images/frobots/P-6.png"
+      },
+      %{
+        avatar: "#{s3_base_url}/images/frobots/7.png",
+        pixellated_img: "#{s3_base_url}/images/frobots/P-7.png"
       }
     ]
 
