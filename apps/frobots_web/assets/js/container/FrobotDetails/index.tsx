@@ -47,14 +47,16 @@ export default (props: FrobotDetailsProps) => {
               isOwnedFrobot={isOwnedFrobot}
             />
 
-            <AttachedEquipments
-              equipments={[
-                ...frobotDetails.cannon_inst,
-                ...frobotDetails.scanner_inst,
-                ...frobotDetails.missile_inst,
-              ]}
-              isOwnedFrobot={isOwnedFrobot}
-            />
+            {frobotDetails.class === 'U' && (
+              <AttachedEquipments
+                equipments={[
+                  ...frobotDetails.cannon_inst,
+                  ...frobotDetails.scanner_inst,
+                  ...frobotDetails.missile_inst,
+                ]}
+                isOwnedFrobot={isOwnedFrobot}
+              />
+            )}
 
             <BattlesTable {...props} />
           </Box>

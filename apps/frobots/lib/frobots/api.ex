@@ -397,7 +397,8 @@ defmodule Frobots.Api do
       "avatar" => frobot.avatar,
       "xp" => frobot.xp,
       "bio" => frobot.bio,
-      "user_id" => frobot.user_id
+      "user_id" => frobot.user_id,
+      "class" => frobot.class
     }
 
     frobot_details =
