@@ -136,6 +136,8 @@ defmodule FrobotsWeb.Router do
     live "/garage/create", GarageFrobotCreateLive.Index, :index
     live "/garage/frobot", GarageFrobotsDetailsLive.Index, :index
     live "/garage/frobot/braincode", FrobotBraincodeLive.Index, :index
+    live "/garage/frobot/equipment_bay", FrobotEquipmentBayLive.Index, :index
+
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
