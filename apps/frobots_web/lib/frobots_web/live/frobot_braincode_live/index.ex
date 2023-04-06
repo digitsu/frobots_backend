@@ -148,12 +148,14 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
         %{
           "frobot_id" => player_frobot_id,
           "status" => "ready",
-          "slot_type" => "host"
+          "slot_type" => "host",
+          "match_type" => "simulation"
         },
         %{
           "frobot_id" => protobot_id,
           "status" => "ready",
-          "slot_type" => "protobot"
+          "slot_type" => "protobot",
+          "match_type" => "simulation"
         }
       ],
       "frobot_ids" => [player_frobot_id, protobot_id],
