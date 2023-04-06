@@ -432,7 +432,7 @@ defmodule Frobots.Api do
         "max_throttle" => frobot.xframe_inst.max_throttle,
         "accel_speed_mss" => frobot.xframe_inst.accel_speed_mss,
         "image" => frobot.xframe_inst.image,
-        "equipment" => "xframe",
+        "equipment" => frobot.xframe_inst.xframe.class,
         "type" => frobot.xframe_inst.xframe.type
       }
     else
@@ -455,7 +455,7 @@ defmodule Frobots.Api do
             "rate_of_fire" => cannon_inst.rate_of_fire,
             "magazine_size" => cannon_inst.magazine_size,
             "image" => cannon_inst.image,
-            "equipment" => "cannon",
+            "equipment" => cannon_inst.cannon.class,
             "type" => cannon_inst.cannon.type
           }
         end)
@@ -479,7 +479,7 @@ defmodule Frobots.Api do
             "max_range" => scanner_inst.max_range,
             "resolution" => scanner_inst.resolution,
             "image" => scanner_inst.image,
-            "equipment" => "scanner",
+            "equipment" => scanner_inst.scanner.class,
             "type" => scanner_inst.scanner.type
           }
         end)
@@ -506,7 +506,7 @@ defmodule Frobots.Api do
             "speed" => missile_inst.speed,
             "range" => missile_inst.range,
             "image" => missile_inst.image,
-            "equipment" => "missile",
+            "equipment" => missile_inst.missile.class,
             "type" => missile_inst.missile.type
           }
         end)
