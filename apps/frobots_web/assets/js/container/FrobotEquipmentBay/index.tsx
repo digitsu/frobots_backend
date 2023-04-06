@@ -179,10 +179,10 @@ const equipments = {
         roF: 16,
       },
     },
-    ,
+
     {
       id: 10,
-      avatar: '/images/frobot_bg.png',
+      avatar: '/images/equipment_scanner_mk_1.png',
       name: 'Scanner MK V',
       props: {
         maxRange: '700m',
@@ -196,7 +196,7 @@ const equipments = {
     {
       id: 15,
       avatar: '/images/frobot_bg.png',
-      name: 'Scanner MK V',
+      name: 'Scanner MK 15',
       props: {
         maxRange: '700m',
         magazine: 2,
@@ -207,9 +207,9 @@ const equipments = {
     },
 
     {
-      id: 15,
-      avatar: '/images/frobot_bg.png',
-      name: 'Scanner MK V',
+      id: 20,
+      avatar: '/images/equipment_scanner_mk_1.png',
+      name: 'Scanner MK 20',
       props: {
         maxRange: '700m',
         magazine: 2,
@@ -218,11 +218,202 @@ const equipments = {
         roF: 16,
       },
     },
-
     {
-      id: 15,
+      id: 25,
       avatar: '/images/frobot_bg.png',
-      name: 'Scanner MK V',
+      name: 'Scanner MK25',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 30,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 30',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 35,
+      avatar: '/images/equipment_scanner_mk_1.png',
+      name: 'Scanner MK 35',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 40,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 40',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 45,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 45',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 40,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 40',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 45,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 45',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 40,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 40',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 45,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 45',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 40,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 40',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 45,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 50',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 40,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 55',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 45,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 60',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 40,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 605',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 45,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 70',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 40,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 75',
+      props: {
+        maxRange: '700m',
+        magazine: 2,
+        damage: '[40,3], [20,5], [5,10]',
+        reload: 16,
+        roF: 16,
+      },
+    },
+    {
+      id: 45,
+      avatar: '/images/frobot_bg.png',
+      name: 'Scanner MK 80',
       props: {
         maxRange: '700m',
         magazine: 2,
@@ -238,7 +429,7 @@ export default (props: any) => {
   const isOwnedFrobot = true
   return (
     <Box display={'flex'} width={'100%'} sx={{ pb:2}}>
-      <SlideBarGrid isOwnedFrobot={isOwnedFrobot} />
+      {/* <SlideBarGrid userFrobots={[]} currentFrobot={undefined} currentUser={undefined}  /> */}
 
       <Box
         width={'100%'}
@@ -268,7 +459,7 @@ export default (props: any) => {
 
         <AttachedEquipments
           equipments={equipments.attachedEquipments}
-          isOwnedFrobot={true}
+        
         ></AttachedEquipments>
       </Box>
     </Box>

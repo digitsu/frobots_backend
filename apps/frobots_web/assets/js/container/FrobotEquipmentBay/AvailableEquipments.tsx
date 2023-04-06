@@ -194,205 +194,139 @@ const data = [
 export default ({ props }) => {
   const totalSections = Math.ceil(data?.length/6)
   const [currentSection, setCurrentSection] = useState(1);
-  const [rowOneAvailableEquipmentList, setRowOneAvailableEquipmentList] =useState(data.slice(0,3));
-    const [rowTwoAvailableEquipmentList, setTwoOneAvailableEquipmentList] =
-      useState(data.slice(3, 6))
+  const [rowOneAvailableEquipmentList, setRowOneAvailableEquipmentList] =useState(data.slice(0,6));
+    // const [rowTwoAvailableEquipmentList, setTwoOneAvailableEquipmentList] =
+    //   useState(data.slice(3, 6))
 
 
   const clickPrevious=()=>{
     if(currentSection>1)
     {
       setCurrentSection(currentSection-1)
-      setRowOneAvailableEquipmentList(data.slice(0, 3))
+      setRowOneAvailableEquipmentList(data.slice(0, 6))
     }
   }
 
     const clickNext= () => {
       if (currentSection < totalSections) {
         setCurrentSection(currentSection + 1)
-         setRowOneAvailableEquipmentList(data.slice(3, 6))
+         setRowOneAvailableEquipmentList(data.slice(6, 9))
       }
     }
     return (
-      <Grid sx={{ height: '100' }} item lg={4} md={6} sm={6} xs={12}>
-        <Card
-          sx={{
-            bgcolor: '#212B36',
-            borderRadius: 4,
-            paddingTop: '100%',
-            // overflowX: 'scroll',
-            // '&::-webkit-scrollbar': { display: 'none' },
-            position: 'relative',
-            '@media (max-width: 600px)': {
-              paddingTop: '50%',
-            },
-          }}
-        >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              px: 4,
-            }}
-          >
-            <Typography pt={2} variant={'subtitle1'} textAlign={'center'}>
+      <>
+        <Grid lg={4} container>
+          <Card>
+            <Typography
+              variant={'subtitle1'}
+              pt={2}
+              pb={2}
+              textAlign={'center'}
+            >
               Available Equipments ({currentSection}/{totalSections})
             </Typography>
-            <Box display={'flex'} justifyContent={'center'} height={'100%'}>
+            <Box
+              minHeight={'4vh'}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                pl: 2,
+                pr: 2,
+              }}
+            >
               <Box
-                justifyContent={'center'}
-                alignItems={'center'}
-                flexDirection={'column'}
+                onClick={clickPrevious}
+                sx={{
+                  m: '10px',
+                  backgroundColor: '#1C4250',
+                  borderRadius: '4px',
+                }}
               >
-                <Box
-                  onClick={clickPrevious}
-                  alignItems={'center'}
-                  alignSelf={'center'}
-                  sx={{
-                    backgroundColor: '#1C4250',
-                    borderRadius: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '25px',
-                    alignSelf: 'center',
-                    alignContent: 'center',
-                  }}
-                >
-                  <ChevronLeftIcon
-                    sx={{
-                      color: '#FFFFFF',
-                    }}
-                  />
-                </Box>
+                <ChevronLeftIcon
+                  sx={
+                    {
+                      // color: firstIndex === 0 ? '#FFFFFF7E' : '#FFFFFF',
+                    }
+                  }
+                />
               </Box>
-
-              <Box>
-                <Box display={'flex'} pt={4}>
-                  {rowOneAvailableEquipmentList.map((item) => (
-                    <Box
-                      textAlign={'center'}
-                      sx={{ maxWidth: '200px', maxHeight: '200px' }}
-                    >
-                      <Typography
-                        variant="subtitle2"
-                        sx={{
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {item.name}
-                      </Typography>
-                      <Box
-                        px={1}
-                        pt={1}
-                        pb={1}
-                        component={'img'}
-                        sx={{ maxWidth: '100%', maxHeight: '100%' }}
-                        src={item.image}
-                      />
-                      <Button
-                        variant="text"
-                        size="small"
-                        color="warning"
-                        sx={{
-                          backgroundColor: '#ffab0029',
-                          width: '100',
-                        }}
-                      >
-                        Attach
-                      </Button>
-                    </Box>
-                    // <Box textAlign={'center'}>
-                    //   <Typography
-                    //     variant="subtitle2"
-                    //     sx={{
-                    //       fontWeight: 'bold',
-                    //     }}
-                    //   >
-                    //     {item.name}
-                    //   </Typography>
-                    //   <Box
-                    //     px={1}
-                    //     pt={1}
-                    //     pb={1}
-                    //     // height="110px"
-                    //     // width={'110px'}
-                    //     component={'img'}
-                    //     src={item.image}
-                    //   />
-                    //   <Button
-                    //     variant="text"
-                    //     size="small"
-                    //     color="warning"
-                    //     sx={{
-                    //       backgroundColor: '#ffab0029',
-                    //       width: '100',
-                    //     }}
-                    //   >
-                    //     Attach
-                    //   </Button>
-                    // </Box>
-                  ))}
-                </Box>
-                <Box display={'flex'} pt={2}>
-                  {rowTwoAvailableEquipmentList.map((item) => (
+              <Grid container spacing={2}>
+                {rowOneAvailableEquipmentList.map((equipment, index) => (
+                  <Grid item xs={6} sm={3} md={3} lg={4}>
                     <Box textAlign={'center'}>
                       <Typography
-                        variant="subtitle2"
                         sx={{
-                          fontWeight: 'bold',
+                          fontSize: '0.8rem',
+                          overflow: 'visible',
                         }}
+                        gutterBottom
+                        color={'#919EAB'}
+                        fontWeight={'bold'}
+                        variant="subtitle1"
                       >
-                        {item.name}
+                        {equipment.name}
                       </Typography>
-                      <Box
-                        px={1}
-                        pt={1}
-                        pb={1}
-                        // height="110px"
-                        // width={'110px'}
-                        component={'img'}
-                        src={item.image}
-                      />
-                      <Button
-                        variant="text"
-                        size="small"
-                        color="warning"
-                        sx={{
-                          backgroundColor: '#ffab0029',
-                          width: '100',
-                        }}
-                      >
-                        Attach
-                      </Button>
                     </Box>
-                  ))}
-                </Box>
-              </Box>
+                    <Box
+                      position={'relative'}
+                      width={'100%'}
+                      height={'100%'}
+                      m={'auto'}
+                      sx={{ cursor: 'pointer', p: 1 }}
+                    >
+                      <Box
+                        component={'img'}
+                        width={'100%'}
+                        src={equipment.image}
+                        sx={{
+                          borderRadius: '6px',
+                        }}
+                      ></Box>
+                      <Box
+                        paddingBottom={2}
+                        display="flex"
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                      >
+                        <Button
+                          variant="text"
+                          size="small"
+                          color="warning"
+                          sx={{
+                            mt: 2,
+                            backgroundColor: '#ffab0029',
+                            width: '100',
+                          }}
+                        >
+                          Attach
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
               <Box
                 onClick={clickNext}
                 sx={{
+                  m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '25px',
                 }}
               >
                 <ChevronRightIcon
-                  sx={{
-                    color: '#FFFFFF',
-                  }}
+                // sx={{
+                //   color:
+                //     equipments.length < lastIndex + 1
+                //       ? '#FFFFFF7E'
+                //       : '#FFFFFF',
+                // }}
                 />
               </Box>
             </Box>
-          </Box>
-        </Card>
-      </Grid>
+          </Card>
+        </Grid>
+      </>
     )
   
 }

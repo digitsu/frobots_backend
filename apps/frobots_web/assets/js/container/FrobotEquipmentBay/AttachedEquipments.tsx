@@ -16,361 +16,144 @@ import { FixedSizeList, ListChildComponentProps } from 'react-window'
 
 interface AttachedEquipmentsProps {
   equipments: any[]
-  isOwnedFrobot: boolean
+
 }
 
 export default (props: AttachedEquipmentsProps) => {
-  const { equipments, isOwnedFrobot } = props
-  const [currentEquipment, setCurrentEquipment] = useState(equipments[0])
+  const { equipments } = props
+  const [firstIndex, setfirstIndex] = useState(0)
+  const [lastIndex, setlastIndex] = useState(8)
+  const [renderedEquipments, setrenderedEquipments] = useState(
+    equipments.slice(firstIndex, lastIndex)
+  )
+  const totalSections = Math.ceil(equipments?.length / 8)
+  const [currentSection, setCurrentSection] = useState(1)
+  const handlePreviousButton = () => {
 
-  const switchEquipment = (index: number) => {
-    setCurrentEquipment(equipments[index])
+
+    if (currentSection > 1) {
+      setCurrentSection(currentSection - 1)
+      setfirstIndex(firstIndex - 8)
+      setlastIndex(lastIndex - 8)
+      setrenderedEquipments(equipments.slice(firstIndex - 8, lastIndex - 8))
+    }
+  }
+  const handleNextButton = () => {
+
+    if (currentSection < totalSections) {
+      setCurrentSection(currentSection + 1)
+      setfirstIndex(firstIndex + 8)
+      setlastIndex(lastIndex + 8)
+
+      setrenderedEquipments(equipments.slice(firstIndex + 8, lastIndex + 8))
+    
+    }
   }
 
   return (
     <>
-      <Grid paddingRight={10} paddingTop={4} item xs={12} sm={12} lg={12}>
+      <Typography paddingTop={2} variant={'subtitle1'}>
+        Attached Equipments
+      </Typography>
+      <Grid paddingRight={10} paddingTop={2}>
         <Card>
-          <Grid container spacing={2}>
-            <Grid item xs={12} lg={12} md={12} sm={12}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  pl: 4,
-                  pt: 2,
-                  mt: 1,
-                  mb: 2,
-                }}
-              >
-                <Box
-                  sx={{
-                    backgroundColor: '#1C4250',
-                    borderRadius: '4px',
-                  }}
-                >
-                  <ChevronLeftIcon
-                    sx={{
-                      color: '#FFFFFF7E',
-                    }}
-                  />
-                </Box>
-                <Typography variant={'subtitle1'}>
-                  Attached Equipments (1/2)
-                </Typography>
-                <Box
-                  sx={{
-                    mr: 4,
-                    backgroundColor: '#1C4250',
-                    borderRadius: '4px',
-                  }}
-                >
-                  <ChevronRightIcon
-                    sx={{
-                      color: '#FFFFFF',
-                    }}
-                  />
-                </Box>
-              </Box>
-              <Box display={'flex'} justifyContent={'center'}>
-                <Box
-                  display={'flex'}
-                  justifyContent={'start'}
-                  sx={{
-                    justifyContent: 'start',
-                    overflowX: 'scroll',
-                    '&::-webkit-scrollbar': {display:'none'},
-                  }}
-                >
-                  {equipments
-                    .slice(0, 7)
-                    .map((equipment: any, index: number) => (
-                      <Box
-                        textAlign={'center'}
-                        maxWidth={'200px'}
-                        minWidth={'200px'}
-                        // minheight={'190px'}
-                        sx={{ px: 4, pb: 2 }}
-                      >
-                        <Box pb={1} textAlign={'center'} mt={3}>
-                          <Typography
-                            color={'#919EAB'}
-                            fontWeight={'bold'}
-                            variant="subtitle1"
-                          >
-                            {equipment.name}
-                          </Typography>
-                        </Box>
-                        <Box
-                          textAlign={'center'}
-                          component={'img'}
-                          src={equipment.avatar}
-                        />
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              pl: 2,
+              pr: 2,
 
-                        <Button
-                          variant="text"
-                          size="small"
-                          sx={{
-                            mt: 2,
-                            color: '#FFAC82',
-                            backgroundColor: '#ff563029',
-                            width: '100px',
-                          }}
-                        >
-                          Detach
-                        </Button>
-                      </Box>
-                    ))}
-                </Box>
-              </Box>
+              mb: 2,
+            }}
+          >
+            <Box
+              onClick={handlePreviousButton}
+              sx={{
+                m: '10px',
+                backgroundColor: '#1C4250',
+                borderRadius: '4px',
+              }}
+            >
+              <ChevronLeftIcon
+                sx={{
+                  color: firstIndex === 0 ? '#FFFFFF7E' : '#FFFFFF',
+                }}
+              />
+            </Box>
+            <Grid container spacing={2}>
+              {renderedEquipments.map((equipment, index) => (
+                <Grid item xs={6} sm={3} md={3} lg={12 / 8}>
+                  <Box pb={1} textAlign={'center'} mt={3}>
+                    <Typography
+                      sx={{
+                        fontSize: '0.8rem',
+                        overflow: 'visible',
+                      }}
+                      gutterBottom
+                      color={'#919EAB'}
+                      fontWeight={'bold'}
+                      variant="subtitle1"
+                    >
+                      {equipment.name}
+                    </Typography>
+                  </Box>
+                  <Box
+                    position={'relative'}
+                    width={'100%'}
+                    height={'100%'}
+                    m={'auto'}
+                    sx={{ cursor: 'pointer', p: 1 }}
+                  >
+                    <Box
+                      component={'img'}
+                      width={'100%'}
+                      src={equipment.avatar}
+                      sx={{
+                        borderRadius: '6px',
+                      }}
+                    ></Box>
+                    <Box
+                      display="flex"
+                      alignItems={'center'}
+                      justifyContent={'center'}
+                    >
+                      <Button
+                        variant="text"
+                        size="small"
+                        sx={{
+                          mt: 2,
+                          color: '#FFAC82',
+                          backgroundColor: '#ff563029',
+                          width: '100px',
+                        }}
+                      >
+                        Detach
+                      </Button>
+                    </Box>
+                  </Box>
+                </Grid>
+              ))}
             </Grid>
-          </Grid>
+            <Box
+              onClick={handleNextButton}
+              sx={{
+                m: '10px',
+                backgroundColor: '#1C4250',
+                borderRadius: '4px',
+              }}
+            >
+              <ChevronRightIcon
+                sx={{
+                  color:
+                    equipments.length < lastIndex + 1 ? '#FFFFFF7E' : '#FFFFFF',
+                }}
+              />
+            </Box>
+          </Box>
         </Card>
       </Grid>
-      {/* <Grid
-      item
-      xs={12}
-      sm={12}
-      sx={{
-        pb: 5,
-      }}
-    >
-      <Card>
-        <Grid container spacing={2}>
-          <Grid
-            item
-            xs={12}
-            lg={12}
-            md={12}
-            sm={12}
-            sx={{
-              pb: 5,
-              height: '60vh',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                pl: 4,
-                pt: 2,
-                mt: 1,
-                mb: 2,
-              }}
-            >
-              <Box
-                sx={{
-                  backgroundColor: '#1C4250',
-                  borderRadius: '4px',
-                }}
-              >
-                <ChevronLeftIcon
-                  sx={{
-                    color: '#FFFFFF7E',
-                  }}
-                />
-              </Box>
-              
-              <Box
-                sx={{
-                  mr: 4,
-                  backgroundColor: '#1C4250',
-                  borderRadius: '4px',
-                }}
-              >
-                <ChevronRightIcon
-                  sx={{
-                    color: '#FFFFFF',
-                  }}
-                />
-              </Box>
-            </Box>
-
-            <Box
-              sx={{
-                overflowX: 'scroll',
-                '&::-webkit-scrollbar': { display: 'none' },
-              }}
-            >
-              <Box
-                sx={{
-                  height: '30vh',
-                }}
-                display={'flex'}
-              >
-                {equipments.map((equipment: any, index: number) => (
-                  <Grid
-                    item
-                    lg={4}
-                    md={8}
-                    sm={6}
-                    xs={12}
-                    key={index}
-                    onClick={() => switchEquipment(index)}
-                  >
-                    <Box sx={{ px: 4, pb: 2 }}>
-                      <Box
-                        pl={2}
-                        sx={{
-                          height: '80px',
-                        }}
-                        component={'img'}
-                        src={equipment.avatar}
-                      />
-                      <Box textAlign={'center'} mt={3}>
-                        <Typography fontWeight={'bold'} variant="subtitle1">
-                          {equipment.name}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                ))}
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Card>
-    </Grid>  */}
-      {/* <Box
-      display={'flex'}
-        sx={{
-          width: '100%',
-          height: 400,
-          bgcolor: 'background.paper',
-        }}
-      >
-        {equipments.map((eq) => (<Box width={400}>
-          <ListItem component="div" disablePadding>
-            <ListItemButton>
-              <ListItemText primary={`Item ${eq.id}`} />
-            </ListItemButton>
-          </ListItem>
-          </Box>
-        ))}
-      </Box> */}
     </>
   )
-}
-
-{
-  /* {equipments.map((tool) => {
-        console.log(tool);
-        
-        return (
-          <ListItem  key={tool.id} component="div" disablePadding>
-            {' '}
-            <ListItemText primary={tool.name} />
-          </ListItem>
-        )
-      })} */
-}
-
-{
-  /* <Grid
-      item
-      xs={12}
-      sm={12}
-      sx={{
-        pb: 5,
-      }}
-    >
-      <Card>
-        <Grid container spacing={2}>
-          <Grid
-            item
-            xs={12}
-            lg={12}
-            md={12}
-            sm={12}
-            sx={{
-              pb: 5,
-              height: '60vh',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                pl: 4,
-                pt: 2,
-                mt: 1,
-                mb: 2,
-              }}
-            >
-              <Box
-                sx={{
-                  backgroundColor: '#1C4250',
-                  borderRadius: '4px',
-                }}
-              >
-                <ChevronLeftIcon
-                  sx={{
-                    color: '#FFFFFF7E',
-                  }}
-                />
-              </Box>
-              
-              <Box
-                sx={{
-                  mr: 4,
-                  backgroundColor: '#1C4250',
-                  borderRadius: '4px',
-                }}
-              >
-                <ChevronRightIcon
-                  sx={{
-                    color: '#FFFFFF',
-                  }}
-                />
-              </Box>
-            </Box>
-
-            <Box
-              sx={{
-                overflowX: 'scroll',
-                '&::-webkit-scrollbar': { display: 'none' },
-              }}
-            >
-              <Box
-                sx={{
-                  height: '30vh',
-                }}
-                display={'flex'}
-              >
-                {equipments.map((equipment: any, index: number) => (
-                  <Grid
-                    item
-                    lg={4}
-                    md={8}
-                    sm={6}
-                    xs={12}
-                    key={index}
-                    onClick={() => switchEquipment(index)}
-                  >
-                    <Box sx={{ px: 4, pb: 2 }}>
-                      <Box
-                        pl={2}
-                        sx={{
-                          height: '80px',
-                        }}
-                        component={'img'}
-                        src={equipment.avatar}
-                      />
-                      <Box textAlign={'center'} mt={3}>
-                        <Typography fontWeight={'bold'} variant="subtitle1">
-                          {equipment.name}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                ))}
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Card>
-    </Grid> */
 }

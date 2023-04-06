@@ -135,7 +135,6 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     ## Start The Match
     player_frobot_id = match_data["frobot_id"]
     protobot_id = socket.assigns.protobot_id
-
     match_data = %{
       "user_id" => socket.assigns.user.id,
       "match_time" => DateTime.utc_now() |> DateTime.to_string(),
@@ -168,7 +167,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
         "min_frobots" => 2
       }
     }
-
+ IO.inspect(match_data)
     case Simulator.start_match(socket.assigns.simulator, match_data) do
       {:ok, frobots_data} ->
         {:noreply,
