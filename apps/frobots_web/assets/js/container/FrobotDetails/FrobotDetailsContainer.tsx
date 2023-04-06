@@ -88,11 +88,11 @@ export default (props: frobotDetailsProps) => {
               #{generateRandomString(31)}
             </Typography>
             <Typography variant="h6" gutterBottom mt={2}>
-              Mech/Xframe
+              Xframe
             </Typography>
             <Box display={'flex'} alignItems={'baseline'}>
               <Typography pr={2} variant="body2" gutterBottom>
-                {frobotDetails.mech || '-'}
+                {frobotDetails?.xframe_inst?.equipment_type || '-'}
               </Typography>
               {frobotDetails.isBoost && (
                 <Button
