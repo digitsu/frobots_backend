@@ -18,10 +18,22 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
     missiles = Equipment.get_missiles()
 
     frobot_starter_images = [
-      "#{s3_base_url}/frobots/1.png",
-      "#{s3_base_url}/frobots/2.png",
-      "#{s3_base_url}/frobots/3.png",
-      "#{s3_base_url}/frobots/4.png"
+      %{
+        avatar: "#{s3_base_url}/images/frobots/1.png",
+        pixellated_img: "#{s3_base_url}/images/frobots/P-1.png"
+      },
+      %{
+        avatar: "#{s3_base_url}/images/frobots/2.png",
+        pixellated_img: "#{s3_base_url}/images/frobots/P-2.png"
+      },
+      %{
+        avatar: "#{s3_base_url}/images/frobots/3.png",
+        pixellated_img: "#{s3_base_url}/images/frobots/P-3.png"
+      },
+      %{
+        avatar: "#{s3_base_url}/images/frobots/4.png",
+        pixellated_img: "#{s3_base_url}/images/frobots/P-4.png"
+      }
     ]
 
     {:ok,
@@ -48,10 +60,12 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   @impl true
   def handle_event("react.fetch_frobot_create_details", _params, socket) do
     templates = Assets.list_template_frobots()
+    frobot_starter_images = socket.assigns.frobot_starter_images
 
     {:noreply,
      push_event(socket, "react.return_frobot_create_details", %{
-       "templates" => templates
+       "templates" => templates,
+       "starterImages" => frobot_starter_images
      })}
   end
 

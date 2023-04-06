@@ -13,6 +13,8 @@ export default ({ createFrobot }) => {
       bio,
       brain_code: brainCode?.brain_code,
       blockly_code: blocklyCode,
+      avatar: starterMech?.src || '',
+      pixellated_img: starterMech?.pixellatedImage || '',
     })
   }
   return (

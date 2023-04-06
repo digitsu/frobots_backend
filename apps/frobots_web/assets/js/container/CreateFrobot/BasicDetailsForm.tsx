@@ -2,29 +2,8 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Box, Typography, Autocomplete, TextField, Button } from '@mui/material'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
-
-const starterMechs = [
-  {
-    id: 0,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot1.png',
-    name: 'Tiny Bot',
-  },
-  {
-    id: 1,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot2.png',
-    name: 'Little Buzz',
-  },
-  {
-    id: 2,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot3.png',
-    name: 'Small bee',
-  },
-]
 export default (props: any) => {
-  const { templates } = props
+  const { templates, starterImages } = props
   const templateFrobots =
     templates?.map(({ name, brain_code, blockly_code }, index) => ({
       label: name,
@@ -47,6 +26,13 @@ export default (props: any) => {
     (store: any) => store.createFrobot
   )
   const selectedMech = starterMech.id
+  const starterMechs = starterImages.map((starterImage, index) => ({
+    id: index,
+    bgUrl: '/images/frobot_bg.png',
+    src: starterImage?.avatar,
+    pixellatedImage: starterImage?.pixellated_img,
+    name: '',
+  }))
   return (
     <Box width={'60%'} m={'auto'} mt={10}>
       <Typography mb={2} variant={'body1'} fontWeight={'bold'}>
