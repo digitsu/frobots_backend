@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Card, Typography, Box, Grid, Button } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import EquipmentDetails from './EquipmentDetails'
 
 interface AttachedEquipmentsProps {
   equipments: any[]
@@ -11,9 +12,11 @@ interface AttachedEquipmentsProps {
 export default (props: AttachedEquipmentsProps) => {
   const { equipments, isOwnedFrobot } = props
   const [currentEquipment, setCurrentEquipment] = useState(equipments[0])
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   const switchEquipment = (index: number) => {
     setCurrentEquipment(equipments[index])
+    setCurrentIndex(index)
   }
 
   return (
@@ -79,11 +82,25 @@ export default (props: AttachedEquipmentsProps) => {
                     key={index}
                     onClick={() => switchEquipment(index)}
                   >
-                    <Box sx={{ px: 4, pb: 2 }}>
-                      <Box pl={2} component={'img'} src={equipment.avatar} />
+                    <Box sx={{ px: 4, pb: 2 }} width={250} height={250}>
+                      <Box
+                        component={'img'}
+                        src={equipment.image}
+                        sx={{
+                          borderRadius: '20px',
+                          border:
+                            index === currentIndex
+                              ? '4px solid #00AB55'
+                              : 'none',
+                        }}
+                      />
                       <Box textAlign={'center'} mt={3}>
-                        <Typography fontWeight={'bold'} variant="subtitle1">
-                          {equipment.name}
+                        <Typography
+                          fontWeight={'bold'}
+                          variant="subtitle1"
+                          textTransform={'capitalize'}
+                        >
+                          {equipment.equipment_class} {equipment.equipment_type}
                         </Typography>
                       </Box>
                     </Box>
@@ -102,72 +119,7 @@ export default (props: AttachedEquipmentsProps) => {
               backgroundColor: '#00AB5529',
             }}
           >
-            <Box>
-              <Typography sx={{ pl: 4, pt: 2, mt: 1, mb: 2 }} variant={'h6'}>
-                {currentEquipment?.name}
-              </Typography>
-              <Box>
-                <Grid pl={4} container spacing={2}>
-                  <Grid item xs={4}>
-                    <Box textAlign="left">
-                      <Typography my={1.2} variant="subtitle2">
-                        Max Range
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        Magazine
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        Damage
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        Reload
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        RoF
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item>
-                    <Box textAlign="center">
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid pr={4} item xs={7}>
-                    <Box textAlign="right">
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.maxRange}
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.magazine}
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.damage}
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.reload}
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.roF}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
+            <EquipmentDetails equipment={currentEquipment} />
 
             {isOwnedFrobot && (
               <Box
