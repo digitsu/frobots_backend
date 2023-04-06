@@ -92,7 +92,7 @@ export default (props: frobotDetailsProps) => {
             </Typography>
             <Box display={'flex'} alignItems={'baseline'}>
               <Typography pr={2} variant="body2" gutterBottom>
-                {frobotDetails?.xframe?.equipment_type || '-'}
+                {frobotDetails?.xframe_inst?.equipment_type || '-'}
               </Typography>
               {frobotDetails.isBoost && (
                 <Button
