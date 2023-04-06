@@ -17,7 +17,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
         {:error, {:already_started, simulator}} -> simulator
       end
 
-    templates = Assets.list_template_frobots()
+    templates = extract_frobot_details(Assets.list_template_frobots())
 
     case Assets.get_frobot(String.to_integer(frobot_id)) do
       nil ->
@@ -194,5 +194,29 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       |> assign(:protobot_id, protobot_id)
 
     {:noreply, socket}
+  end
+
+  defp extract_frobot_details(frobots) do
+    Enum.map(frobots, fn %{
+                           id: id,
+                           name: name,
+                           xp: xp,
+                           class: class,
+                           brain_code: brain_code,
+                           blockly_code: blockly_code,
+                           bio: bio,
+                           avatar: avatar
+                         } ->
+      %{
+        id: id,
+        name: name,
+        xp: xp,
+        class: class,
+        brain_code: brain_code,
+        blockly_code: blockly_code,
+        bio: bio,
+        avatar: avatar
+      }
+    end)
   end
 end
