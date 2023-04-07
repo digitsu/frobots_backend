@@ -139,7 +139,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     match_data = %{
       "user_id" => socket.assigns.user.id,
       "match_time" => DateTime.utc_now() |> DateTime.to_string(),
-      "timer" => 30,
+      "timer" => 300,
       "arena_id" => 1,
       "min_player_frobot" => 2,
       "max_player_frobot" => 2,
