@@ -359,7 +359,12 @@ defmodule Frobots.Events do
 
   def send_player_leaderboard_entries() do
     data = send_leaderboard_entries()
-    uniq_names = Enum.map(data, fn x -> x.username end) |> Enum.uniq()
+
+    uniq_names =
+      Enum.map(data, fn x -> x.username end)
+      |> Enum.uniq()
+      |> Enum.filter(&(!is_nil(&1)))
+
     # group data by username, sort and rank
     for name <- uniq_names do
       user = Accounts.get_user_by(name: name)
