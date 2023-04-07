@@ -12,8 +12,7 @@ defmodule Frobots.Assets.MissileInst do
              :damage_near,
              :damage_far,
              :speed,
-             :range,
-             :image
+             :range
            ]}
 
   schema "missile_inst" do
@@ -25,7 +24,6 @@ defmodule Frobots.Assets.MissileInst do
     field :damage_far, {:array, :integer}
     field :speed, :integer
     field :range, :integer
-    field :image, :string, default: "https://via.placeholder.com/50.png"
     timestamps()
   end
 
@@ -40,7 +38,7 @@ defmodule Frobots.Assets.MissileInst do
   @doc false
   def changeset(missile, attrs) do
     missile
-    |> cast(attrs, @fields ++ [:frobot_id, :image])
+    |> cast(attrs, @fields ++ [:frobot_id])
     |> validate_required(@fields)
   end
 end

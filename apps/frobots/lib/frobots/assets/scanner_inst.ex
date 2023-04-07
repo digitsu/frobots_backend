@@ -9,8 +9,7 @@ defmodule Frobots.Assets.ScannerInst do
              :scanner_id,
              :frobot_id,
              :max_range,
-             :resolution,
-             :image
+             :resolution
            ]}
 
   schema "scanner_inst" do
@@ -19,7 +18,6 @@ defmodule Frobots.Assets.ScannerInst do
     belongs_to :frobot, Frobots.Assets.Frobot
     field :max_range, :integer
     field :resolution, :integer
-    field :image, :string, default: "https://via.placeholder.com/50.png"
     timestamps()
   end
 
@@ -31,7 +29,7 @@ defmodule Frobots.Assets.ScannerInst do
   @doc false
   def changeset(scanner, attrs) do
     scanner
-    |> cast(attrs, @fields ++ [:image])
+    |> cast(attrs, @fields)
     |> validate_required(@fields)
   end
 end
