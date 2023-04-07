@@ -126,36 +126,36 @@ defmodule Frobots.AssetsTest do
       assert %Frobot{name: ^name} = Assets.get_frobot(name)
     end
 
-    test "get_missiles fetches missiles rig data" do
+    test "list_missiles fetches missiles rig data" do
       {:ok, _missile} = Assets.create_missile(@missile)
-      missiles = Assets.get_missiles()
+      missiles = Assets.list_missiles()
       assert Enum.count(missiles) > 0
 
       item = Enum.at(missiles, 0)
       assert item.type == :Mk1
     end
 
-    test "get_cannons fetches cannons rig data" do
+    test "list_cannons fetches cannons rig data" do
       {:ok, _cannon} = Assets.create_cannon(@cannon)
-      cannons = Assets.get_cannons()
+      cannons = Assets.list_cannons()
       assert Enum.count(cannons) > 0
 
       item = Enum.at(cannons, 0)
       assert item.type == :Mk1
     end
 
-    test "get_scanners fetches scanners rig data" do
+    test "list_scanners fetches scanners rig data" do
       {:ok, _scanner} = Assets.create_scanner(@scanner)
-      scanners = Assets.get_scanners()
+      scanners = Assets.list_scanners()
       assert Enum.count(scanners) > 0
 
       item = Enum.at(scanners, 0)
       assert item.type == :Mk1
     end
 
-    test "get_xframes fetches xframes rig data" do
+    test "list_xframes fetches xframes rig data" do
       {:ok, _xframe} = Assets.create_xframe(@xframe)
-      xframes = Assets.get_xframes()
+      xframes = Assets.list_xframes()
       assert Enum.count(xframes) > 0
 
       item = Enum.at(xframes, 0)

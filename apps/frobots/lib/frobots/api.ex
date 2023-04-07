@@ -302,7 +302,6 @@ defmodule Frobots.Api do
           "equipment_type" => :Mk2
         }
       ],
-      "class" => "U",
       "frobot_id" => 8,
       "missile_inst" => [
         %{
@@ -372,7 +371,7 @@ defmodule Frobots.Api do
     s3_base_url = Application.get_env(:ex_aws, :s3)[:host]
     s3_bucket = Application.get_env(:ex_aws, :s3)[:bucket]
 
-    {:ok, "https://#{s3_base_url}/#{s3_bucket}"}
+    {:ok, "https://#{s3_base_url}/#{s3_bucket}/"}
   end
 
   def get_s3_bucket_name() do
@@ -433,7 +432,7 @@ defmodule Frobots.Api do
         "health" => frobot.xframe_inst.health,
         "max_throttle" => frobot.xframe_inst.max_throttle,
         "accel_speed_mss" => frobot.xframe_inst.accel_speed_mss,
-        "image" => frobot.xframe_inst.image,
+        "image" => frobot.xframe_inst.xframe.image,
         "equipment_class" => frobot.xframe_inst.xframe.class,
         "equipment_type" => frobot.xframe_inst.xframe.type
       }
@@ -456,7 +455,7 @@ defmodule Frobots.Api do
             "reload_time" => cannon_inst.reload_time,
             "rate_of_fire" => cannon_inst.rate_of_fire,
             "magazine_size" => cannon_inst.magazine_size,
-            "image" => cannon_inst.image,
+            "image" => cannon_inst.cannon.image,
             "equipment_class" => cannon_inst.cannon.class,
             "equipment_type" => cannon_inst.cannon.type
           }
@@ -480,7 +479,7 @@ defmodule Frobots.Api do
             "scanner_id" => scanner_inst.scanner_id,
             "max_range" => scanner_inst.max_range,
             "resolution" => scanner_inst.resolution,
-            "image" => scanner_inst.image,
+            "image" => scanner_inst.scanner.image,
             "equipment_class" => scanner_inst.scanner.class,
             "equipment_type" => scanner_inst.scanner.type
           }
@@ -507,7 +506,7 @@ defmodule Frobots.Api do
             "damage_far" => missile_inst.damage_far,
             "speed" => missile_inst.speed,
             "range" => missile_inst.range,
-            "image" => missile_inst.image,
+            "image" => missile_inst.missile.image,
             "equipment_class" => missile_inst.missile.class,
             "equipment_type" => missile_inst.missile.type
           }
@@ -556,7 +555,7 @@ defmodule Frobots.Api do
     [
       %{
         id: 1,
-        image_url: "https://ap-south-1.linodeobjects.com/frobots-assests/arena.png"
+        image_url: get_s3_base_url() <> "images/arenas/arena1.png"
       }
     ]
   end

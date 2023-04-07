@@ -12,10 +12,10 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
     {:ok, s3_base_url} = Api.get_s3_base_url()
 
     # get templates data and store in socket
-    chassis = Equipment.get_xframes()
-    cannons = Equipment.get_cannons()
-    scanners = Equipment.get_scanners()
-    missiles = Equipment.get_missiles()
+    chassis = Equipment.list_xframes()
+    cannons = Equipment.list_cannons()
+    scanners = Equipment.list_scanners()
+    missiles = Equipment.list_missiles()
 
     frobot_starter_images = [
       %{

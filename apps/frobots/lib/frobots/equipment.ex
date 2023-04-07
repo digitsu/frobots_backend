@@ -45,13 +45,13 @@ defmodule Frobots.Equipment do
   end
 
   # functions to get master template data
-  def get_xframes(), do: Repo.all(Xframe)
+  def list_xframes(), do: Repo.all(Xframe)
 
-  def get_cannons(), do: Repo.all(Cannon)
+  def list_cannons(), do: Repo.all(Cannon)
 
-  def get_scanners(), do: Repo.all(Scanner)
+  def list_scanners(), do: Repo.all(Scanner)
 
-  def get_missiles(), do: Repo.all(Missile)
+  def list_missiles(), do: Repo.all(Missile)
 
   @doc ~S"""
   EQUIPMENT INTERFACE APIs
