@@ -302,6 +302,7 @@ defmodule Frobots.Api do
           "equipment_type" => :Mk2
         }
       ],
+      "class" => "U",
       "frobot_id" => 8,
       "missile_inst" => [
         %{
@@ -397,7 +398,8 @@ defmodule Frobots.Api do
       "avatar" => frobot.avatar,
       "xp" => frobot.xp,
       "bio" => frobot.bio,
-      "user_id" => frobot.user_id
+      "user_id" => frobot.user_id,
+      "class" => frobot.class
     }
 
     frobot_details =
