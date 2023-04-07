@@ -12,10 +12,10 @@ defmodule Frobots.Repo.Migrations.SeedImages do
   }
 
   @tables %{
-    xframes: &Assets.get_xframes/0,
-    cannons: &Assets.get_cannons/0,
-    scanners: &Assets.get_scanners/0,
-    missiles: &Assets.get_missiles/0
+    xframes: &Assets.list_xframes/0,
+    cannons: &Assets.list_cannons/0,
+    scanners: &Assets.list_scanners/0,
+    missiles: &Assets.list_missiles/0
   }
 
   defp get_name(struct) when struct.class == :xframe do
