@@ -61,6 +61,8 @@ defmodule FrobotsWeb.MatchChannel do
   def handle_in("start_match", match_data, socket) do
     # create a FUBARS cluster
     # with {:ok, match_name} <- start_cluster(socket) do
+    match_data = match_data["id"] || match_data
+
     case start_cluster(socket) do
       {:ok, match_name} ->
         # now pass the match service the frobots and the match_template
@@ -82,7 +84,7 @@ defmodule FrobotsWeb.MatchChannel do
   end
 
   @impl true
-  def handle_in("cancel_match", match_id, socket) do
+  def handle_in("cancel_match", %{"id" => match_id}, socket) do
     match_name = Fubars.Match.match_name(match_id)
     Fubars.Match.cancel_match(via_tuple(match_name))
     {:reply, :ok, socket}

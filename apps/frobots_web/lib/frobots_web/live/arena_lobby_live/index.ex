@@ -2,6 +2,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
   alias Frobots.{Api, Events}
+  alias PhoenixClient.{Socket, Channel}
 
   @impl Phoenix.LiveView
   def mount(%{"match_id" => match_id} = _params, _session, socket) do
@@ -48,6 +49,33 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
 
       {:error, changeset} ->
         {:noreply, assign(socket, match_changeset: changeset)}
+    end
+  end
+
+  def handle_event("start_match", _params, socket) do
+    match_id = socket.assigns.match_id
+    socket_opts = Application.get_env(:phoenix_client, :socket)
+    {:ok, phoenix_socket} = Socket.start_link(socket_opts)
+    wait_for_socket(phoenix_socket)
+
+    {:ok, _response, match_channel} =
+      Channel.join(phoenix_socket, "match:" <> Integer.to_string(match_id))
+
+    wait_for_socket(phoenix_socket)
+
+    case Channel.push(match_channel, "start_match", %{"id" => match_id}) do
+      {:ok, _frobots_map} ->
+        ## Redirect to a page where they are listing to the channel for events
+        {:noreply, socket |> assign(:match_channel, match_channel)}
+
+      {:error, error} ->
+        {:noreply, socket |> assign(:match_channel, match_channel) |> put_flash(:error, error)}
+    end
+  end
+
+  defp wait_for_socket(socket) do
+    unless Socket.connected?(socket) do
+      wait_for_socket(socket)
     end
   end
 
