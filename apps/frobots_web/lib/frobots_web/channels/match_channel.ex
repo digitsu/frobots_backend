@@ -84,7 +84,7 @@ defmodule FrobotsWeb.MatchChannel do
   end
 
   @impl true
-  def handle_in("cancel_match", match_id, socket) do
+  def handle_in("cancel_match", %{"id" => match_id}, socket) do
     match_name = Fubars.Match.match_name(match_id)
     Fubars.Match.cancel_match(via_tuple(match_name))
     {:reply, :ok, socket}
