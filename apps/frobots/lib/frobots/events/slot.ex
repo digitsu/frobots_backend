@@ -9,7 +9,7 @@ defmodule Frobots.Events.Slot do
   schema "slots" do
     field(:slot_type, Ecto.Enum, values: [:host, :protobot, :player])
     field(:status, Ecto.Enum, values: [:open, :closed, :joining, :ready, :done])
-
+    field(:match_type, Ecto.Enum, values: [:simulation, :real], default: :real)
     belongs_to(:frobot, Frobot)
     belongs_to(:match, Match)
     timestamps()
@@ -20,7 +20,7 @@ defmodule Frobots.Events.Slot do
   @doc false
   def changeset(slot, attrs) do
     slot
-    |> cast(attrs, @fields ++ [:slot_type, :frobot_id, :match_id])
+    |> cast(attrs, @fields ++ [:slot_type, :frobot_id, :match_id, :match_type])
     |> cast_assoc(:match)
     |> validate_required(@fields)
     |> validate_slot_type(attrs)
