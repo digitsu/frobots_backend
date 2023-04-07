@@ -61,6 +61,8 @@ defmodule FrobotsWeb.MatchChannel do
   def handle_in("start_match", match_data, socket) do
     # create a FUBARS cluster
     # with {:ok, match_name} <- start_cluster(socket) do
+    match_data = match_data["id"] || match_data
+
     case start_cluster(socket) do
       {:ok, match_name} ->
         # now pass the match service the frobots and the match_template
