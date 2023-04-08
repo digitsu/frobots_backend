@@ -26,7 +26,7 @@ defmodule Frobots.Assets.Frobot do
   end
 
   @doc false
-  def changeset(frobot, attrs) do
+  def changeset(frobot, attrs \\ %{}) do
     frobot
     |> cast(attrs, [
       :brain_code,

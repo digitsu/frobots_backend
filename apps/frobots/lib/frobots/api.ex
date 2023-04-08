@@ -144,6 +144,8 @@ defmodule Frobots.Api do
   def join_match(_user, _match) do
   end
 
+  def create_frobot(user, name, brain_code, extra_params \\ %{})
+
   def create_frobot(user, _name, _brain_code, _extra_params) when user.sparks <= 0 do
     {:error, "User does not have enough sparks."}
   end
@@ -177,8 +179,23 @@ defmodule Frobots.Api do
         "class" => Assets.default_user_class()
       })
 
-    _create_frobot_build_multi(user, frobot_attrs)
-    |> _create_frobot_run_multi()
+    case _frobot_insert_multi(user, frobot_attrs) |> _run_multi() do
+      {:ok, res} -> res.frobot.id
+      {:error, msg} -> msg
+    end
+  end
+
+  @doc ~S"""
+  This function is to reset (or set) frobot with default setup and equipment
+  """
+  def reset_frobot(frobot) do
+    frobot = frobot |> Repo.preload(:user)
+    Equipment.dequip_all(frobot)
+
+    case _frobot_update_multi(frobot.user, frobot) |> _run_multi() do
+      {:ok, res} -> res
+      {:error, msg} -> msg
+    end
   end
 
   @doc ~S"""
@@ -186,12 +203,12 @@ defmodule Frobots.Api do
     This is called internally called from create_frobot to build an Ecto.multi structure.
     Building Ecto.multi structure in separate function makes testing easier.
 
-    ex: multi_list = Api._create_frobot_build_multi(user, @valid_frobot_attrs) |> Ecto.Multi.to_list()
+    ex: multi_list = Api._frobot_insert_multi(user, @valid_frobot_attrs) |> Ecto.Multi.to_list()
 
     Where multi_list is a list of changesets that can asserted for validity.
 
   """
-  def _create_frobot_build_multi(user, frobot_attrs) do
+  def _frobot_insert_multi(user, frobot_attrs) do
     Multi.new()
     |> Multi.insert(:frobot, create_frobot_changeset(user, frobot_attrs))
     |> Multi.insert(
@@ -210,48 +227,84 @@ defmodule Frobots.Api do
     |> Multi.update(:equip_scanner, fn %{frobot: frobot, scanner_inst: scanner_inst} ->
       Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
     end)
+    # |> Multi.update(:equip_missile, fn %{frobot: frobot, missile_inst: missile_inst} ->
+    #   Equipment.equip_part_changeset(missile_inst.id, frobot.id, "Missile")
+    # end)
     |> Multi.update(:update_user, fn %{frobot: frobot} ->
-      update_user_changeset(frobot.user_id)
+      decr_sparks_changeset(frobot.user_id)
     end)
+  end
+
+  def _frobot_update_multi(user, frobot) do
+    Multi.new()
+    |> Multi.insert(
+      :xframe_inst,
+      Equipment.create_equipment_changeset(user, "Xframe", :Chassis_Mk1)
+    )
+    |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
+    |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
+    |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
+    |> Multi.update(:equip_xframe, fn %{xframe_inst: xframe_inst} ->
+      Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
+    end)
+    |> Multi.update(:equip_cannon, fn %{cannon_inst: cannon_inst} ->
+      Equipment.equip_part_changeset(cannon_inst.id, frobot.id, "Cannon")
+    end)
+    |> Multi.update(:equip_scanner, fn %{scanner_inst: scanner_inst} ->
+      Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
+    end)
+
+    #  |> Multi.update(:equip_missile, fn %{missile_inst: missile_inst} ->
+    #    Equipment.equip_part_changeset(missile_inst.id, frobot.id, "Missile")
+    #  end)
   end
 
   @doc ~S"""
     Runs Multi structure
-    This function is called after _create_frobot_build_multi.
+    This function is called after _frobot_insert_multi.
 
     The actual db operations are run in this step as a transaction and any failures are rolled back
     Function returns {:ok, frobot_id} or {:error, reason} to caller
   """
-  def _create_frobot_run_multi(multi) do
+  def _run_multi(multi) do
     case Repo.transaction(multi) do
-      {:ok, result} ->
-        {:ok, result.frobot.id}
+      {:ok, res} ->
+        {:ok, res}
 
-      {:error, :frobot, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :frobot, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :xframe_inst, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :xframe_inst, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :cannon_inst, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :cannon_inst, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :scanner_inst, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :scanner_inst, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :missile_inst, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :missile_inst, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :equip_xframe, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :equip_xframe, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :equip_cannon, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :equip_cannon, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :equip_scanner, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :equip_scanner, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :update_user, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :update_user, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
     end
   end
@@ -517,7 +570,8 @@ defmodule Frobots.Api do
     end
   end
 
-  defp update_user_changeset(user_id) do
+  # todo this is wrong to always decrement the sparks.
+  defp decr_sparks_changeset(user_id) do
     user = Accounts.get_user_by(id: user_id)
     attrs = %{"sparks" => user.sparks - 1}
 

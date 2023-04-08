@@ -22,12 +22,12 @@ defmodule Frobots.Assets do
     @user_class_u
   end
 
-  @spec prototype_class :: <<_::40>>
+  @spec prototype_class :: <<_::8>>
   def prototype_class() do
     @prototype_class
   end
 
-  @spec target_class :: <<_::48>>
+  @spec target_class :: <<_::8>>
   def target_class() do
     @target_class
   end
