@@ -15,6 +15,8 @@ defmodule Frobots.Equipment do
 
   alias Frobots.Accounts
   alias Frobots.Assets
+  alias Frobots.Api
+  alias Ecto.Multi
 
   @equipment_structs [%XframeInst{}, %CannonInst{}, %ScannerInst{}, %MissileInst{}]
   def equipment_structs() do
@@ -35,6 +37,10 @@ defmodule Frobots.Equipment do
     String.to_existing_atom(
       "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
     )
+  end
+
+  defp _get_inst_schema(equipment_class) do
+    String.to_existing_atom(String.downcase(equipment_class) <> "_inst")
   end
 
   defp _is_ordinance_class?(equipment_class) do
@@ -244,7 +250,28 @@ defmodule Frobots.Equipment do
   @doc """
   dequip everything from the frobot
   """
-  def dequip_all(_frobot) do
+  # todo - create test for dequiping!
+  def dequip_all(%Assets.Frobot{} = frobot) do
+    multi = Multi.new()
+
+    changesets =
+      for equipment <- list_frobot_equipment(frobot.id) do
+        inst_module = _get_inst_module(equipment.class)
+
+        cs =
+          equipment
+          |> Map.replace(:frobot, nil)
+          |> inst_module.changeset()
+
+        {_get_inst_schema(equipment.class), cs}
+      end
+
+    add_to_multi = fn {schema, cs}, multi ->
+      Multi.insert(multi, schema, cs)
+    end
+
+    multi = Enum.reduce(changesets, multi, add_to_multi)
+    Api._run_multi(multi)
   end
 
   @doc """
@@ -365,7 +392,7 @@ defmodule Frobots.Equipment do
       equipment = get_equipment(equipment_class, equipment_instance_id) |> Repo.preload(:frobot)
 
       if _is_ordinance_class?(equipment_class) do
-        build_weapon_equipment_part_changeset(
+        build_part_changeset(
           weapon_count,
           max_weapon_endpoints,
           frobot,
@@ -373,7 +400,7 @@ defmodule Frobots.Equipment do
           inst_module
         )
       else
-        build_scanner_equipment_part_changeset(
+        build_part_changeset(
           sensor_count,
           max_sensor_hardpoints,
           frobot,
@@ -386,29 +413,14 @@ defmodule Frobots.Equipment do
     end
   end
 
-  defp build_weapon_equipment_part_changeset(
-         total_weapons,
-         weapon_hardpoints,
+  defp build_part_changeset(
+         total_parts,
+         total_hardpoints,
          frobot,
          equipment,
          inst_module
        ) do
-    if total_weapons == weapon_hardpoints do
-      nil
-    else
-      inst_module.changeset(equipment, %{})
-      |> Ecto.Changeset.put_assoc(:frobot, frobot)
-    end
-  end
-
-  defp build_scanner_equipment_part_changeset(
-         total_sensors,
-         sensor_hardpoints,
-         frobot,
-         equipment,
-         inst_module
-       ) do
-    if total_sensors == sensor_hardpoints do
+    if total_parts == total_hardpoints do
       nil
     else
       inst_module.changeset(equipment, %{})
