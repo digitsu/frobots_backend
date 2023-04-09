@@ -28,12 +28,9 @@ stages:
     - postgres:latest
 
   before_script:
-    #- docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     #- apt-get install npm
-    - apk add npm
-    - mix local.hex --force
-    #- mix archive.install github hexpm/hex branch latest
-    - mix local.rebar --force
+    - apk add --no-cache build-base git nodejs npm python3 curl openssh perl yarn
+    - mix local.hex --force && mix local.rebar --force
     - mix deps.get --only $MIX_ENV
 
   variables:
