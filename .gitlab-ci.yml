@@ -28,7 +28,7 @@ stages:
 
   before_script:
     #- docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - apt install npm
+    - apt-get install npm
     - mix local.hex --force
     #- mix archive.install github hexpm/hex branch latest
     - mix local.rebar --force
