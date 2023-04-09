@@ -72,7 +72,7 @@ defmodule FrobotsWeb.MixProject do
     [
       setup: ["deps.get"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
-      compile: ["phx.digest", "cmd priv/compile_npm.sh"]
+      compile: ["phx.digest", "cmd ./priv/compile_npm.sh"]
     ]
   end
 end
