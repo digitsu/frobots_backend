@@ -3,7 +3,7 @@ defmodule FrobotsWeb.PageController do
 
   def index(conn, _params) do
     conn
-    |> render(:index)
+    |> redirect(to: "/home")
   end
 
   '''
