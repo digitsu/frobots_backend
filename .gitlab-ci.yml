@@ -17,7 +17,8 @@ stages:
 
 
 .elixir:
-  image: elixir:1.14
+  #image: elixir:1.14
+  image: elixir:alpine
   # Pick zero or more services to be used on all builds.
   # Only needed when using a docker container to run your tests in.
   # Check out: https://docs.gitlab.com/ee/ci/services/index.html
@@ -28,7 +29,8 @@ stages:
 
   before_script:
     #- docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - apt-get install npm
+    #- apt-get install npm
+    - apk add npm
     - mix local.hex --force
     #- mix archive.install github hexpm/hex branch latest
     - mix local.rebar --force
