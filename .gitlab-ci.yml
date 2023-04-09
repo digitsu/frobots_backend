@@ -68,7 +68,7 @@ test-job:
   extends: .elixir
   stage: test
   variables: 
-    MIX_ENV: test
+    MIX_ENV: dev
     SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
     GHOST_API_KEY: ${GHOST_API_KEY}
