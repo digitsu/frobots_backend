@@ -28,7 +28,7 @@ stages:
     - postgres:latest
 
   before_script:
-    - apt-get -y install npm
+    - apt-get update && apt-get -y install npm
     #- apk add --no-cache build-base git nodejs npm python3 curl openssh perl yarn
     - mix local.hex --force && mix local.rebar --force
     - mix deps.get --only $MIX_ENV
