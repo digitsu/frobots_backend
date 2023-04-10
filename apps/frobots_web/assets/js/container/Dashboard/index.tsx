@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, type MouseEvent } from 'react'
 import { Grid, Box, Typography, Card } from '@mui/material'
 import FrobotsLeaderBoard from './FrobotsLeaderBoard'
 import PlayerLeaderBoard from './PlayerLeaderBoard'
@@ -24,6 +24,42 @@ export default (props: any) => {
     s3_base_url
   } = props
 
+  const handleOpenGarage = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/garage'
+    },
+    []
+  )
+
+  const handleOpenArena = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/arena'
+    },
+    []
+  )
+
+  const handleOpenPastMatches = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/arena/done/matches'
+    },
+    []
+  )
+
+  const handleOpenUpcomingMatches = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/arena/pending/matches'
+    },
+    []
+  )
+
   return (
     <>
       <Box width={'90%'} m={'auto'}>
@@ -44,7 +80,7 @@ export default (props: any) => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenArena}>
                     <Box
                       component={'img'}
                       src={'/images/ranking.svg'}
@@ -76,7 +112,7 @@ export default (props: any) => {
                       borderStyle: 'dotted',
                     }}
                   />
-                  <Box display={'flex'} gap={3}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenGarage}>
                     <Box
                       component={'img'}
                       src={'/images/frobot.svg'}
@@ -104,7 +140,7 @@ export default (props: any) => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenPastMatches}>
                     <Box
                       component={'img'}
                       src={'/images/stats.svg'}
@@ -134,7 +170,7 @@ export default (props: any) => {
                       borderStyle: 'dotted',
                     }}
                   />
-                  <Box display={'flex'} gap={3}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenUpcomingMatches}>
                     <Box
                       component={'img'}
                       src={'/images/calendar.svg'}
