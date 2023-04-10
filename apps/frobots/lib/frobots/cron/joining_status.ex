@@ -11,13 +11,14 @@ defmodule Frobots.Cron.JoiningStatus do
   @impl true
   def init(_args) do
     status_reset_interval = Application.get_env(:frobots, :status_reset_interval)
-    Process.send_after(self(), :joining_status, 5_000)
+    # Process.send_after(self(), :joining_status, 5_000)
     {:ok, %{status_reset_interval: status_reset_interval}}
   end
 
+  @impl true
   def handle_info(:joining_status, state) do
     IO.inspect("Joining Status Handle Info")
-    Process.send_after(self(), :joining_status, 5_000)
+    # Process.send_after(self(), :joining_status, 5_000)
     {:noreply, state}
   end
 end
