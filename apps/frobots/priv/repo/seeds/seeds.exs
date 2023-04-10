@@ -26,7 +26,7 @@ admin_pass = System.get_env("ADMIN_PASS")
 for {name, brain_path} <- Frobots.frobot_paths() do
   # I, II, IV, IX, etc
   type =
-    if name in [:rabbit, :target, :dummy],
+    if name in [:target, :dummy],
       do: Assets.target_class(),
       else: Assets.prototype_class()
 
