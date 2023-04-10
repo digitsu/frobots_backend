@@ -180,7 +180,7 @@ defmodule Frobots.Api do
       })
 
     case _frobot_insert_multi(user, frobot_attrs) |> _run_multi() do
-      {:ok, res} -> res.frobot.id
+      {:ok, res} -> {:ok, res.frobot.id}
       {:error, msg} -> msg
     end
   end
