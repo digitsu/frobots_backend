@@ -230,7 +230,10 @@ export default (props: any) => {
       <Box>
         <Grid container spacing={2} my={2}>
           <Grid item lg={12} md={12} sm={12} xs={12}>
-            <FeaturedFrobotSection featuredFrobots={featuredFrobots} />
+            <FeaturedFrobotSection
+              featuredFrobots={featuredFrobots}
+              imageBaseUrl={s3_base_url}
+            />
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <JoinMatchBanner />
