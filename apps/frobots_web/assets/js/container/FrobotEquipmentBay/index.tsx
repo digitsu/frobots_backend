@@ -428,14 +428,13 @@ const equipments = {
 export default (props: any) => {
   const isOwnedFrobot = true
   return (
-    <Box display={'flex'} width={'100%'} sx={{ pb:2}}>
+    <Box display={'flex'} width={'100%'} sx={{ pb: 2 }}>
       {/* <SlideBarGrid userFrobots={[]} currentFrobot={undefined} currentUser={undefined}  /> */}
 
       <Box
         width={'100%'}
         height={'100%'}
         m={'auto'}
-      
         sx={{
           paddingRight: 0,
           borderLeft: isOwnedFrobot ? '2px solid #2C333C' : 'none',
@@ -451,16 +450,13 @@ export default (props: any) => {
         >
           {'Titan'}
         </Typography>
-        <Grid container lg={12}>
+        <Grid container >
           <EquipmentBayDetails equipmentDetails={equipmentDetails} />
-          <Box width={20}></Box>
+         
           <AvailableEquipments props={equipments.availableEquipments} />
         </Grid>
 
-        <AttachedEquipments
-          equipments={equipments.attachedEquipments}
-        
-        ></AttachedEquipments>
+        <AttachedEquipments equipments={equipments.attachedEquipments} />
       </Box>
     </Box>
   )

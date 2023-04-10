@@ -30,20 +30,19 @@ export default (props: EquipmentDetailsPrpos) => {
 
   return (
     <>
-      <Box width={'59%'}>
+   
         <Card>
           <Grid container>
-            <Grid item lg={6}>
-              <Box position={'relative'} width={'110%'} m={'auto'}>
+            <Grid item lg={6} md={6} sm={12}>
+              <Box position={'relative'} width={'100%'} m={'auto'}>
                 <Box
                   component={'img'}
                   width={'100%'}
                   src={equipmentDetails.avatar}
                 ></Box>
-                
               </Box>
             </Grid>
-            <Grid item lg={6}>
+            <Grid item lg={6} md={6} sm={12}>
               <Box px={4} py={4}>
                 <Box mt={4}>
                   <Box>
@@ -153,7 +152,7 @@ export default (props: EquipmentDetailsPrpos) => {
             </Grid>
           </Grid>
         </Card>
-      </Box>
+    
 
       {/* <Grid pr={1} item lg={4} md={6} sm={6} xs={12}>
         <Card
