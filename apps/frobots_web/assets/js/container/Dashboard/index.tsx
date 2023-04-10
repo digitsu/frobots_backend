@@ -21,7 +21,7 @@ export default (props: any) => {
     featuredFrobots,
     frobot_leaderboard_stats,
     player_leaderboard_stats,
-    s3_base_url
+    s3_base_url,
   } = props
 
   const handleOpenGarage = useCallback(
@@ -126,7 +126,9 @@ export default (props: any) => {
                       <Typography variant="h6">
                         {current_user_sparks || 0}
                       </Typography>
-                      <Typography variant="caption">Sparks Available</Typography>
+                      <Typography variant="caption">
+                        Sparks Available
+                      </Typography>
                     </Box>
                   </Box>
                 </Box>
@@ -170,7 +172,11 @@ export default (props: any) => {
                       borderStyle: 'dotted',
                     }}
                   />
-                  <Box display={'flex'} gap={3} onClick={handleOpenUpcomingMatches}>
+                  <Box
+                    display={'flex'}
+                    gap={3}
+                    onClick={handleOpenUpcomingMatches}
+                  >
                     <Box
                       component={'img'}
                       src={'/images/calendar.svg'}
