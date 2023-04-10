@@ -14,7 +14,8 @@ defmodule Frobots.Application do
       {Phoenix.PubSub, name: Frobots.PubSub},
       # Start a worker by calling: Frobots.Worker.start_link(arg)
       # {Frobots.Worker, arg}
-      Frobots.Agents.WinnersBucket
+      Frobots.Agents.WinnersBucket,
+      Frobots.MatchChannel
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Frobots.Supervisor)
