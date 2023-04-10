@@ -21,6 +21,7 @@ export default (props: any) => {
     featuredFrobots,
     frobot_leaderboard_stats,
     player_leaderboard_stats,
+    s3_base_url
   } = props
 
   return (
@@ -89,7 +90,7 @@ export default (props: any) => {
                       <Typography variant="h6">
                         {current_user_sparks || 0}
                       </Typography>
-                      <Typography variant="caption">Total Sparks</Typography>
+                      <Typography variant="caption">Sparks Available</Typography>
                     </Box>
                   </Box>
                 </Box>
@@ -166,7 +167,7 @@ export default (props: any) => {
               <ProfileDetails
                 ranking_details={current_user_ranking_details}
                 user_name={current_user_name}
-                user_avatar={current_user_avatar}
+                user_avatar={`${s3_base_url}${current_user_avatar}`}
               />
               <Box>
                 <GlobalStats globalStats={globalStats} />
