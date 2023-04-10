@@ -110,7 +110,8 @@ defmodule FrobotsWeb.HomeLive.Index do
          "matches_participated" => currentUserStatus.matches_participated,
          "total_xp" => currentUserStatus.total_xp,
          "upcoming_matches" => currentUserStatus.upcoming_matches
-       }
+       },
+       "s3_base_url" => socket.assigns.s3_base_url
      })}
   end
 
