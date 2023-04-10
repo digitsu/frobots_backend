@@ -137,8 +137,6 @@ defmodule FrobotsWeb.Router do
     live "/garage/frobot", GarageFrobotsDetailsLive.Index, :index
     live "/garage/frobot/braincode", FrobotBraincodeLive.Index, :index
 
-    get "/", PageController, :index
-    get "/oldhome", PageController, :index
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
@@ -146,7 +144,7 @@ defmodule FrobotsWeb.Router do
 
   scope "/", FrobotsWeb do
     pipe_through [:browser]
-
+    get "/", PageController, :index
     delete "/users/log_out", UserSessionController, :delete
     get "/users/log_out", UserSessionController, :delete
     get "/users/confirm", UserConfirmationController, :new

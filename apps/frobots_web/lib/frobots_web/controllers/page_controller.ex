@@ -2,8 +2,13 @@ defmodule FrobotsWeb.PageController do
   use FrobotsWeb, :controller
 
   def index(conn, _params) do
-    conn
-    |> redirect(to: "/home")
+    if conn.assigns[:current_user] do
+      conn
+      |> redirect(to: "/home")
+    else
+      conn
+      |> redirect(to: "/users/log_in")
+    end
   end
 
   '''
