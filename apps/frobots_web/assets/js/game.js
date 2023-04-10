@@ -203,7 +203,7 @@ export class Game {
       }
 
       explodeMissile(missile_name) {
-        var explode_sprite = new PIXI.Sprite(PIXI.Texture.from('images/explode.png'));
+        var explode_sprite = new PIXI.Sprite(PIXI.Texture.from('/images/explode.png'));
 
         var missile_index = this.missiles.findIndex(missile => missile.name == missile_name);
         if (missile_index > -1) {
@@ -222,7 +222,7 @@ export class Game {
       }
 
       createMissile(missile_name, x, y) {
-        var missile_sprite = new PIXI.Sprite(PIXI.Texture.from('images/missile.png'));
+        var missile_sprite = new PIXI.Sprite(PIXI.Texture.from('/images/missile.jpg'));
         missile_sprite.x = x;
         missile_sprite.y = y;
 
