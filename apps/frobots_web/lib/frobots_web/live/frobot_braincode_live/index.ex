@@ -169,8 +169,6 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       }
     }
 
-    IO.inspect(match_data)
-
     case Simulator.start_match(socket.assigns.simulator, match_data) do
       {:ok, frobots_data} ->
         {:noreply,

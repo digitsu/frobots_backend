@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Grid, Typography, Button, Card } from '@mui/material'
 
-
 interface EquipmentDetails {
   id: number
   avatar: string

@@ -13,10 +13,8 @@ import {
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
-
 interface AttachedEquipmentsProps {
   equipments: any[]
-
 }
 
 export default (props: AttachedEquipmentsProps) => {
@@ -29,8 +27,6 @@ export default (props: AttachedEquipmentsProps) => {
   const totalSections = Math.ceil(equipments?.length / 8)
   const [currentSection, setCurrentSection] = useState(1)
   const handlePreviousButton = () => {
-
-
     if (currentSection > 1) {
       setCurrentSection(currentSection - 1)
       setfirstIndex(firstIndex - 8)
@@ -39,14 +35,12 @@ export default (props: AttachedEquipmentsProps) => {
     }
   }
   const handleNextButton = () => {
-
     if (currentSection < totalSections) {
       setCurrentSection(currentSection + 1)
       setfirstIndex(firstIndex + 8)
       setlastIndex(lastIndex + 8)
 
       setrenderedEquipments(equipments.slice(firstIndex + 8, lastIndex + 8))
-    
     }
   }
 
@@ -55,7 +49,7 @@ export default (props: AttachedEquipmentsProps) => {
       <Typography paddingTop={2} variant={'subtitle1'}>
         Attached Equipments
       </Typography>
-      <Grid  paddingTop={2}>
+      <Grid paddingTop={2}>
         <Card>
           <Box
             sx={{
