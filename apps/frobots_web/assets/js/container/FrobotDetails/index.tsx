@@ -19,6 +19,7 @@ interface FrobotDetailsProps {
 export default (props: FrobotDetailsProps) => {
   const { frobotDetails, currentUser, userFrobots } = props
   const isOwnedFrobot = frobotDetails.user_id === currentUser.id
+  const frobotId = frobotDetails.frobot_id
 
   return (
     <Box mt={5}>
@@ -55,6 +56,7 @@ export default (props: FrobotDetailsProps) => {
                   ...frobotDetails.missile_inst,
                 ]}
                 isOwnedFrobot={isOwnedFrobot}
+                frobotId={frobotId}
               />
             )}
 

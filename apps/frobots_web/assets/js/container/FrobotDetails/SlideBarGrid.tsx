@@ -46,7 +46,7 @@ export default (props: SlideBarGridProps) => {
 
   return (
     <>
-      <Grid pl={2} pr={1}>
+      <Grid pl={2} pr={1} pt={1}>
         {userFrobots.map((frobot) => (
           <Grid item key={frobot.id} xs={12} pb={3}>
             <Card
