@@ -3,7 +3,7 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.Assets
   alias Frobots.Accounts
-  alias Frobots.{Api, Equipment}
+  alias Frobots.{Api, Equipment, Avatars}
 
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
@@ -17,37 +17,6 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
     scanners = Equipment.list_scanners()
     missiles = Equipment.list_missiles()
 
-    frobot_starter_images = [
-      %{
-        avatar: "#{s3_base_url}/images/frobots/1.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-1.png"
-      },
-      %{
-        avatar: "#{s3_base_url}/images/frobots/2.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-2.png"
-      },
-      %{
-        avatar: "#{s3_base_url}/images/frobots/3.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-3.png"
-      },
-      %{
-        avatar: "#{s3_base_url}/images/frobots/4.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-4.png"
-      },
-      %{
-        avatar: "#{s3_base_url}/images/frobots/5.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-5.png"
-      },
-      %{
-        avatar: "#{s3_base_url}/images/frobots/6.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-6.png"
-      },
-      %{
-        avatar: "#{s3_base_url}/images/frobots/7.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-7.png"
-      }
-    ]
-
     {:ok,
      socket
      |> assign(:current_user, current_user)
@@ -56,7 +25,7 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
      |> assign(:cannons, cannons)
      |> assign(:missiles, missiles)
      |> assign(:s3_base_url, s3_base_url)
-     |> assign(:frobot_starter_images, frobot_starter_images)}
+     |> assign(:starter_mechs, Avatars.get_frobot_avatars())}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -72,12 +41,12 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   @impl true
   def handle_event("react.fetch_frobot_create_details", _params, socket) do
     templates = Assets.list_template_frobots()
-    frobot_starter_images = socket.assigns.frobot_starter_images
 
     {:noreply,
      push_event(socket, "react.return_frobot_create_details", %{
        "templates" => templates,
-       "starterImages" => frobot_starter_images
+       "starterMechs" => socket.assigns.starter_mechs,
+       "s3_base_url" => socket.assigns.s3_base_url
      })}
   end
 
