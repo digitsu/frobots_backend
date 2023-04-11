@@ -4,8 +4,8 @@
 #FROM elixir:1.14-otp-24-alpine AS build
 
 #FROM elixir:1.13.4-alpine AS build
-FROM elixir:1.13.4-otp-25-alpine AS build
-
+#FROM elixir:1.13.4-otp-25-alpine AS build
+FROM elixir:1.13.4-alpine AS build
 
 
 ARG HTTP_PROXY
