@@ -102,6 +102,7 @@ deploy-job:
   image: $BUILDER_IMAGE
   stage: deploy
   variables:
+    MIX_ENV: staging
     POOL_SIZE: 2
     PORT: 4000
     GIT_SUBMODULE_STRATEGY: normal
