@@ -25,9 +25,14 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
 
     attrs =
       case event do
-        "joining" -> %{status: "joining", slot_type: params["slot_type"]}
-        "ready" -> %{status: "ready", slot_type: params["slot_type"], frobot_id: params["frobot_id"]}
-        "closed" -> %{status: "closed", slot_type: nil}
+        "joining" ->
+          %{status: "joining", slot_type: params["slot_type"]}
+
+        "ready" ->
+          %{status: "ready", slot_type: params["slot_type"], frobot_id: params["frobot_id"]}
+
+        "closed" ->
+          %{status: "closed", slot_type: nil}
       end
 
     case Api.update_slot(match.id, slot_id, attrs) do
@@ -40,7 +45,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
               [slot | acc]
             end
           end)
-          |> Enum.sort_by(&(&1.id))
+          |> Enum.sort_by(& &1.id)
 
         updated_match = Map.put(match, :slots, updated_slots)
         {:noreply, socket |> assign(:match, updated_match)}
@@ -98,7 +103,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
           [slot | acc]
         end
       end)
-      |> Enum.sort_by(&(&1.id))
+      |> Enum.sort_by(& &1.id)
 
     updated_match = Map.put(match, :slots, updated_slots)
     {:noreply, socket |> assign(:match, updated_match)}
