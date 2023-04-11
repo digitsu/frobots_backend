@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import {
   Table,
   TableBody,
@@ -33,6 +33,10 @@ interface LeaderBoardProps {
 export default (props: LeaderBoardProps) => {
   const { leaderBoardData, imageBaseUrl } = props
 
+  const handleOpenFrobotDetails = (frobotName: string) => {
+    window.location.href = `/garage/frobot?name=${frobotName}`
+  }
+
   return (
     <Paper sx={{ backgroundColor: '#212B36', borderRadius: 4 }}>
       <Typography variant="body2" sx={{ p: 2, color: '#fff' }}>
@@ -66,7 +70,7 @@ export default (props: LeaderBoardProps) => {
           <TableBody>
             {leaderBoardData.length ? (
               leaderBoardData.map((row, index) => (
-                <TableRow key={index}>
+                <TableRow key={index} onClick={() => handleOpenFrobotDetails(row.frobot)}>
                   <TableCell
                     sx={{
                       color: '#fff',
