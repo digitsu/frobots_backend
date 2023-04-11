@@ -9,8 +9,9 @@ import {
   Grid,
 } from '@mui/material'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
+
 export default (props: any) => {
-  const { templates, starterImages } = props
+  const { templates, starterMechs, s3BaseUrl } = props
   const templateFrobots =
     templates?.map(({ name, brain_code, blockly_code }, index) => ({
       label: name,
@@ -33,13 +34,7 @@ export default (props: any) => {
     (store: any) => store.createFrobot
   )
   const selectedMech = starterMech.id
-  const starterMechs = starterImages.map((starterImage, index) => ({
-    id: index,
-    bgUrl: '/images/frobot_bg.png',
-    src: starterImage?.avatar,
-    pixellatedImage: starterImage?.pixellated_img,
-    name: '',
-  }))
+
   return (
     <Box width={'65%'} m={'auto'} mt={10}>
       <Typography mb={2} variant={'body1'} fontWeight={'bold'}>
@@ -80,6 +75,7 @@ export default (props: any) => {
               sm={3}
               md={2}
               lg={12 / 7}
+              key={index}
               onClick={() => changeStarterMechHandler(starterMech)}
             >
               <Box
@@ -92,7 +88,7 @@ export default (props: any) => {
                 <Box
                   component={'img'}
                   width={'100%'}
-                  src={starterMech.bgUrl}
+                  src={'/images/frobot_bg.png'}
                   sx={{
                     boxShadow:
                       selectedMech === index ? '0 0 0 2pt #00AB55' : 'none',
@@ -108,7 +104,7 @@ export default (props: any) => {
                   component={'img'}
                   width={'65%'}
                   height={'65%'}
-                  src={starterMech.src}
+                  src={`${s3BaseUrl}${starterMech.avatar}`}
                 />
               </Box>
               <Box textAlign={'center'} mt={1}>

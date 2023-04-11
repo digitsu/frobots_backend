@@ -17,34 +17,48 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
     scanners = Equipment.list_scanners()
     missiles = Equipment.list_missiles()
 
-    frobot_starter_images = [
+    starter_mechs = [
       %{
-        avatar: "#{s3_base_url}/images/frobots/1.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-1.png"
+        id: 1,
+        name: "",
+        avatar: "images/frobots/1.png",
+        pixellated_img: "images/frobots/P-1.png"
       },
       %{
-        avatar: "#{s3_base_url}/images/frobots/2.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-2.png"
+        id: 2,
+        name: "",
+        avatar: "images/frobots/2.png",
+        pixellated_img: "images/frobots/P-2.png"
       },
       %{
-        avatar: "#{s3_base_url}/images/frobots/3.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-3.png"
+        id: 3,
+        name: "",
+        avatar: "images/frobots/3.png",
+        pixellated_img: "images/frobots/P-3.png"
       },
       %{
-        avatar: "#{s3_base_url}/images/frobots/4.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-4.png"
+        id: 4,
+        name: "",
+        avatar: "images/frobots/4.png",
+        pixellated_img: "images/frobots/P-4.png"
       },
       %{
-        avatar: "#{s3_base_url}/images/frobots/5.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-5.png"
+        id: 5,
+        name: "",
+        avatar: "images/frobots/5.png",
+        pixellated_img: "images/frobots/P-5.png"
       },
       %{
-        avatar: "#{s3_base_url}/images/frobots/6.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-6.png"
+        id: 6,
+        name: "",
+        avatar: "images/frobots/6.png",
+        pixellated_img: "images/frobots/P-6.png"
       },
       %{
-        avatar: "#{s3_base_url}/images/frobots/7.png",
-        pixellated_img: "#{s3_base_url}/images/frobots/P-7.png"
+        id: 7,
+        name: "",
+        avatar: "images/frobots/7.png",
+        pixellated_img: "images/frobots/P-7.png"
       }
     ]
 
@@ -56,7 +70,7 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
      |> assign(:cannons, cannons)
      |> assign(:missiles, missiles)
      |> assign(:s3_base_url, s3_base_url)
-     |> assign(:frobot_starter_images, frobot_starter_images)}
+     |> assign(:starter_mechs, starter_mechs)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -72,12 +86,12 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   @impl true
   def handle_event("react.fetch_frobot_create_details", _params, socket) do
     templates = Assets.list_template_frobots()
-    frobot_starter_images = socket.assigns.frobot_starter_images
 
     {:noreply,
      push_event(socket, "react.return_frobot_create_details", %{
        "templates" => templates,
-       "starterImages" => frobot_starter_images
+       "starterMechs" => socket.assigns.starter_mechs,
+       "s3_base_url" => socket.assigns.s3_base_url
      })}
   end
 
