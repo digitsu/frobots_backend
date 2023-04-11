@@ -80,6 +80,9 @@ test-job:
     #- mix test --color apps/fubars/test/
     #- mix test --color apps/frobots/test/
     #- mix test --color apps/frobots_web/test/
+    - echo $SENDGRID_API_KEY
+    - echo $SENDGRID_API_EXPORT_MAILINGLIST_KEY
+    - echo $GHOST_API_KEY
     - mix coveralls --umbrella || true
     - mix test --color
 
@@ -102,8 +105,8 @@ deploy-job:
     POOL_SIZE: 2
     PORT: 4000
     GIT_SUBMODULE_STRATEGY: normal
-    SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-    SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
+    #SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+    #SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
     GHOST_API_KEY: ${GHOST_API_KEY}
     S3_URL: ${S3_URL}
     S3_BUCKET_STAGING: ${S3_BUCKET_STAGING}
