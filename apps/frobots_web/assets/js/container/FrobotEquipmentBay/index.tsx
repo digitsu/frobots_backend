@@ -426,11 +426,17 @@ const equipments = {
 }
 
 export default (props: any) => {
+   const { frobotDetails, currentUser, userFrobots } = props
+   console.log("Props ",props);
+   
   const isOwnedFrobot = true
   return (
     <Box display={'flex'} width={'100%'} sx={{ pb: 2 }}>
-      {/* <SlideBarGrid userFrobots={[]} currentFrobot={undefined} currentUser={undefined}  /> */}
-
+      {/* <SlideBarGrid
+        userFrobots={userFrobots}
+        currentFrobot={frobotDetails}
+        currentUser={currentUser}
+      /> */}
       <Box
         width={'100%'}
         height={'100%'}
@@ -450,9 +456,9 @@ export default (props: any) => {
         >
           {'Titan'}
         </Typography>
-        <Grid container >
+        <Grid container>
           <EquipmentBayDetails equipmentDetails={equipmentDetails} />
-         
+
           <AvailableEquipments props={equipments.availableEquipments} />
         </Grid>
 

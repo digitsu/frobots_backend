@@ -1,10 +1,18 @@
 import { mount } from '../mounter'
-import FrobotDetails from '../container/FrobotDetails'
 import FrobotEquipmentBay from '../container/FrobotEquipmentBay'
 
 export default {
   mounted() {
-    this.unmountComponent = mount(FrobotEquipmentBay)(this.el.id, this.opts())
+    this.pushEventTo(this.el, 'react.fetch_frobot_equipment_bay_details')
+    this.handleEvent(
+      'react.return_frobot_equipment_bay_details',
+      (details: any) => {
+        this.unmountComponent = mount(FrobotEquipmentBay)(
+          this.el.id,
+          this.opts({ ...details })
+        )
+      }
+    )
   },
 
   destroyed() {
@@ -15,9 +23,10 @@ export default {
 
     this.unmountComponent(this.el)
   },
-  opts() {
+  opts(frobotEqDetails: any) {
     return {
       name: 'FrobotEquipmentBay',
+      ...frobotEqDetails,
     }
   },
 }
