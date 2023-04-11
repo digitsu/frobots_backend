@@ -3,7 +3,7 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.Assets
   alias Frobots.Accounts
-  alias Frobots.{Api, Equipment}
+  alias Frobots.{Api, Equipment, Avatars}
 
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
@@ -17,51 +17,6 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
     scanners = Equipment.list_scanners()
     missiles = Equipment.list_missiles()
 
-    starter_mechs = [
-      %{
-        id: 1,
-        name: "",
-        avatar: "images/frobots/1.png",
-        pixellated_img: "images/frobots/P-1.png"
-      },
-      %{
-        id: 2,
-        name: "",
-        avatar: "images/frobots/2.png",
-        pixellated_img: "images/frobots/P-2.png"
-      },
-      %{
-        id: 3,
-        name: "",
-        avatar: "images/frobots/3.png",
-        pixellated_img: "images/frobots/P-3.png"
-      },
-      %{
-        id: 4,
-        name: "",
-        avatar: "images/frobots/4.png",
-        pixellated_img: "images/frobots/P-4.png"
-      },
-      %{
-        id: 5,
-        name: "",
-        avatar: "images/frobots/5.png",
-        pixellated_img: "images/frobots/P-5.png"
-      },
-      %{
-        id: 6,
-        name: "",
-        avatar: "images/frobots/6.png",
-        pixellated_img: "images/frobots/P-6.png"
-      },
-      %{
-        id: 7,
-        name: "",
-        avatar: "images/frobots/7.png",
-        pixellated_img: "images/frobots/P-7.png"
-      }
-    ]
-
     {:ok,
      socket
      |> assign(:current_user, current_user)
@@ -70,7 +25,7 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
      |> assign(:cannons, cannons)
      |> assign(:missiles, missiles)
      |> assign(:s3_base_url, s3_base_url)
-     |> assign(:starter_mechs, starter_mechs)}
+     |> assign(:starter_mechs, Avatars.get_frobot_avatars())}
   end
 
   # add additional handle param events as needed to handle button clicks etc
