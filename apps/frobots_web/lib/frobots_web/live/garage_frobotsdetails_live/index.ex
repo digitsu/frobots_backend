@@ -4,45 +4,57 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
   alias Frobots.{Accounts, Assets, Api, Events}
 
   @impl Phoenix.LiveView
-  def mount(%{"id" => frobot_id} = _params, session, socket) do
+  def mount(params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
 
-    # If frobot_id is missing in the url redirect user to garage
-    if frobot_id === "" do
+    # get frobot id or name from the url param
+    frobot_id_or_name =
+      if params["id"] && params["id"] !== "" do
+        String.to_integer(params["id"])
+      else
+        params["name"]
+      end
+
+    # if frobot_id_or_name not exist, redirect user to garage
+    if frobot_id_or_name !== nil and frobot_id_or_name !== "" do
+      case Api.get_frobot_details(frobot_id_or_name) do
+        {:ok, frobot_details} ->
+          %{
+            entries: battles,
+            page_number: page,
+            page_size: page_size,
+            total_entries: total_entries
+          } =
+            Api.list_paginated_frobot_battlelog([frobot_id: frobot_details["frobot_id"]],
+              page: 1,
+              page_size: 5
+            )
+
+          {:ok,
+           socket
+           |> assign(:user, current_user)
+           |> assign(
+             :current_user_ranking_details,
+             Events.get_current_user_ranking_details(current_user)
+           )
+           |> assign(:frobot, frobot_details)
+           |> assign(:user_frobots, Assets.list_user_frobots(current_user))
+           |> assign(:battles, battles)
+           |> assign(:page, page)
+           |> assign(:page_size, page_size)
+           |> assign(:total_entries, total_entries)}
+
+        {:error, message} ->
+          {:ok,
+           socket
+           |> put_flash(:error, message)
+           |> push_redirect(to: "/garage")}
+      end
+    else
       {:ok,
        socket
-       |> put_flash(:error, "Frobot id not specified in the url")
+       |> put_flash(:error, "Frobot id / name not specified in the url")
        |> push_redirect(to: "/garage")}
-    end
-
-    case Api.get_frobot_details(String.to_integer(frobot_id)) do
-      {:ok, frobot_details} ->
-        %{
-          entries: battles,
-          page_number: page,
-          page_size: page_size,
-          total_entries: total_entries
-        } = Api.list_paginated_frobot_battlelog([frobot_id: frobot_id], page: 1, page_size: 5)
-
-        {:ok,
-         socket
-         |> assign(:user, current_user)
-         |> assign(
-           :current_user_ranking_details,
-           Events.get_current_user_ranking_details(current_user)
-         )
-         |> assign(:frobot, frobot_details)
-         |> assign(:user_frobots, Assets.list_user_frobots(current_user))
-         |> assign(:battles, battles)
-         |> assign(:page, page)
-         |> assign(:page_size, page_size)
-         |> assign(:total_entries, total_entries)}
-
-      {:error, message} ->
-        {:ok,
-         socket
-         |> put_flash(:error, message)
-         |> push_redirect(to: "/garage")}
     end
   end
 

@@ -72,9 +72,9 @@ defmodule FrobotsWeb.MixProject do
     [
       setup: ["deps.get"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
-      compile: ["run"],
+      # compile: ["run"],
       # run: ["phx.digest", "cmd 'cd assets && npm install'"]
-      run: ["phx.digest", "cmd --cd assets npm install"]
+      install: ["phx.digest", "cmd --cd assets npm install"]
     ]
   end
 end
