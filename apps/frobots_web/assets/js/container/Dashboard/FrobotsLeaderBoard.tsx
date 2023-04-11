@@ -70,7 +70,10 @@ export default (props: LeaderBoardProps) => {
           <TableBody>
             {leaderBoardData.length ? (
               leaderBoardData.map((row, index) => (
-                <TableRow key={index} onClick={() => handleOpenFrobotDetails(row.frobot)}>
+                <TableRow
+                  key={index}
+                  onClick={() => handleOpenFrobotDetails(row.frobot)}
+                >
                   <TableCell
                     sx={{
                       color: '#fff',
