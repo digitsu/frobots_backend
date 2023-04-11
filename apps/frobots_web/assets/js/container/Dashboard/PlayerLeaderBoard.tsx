@@ -81,8 +81,8 @@ export default (props: LeaderBoardProps) => {
                     {row.avatar && (
                       <Box
                         position={'relative'}
-                        width={'30%'}
-                        height={'30%'}
+                        width={100}
+                        height={100}
                         sx={{ cursor: 'pointer', p: 1 }}
                       >
                         <Box
