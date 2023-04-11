@@ -40,6 +40,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
               [slot | acc]
             end
           end)
+          |> Enum.sort_by(&(&1.id))
 
         updated_match = Map.put(match, :slots, updated_slots)
         {:noreply, socket |> assign(:match, updated_match)}
@@ -97,6 +98,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
           [slot | acc]
         end
       end)
+      |> Enum.sort_by(&(&1.id))
 
     updated_match = Map.put(match, :slots, updated_slots)
     {:noreply, socket |> assign(:match, updated_match)}
