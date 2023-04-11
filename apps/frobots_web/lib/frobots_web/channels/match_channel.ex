@@ -1,7 +1,7 @@
 defmodule FrobotsWeb.MatchChannel do
   use FrobotsWeb, :channel
 
-  alias Frobots.{Events, Api, ChangesetError}
+  alias Frobots.Api
   require Logger
 
   @type degree :: 0..359
