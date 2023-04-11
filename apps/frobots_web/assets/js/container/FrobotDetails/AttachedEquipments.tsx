@@ -7,12 +7,13 @@ import EquipmentDetails from './EquipmentDetails'
 interface AttachedEquipmentsProps {
   equipments: any[]
   isOwnedFrobot: boolean
+  frobotId: number
 }
 
 const columnsPerPage = 4
 
 export default (props: AttachedEquipmentsProps) => {
-  const { equipments, isOwnedFrobot } = props
+  const { equipments, isOwnedFrobot, frobotId } = props
   const equipmentLength = equipments.length
   const [currentEquipment, setCurrentEquipment] = useState(equipments[0])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -70,6 +71,10 @@ export default (props: AttachedEquipmentsProps) => {
     setCurrentIndex(0)
 
     setCurrentEquipment(equipments[newLeftOffset])
+  }
+
+  const handleViewEquipmentBay = () => {
+    window.location.href = `/garage/frobot/equipment_bay?id=${frobotId}`
   }
 
   return (
@@ -201,6 +206,7 @@ export default (props: AttachedEquipmentsProps) => {
                 <Button
                   variant="text"
                   fullWidth
+                  onClick={handleViewEquipmentBay}
                   sx={{
                     backgroundColor: '#00AB552F',
                     color: '#5BE584',

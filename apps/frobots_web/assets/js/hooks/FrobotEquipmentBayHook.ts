@@ -6,10 +6,10 @@ export default {
     this.pushEventTo(this.el, 'react.fetch_frobot_equipment_bay_details')
     this.handleEvent(
       'react.return_frobot_equipment_bay_details',
-      (details: any) => {
+      (frobotEqDetails: any) => {
         this.unmountComponent = mount(FrobotEquipmentBay)(
           this.el.id,
-          this.opts({ ...details })
+          this.opts({ ...frobotEqDetails })
         )
       }
     )
@@ -23,6 +23,7 @@ export default {
 
     this.unmountComponent(this.el)
   },
+
   opts(frobotEqDetails: any) {
     return {
       name: 'FrobotEquipmentBay',

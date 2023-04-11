@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import { FixedSizeList, ListChildComponentProps } from 'react-window'
+
 
 interface AttachedEquipmentsProps {
   equipments: any[]
@@ -55,7 +55,7 @@ export default (props: AttachedEquipmentsProps) => {
       <Typography paddingTop={2} variant={'subtitle1'}>
         Attached Equipments
       </Typography>
-      <Grid paddingRight={10} paddingTop={2}>
+      <Grid  paddingTop={2}>
         <Card>
           <Box
             sx={{

@@ -10,7 +10,7 @@ import {
 import FrobotDetailsHook from './FrobotDetailsHook'
 import FrobotBrainCodeHook from './FrobotBrainCodeHook'
 import ArenaCreateMatch from './ArenaCreateMatch'
-import FrobotEquipmentBay from './FrobotEquipmentBay'
+import FrobotEquipmentBayHook from './FrobotEquipmentBayHook'
 interface HookType {
   [key: string]: {
     mounted(): void
@@ -32,6 +32,6 @@ Hooks.PastMatchesHook = PastMatchesHook
 Hooks.FrobotDetailsHook = FrobotDetailsHook
 Hooks.FrobotBrainCodeHook = FrobotBrainCodeHook
 Hooks.ArenaCreateMatch = ArenaCreateMatch
-Hooks.FrobotEquipmentBay = FrobotEquipmentBay
+Hooks.FrobotEquipmentBayHook = FrobotEquipmentBayHook
 
 export default Hooks
