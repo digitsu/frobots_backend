@@ -46,25 +46,25 @@ defmodule FrobotsWeb.HomeLive.Index do
         "id" => 1,
         "name" => "X-tron",
         "xp" => "65700 xp",
-        "image_path" => "/images/frobot1.png"
+        "image_path" => "images/frobots/1.png"
       },
       %{
         "id" => 2,
         "name" => "New Horizon",
         "xp" => "65700 xp",
-        "image_path" => "/images/frobot2.png"
+        "image_path" => "images/frobots/2.png"
       },
       %{
         "id" => 3,
         "name" => "Golden Rainbow",
         "xp" => "65700 xp",
-        "image_path" => "/images/frobot3.png"
+        "image_path" => "images/frobots/3.png"
       },
       %{
         "id" => 4,
         "name" => "Steel Bully",
         "xp" => "65700 xp",
-        "image_path" => "/images/frobot4.png"
+        "image_path" => "images/frobots/4.png"
       }
     ]
   end

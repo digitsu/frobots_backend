@@ -10,10 +10,11 @@ type FeaturedFrobot = {
 
 type FeaturedFrobotsProps = {
   featuredFrobots: FeaturedFrobot[]
+  imageBaseUrl: string
 }
 
 export default (props: FeaturedFrobotsProps) => {
-  const { featuredFrobots } = props
+  const { featuredFrobots, imageBaseUrl } = props
 
   const handleOpenDetails = (frobotId: number) => {
     window.location.href = `/garage/frobot?id=${frobotId}`
@@ -57,7 +58,7 @@ export default (props: FeaturedFrobotsProps) => {
                     zIndex={1}
                     position={'absolute'}
                     component={'img'}
-                    src={featuredFrobot.image_path}
+                    src={`${imageBaseUrl}${featuredFrobot.image_path}`}
                   />
                 </Box>
                 <Box textAlign={'center'} mt={3}>
