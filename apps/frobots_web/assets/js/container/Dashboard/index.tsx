@@ -217,10 +217,16 @@ export default (props: any) => {
             </Box>
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>
-            <FrobotsLeaderBoard leaderBoardData={frobot_leaderboard_stats} />
+            <FrobotsLeaderBoard
+              leaderBoardData={frobot_leaderboard_stats}
+              imageBaseUrl={s3_base_url}
+            />
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>
-            <PlayerLeaderBoard leaderBoardData={player_leaderboard_stats} />
+            <PlayerLeaderBoard
+              leaderBoardData={player_leaderboard_stats}
+              imageBaseUrl={s3_base_url}
+            />
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <Notifications />
