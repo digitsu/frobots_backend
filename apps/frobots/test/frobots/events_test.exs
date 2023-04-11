@@ -60,7 +60,7 @@ defmodule Frobots.EventsTest do
       params = create_match_params(owner, n1, n2)
 
       {:ok, created_match} = Frobots.Events.create_match(params)
-      assert [match] = Frobots.Events.list_match_by(id: created_match.id, status: :pending)
+      assert [match] = Frobots.Api.list_match_by(id: created_match.id, status: :pending)
 
       assert created_match.id == match.id
       assert created_match.status == match.status

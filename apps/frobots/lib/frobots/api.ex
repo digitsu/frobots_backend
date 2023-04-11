@@ -77,11 +77,11 @@ defmodule Frobots.Api do
       case Keyword.get(params, :match_type, nil) do
         nil ->
           query
-          |> where([match], match.type == :real)
+          |> where([match, user], match.type == :real)
 
         match_type ->
           query
-          |> where([match], match.type == ^match_type)
+          |> where([match, user], match.type == ^match_type)
       end
 
     Events.list_paginated(query, page_config, preload, order_by)
@@ -132,7 +132,44 @@ defmodule Frobots.Api do
   def count_matches_by_status(status), do: Events.count_matches_by_status(status)
 
   def get_match_details_by_id(match_id),
-    do: Events.list_match_by([id: match_id], slots: [frobot: :user]) |> List.first()
+    do: Events.get_match_by([id: match_id], slots: [frobot: :user])
+
+  def list_match_by(params, preload \\ [], order_by \\ []) do
+    query = Match
+
+    query =
+      case Keyword.get(params, :match_status, nil) do
+        nil ->
+          query
+
+        match_status ->
+          query
+          |> where([match], match.status == ^match_status)
+      end
+
+    query =
+      case Keyword.get(params, :match_type, nil) do
+        nil ->
+          query
+          |> where([match], match.type == :real)
+
+        match_type ->
+          query
+          |> where([match], match.type == ^match_type)
+      end
+
+    query =
+      case Keyword.get(params, :match_time, nil) do
+        nil ->
+          query
+
+        match_time ->
+          query
+          |> where([match], match.match_time <= ^match_time)
+      end
+
+    Events.list_match_by(query, preload, order_by)
+  end
 
   def update_slot(match_id, slot_id, attrs) do
     case Events.get_slot_by(id: slot_id, match_id: match_id) do
@@ -180,7 +217,7 @@ defmodule Frobots.Api do
       })
 
     case _frobot_insert_multi(user, frobot_attrs) |> _run_multi() do
-      {:ok, res} -> res.frobot.id
+      {:ok, res} -> {:ok, res.frobot.id}
       {:error, msg} -> msg
     end
   end

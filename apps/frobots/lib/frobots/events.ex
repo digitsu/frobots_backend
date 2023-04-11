@@ -177,8 +177,8 @@ defmodule Frobots.Events do
     Match |> where(^params) |> preload(^preload) |> Repo.one()
   end
 
-  def list_match_by(params, preload \\ [], order_by \\ []) do
-    Match |> where(^params) |> preload(^preload) |> order_by(^order_by) |> Repo.all()
+  def list_match_by(query, preload \\ [], order_by \\ []) do
+    query |> preload(^preload) |> order_by(^order_by) |> Repo.all()
   end
 
   def count_matches_by_status(status) when is_atom(status) do
