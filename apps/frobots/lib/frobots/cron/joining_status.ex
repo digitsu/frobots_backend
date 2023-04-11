@@ -28,8 +28,10 @@ defmodule Frobots.Cron.JoiningStatus do
     Process.send_after(self(), :joining_status, cron_interval)
     status_reset_time = DateTime.utc_now() |> DateTime.add(status_reset_interval)
 
-    from(s in Slot, where: s.status == 'joining' and s.inserted_at <= ^status_reset_time)
-    |> Repo.update_all(set: [status: "open"])
+    query = from(s in Slot, where: s.status == :joining and s.inserted_at <= ^status_reset_time)
+
+    joining_status = query |> Repo.all()
+    if length(joining_status) > 0, do: query |> Repo.update_all(set: [status: :open])
 
     {:noreply, state}
   end
