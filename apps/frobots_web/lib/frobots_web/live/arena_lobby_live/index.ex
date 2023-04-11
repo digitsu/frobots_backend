@@ -25,8 +25,8 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
 
     attrs =
       case event do
-        "joining" -> %{status: "joining"}
-        "ready" -> %{status: "ready", frobot_id: params["frobot_id"]}
+        "joining" -> %{status: "joining", slot_type: params["slot_type"]}
+        "ready" -> %{status: "ready", slot_type: params["slot_type"], frobot_id: params["frobot_id"]}
         "closed" -> %{status: "closed", slot_type: nil}
       end
 
