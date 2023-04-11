@@ -6,6 +6,7 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
   @impl Phoenix.LiveView
   def mount(params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
+    {:ok, s3_base_url} = Api.get_s3_base_url()
 
     # get frobot id or name from the url param
     frobot_id_or_name =
@@ -42,7 +43,8 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
            |> assign(:battles, battles)
            |> assign(:page, page)
            |> assign(:page_size, page_size)
-           |> assign(:total_entries, total_entries)}
+           |> assign(:total_entries, total_entries)
+           |> assign(:s3_base_url, s3_base_url)}
 
         {:error, message} ->
           {:ok,
@@ -86,7 +88,8 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
        "battles" => socket.assigns.battles,
        "total_entries" => socket.assigns.total_entries,
        "page" => socket.assigns.page,
-       "page_size" => socket.assigns.page_size
+       "page_size" => socket.assigns.page_size,
+       "s3_base_url" => socket.assigns.s3_base_url
      })}
   end
 
@@ -143,7 +146,8 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
        "total_entries" => total_entries,
        "page" => page,
        "page_size" => page_size,
-       "match_status" => params["match_status"]
+       "match_status" => params["match_status"],
+       "s3_base_url" => socket.assigns.s3_base_url
      })}
   end
 

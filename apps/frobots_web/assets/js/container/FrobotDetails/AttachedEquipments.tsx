@@ -8,12 +8,13 @@ interface AttachedEquipmentsProps {
   equipments: any[]
   isOwnedFrobot: boolean
   frobotId: number
+  imageBaseUrl: string
 }
 
 const columnsPerPage = 4
 
 export default (props: AttachedEquipmentsProps) => {
-  const { equipments, isOwnedFrobot, frobotId } = props
+  const { equipments, isOwnedFrobot, frobotId, imageBaseUrl } = props
   const equipmentLength = equipments.length
   const [currentEquipment, setCurrentEquipment] = useState(equipments[0])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -158,7 +159,7 @@ export default (props: AttachedEquipmentsProps) => {
                       <Box sx={{ px: 4, pb: 2 }} width={250} height={250}>
                         <Box
                           component={'img'}
-                          src={equipment.image}
+                          src={`${imageBaseUrl}${equipment.image}`}
                           sx={{
                             borderRadius: '20px',
                             border:
