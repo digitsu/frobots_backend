@@ -1,14 +1,13 @@
-import { Box, Button, Card, Grid, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { createMatchActions } from '../../../redux/slices/createMatch'
+import { Box, Card, Typography } from '@mui/material'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import ShowOptionsStepper from './ShowOptionsStepper'
-export default () => {
+
+export default ({ imageBaseUrl }) => {
   const { slotOptions, currentActiveSlot, slots } = useSelector(
     (store) => store.createMatch
   )
-  const { setCurrentActiveSlot } = createMatchActions
-  const dispatch = useDispatch()
+
   const slotDetails = slots.find(({ id }) => id === currentActiveSlot?.id)
   return (
     <Box sx={{ height: '100%' }}>
@@ -41,6 +40,7 @@ export default () => {
             key={slotDetails.id}
             slotOptions={slotOptions}
             slotDetails={slotDetails}
+            imageBaseUrl={imageBaseUrl}
           />
         )}
       </Card>

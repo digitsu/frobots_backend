@@ -14,10 +14,11 @@ interface FrobotDetailsProps {
   page: number
   page_size: number
   updateBattleSearch: any
+  s3_base_url: string
 }
 
 export default (props: FrobotDetailsProps) => {
-  const { frobotDetails, currentUser, userFrobots } = props
+  const { frobotDetails, currentUser, userFrobots, s3_base_url } = props
   const isOwnedFrobot = frobotDetails.user_id === currentUser.id
   const frobotId = frobotDetails.frobot_id
 
@@ -30,6 +31,7 @@ export default (props: FrobotDetailsProps) => {
               userFrobots={userFrobots}
               currentFrobot={frobotDetails}
               currentUser={currentUser}
+              imageBaseUrl={s3_base_url}
             />
           )}
 
@@ -46,6 +48,7 @@ export default (props: FrobotDetailsProps) => {
               frobotDetails={frobotDetails}
               currentUser={currentUser}
               isOwnedFrobot={isOwnedFrobot}
+              imageBaseUrl={s3_base_url}
             />
 
             {frobotDetails.class === 'U' && (
@@ -57,6 +60,7 @@ export default (props: FrobotDetailsProps) => {
                 ]}
                 isOwnedFrobot={isOwnedFrobot}
                 frobotId={frobotId}
+                imageBaseUrl={s3_base_url}
               />
             )}
 

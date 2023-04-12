@@ -91,7 +91,9 @@ export default (props: any) => {
                   src={'/images/frobot_bg.png'}
                   sx={{
                     boxShadow:
-                      selectedMech === starterMech.id ? '0 0 0 2pt #00AB55' : 'none',
+                      selectedMech === starterMech.id
+                        ? '0 0 0 2pt #00AB55'
+                        : 'none',
                     borderRadius: '6px',
                   }}
                 ></Box>

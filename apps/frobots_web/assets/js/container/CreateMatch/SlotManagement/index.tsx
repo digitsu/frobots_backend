@@ -1,10 +1,10 @@
-import { Grid, Typography, Box, Button } from '@mui/material'
+import { Grid, Box, Button } from '@mui/material'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import SlotContainer from './SlotContainer'
 import SlotDetails from './SlotDetails'
 
-export default ({ createMatch }) => {
+export default ({ createMatch, imageBaseUrl }) => {
   const {
     matchTitle: title,
     matchDescription: description,
@@ -41,6 +41,7 @@ export default ({ createMatch }) => {
     })
   }
   const isAllSlotsClosed = storeSlots.every((slot) => slot?.type === 'closed')
+
   return (
     <Box my={2}>
       <Grid
@@ -53,7 +54,7 @@ export default ({ createMatch }) => {
           <SlotContainer />
         </Grid>
         <Grid item md={12} lg={6}>
-          <SlotDetails />
+          <SlotDetails imageBaseUrl={imageBaseUrl} />
         </Grid>
         <Grid item md={12} mb={4}>
           <Box

@@ -12,7 +12,7 @@ interface FrobotInterface {
 }
 
 export default (props: any) => {
-  const { frobotList, currentUser } = props
+  const { frobotList, currentUser, s3_base_url } = props
 
   return (
     <Box>
@@ -46,7 +46,7 @@ export default (props: any) => {
                         }}
                         component={'img'}
                         width={'100%'}
-                        src={frobot.avatar}
+                        src={`${s3_base_url}${frobot.avatar}`}
                       />
                     </Box>
                     <Box textAlign={'center'} my={2}>

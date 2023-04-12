@@ -7,10 +7,11 @@ interface frobotDetailsProps {
   frobotDetails: any
   currentUser: any
   isOwnedFrobot: boolean
+  imageBaseUrl: string
 }
 
 export default (props: frobotDetailsProps) => {
-  const { frobotDetails, isOwnedFrobot } = props
+  const { frobotDetails, isOwnedFrobot, imageBaseUrl } = props
 
   return (
     <Grid container mb={2} spacing={2}>
@@ -46,7 +47,7 @@ export default (props: frobotDetailsProps) => {
             }}
             component={'img'}
             width={'100%'}
-            src={frobotDetails.avatar}
+            src={`${imageBaseUrl}${frobotDetails.avatar}`}
           ></Box>
         </Card>
       </Grid>

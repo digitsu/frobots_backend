@@ -8,21 +8,33 @@ type OccupiedComponentProps = {
     name: string
     bio: string
   }
+  imageBaseUrl: string
 }
 
-export default ({ slotDetails, modifyHandler }: OccupiedComponentProps) => {
+export default ({
+  slotDetails,
+  modifyHandler,
+  imageBaseUrl,
+}: OccupiedComponentProps) => {
   return (
     <Box p={2} position={'relative'} height={'100%'}>
       <Box
         component={'img'}
-        src={slotDetails?.avatar}
-        width={'70%'}
+        src={`${imageBaseUrl}${slotDetails?.avatar}`}
+        width={'60%'}
         m={'auto'}
       />
       <Box mx={2} my={1}>
         <Typography variant="h6">{slotDetails?.name}</Typography>
-        <Box my={1} maxHeight={72} overflow={'scroll'}>
-          <Typography variant="caption">{slotDetails?.bio}</Typography>
+        <Box
+          my={1}
+          sx={{
+            maxHeight: '45px',
+            overflowY: 'scroll',
+            '&::-webkit-scrollbar': { display: 'none' },
+          }}
+        >
+          <Typography variant="caption">{slotDetails?.bio || ''}</Typography>
         </Box>
       </Box>
       <Box

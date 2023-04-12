@@ -25,11 +25,12 @@ interface SlideBarGridProps {
   userFrobots: UserFrobot[]
   currentFrobot: any
   currentUser: any
+  imageBaseUrl: string
 }
 
 export default (props: SlideBarGridProps) => {
   const [selectedImage, setSelectedImage] = useState(0)
-  const { userFrobots, currentFrobot, currentUser } = props
+  const { userFrobots, currentFrobot, currentUser, imageBaseUrl } = props
 
   useEffect(() => {
     setSelectedImage(currentFrobot.frobot_id)
@@ -85,7 +86,7 @@ export default (props: SlideBarGridProps) => {
                 }}
                 component={'img'}
                 width={'100%'}
-                src={frobot.avatar}
+                src={`${imageBaseUrl}${frobot.avatar}`}
               />
             </Card>
           </Grid>

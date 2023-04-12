@@ -8,7 +8,9 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
     current_user = Accounts.get_user!(id)
-    {:ok, socket |> assign(:current_user, current_user)}
+    {:ok, s3_base_url} = Api.get_s3_base_url()
+
+    {:ok, socket |> assign(:current_user, current_user) |> assign(:s3_base_url, s3_base_url)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -52,6 +54,7 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
 
     {:noreply,
      push_event(socket, "react.return_create_match_details", %{
+       "s3_base_url" => socket.assigns.s3_base_url,
        "templates" => templateFrobots,
        "userFrobots" => userFrobots
      })}
