@@ -23,7 +23,7 @@ defmodule Frobots.Repo.Migrations.SeedImages do
   end
 
   defp get_name(struct) do
-    ~s"images/equipment/#{Atom.to_string(Map.get(@class_name_map, struct.class))}-#{String.downcase(Atom.to_string(struct.type))}.png"
+    ~s"images/equipment/#{Atom.to_string(Map.get(@class_name_map, struct.class))}_#{String.downcase(Atom.to_string(struct.type))}.png"
   end
 
   defp save_me(struct) do
