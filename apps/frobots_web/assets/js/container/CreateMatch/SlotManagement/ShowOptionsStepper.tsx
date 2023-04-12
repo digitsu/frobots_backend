@@ -1,18 +1,15 @@
 import React, { useState } from 'react'
-import { Box, Button, Grid, Typography } from '@mui/material'
-import { useSelector } from 'react-redux'
 import SlotStepper from './SlotStepper'
 import UnoccupiedSlot from '../../../components/CreateMatch/UnoccupiedSlot'
 import OccupiedSlot from '../../../components/CreateMatch/OccupiedSlot'
 
-export default ({ slotOptions, slotDetails }) => {
-  const [currentStep, setCurrentStep] = useState(0)
+export default ({ slotOptions, slotDetails, imageBaseUrl }) => {
   const [showOptions, setShowOptions] = useState(false)
-  const { userFrobots } = useSelector((store) => store.createMatch)
+
   return (
     <>
       {showOptions ? (
-        <SlotStepper slotDetails={slotDetails} />
+        <SlotStepper slotDetails={slotDetails} imageBaseUrl={imageBaseUrl} />
       ) : (
         <>
           {slotDetails?.slotDetails === null ||
@@ -26,6 +23,7 @@ export default ({ slotOptions, slotDetails }) => {
             <OccupiedSlot
               slotDetails={slotDetails?.slotDetails}
               modifyHandler={() => setShowOptions(true)}
+              imageBaseUrl={imageBaseUrl}
             />
           )}
         </>
