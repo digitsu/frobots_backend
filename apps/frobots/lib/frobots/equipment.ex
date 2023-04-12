@@ -242,28 +242,79 @@ defmodule Frobots.Equipment do
   @doc """
   should nil out the frobot_id on the equipment if it is currently set. It should also set anything on the frobot that may rely on this part being equipped, for instance, if there is any field indicating that it is 'ready' or 'playable' in a match. Dequip(xframe) will automatically dequip all its equipment as well.
   """
-  def dequip_part(_equipment) do
+
+  def dequip_part(equipment_id, class) do
     # remove the frobot association from a part
+    equipment = get_equipment(class, equipment_id)
+    update_equipment(class, equipment, [frobot_id: :nil])
   end
 
   @doc """
   dequip everything from the frobot
   """
-  def dequip_all(_frobot) do
+  def dequip_all(%Frobot{id: frobot_id}) do
+    cannons =
+      from(c in CannonInst,
+        where: c.frobot_id == ^frobot_id
+      )
+    cannons
+    |> Repo.update_all(set: [frobot_id: :nil])
+
+    scanners =
+      from(s in ScannerInst,
+        where: s.frobot_id == ^frobot_id
+      )
+      scanners
+    |> Repo.update_all(set: [frobot_id: :nil])
+
+    xframes =
+      from(x in XframeInst,
+        where: x.frobot_id == ^frobot_id
+      )
+      xframes
+    |> Repo.update_all(set: [frobot_id: :nil])
+
+    missiles =
+      from(m in MissileInst,
+        where: m.frobot_id == ^frobot_id
+      )
+      missiles
+    |> Repo.update_all(set: [frobot_id: :nil])
+
   end
 
   @doc """
   dequip everything except any xframe
   """
-  def dequip_parts(_frobot) do
+  def dequip_parts(%Frobot{id: frobot_id}) do
+    cannons =
+      from(c in CannonInst,
+        where: c.frobot_id == ^frobot_id
+      )
+    cannons
+    |> Repo.update_all(set: [frobot_id: :nil])
+
+    scanners =
+      from(s in ScannerInst,
+        where: s.frobot_id == ^frobot_id
+      )
+      scanners
+    |> Repo.update_all(set: [frobot_id: :nil])
+
+    missiles =
+      from(m in MissileInst,
+        where: m.frobot_id == ^frobot_id
+      )
+      missiles
+    |> Repo.update_all(set: [frobot_id: :nil])
   end
 
   @doc """
   dequip an xframe
   """
-  def dequip_xframe(_frobot) do
+  def dequip_xframe(frobot) do
     # when you dequip an xframe, it Must dequip everything
-    # dequip_all(_frobot)
+    dequip_all(frobot)
   end
 
   @doc """

@@ -47,4 +47,9 @@ defmodule FrobotsWeb.GarageFrobotEquipmentsLive.Index do
   defp apply_action(socket, :index, _params) do
     socket
   end
+
+
+  @impl Phoenix.LiveView
+  def handle_event("react.fetch_frobot_equipments", _params, socket) do
+  end
 end
