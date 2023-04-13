@@ -188,9 +188,8 @@ defmodule Frobots.Api do
   end
 
   def create_frobot(_user, name, brain_code, _extra_params)
-      when name == "" or
-             brain_code == "" do
-    IO.inspect("Name and Braincode required to create frobot")
+      when name == "" or brain_code == "" do
+    # IO.inspect("Name and Braincode required to create frobot")
     {:error, "Frobot name and braincode are required."}
   end
 

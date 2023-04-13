@@ -35,8 +35,21 @@ config :frobots, Frobots.Mailer, adapter: Swoosh.Adapters.Local
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, Swoosh.ApiClient.Hackney
 
-s3_store_secret_key = System.get_env("S3_SECRET_KEY") || nil
-s3_store_access_key = System.get_env("S3_ACCESS_KEY") || nil
-s3_store_url = System.get_env("S3_URL") || nil
+s3_store_secret_key = "ITSBzZHA7GafFBa2s2XHjgCgCd94BEXKBYY8TPq9"
+s3_store_access_key = "RO60YNHMCAU9G7VQ0AOE"
 
 # config :frobots_web, :ghost_blog_url, "http://localhost/blog"
+s3_store_url = System.get_env("S3_URL") || "ap-south-1.linodeobjects.com"
+s3_store_bucket = System.get_env("S3_BUCKET") || "frobots-assets"
+
+config :ex_aws,
+  debug_requests: true,
+  access_key_id: [s3_store_access_key, :instance_role],
+  secret_access_key: [s3_store_access_key, :instance_role],
+  region: "US"
+
+config :ex_aws, :s3,
+  scheme: "https://",
+  host: s3_store_url,
+  region: "US",
+  bucket: s3_store_bucket

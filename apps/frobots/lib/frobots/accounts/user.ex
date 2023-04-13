@@ -46,7 +46,6 @@ defmodule Frobots.Accounts.User do
   # Accounts.register_user(attrs) fails because migrated user is ignored as it not
   # in cast list
   def registration_changeset(user, attrs, opts \\ []) do
-
     user
     |> cast(attrs, [
       :email,
@@ -57,10 +56,23 @@ defmodule Frobots.Accounts.User do
       :sparks,
       :avatar
     ])
-    |> Map.put_new(:avatar, Frobots.Avatars.get_random_avatar())
     |> unique_constraint(:name)
+    |> add_avatar_if_missing()
     |> validate_email()
     |> validate_password(opts)
+  end
+
+  defp add_avatar_if_missing(%Ecto.Changeset{changes: %{avatar: _}} = changeset) do
+    changeset
+  end
+
+  defp add_avatar_if_missing(%Ecto.Changeset{data: _} = changeset) do
+    changeset
+    |> put_change(:avatar, Frobots.Avatars.get_random_avatar())
+  end
+
+  defp add_avatar_if_missing(changeset) do
+    changeset
   end
 
   def profile_changeset(user, attrs) do

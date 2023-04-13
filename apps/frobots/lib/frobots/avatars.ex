@@ -47,8 +47,9 @@ defmodule Frobots.Avatars do
   end
 
   def list_user_avatars() do
-    case ExAws.S3.list_objects_v2(Api.get_s3_bucket_name(), prefix: "images/avatars") |> ExAws.request do
-      {:error, _ } -> []
+    case ExAws.S3.list_objects_v2(Api.get_s3_bucket_name(), prefix: "images/avatars")
+         |> ExAws.request() do
+      {:error, _} -> ["https://via.placeholder.com/50.png"]
       {:ok, ret} -> Enum.map(Map.get(ret.body, :contents), &Map.get(&1, :key))
     end
   end
@@ -56,5 +57,4 @@ defmodule Frobots.Avatars do
   def get_random_avatar() do
     Enum.random(list_user_avatars())
   end
-
 end
