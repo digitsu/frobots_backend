@@ -26,9 +26,9 @@ defmodule Frobots.Equipment do
     )
   end
 
-  defp _is_ordinance_class?(equipment_class) do
+  defp _is_ordnance_class?(equipment_class) do
     String.downcase(equipment_class) in Enum.map(
-      Frobots.ordinance_classes(),
+      Frobots.ordnance_classes(),
       &Atom.to_string(&1)
     )
   end
@@ -220,7 +220,7 @@ defmodule Frobots.Equipment do
   def dequip_part(equipment_id, class) do
     # remove the frobot association from a part
     equipment = get_equipment(class, equipment_id)
-    update_equipment(class, equipment, [frobot_id: :nil])
+    update_equipment(class, equipment, frobot_id: nil)
   end
 
   @doc """
@@ -231,30 +231,33 @@ defmodule Frobots.Equipment do
       from(c in CannonInst,
         where: c.frobot_id == ^frobot_id
       )
+
     cannons
-    |> Repo.update_all(set: [frobot_id: :nil])
+    |> Repo.update_all(set: [frobot_id: nil])
 
     scanners =
       from(s in ScannerInst,
         where: s.frobot_id == ^frobot_id
       )
-      scanners
-    |> Repo.update_all(set: [frobot_id: :nil])
+
+    scanners
+    |> Repo.update_all(set: [frobot_id: nil])
 
     xframes =
       from(x in XframeInst,
         where: x.frobot_id == ^frobot_id
       )
-      xframes
-    |> Repo.update_all(set: [frobot_id: :nil])
+
+    xframes
+    |> Repo.update_all(set: [frobot_id: nil])
 
     missiles =
       from(m in MissileInst,
         where: m.frobot_id == ^frobot_id
       )
-      missiles
-    |> Repo.update_all(set: [frobot_id: :nil])
 
+    missiles
+    |> Repo.update_all(set: [frobot_id: nil])
   end
 
   @doc """
@@ -265,22 +268,25 @@ defmodule Frobots.Equipment do
       from(c in CannonInst,
         where: c.frobot_id == ^frobot_id
       )
+
     cannons
-    |> Repo.update_all(set: [frobot_id: :nil])
+    |> Repo.update_all(set: [frobot_id: nil])
 
     scanners =
       from(s in ScannerInst,
         where: s.frobot_id == ^frobot_id
       )
-      scanners
-    |> Repo.update_all(set: [frobot_id: :nil])
+
+    scanners
+    |> Repo.update_all(set: [frobot_id: nil])
 
     missiles =
       from(m in MissileInst,
         where: m.frobot_id == ^frobot_id
       )
-      missiles
-    |> Repo.update_all(set: [frobot_id: :nil])
+
+    missiles
+    |> Repo.update_all(set: [frobot_id: nil])
   end
 
   @doc """
@@ -349,6 +355,7 @@ defmodule Frobots.Equipment do
       from(x in XframeInst,
         where: x.frobot_id == ^frobot_id
       )
+
     xframes
     |> Repo.one()
   end
@@ -400,7 +407,7 @@ defmodule Frobots.Equipment do
 
       equipment = get_equipment(equipment_class, equipment_instance_id) |> Repo.preload(:frobot)
 
-      if _is_ordinance_class?(equipment_class) do
+      if _is_ordnance_class?(equipment_class) do
         build_weapon_equipment_part_changeset(
           weapon_count,
           max_weapon_endpoints,
