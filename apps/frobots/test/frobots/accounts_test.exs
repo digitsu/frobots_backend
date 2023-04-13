@@ -2,7 +2,7 @@ defmodule Frobots.AccountsTest do
   use Frobots.DataCase, async: true
 
   alias Frobots.Accounts
-  alias Frobots.Mailer
+  #  alias Frobots.Mailer
 
   describe "users" do
     alias Frobots.Accounts.User
@@ -21,6 +21,8 @@ defmodule Frobots.AccountsTest do
       assert user.name == "User"
       assert user.email == "eva@email.com"
       assert [%User{id: ^id}] = Accounts.list_users()
+      # assert [%User{id: ^id, avatar: avatar}] = Accounts.list_users()
+      # assert !is_nil(avatar) #make sure we have a default avatar
     end
 
     test "with invalid data does not insert user" do
@@ -84,7 +86,7 @@ defmodule Frobots.AccountsTest do
         password: "secret1234"
       }
 
-      assert {:ok, %User{} = user} =
+      assert {:ok, %User{} = _user} =
                Accounts.update_user_password(user, dummy_password(), update_attrs)
     end
 

@@ -1,8 +1,8 @@
 defmodule Frobots.BattleLogsTest do
   use Frobots.DataCase, async: true
   alias Frobots.Events
-  alias Frobots.Assets
-  alias Frobots.Agents.WinnersBucket
+  #  alias Frobots.Assets
+  #  alias Frobots.Agents.WinnersBucket
 
   def create_battelog_fixtures(match_template, params, count) do
     Enum.to_list(1..count)

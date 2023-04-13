@@ -57,8 +57,22 @@ defmodule Frobots.Accounts.User do
       :avatar
     ])
     |> unique_constraint(:name)
+    |> add_avatar_if_missing()
     |> validate_email()
     |> validate_password(opts)
+  end
+
+  defp add_avatar_if_missing(%Ecto.Changeset{changes: %{avatar: _}} = changeset) do
+    changeset
+  end
+
+  defp add_avatar_if_missing(%Ecto.Changeset{data: _} = changeset) do
+    changeset
+    |> put_change(:avatar, Frobots.Avatars.get_random_avatar())
+  end
+
+  defp add_avatar_if_missing(changeset) do
+    changeset
   end
 
   def profile_changeset(user, attrs) do

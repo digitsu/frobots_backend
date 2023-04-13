@@ -6,8 +6,8 @@ defmodule FrobotsWeb.AdminLive.Index do
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
-    {:ok, bucket} = Api.get_s3_bucket_name()
-    {:ok, base_url} = Api.get_s3_base_url()
+    bucket = Api.get_s3_bucket_name()
+    base_url = Api.get_s3_base_url()
 
     files = get_files(bucket, base_url)
 
@@ -57,8 +57,8 @@ defmodule FrobotsWeb.AdminLive.Index do
 
   @impl Phoenix.LiveView
   def handle_event("save", _params, socket) do
-    {:ok, s3_bucket} = Api.get_s3_bucket_name()
-    {:ok, base_url} = Api.get_s3_base_url()
+    s3_bucket = Api.get_s3_bucket_name()
+    base_url = Api.get_s3_base_url()
 
     # uploaded_files =
     consume_uploaded_entries(socket, :avatar, fn %{path: path}, entry ->

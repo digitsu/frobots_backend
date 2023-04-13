@@ -188,9 +188,8 @@ defmodule Frobots.Api do
   end
 
   def create_frobot(_user, name, brain_code, _extra_params)
-      when name == "" or
-             brain_code == "" do
-    IO.inspect("Name and Braincode required to create frobot")
+      when name == "" or brain_code == "" do
+    # IO.inspect("Name and Braincode required to create frobot")
     {:error, "Frobot name and braincode are required."}
   end
 
@@ -461,12 +460,11 @@ defmodule Frobots.Api do
     s3_base_url = Application.get_env(:ex_aws, :s3)[:host]
     s3_bucket = Application.get_env(:ex_aws, :s3)[:bucket]
 
-    {:ok, "https://#{s3_base_url}/#{s3_bucket}/"}
+    "https://#{s3_base_url}/#{s3_bucket}/"
   end
 
   def get_s3_bucket_name() do
-    s3_bucket = Application.get_env(:ex_aws, :s3)[:bucket]
-    {:ok, s3_bucket}
+    Application.get_env(:ex_aws, :s3)[:bucket]
   end
 
   def _preload_equipment_instances(frobot) do
