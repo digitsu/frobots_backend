@@ -145,8 +145,9 @@ defmodule Frobots.Equipment do
   # this is how the frontend knows the ids for parts
   def list_frobot_equipment(frobot_id) do
     equipment_classes = Frobots.equipment_classes()
+
     equipment_classes
-    |> Enum.map(fn(equipment_class) ->
+    |> Enum.map(fn equipment_class ->
       module = _get_inst_module(to_string(equipment_class))
 
       from(eqp in module, where: eqp.frobot_id == ^frobot_id)
@@ -157,8 +158,9 @@ defmodule Frobots.Equipment do
   # Fetch all the equipments owned by User
   def list_user_equipment(user_id) do
     equipment_classes = Frobots.equipment_classes()
+
     equipment_classes
-    |> Enum.map(fn(equipment_class) ->
+    |> Enum.map(fn equipment_class ->
       module = _get_inst_module(to_string(equipment_class))
 
       from(eqp in module, where: eqp.user_id == ^user_id)

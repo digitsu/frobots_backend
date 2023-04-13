@@ -64,7 +64,7 @@ defmodule Frobots do
   def part_insts() do
     @part_insts
   end
-  
+
   def ordnance_classes() do
     @ordnance_classes
   end

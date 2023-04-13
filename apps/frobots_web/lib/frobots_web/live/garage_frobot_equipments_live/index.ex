@@ -28,14 +28,13 @@ defmodule FrobotsWeb.GarageFrobotEquipmentsLive.Index do
 
     {:ok,
      socket
-      |> assign(:user, current_user)
-      |> assign(:user_frobots, user_frobots)
-      |> assign(:current_frobot, current_frobot)
-      |> assign(:current_xframe, current_xframe)
-      |> assign(:attached_equipments, attached_equipments)
-      # |> assign(:equipment_inventory, equipment_inventory)
-      |> assign(:user_equipment_inventory, user_equipment_inventory)
-    }
+     |> assign(:user, current_user)
+     |> assign(:user_frobots, user_frobots)
+     |> assign(:current_frobot, current_frobot)
+     |> assign(:current_xframe, current_xframe)
+     |> assign(:attached_equipments, attached_equipments)
+     # |> assign(:equipment_inventory, equipment_inventory)
+     |> assign(:user_equipment_inventory, user_equipment_inventory)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -47,7 +46,6 @@ defmodule FrobotsWeb.GarageFrobotEquipmentsLive.Index do
   defp apply_action(socket, :index, _params) do
     socket
   end
-
 
   @impl Phoenix.LiveView
   def handle_event("react.fetch_frobot_equipments", _params, socket) do
