@@ -8,7 +8,8 @@ defmodule Frobots.Assets.Cannon do
              :type,
              :reload_time,
              :rate_of_fire,
-             :magazine_size
+             :magazine_size,
+             :image
            ]}
 
   schema "cannons" do
@@ -16,7 +17,9 @@ defmodule Frobots.Assets.Cannon do
     field :reload_time, :integer
     field :rate_of_fire, :integer
     field :magazine_size, :integer
+    field :image, :string, default: "https://via.placeholder.com/50.png"
     has_many :cannon_inst, Frobots.Assets.CannonInst
+    field :class, Ecto.Enum, values: ~w(cannon)a
     timestamps()
   end
 
@@ -30,7 +33,7 @@ defmodule Frobots.Assets.Cannon do
   @doc false
   def changeset(cannon, attrs) do
     cannon
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:image])
     |> validate_required(@fields)
     |> unique_constraint([:type])
   end

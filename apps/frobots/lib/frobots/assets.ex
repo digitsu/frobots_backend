@@ -8,19 +8,26 @@ defmodule Frobots.Assets do
   alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
   alias Frobots.Accounts
 
-  @prototype_class "Proto"
-  @target_class "Target"
+  @prototype_class "P"
+  @target_class "T"
   @user_class_u "U"
 
+  @spec user_classes :: [<<_::8>>, ...]
   def user_classes() do
     [@user_class_u]
   end
 
-  @spec prototype_class :: <<_::40>>
+  @spec default_user_class :: <<_::8>>
+  def default_user_class() do
+    @user_class_u
+  end
+
+  @spec prototype_class :: <<_::8>>
   def prototype_class() do
     @prototype_class
   end
 
+  @spec target_class :: <<_::8>>
   def target_class() do
     @target_class
   end
@@ -29,6 +36,12 @@ defmodule Frobots.Assets do
     Frobot
     |> frobots_user_query(user)
     |> Repo.all()
+  end
+
+  def user_frobots_count(%Accounts.User{} = user) do
+    Frobot
+    |> frobots_user_query(user)
+    |> Repo.aggregate(:count)
   end
 
   def get_user_frobot!(%Accounts.User{} = user, id) do
@@ -92,7 +105,6 @@ defmodule Frobots.Assets do
       nil
 
   """
-
   def get_frobot(name) when is_bitstring(name) do
     Frobot
     |> frobots_name_query(name)
@@ -210,12 +222,12 @@ defmodule Frobots.Assets do
       # a contrived example, seeing as the schema has type a enum, which means you have to add it to the schema before you can call this fn on a new type. BUT at least we show all the needed fields for validation to pass...
       # iex> alias Frobots.Assets.Xframe
       # iex> with {:ok, %Xframe{} = xf } <- Frobots.Assets.create_xframe(
-      # ...> %{type: :Tank_Mk1,
+      # ...> %{type: :Chassis_Mk1,
       # ...>   weapon_hardpoints: 1,
       # ...>   max_speed_ms: 10,
       # ...>   turn_speed: 10,
       # ...>   sensor_hardpoints: 1,
-      # ...>   movement_type: "tracks",
+      # ...>   movement_type: "bipedal",
       # ...>   max_health: 999,
       # ...>   max_throttle: 100,
       # ...>   accel_speed_mss: 4,
@@ -246,7 +258,7 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
-  def get_xframes() do
+  def list_xframes() do
     Repo.all(Xframe)
   end
 
@@ -258,6 +270,18 @@ defmodule Frobots.Assets do
       )
 
     Repo.all(q)
+  end
+
+  def get_available_user_frobots(user_id) do
+    Repo.all(
+      from(f in Frobot,
+        where:
+          f.user_id == ^user_id and
+            fragment(
+              "id NOT IN (select frobot_id from slots as s left join matches as m on s.match_id = m.id where (m.status = 'pending' or m.status = 'running') and s.status = 'ready')"
+            )
+      )
+    )
   end
 
   @doc ~S"""
@@ -295,7 +319,7 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
-  def get_cannons() do
+  def list_cannons() do
     Repo.all(Cannon)
   end
 
@@ -334,7 +358,7 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
-  def get_missiles() do
+  def list_missiles() do
     Repo.all(Missile)
   end
 
@@ -373,7 +397,7 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
-  def get_scanners() do
+  def list_scanners() do
     Repo.all(Scanner)
   end
 end

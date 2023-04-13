@@ -1,10 +1,10 @@
 <section>
   <div class="flex justify-between items-center my-4 w-90 m-auto">
     <div class="font-bold text-lg my-4">
-        <h6>Welcome DJC</h6>
+      <h6>Welcome <%= @username %></h6>
     </div>
     <div>
-      <p class="font-bold text-xs text-gray-400">QDOS 40000</p>
+      <p class="font-bold text-xs text-gray-400">QDOS <%= @current_user_ranking_details[:points] || 0%></p>
     </div>
   </div>
   <div id="dashboard-content" phx-hook="DashboardContentHook" phx-update="ignore"></div>

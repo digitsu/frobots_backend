@@ -1,6 +1,6 @@
 # Equipment Tables
 
-| xframe | Tank Mk1 | Tank Mk2 | Tank Mk3 |
+| xframe | Chassis Mk1 | Chassis Mk2 | Chassis Mk3 |
 | --- | --- | --- | --- |
 | weapon_hardpoints | 1 | 2 | 1 |
 | sensor_hardpoints | 1 | 1 | 2 |

@@ -1,7 +1,29 @@
 # Frobots API Backend
 
 **This is the umbrella project that includes the frobots_web API server and the FUBARs simulator**
+## Running via IEX (for local testing)
+Make sure you have asdf installed, follow the instructions on [frobots_client](https://gitlab.com/frobots/client/frobots_client)
+and ensure that you have the versions installed as per the .tool-versions file in the dir.
 
+Get the dependences
+
+```shell
+% mix deps.get
+```
+Setup the local postgres db (if you haven't already)
+```shell
+% cd apps/frobots
+% mix ecto.setup
+% cd ../../
+
+```
+Run the backend
+```shell
+% iex -S mix phx.server
+```
+That's it! Now go to another shell and run the frobots_client
+
+## Running in via docker
 Get all the deps and test to make sure everything work
 In root dir
 ```shell

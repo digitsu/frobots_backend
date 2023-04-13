@@ -19,7 +19,8 @@ defmodule Frobots.AssetsTest do
     @scanner %{
       type: "Mk1",
       max_range: 700,
-      resolution: 10
+      resolution: 10,
+      image_path: "https://via.placeholder.com/50.png"
     }
 
     @missile %{
@@ -28,26 +29,29 @@ defmodule Frobots.AssetsTest do
       damage_near: [20, 5],
       damage_far: [40, 3],
       speed: 400,
-      range: 900
+      range: 900,
+      image_path: "https://via.placeholder.com/50.png"
     }
 
     @cannon %{
       type: "Mk1",
       reload_time: 5,
       rate_of_fire: 1,
-      magazine_size: 2
+      magazine_size: 2,
+      image_path: "https://via.placeholder.com/50.png"
     }
 
     @xframe %{
-      type: "Tank_Mk1",
+      type: "Chassis_Mk1",
       max_speed_ms: 30,
       turn_speed: 50,
       sensor_hardpoints: 1,
       weapon_hardpoints: 1,
-      movement_type: "tracks",
+      movement_type: "bipedal",
       max_health: 100,
       max_throttle: 100,
-      accel_speed_mss: 5
+      accel_speed_mss: 5,
+      image_path: "https://via.placeholder.com/50.png"
     }
 
     test "list_frobots/0 returns all frobots" do
@@ -122,41 +126,41 @@ defmodule Frobots.AssetsTest do
       assert %Frobot{name: ^name} = Assets.get_frobot(name)
     end
 
-    test "get_missiles fetches missiles rig data" do
+    test "list_missiles fetches missiles rig data" do
       {:ok, _missile} = Assets.create_missile(@missile)
-      missiles = Assets.get_missiles()
+      missiles = Assets.list_missiles()
       assert Enum.count(missiles) > 0
 
       item = Enum.at(missiles, 0)
       assert item.type == :Mk1
     end
 
-    test "get_cannons fetches cannons rig data" do
+    test "list_cannons fetches cannons rig data" do
       {:ok, _cannon} = Assets.create_cannon(@cannon)
-      cannons = Assets.get_cannons()
+      cannons = Assets.list_cannons()
       assert Enum.count(cannons) > 0
 
       item = Enum.at(cannons, 0)
       assert item.type == :Mk1
     end
 
-    test "get_scanners fetches scanners rig data" do
+    test "list_scanners fetches scanners rig data" do
       {:ok, _scanner} = Assets.create_scanner(@scanner)
-      scanners = Assets.get_scanners()
+      scanners = Assets.list_scanners()
       assert Enum.count(scanners) > 0
 
       item = Enum.at(scanners, 0)
       assert item.type == :Mk1
     end
 
-    test "get_xframes fetches xframes rig data" do
+    test "list_xframes fetches xframes rig data" do
       {:ok, _xframe} = Assets.create_xframe(@xframe)
-      xframes = Assets.get_xframes()
+      xframes = Assets.list_xframes()
       assert Enum.count(xframes) > 0
 
       item = Enum.at(xframes, 0)
-      assert item.type == :Tank_Mk1
-      assert item.movement_type == :tracks
+      assert item.type == :Chassis_Mk1
+      assert item.movement_type == :bipedal
     end
   end
 end

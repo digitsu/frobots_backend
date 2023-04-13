@@ -1,37 +1,120 @@
 import React from 'react'
-import { Box } from '@mui/material'
-import Button from '../../components/generic/Button/Button'
-import { FrobotListContainer } from './FrobotListContainer'
+import { Box, Grid, Typography, Card } from '@mui/material'
+
+interface FrobotInterface {
+  id: number
+  name: string
+  avatar: string
+  blockly_code: string
+  brain_code: string
+  class: string
+  xp: number
+}
 
 export default (props: any) => {
-  const { frobotList, ...others } = props
+  const { frobotList, currentUser, s3_base_url } = props
 
   return (
     <Box>
-      <Box
-        display={'flex'}
-        alignItems={'center'}
-        justifyContent={'flex-end'}
-        mt={4}
-      >
-        <Button
-          sx={{
-            textTransform: 'capitalize',
-            backgroundColor: 'transparent',
-            color: '#00AB55',
-            borderColor: '#00AB55',
-            '&:hover': {
-              borderColor: '#13D273',
-            },
-          }}
-          variant="outlined"
-        >
-          Buy Sparks
-        </Button>
-      </Box>
       <Box mt={4}>
-        {' '}
-        <FrobotListContainer frobotList={frobotList} />
+        <Grid container alignItems="left" justifyContent="left" spacing={5}>
+          {frobotList.map((frobot: FrobotInterface) => (
+            <Grid item md={3} key={frobot.id}>
+              <Card
+                sx={{
+                  backgroundColor: '#212B36',
+                  color: '#fff',
+                  borderRadius: 4,
+                }}
+              >
+                <Box>
+                  <a href={`/garage/frobot?id=${frobot.id}`}>
+                    <Box position={'relative'}>
+                      <Box
+                        component={'img'}
+                        src={'/images/frobot_bg.png'}
+                        width="100%"
+                        height="100%"
+                      ></Box>
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          p: 5,
+                          transform: 'translate(-50%, -50%)',
+                        }}
+                        component={'img'}
+                        width={'100%'}
+                        src={`${s3_base_url}${frobot.avatar}`}
+                      />
+                    </Box>
+                    <Box textAlign={'center'} my={2}>
+                      <Typography fontWeight={'bold'} variant="subtitle1">
+                        {frobot.name}
+                      </Typography>
+                      <Typography
+                        display={'block'}
+                        lineHeight={1}
+                        variant="caption"
+                      >
+                        {frobot.xp} XP
+                      </Typography>
+                    </Box>
+                  </a>
+                </Box>
+              </Card>
+            </Grid>
+          ))}
+
+          {currentUser.sparks && (
+            <Grid item md={3}>
+              <Card
+                sx={{
+                  backgroundColor: '#212B36',
+                  color: '#fff',
+                  borderRadius: 4,
+                }}
+              >
+                <Box>
+                  <a href={'/garage/create'}>
+                    <Box position={'relative'}>
+                      <Box
+                        width="100%"
+                        height="100%"
+                        sx={{ filter: 'grayscale(1)' }}
+                        component={'img'}
+                        src={'/images/createfrobot_bg.png'}
+                      ></Box>
+                      <Typography
+                        variant="h6"
+                        display={'flex'}
+                        justifyContent={'center'}
+                        width={'100%'}
+                        position={'absolute'}
+                        top={'50%'}
+                      >
+                        + Create Frobot
+                      </Typography>
+                    </Box>
+                  </a>
+                  <Box textAlign={'center'} my={2}>
+                    <Typography fontWeight={'bold'} variant="subtitle1">
+                      Use spark to create frobot
+                    </Typography>
+                    <Typography
+                      display={'block'}
+                      lineHeight={1}
+                      variant="caption"
+                    >
+                      {currentUser.sparks} Sparks Left
+                    </Typography>
+                  </Box>
+                </Box>
+              </Card>
+            </Grid>
+          )}
+        </Grid>
       </Box>
     </Box>
   )

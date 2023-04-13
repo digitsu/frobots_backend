@@ -7,7 +7,8 @@ defmodule Frobots.Assets.Scanner do
            only: [
              :type,
              :max_range,
-             :resolution
+             :resolution,
+             :image
            ]}
 
   schema "scanners" do
@@ -15,6 +16,8 @@ defmodule Frobots.Assets.Scanner do
     field :max_range, :integer
     field :resolution, :integer
     has_many :scanner_inst, Frobots.Assets.ScannerInst
+    field :class, Ecto.Enum, values: ~w(scanner)a
+    field :image, :string, default: "https://via.placeholder.com/50.png"
     timestamps()
   end
 
@@ -27,7 +30,7 @@ defmodule Frobots.Assets.Scanner do
   @doc false
   def changeset(scanner, attrs) do
     scanner
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:image])
     |> validate_required(@fields)
     |> unique_constraint([:type])
   end

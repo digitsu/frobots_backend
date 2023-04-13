@@ -8,7 +8,7 @@ defmodule Frobots.Events do
   alias Frobots.Repo
 
   alias Frobots.Events.Battlelog
-  alias Frobots.Events.Match
+  alias Frobots.Events.{Match, Slot}
   alias Frobots.{Assets, Accounts}
   alias Frobots.Agents.WinnersBucket
 
@@ -20,13 +20,25 @@ defmodule Frobots.Events do
   end
 
   defmodule FrobotLeaderboardStats do
+    @derive {Jason.Encoder,
+             only: [
+               :frobot,
+               :username,
+               :points,
+               :xp,
+               :attempts,
+               :matches_won,
+               :matches_participated,
+               :avatar
+             ]}
     defstruct frobot: "",
               username: "",
               points: 0,
               xp: 0,
               attempts: 0,
               matches_won: 0,
-              matches_participated: 0
+              matches_participated: 0,
+              avatar: ""
   end
 
   defp _create_battlelog(match, attrs) do
@@ -154,32 +166,42 @@ defmodule Frobots.Events do
   end
 
   def change_match(%Match{} = match, attrs \\ %{}) do
-    Repo.preload(match, :battlelog)
-    |> Match.changeset(attrs)
+    match
+    |> Repo.preload([:slots, :battlelog])
+    |> Match.update_changeset(attrs)
     |> Repo.update()
+    |> broadcast_change([:match, :updated])
   end
 
-  def get_match_by(params) do
-    Repo.get_by(Match, params)
+  def get_match_by(params, preload \\ []) do
+    Match |> where(^params) |> preload(^preload) |> Repo.one()
   end
 
-  def list_match_by(params, preload \\ [], order_by \\ []) do
-    Match |> preload(^preload) |> order_by(^order_by) |> Repo.all(params)
+  def list_match_by(query, preload \\ [], order_by \\ []) do
+    query |> preload(^preload) |> order_by(^order_by) |> Repo.all()
   end
 
-  def list_paginated_matches(query, page_config, preload, order_by) do
-    query
-    |> preload(^preload)
-    |> order_by(^order_by)
-    |> Repo.paginate(page_config)
+  def count_matches_by_status(status) when is_atom(status) do
+    count_matches_by_status(Atom.to_string(status))
   end
 
   def count_matches_by_status(status) do
     Repo.one(
       from m in Match,
-        where: m.status == ^status,
+        where: m.status == ^status and m.type == :real,
         select: count(m.id)
     )
+  end
+
+  def update_slot(%Slot{} = slot, attrs \\ %{}) do
+    slot
+    |> Slot.update_changeset(attrs)
+    |> Repo.update()
+    |> broadcast_change([:slot, :updated])
+  end
+
+  def get_slot_by(params) do
+    Repo.get_by(Slot, params)
   end
 
   def get_battlelog_by(params) do
@@ -292,7 +314,8 @@ defmodule Frobots.Events do
         xp: frobot.xp,
         attempts: total_attempts,
         matches_won: matches_won,
-        matches_participated: match_participation_count
+        matches_participated: match_participation_count,
+        avatar: frobot.avatar
       }
     end
   end
@@ -336,10 +359,16 @@ defmodule Frobots.Events do
 
   def send_player_leaderboard_entries() do
     data = send_leaderboard_entries()
-    uniq_names = Enum.map(data, fn x -> x.username end) |> Enum.uniq()
+
+    uniq_names =
+      Enum.map(data, fn x -> x.username end)
+      |> Enum.uniq()
+      |> Enum.filter(&(!is_nil(&1)))
+
     # group data by username, sort and rank
     for name <- uniq_names do
       user = Accounts.get_user_by(name: name)
+      avatar = user.avatar
       user_frobots = Assets.list_user_frobots(user)
 
       user_frobot_count = user_frobots |> Enum.count()
@@ -354,7 +383,15 @@ defmodule Frobots.Events do
         x.username == name
       end)
       |> Enum.reduce(
-        %{username: "", xp: 0, points: 0, attempts: 0, matches_won: 0, matches_participated: 0},
+        %{
+          username: "",
+          xp: 0,
+          points: 0,
+          attempts: 0,
+          matches_won: 0,
+          matches_participated: 0,
+          avatar: ""
+        },
         fn x, acc ->
           current_points = acc.points
           current_attempts = acc.attempts
@@ -371,6 +408,7 @@ defmodule Frobots.Events do
         end
       )
       |> Map.put(:username, name)
+      |> Map.put(:avatar, avatar)
     end
     |> Enum.sort_by(
       fn p ->
@@ -388,4 +426,68 @@ defmodule Frobots.Events do
   end
 
   defp broadcast_change(error, _event), do: error
+
+  @doc ~S"""
+  fetch current user ranking details.
+
+  ## Example
+      #iex> get_current_user_ranking_details(%User{})
+      #%{username: "bob", //string
+      #   points: 44, //integer
+      #   xp: 100, //integer
+      #   attempts: 4, //integer
+      #   matches_won: 4, //integer
+      #   matches_participated: 4, //integer
+      #   frobots_count: 4,
+      # avatar: "path/user_avatar.png"
+      #}
+  """
+  def get_current_user_ranking_details(current_user) do
+    send_player_leaderboard_entries()
+    |> Enum.filter(fn x ->
+      x.username == current_user.name
+    end)
+    |> Enum.at(0)
+  end
+
+  # get current frobot battlelogs
+  def get_frobot_battlelogs(frobot_id, match_status \\ ["pending", "running"]) do
+    match_status =
+      Enum.flat_map(match_status, fn status ->
+        case is_atom(status) do
+          true -> [Atom.to_string(status)]
+          false -> [status]
+        end
+      end)
+
+    q =
+      from m in "matches",
+        join: s in "slots",
+        on: m.id == s.match_id,
+        join: f in "frobots",
+        on: s.frobot_id == f.id,
+        where: m.status in ^match_status and s.frobot_id == ^frobot_id,
+        select: %{
+          "match_id" => m.id,
+          "match_name" => m.title,
+          "winner" => "TBD",
+          "xp" => f.xp,
+          "status" => m.status,
+          "time" => m.match_time
+        }
+
+    Repo.all(q)
+  end
+
+  def list_paginated(query, page_config) do
+    query
+    |> Repo.paginate(page_config)
+  end
+
+  def list_paginated(query, page_config, preload, order_by) do
+    query
+    |> preload(^preload)
+    |> order_by(^order_by)
+    |> Repo.paginate(page_config)
+  end
 end

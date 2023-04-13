@@ -7,13 +7,14 @@ import { createMatchActions } from '../../../../redux/slices/createMatch'
 import ClosedSlot from './ClosedSlot'
 import OpenSlot from './OpenSlot'
 
-export default ({ slotDetails }) => {
+export default ({ slotDetails, imageBaseUrl }) => {
   const { slotOptions, protobots, userFrobots, currentActiveSlot } =
     useSelector((store) => store.createMatch)
   const { updateSlot } = createMatchActions
-  const [currentSlot, setCurrentSlot] = useState({ type: '' })
+  const [currentSlot, setCurrentSlot] = useState({ type: '', url: '' })
   const [currentStep, setCurrentStep] = useState(0)
   const dispatch = useDispatch()
+
   const slotSelectionHandler = () => {
     if (currentSlot?.type === 'host' || currentSlot?.type === 'proto') {
       setCurrentStep(currentStep + 1)
@@ -23,10 +24,8 @@ export default ({ slotDetails }) => {
           ...currentActiveSlot,
           type: currentSlot.type,
           label: currentSlot.type === 'open' ? 'Open Slot' : 'Closed Slot',
-          url:
-            currentSlot.type === 'open'
-              ? '/images/frobot.svg'
-              : '/images/grey_frobot.svg',
+          name: currentSlot.type === 'open' ? 'Open' : 'Closed',
+          url: currentSlot.url,
           slotDetails: currentSlot,
         })
       )
@@ -79,6 +78,7 @@ export default ({ slotDetails }) => {
       </Box>
     )
   }
+
   return (
     <>
       {currentStep === 0 && <SlotItemsConfiguration />}
@@ -88,6 +88,7 @@ export default ({ slotDetails }) => {
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
           slotDetails={slotDetails}
+          imageBaseUrl={imageBaseUrl}
         />
       )}
       {currentSlot?.type === 'proto' && (
@@ -96,6 +97,7 @@ export default ({ slotDetails }) => {
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
           slotDetails={slotDetails}
+          imageBaseUrl={imageBaseUrl}
         />
       )}
       {currentSlot?.type === 'closed' && (

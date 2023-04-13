@@ -118,9 +118,11 @@ defmodule FrobotsWeb.Router do
     live "/teams", TeamLive.Index, :index
     live "/matches", MatchLive.Index, :index
     live "/docs", DocsLive.Index, :index
-    live "/arena", ArenaLive.Index, :index
+
+    live "/admin", AdminLive.Index, :index
 
     # arena
+    live "/arena", ArenaLive.Index, :index
     live "/arena/:match_status/matches", ArenaMatchesLive.Index, :index
     live "/arena/create", ArenaCreateMatchLive.Index, :index
     live "/arena/:match_id", ArenaLobbyLive.Index, :index
@@ -134,9 +136,8 @@ defmodule FrobotsWeb.Router do
     live "/garage/create", GarageFrobotCreateLive.Index, :index
     live "/garage/frobot", GarageFrobotsDetailsLive.Index, :index
     live "/garage/frobot/braincode", FrobotBraincodeLive.Index, :index
+    live "/garage/frobot/equipment_bay", FrobotEquipmentBayLive.Index, :index
 
-    get "/", PageController, :index
-    get "/oldhome", PageController, :index
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
@@ -144,8 +145,9 @@ defmodule FrobotsWeb.Router do
 
   scope "/", FrobotsWeb do
     pipe_through [:browser]
-
+    get "/", PageController, :index
     delete "/users/log_out", UserSessionController, :delete
+    get "/users/log_out", UserSessionController, :delete
     get "/users/confirm", UserConfirmationController, :new
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :edit

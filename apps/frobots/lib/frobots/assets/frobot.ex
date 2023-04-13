@@ -7,11 +7,11 @@ defmodule Frobots.Assets.Frobot do
   schema "frobots" do
     field :name, :string
     field :brain_code, :string
-    field :class, :string
-    field :xp, :integer
-    field :blockly_code, :string
-    field :avatar, :string
-    field :bio, :string
+    field :class, :string, default: ""
+    field :xp, :integer, default: 0
+    field :blockly_code, :string, default: ""
+    field :avatar, :string, default: ""
+    field :bio, :string, default: ""
     field :pixellated_img, :string
     belongs_to :user, Frobots.Accounts.User
 
@@ -26,7 +26,7 @@ defmodule Frobots.Assets.Frobot do
   end
 
   @doc false
-  def changeset(frobot, attrs) do
+  def changeset(frobot, attrs \\ %{}) do
     frobot
     |> cast(attrs, [
       :brain_code,

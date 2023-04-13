@@ -34,7 +34,7 @@ defmodule Frobots do
 
   # PUT ALL CONSTANT DATA AS ALIASES HERE
   @default_frobot_loadout [
-    %{equipment_class: "xframe", equipment_type: "Tank Mk1"},
+    %{equipment_class: "xframe", equipment_type: "Chassis Mk1"},
     %{equipment_class: "cannon", equipment_type: "Mk1"},
     %{equipment_class: "scanner", equipment_type: "Mk1"},
     %{equipment_class: "missile", equipment_type: "Mk1"}
@@ -47,6 +47,38 @@ defmodule Frobots do
   }
 
   @equipment_classes ~w(xframe cannon scanner missile)a
+
+  @weapon_classes ~w(cannon)a
+  @sensor_classes ~w(scanner)a
+  @ammo_classes ~w(missile)a
+  @ordinance_classes ~w(cannon missile)a
+  @cpu_classes ~w()a
+
+  @parts_classes @weapon_classes ++ @sensor_classes ++ @ammo_classes ++ @cpu_classes
+
+  def ordinance_classes() do
+    @ordinance_classes
+  end
+
+  def parts_classes() do
+    @parts_classes
+  end
+
+  def weapon_classes() do
+    @weapon_classes
+  end
+
+  def sensor_classes() do
+    @sensor_classes
+  end
+
+  def ammo_classes() do
+    @ammo_classes
+  end
+
+  def cpu_classes() do
+    @cpu_classes
+  end
 
   def equipment_classes() do
     @equipment_classes

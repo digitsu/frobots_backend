@@ -1,22 +1,8 @@
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useRef,
-  useState,
-  useEffect,
-} from 'react'
+import React, { ChangeEvent, FC, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Box, Tab, Tabs } from '@mui/material'
 
-interface Filters {
-  query?: string
-  isUpcoming?: boolean
-  isLive?: boolean
-  isCompleted?: boolean
-}
-
-type TabValue = 'all' | 'isUpcoming' | 'isLive' | 'isCompleted'
+type TabValue = 'all' | 'pending' | 'running' | 'done'
 
 interface TabOption {
   label: string
@@ -30,53 +16,30 @@ const tabs: TabOption[] = [
   },
   {
     label: 'Upcoming',
-    value: 'isUpcoming',
+    value: 'pending',
   },
   {
     label: 'Live',
-    value: 'isLive',
+    value: 'running',
   },
   {
     label: 'Completed',
-    value: 'isCompleted',
+    value: 'done',
   },
 ]
 
 interface MatchListSearchProps {
-  onFiltersChange?: (filters: Filters) => void
+  onTabChange?: (value?: string) => void
 }
 
 export const MatchListSearch: FC<MatchListSearchProps> = (props) => {
-  const { onFiltersChange } = props
-  const queryRef = useRef<HTMLInputElement | null>(null)
+  const { onTabChange } = props
   const [currentTab, setCurrentTab] = useState<TabValue>('all')
-  const [filters, setFilters] = useState<Filters>({})
-
-  const handleFiltersUpdate = useCallback(() => {
-    onFiltersChange?.(filters)
-  }, [filters, onFiltersChange])
-
-  useEffect(() => {
-    handleFiltersUpdate()
-  }, [filters, handleFiltersUpdate])
 
   const handleTabsChange = useCallback(
     (event: ChangeEvent<{}>, value: TabValue): void => {
       setCurrentTab(value)
-      setFilters((prevState: any) => {
-        const updatedFilters: Filters = {
-          ...prevState,
-          isUpcoming: undefined,
-          isLive: undefined,
-          isCompleted: undefined,
-        }
-
-        if (value !== 'all') {
-          updatedFilters[value] = true
-        }
-
-        return updatedFilters
-      })
+      onTabChange?.(value === 'all' ? undefined : value)
     },
     []
   )
@@ -86,30 +49,28 @@ export const MatchListSearch: FC<MatchListSearchProps> = (props) => {
       <Box
         display="flex"
         justifyContent={'space-between'}
-        alignItems={'center'}
+        alignItems={'left'}
         width="100%"
       >
-        <Box>
-          <Tabs
-            indicatorColor="primary"
-            onChange={handleTabsChange}
-            scrollButtons="auto"
-            sx={{ px: 3 }}
-            textColor="primary"
-            value={currentTab}
-            variant="scrollable"
-            color="#FFFF"
-          >
-            {tabs.map((tab) => (
-              <Tab key={tab.value} label={tab.label} value={tab.value} />
-            ))}
-          </Tabs>
-        </Box>
+        <Tabs
+          indicatorColor="primary"
+          onChange={handleTabsChange}
+          scrollButtons="auto"
+          sx={{ px: 3 }}
+          textColor="primary"
+          value={currentTab}
+          variant="scrollable"
+          color="#FFFF"
+        >
+          {tabs.map((tab) => (
+            <Tab key={tab.value} label={tab.label} value={tab.value} />
+          ))}
+        </Tabs>
       </Box>
     </>
   )
 }
 
 MatchListSearch.propTypes = {
-  onFiltersChange: PropTypes.func,
+  onTabChange: PropTypes.func,
 }

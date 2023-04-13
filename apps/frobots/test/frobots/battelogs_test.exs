@@ -6,8 +6,8 @@ defmodule Frobots.BattleLogsTest do
 
   def create_battelog_fixtures(match_template, params, count) do
     Enum.to_list(1..count)
-    |> Enum.map(fn x ->
-      {:ok, bl} = battlelog_fixture(match_template, params)
+    |> Enum.map(fn _x ->
+      {:ok, _bl} = battlelog_fixture(match_template, params)
     end)
   end
 
@@ -48,7 +48,17 @@ defmodule Frobots.BattleLogsTest do
         frobots: [n1, n2, n3, n4]
       }
 
-      {:ok, mt} = match_fixture(%{"status" => "done"})
+      {:ok, mt} =
+        match_fixture(%{
+          "status" => "done",
+          "user_id" => owner.id,
+          "match_time" => DateTime.utc_now(),
+          "timer" => 3600,
+          "arena_id" => 1,
+          "min_player_frobot" => 2,
+          "max_player_frobot" => 4,
+          "type" => "real"
+        })
 
       {:ok, bl1} = battlelog_fixture(mt, params1)
       assert bl1
@@ -105,7 +115,14 @@ defmodule Frobots.BattleLogsTest do
 
       {:ok, mt1} =
         match_fixture(%{
+          "user_id" => owner1.id,
+          "match_time" => DateTime.utc_now(),
+          "timer" => 3600,
+          "arena_id" => 1,
+          "min_player_frobot" => 2,
+          "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot1.name, "id" => frobot1.id},
             %{"name" => frobot2.name, "id" => frobot2.id},
@@ -133,7 +150,14 @@ defmodule Frobots.BattleLogsTest do
 
       {:ok, mt2} =
         match_fixture(%{
+          "user_id" => owner1.id,
+          "match_time" => DateTime.utc_now(),
+          "timer" => 3600,
+          "arena_id" => 1,
+          "min_player_frobot" => 2,
+          "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot5.name, "id" => frobot5.id},
             %{"name" => frobot6.name, "id" => frobot6.id},
@@ -181,7 +205,14 @@ defmodule Frobots.BattleLogsTest do
 
       {:ok, mt1} =
         match_fixture(%{
+          "user_id" => owner1.id,
+          "match_time" => DateTime.utc_now(),
+          "timer" => 3600,
+          "arena_id" => 1,
+          "min_player_frobot" => 2,
+          "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot1.name, "id" => frobot1.id},
             %{"name" => frobot2.name, "id" => frobot2.id},
@@ -209,7 +240,14 @@ defmodule Frobots.BattleLogsTest do
 
       {:ok, mt2} =
         match_fixture(%{
+          "user_id" => owner1.id,
+          "match_time" => DateTime.utc_now(),
+          "timer" => 3600,
+          "arena_id" => 1,
+          "min_player_frobot" => 2,
+          "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot5.name, "id" => frobot5.id},
             %{"name" => frobot6.name, "id" => frobot6.id},
@@ -220,7 +258,14 @@ defmodule Frobots.BattleLogsTest do
 
       {:ok, mt3} =
         match_fixture(%{
+          "user_id" => owner1.id,
+          "match_time" => DateTime.utc_now(),
+          "timer" => 3600,
+          "arena_id" => 1,
+          "min_player_frobot" => 2,
+          "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot1.name, "id" => frobot1.id},
             %{"name" => frobot2.name, "id" => frobot2.id},
@@ -232,7 +277,14 @@ defmodule Frobots.BattleLogsTest do
       # user2 did not win
       {:ok, mt4} =
         match_fixture(%{
+          "user_id" => owner1.id,
+          "match_time" => DateTime.utc_now(),
+          "timer" => 3600,
+          "arena_id" => 1,
+          "min_player_frobot" => 2,
+          "max_player_frobot" => 4,
           "status" => "done",
+          "type" => "real",
           "frobots" => [
             %{"name" => frobot4.name, "id" => frobot4.id},
             %{"name" => frobot5.name, "id" => frobot5.id},

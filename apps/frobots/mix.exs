@@ -40,6 +40,7 @@ defmodule Frobots.MixProject do
       # {:fubars, in_umbrella: true},
       {:logger_file_backend, "~> 0.0.12"},
       {:phoenix_pubsub, "~> 2.0"},
+      {:gettext, "~> 0.18"},
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
       {:pbkdf2_elixir, "~> 1.0"},
@@ -51,7 +52,8 @@ defmodule Frobots.MixProject do
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:sweet_xml, "~> 0.6"},
-      {:exconstructor, "~> 1.2.7"}
+      {:exconstructor, "~> 1.2.7"},
+      {:phoenix_client, "~> 0.3"}
     ]
   end
 
@@ -65,14 +67,15 @@ defmodule Frobots.MixProject do
         # "cmd source ../../.env",
         "ecto.create",
         "ecto.migrate",
-        "run apps/frobots/priv/repo/seeds/seeds.exs",
-        "run apps/frobots/priv/repo/seeds/seed_equipment.exs"
+        "run priv/repo/seeds/seeds.exs",
+        "run priv/repo/seeds/seed_equipment.exs"
       ],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: [
+        "ecto.drop --quiet",
         "ecto.create --quiet",
         "ecto.migrate --quiet",
-        "run apps/frobots/priv/repo/seeds/seed_equipment.exs",
+        "run apps/frobots/priv/repo/seeds/seed_equipment.exs --quiet",
         "test"
       ],
       testenv: ["cmd source ../../.env", "cmd echo $TEST_ENV"]

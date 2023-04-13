@@ -18,7 +18,7 @@ Assets.list_user_frobots(current_user)).  Note:  current_user is extracted from 
 
 &nbsp;&nbsp;&nbsp;&nbsp;brain_code: "-- lua code-- ",
 
-&nbsp;&nbsp;&nbsp;&nbsp;class: "Proto",
+&nbsp;&nbsp;&nbsp;&nbsp;class: "P",
 
 &nbsp;&nbsp;&nbsp;&nbsp;xp: 0,
 
@@ -93,7 +93,7 @@ upcoming_matches: 0
 
 
 **show global stats**
-show_global_stats(): This function currently returns a static map. It is TBD where these details come from now that nakama is out of scope at least for now.
+show_global_stats(): This function currently returns a static map. With updated Matches and Slots tables, we will be able to get the data below from the DB. **This is new code to be written.**
 
 
 
@@ -129,7 +129,9 @@ This is shape of data of frobot leaderboard stats:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matches_participated: 4, //integer
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frobots_count: 4
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frobots_count: 4,
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;avatar: "path/frobot.png"
 
 }]
 
@@ -149,7 +151,11 @@ matches_won: 4, //integer
 
 matches_participated: 4, //integer
 
-frobots_count: 4
+frobots_count: 4,
+
+avatar: "path/user_avatar.png"
+
+
 
 }]
 
@@ -170,7 +176,7 @@ Assets.list_user_frobots(current_user): Fetches frobots owned by current user
 
 &nbsp;&nbsp;&nbsp;&nbsp;brain_code: "-- lua code-- ",
 
-&nbsp;&nbsp;&nbsp;&nbsp;class: "Proto",
+&nbsp;&nbsp;&nbsp;&nbsp;class: "P",
 
 &nbsp;&nbsp;&nbsp;&nbsp;xp: 0,
 
@@ -222,13 +228,13 @@ Assets.list_template_frobots():  returns a list of template frobots with the fol
 
 
 **list xframes**
-Assets.get_xframes(): Returns list of xframes
+Assets.list_xframes(): Returns list of xframes
 
 [{
 
 &nbsp;&nbsp;&nbsp;&nbsp;id: 10,
 
-&nbsp;&nbsp;&nbsp;&nbsp;xframe_type: :Tank_Mk3,
+&nbsp;&nbsp;&nbsp;&nbsp;xframe_type: :Chassis_Mk3,
 
 &nbsp;&nbsp;&nbsp;&nbsp;max_speed_ms: 40,
 
@@ -255,7 +261,7 @@ Assets.get_xframes(): Returns list of xframes
 
 
 **list cannons**
-Assets.get_cannons(): returns list of cannons
+Assets.list_cannons(): returns list of cannons
 
 [%{
 
@@ -279,7 +285,7 @@ Assets.get_cannons(): returns list of cannons
 
 **Scanners**
 
-Assets.get_scanners(): return list of scanners
+Assets.list_scanners(): return list of scanners
 
 [%{
 
@@ -301,7 +307,7 @@ Assets.get_scanners(): return list of scanners
 
 **Missiles**
 
-Assets.get_missiles(): return list of missiles
+Assets.list_missiles(): return list of missiles
 
 [%{
 

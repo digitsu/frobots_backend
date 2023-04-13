@@ -5,16 +5,18 @@ defmodule Frobots.Events.Match do
 
   alias Frobots.Events.Slot
 
+  @derive Jason.Encoder
   # a battlelog is written after a match is completed, and there are winners declared.
   schema "matches" do
     field :title, :string
     field :description, :string
     field :match_time, :utc_datetime
-    field :timer, :integer
+    field :timer, :integer, default: 3600
     field :arena_id, :integer
     field :min_player_frobot, :integer
     field :max_player_frobot, :integer
     field :status, Ecto.Enum, values: [:pending, :running, :done, :timeout, :cancelled]
+    field :type, Ecto.Enum, values: [:simulation, :real], default: :real
 
     ## legacy column
     field :frobots, {:array, :integer}
@@ -37,7 +39,8 @@ defmodule Frobots.Events.Match do
     :max_player_frobot,
     :status,
     :frobots,
-    :user_id
+    :user_id,
+    :type
   ]
 
   @doc false
@@ -46,7 +49,25 @@ defmodule Frobots.Events.Match do
     |> cast(attrs, @fields)
     |> cast_embed(:match_template)
     |> cast_assoc(:slots, with: &Slot.changeset/2)
-    |> validate_required([:status])
+    |> validate_required([
+      :status,
+      :user_id,
+      :match_time,
+      :arena_id,
+      :min_player_frobot,
+      :max_player_frobot,
+      :type
+    ])
+    |> unique_constraint([:battlelog])
+  end
+
+  def update_changeset(match, attrs) do
+    match
+    |> cast(attrs, [:status])
+    |> cast_assoc(:slots, with: &Slot.update_changeset/2)
+    |> validate_required([
+      :status
+    ])
     |> unique_constraint([:battlelog])
   end
 end

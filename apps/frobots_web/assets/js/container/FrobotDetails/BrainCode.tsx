@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
-import { Box, Tab, Tabs, Button } from '@mui/material'
+import {
+  Box,
+  Grid,
+  Tab,
+  Tabs,
+  Button,
+  Autocomplete,
+  TextField,
+} from '@mui/material'
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
@@ -10,12 +18,32 @@ const BlankBlocklyCode =
   '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
 
 export default (props: any) => {
-  const { frobot, updateFrobotCode } = props
+  const {
+    frobot,
+    currentUser,
+    updateFrobotCode,
+    requestMatch,
+    runSimulation,
+    cancelSimulation,
+    changeProtobot,
+    templates,
+  } = props
+  const isOwnFrobot = frobot.user_id === currentUser.id
   const [luaCode, setLuaCode] = useState(frobot.brain_code || '')
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState(
     frobot.blockly_code || BlankBlocklyCode
   )
+  const [blocklyLuaCode, setBlocklyLuaCode] = useState('')
+  const [isSelectedProtobot, setIsSelectedProtobot] = useState(false)
+  const [isRequestedMatch, setIsRequestedMatch] = useState(false)
+  const [isSimulationStarted, setIsSimulationStarted] = useState(false)
+
+  const templateFrobots =
+    templates?.map(({ name, id }, index) => ({
+      label: name,
+      id: id,
+    })) || []
 
   function a11yProps(index: number) {
     return {
@@ -24,7 +52,7 @@ export default (props: any) => {
     }
   }
 
-  const [tabIndex, setTabIndex] = React.useState(luaCode ? 1 : 0)
+  const [tabIndex, setTabIndex] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
@@ -35,6 +63,10 @@ export default (props: any) => {
     window.Blockly = Blockly
     customFunctions()
   }, [])
+
+  useEffect(() => {
+    setBlocklyLuaCode(blocklyCode)
+  }, [blocklyCode])
 
   function onEditorChange(code: string) {
     try {
@@ -55,19 +87,13 @@ export default (props: any) => {
     }
   }
 
-  useEffect(() => {
-    if (tabIndex === 0) {
-      setLuaCode(blocklyCode)
-    }
-  }, [blocklyCode])
-
   const saveConfig = () => {
     if (!luaCode || luaCode.trim() === '') {
       return alert("Frobot can't be updated with empty lua code")
     }
 
     const requestBody = {
-      frobot_id: frobot.frobot_id,
+      frobot_id: frobot.id,
       blockly_code: xmlText,
       brain_code: luaCode,
     }
@@ -75,11 +101,40 @@ export default (props: any) => {
     updateFrobotCode(requestBody)
   }
 
-  // TODO : [FRO-383 brain code simulation logic]
-  const simulateConfig = () => {}
+  const handleRequestMatch = () => {
+    if (!luaCode || luaCode.trim() === '') {
+      return alert("Match can't be requested with empty lua code")
+    } else {
+      requestMatch()
+      setIsRequestedMatch(true)
+    }
+  }
 
-  return (
-    <Box mt={8}>
+  const handleRunSimulation = () => {
+    if (!luaCode || luaCode.trim() === '') {
+      return alert("Simulation can't be started with empty lua code")
+    } else {
+      runSimulation({ frobot_id: frobot.id })
+      setIsSimulationStarted(true)
+    }
+  }
+
+  const handleCancelSimulation = () => {
+    cancelSimulation()
+    setIsRequestedMatch(false)
+    setIsSimulationStarted(false)
+    setIsSelectedProtobot(false)
+  }
+
+  const handleChangeOpponent = (event, option) => {
+    if (option.id) {
+      changeProtobot({ protobot_id: option.id })
+      setIsSelectedProtobot(true)
+    }
+  }
+
+  return !isRequestedMatch ? (
+    <Box mt={5}>
       <>
         <Box
           sx={{
@@ -122,33 +177,66 @@ export default (props: any) => {
                   />
                 </Tabs>
               </Box>
-              <Box>
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  size="small"
-                  onClick={saveConfig}
-                >
-                  Save
-                </Button>{' '}
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  size="small"
-                  onClick={simulateConfig}
-                >
-                  Simulate
-                </Button>
+              <Box display={'flex'}>
+                {isOwnFrobot && (
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                    onClick={saveConfig}
+                  >
+                    Save
+                  </Button>
+                )}{' '}
+                <Autocomplete
+                  sx={{
+                    pl: 1,
+                    pr: 1,
+                    width: 200,
+                  }}
+                  onChange={handleChangeOpponent}
+                  options={templateFrobots}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select an opponent"
+                      variant="outlined"
+                      size="small"
+                      name="list-opponent"
+                    />
+                  )}
+                />
+                {''}
+                {isSelectedProtobot && (
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    size="small"
+                    onClick={handleRequestMatch}
+                  >
+                    Request Simulation
+                  </Button>
+                )}{' '}
               </Box>
             </Box>
           </Box>
           {
             <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
-              <BlocklyEditor
-                defaultXml={blocklyCode}
-                setXmlText={setXmlText}
-                workspaceDidChange={workspaceDidChange}
-              />
+              <Grid container>
+                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                  <BlocklyEditor
+                    defaultXml={blocklyCode}
+                    setXmlText={setXmlText}
+                    workspaceDidChange={workspaceDidChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                  <LuaEditor
+                    luaCode={blocklyLuaCode}
+                    onEditorChange={() => {}}
+                  />
+                </Grid>
+              </Grid>
             </Box>
           }
           {
@@ -158,6 +246,35 @@ export default (props: any) => {
           }
         </Box>
       </>
+    </Box>
+  ) : (
+    <Box display="flex" justifyContent="flex-end" pb={5}>
+      {isRequestedMatch && !isSimulationStarted ? (
+        <Box pr={1}>
+          <Button
+            variant="outlined"
+            color="inherit"
+            size="small"
+            onClick={handleRunSimulation}
+          >
+            Run Simulation
+          </Button>
+        </Box>
+      ) : (
+        <></>
+      )}
+      {isSimulationStarted && (
+        <Box>
+          <Button
+            variant="outlined"
+            color="inherit"
+            size="small"
+            onClick={handleCancelSimulation}
+          >
+            Cancel Simulation
+          </Button>
+        </Box>
+      )}
     </Box>
   )
 }

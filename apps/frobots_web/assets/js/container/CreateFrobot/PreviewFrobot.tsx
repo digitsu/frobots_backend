@@ -3,7 +3,7 @@ import { Box, Grid, Typography, Button } from '@mui/material'
 import { useSelector } from 'react-redux'
 import Card from '../../components/generic/Card'
 
-export default ({ createFrobot }) => {
+export default ({ createFrobot, s3BaseUrl }) => {
   const { starterMech, frobotName, bio, brainCode, blocklyCode } = useSelector(
     (store: any) => store.createFrobot
   )
@@ -13,8 +13,11 @@ export default ({ createFrobot }) => {
       bio,
       brain_code: brainCode?.brain_code,
       blockly_code: blocklyCode,
+      avatar: starterMech?.avatar || '',
+      pixellated_img: starterMech?.pixellated_img || '',
     })
   }
+
   return (
     <Box width={'60%'} m={'auto'} mt={10}>
       <Card>
@@ -33,7 +36,7 @@ export default ({ createFrobot }) => {
                 zIndex={1}
                 position={'absolute'}
                 component={'img'}
-                src={starterMech.src}
+                src={`${s3BaseUrl}${starterMech.avatar}`}
               />
             </Box>
           </Grid>

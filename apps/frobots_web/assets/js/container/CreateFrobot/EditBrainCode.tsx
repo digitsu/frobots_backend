@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Tab, Tabs, Button } from '@mui/material'
+import { Box, Tab, Tabs, Button, Grid } from '@mui/material'
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
 import customFunctions from '../../utils/customFunctions'
@@ -9,7 +9,9 @@ import LuaEditor from '../Garage/LuaEditor'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
 
 export default () => {
-  const { brainCode } = useSelector((store: any) => store.createFrobot)
+  const { brainCode, blocklyCode: blocklyCodeStore } = useSelector(
+    (store: any) => store.createFrobot
+  )
   const [luaCode, setLuaCode] = useState('')
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState('')
@@ -50,13 +52,6 @@ export default () => {
     setLuaCode(blocklyCode)
   }, [blocklyCode])
 
-  useEffect(() => {
-    if (brainCode !== null) {
-      const { brain_code } = brainCode || {}
-      setLuaCode(brain_code)
-    }
-  }, [brainCode])
-
   function onEditorChange(code) {
     try {
       dispatch(setBrainCode({ ...brainCode, brain_code: code }))
@@ -82,6 +77,7 @@ export default () => {
   useEffect(() => {
     dispatch(setBlocklyCodeHandler(xmlText))
   }, [xmlText])
+
   return (
     <Box mt={5}>
       <>
@@ -136,15 +132,26 @@ export default () => {
           </Box>
           {
             <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
-              <BlocklyEditor
-                setXmlText={setXmlText}
-                workspaceDidChange={workspaceDidChange}
-              />
+              <Grid container>
+                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                  <BlocklyEditor
+                    defaultXml={blocklyCodeStore}
+                    setXmlText={setXmlText}
+                    workspaceDidChange={workspaceDidChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                  <LuaEditor luaCode={luaCode} onEditorChange={() => {}} />
+                </Grid>
+              </Grid>
             </Box>
           }
           {
             <Box sx={{ p: 3 }} display={tabIndex === 1 ? 'block' : 'none'}>
-              <LuaEditor luaCode={luaCode} onEditorChange={onEditorChange} />
+              <LuaEditor
+                luaCode={brainCode?.brain_code || ''}
+                onEditorChange={onEditorChange}
+              />
             </Box>
           }
         </Box>

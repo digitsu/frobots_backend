@@ -10,13 +10,52 @@ import JoinMatchBanner from './JoinMatchBanner'
 import NewsAndUpdatesSection from './NewsAndUpdatesSection'
 
 export default (props: any) => {
-  const { playerStats, globalStats, blogPosts, featuredFrobots } = props
+  const {
+    playerStats,
+    globalStats,
+    current_user_ranking_details,
+    current_user_name,
+    current_user_avatar,
+    current_user_sparks,
+    blogPosts,
+    featuredFrobots,
+    frobot_leaderboard_stats,
+    player_leaderboard_stats,
+    s3_base_url,
+  } = props
 
   const handleOpenGarage = useCallback(
     (event: MouseEvent<HTMLDivElement> | null) => {
       event?.preventDefault()
 
       window.location.href = '/garage'
+    },
+    []
+  )
+
+  const handleOpenArena = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/arena'
+    },
+    []
+  )
+
+  const handleOpenPastMatches = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/arena/done/matches'
+    },
+    []
+  )
+
+  const handleOpenUpcomingMatches = useCallback(
+    (event: MouseEvent<HTMLDivElement> | null) => {
+      event?.preventDefault()
+
+      window.location.href = '/arena/pending/matches'
     },
     []
   )
@@ -41,7 +80,7 @@ export default (props: any) => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenArena}>
                     <Box
                       component={'img'}
                       src={'/images/ranking.svg'}
@@ -53,7 +92,9 @@ export default (props: any) => {
                       justifyContent={'center'}
                       flexDirection={'column'}
                     >
-                      <Typography variant="h6">12378</Typography>
+                      <Typography variant="h6">
+                        {current_user_ranking_details?.rank || 0}
+                      </Typography>
                       <Typography variant="caption">
                         Total XP : {playerStats.total_xp}
                       </Typography>
@@ -83,10 +124,10 @@ export default (props: any) => {
                       flexDirection={'column'}
                     >
                       <Typography variant="h6">
-                        {playerStats.frobots_count}
+                        {current_user_sparks || 0}
                       </Typography>
                       <Typography variant="caption">
-                        Sparkling Frobots
+                        Sparks Available
                       </Typography>
                     </Box>
                   </Box>
@@ -101,7 +142,7 @@ export default (props: any) => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3}>
+                  <Box display={'flex'} gap={3} onClick={handleOpenPastMatches}>
                     <Box
                       component={'img'}
                       src={'/images/stats.svg'}
@@ -131,7 +172,11 @@ export default (props: any) => {
                       borderStyle: 'dotted',
                     }}
                   />
-                  <Box display={'flex'} gap={3}>
+                  <Box
+                    display={'flex'}
+                    gap={3}
+                    onClick={handleOpenUpcomingMatches}
+                  >
                     <Box
                       component={'img'}
                       src={'/images/calendar.svg'}
@@ -161,17 +206,27 @@ export default (props: any) => {
               flexDirection={'column'}
               height={'100%'}
             >
-              <ProfileDetails />
+              <ProfileDetails
+                ranking_details={current_user_ranking_details}
+                user_name={current_user_name}
+                user_avatar={`${s3_base_url}${current_user_avatar}`}
+              />
               <Box>
                 <GlobalStats globalStats={globalStats} />
               </Box>
             </Box>
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>
-            <FrobotsLeaderBoard />
+            <FrobotsLeaderBoard
+              leaderBoardData={frobot_leaderboard_stats}
+              imageBaseUrl={s3_base_url}
+            />
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>
-            <PlayerLeaderBoard />
+            <PlayerLeaderBoard
+              leaderBoardData={player_leaderboard_stats}
+              imageBaseUrl={s3_base_url}
+            />
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <Notifications />
@@ -181,7 +236,10 @@ export default (props: any) => {
       <Box>
         <Grid container spacing={2} my={2}>
           <Grid item lg={12} md={12} sm={12} xs={12}>
-            <FeaturedFrobotSection featuredFrobots={featuredFrobots} />
+            <FeaturedFrobotSection
+              featuredFrobots={featuredFrobots}
+              imageBaseUrl={s3_base_url}
+            />
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <JoinMatchBanner />
@@ -189,7 +247,11 @@ export default (props: any) => {
         </Grid>
       </Box>
       <Box width={'90%'} m={'auto'}>
-        <NewsAndUpdatesSection blogPosts={blogPosts} />
+        <Grid container spacing={2} my={2}>
+          <Grid item lg={12} md={12} sm={12} xs={12}>
+            <NewsAndUpdatesSection blogPosts={blogPosts} />
+          </Grid>
+        </Grid>
       </Box>
     </>
   )

@@ -8,6 +8,7 @@ type BlogPost = {
   html: string
   feature_image: string
   url: string
+  excerpt: string
 }
 
 type NewsAndUpdatesProps = {
@@ -18,8 +19,8 @@ export default (props: NewsAndUpdatesProps) => {
   const { blogPosts } = props
 
   return (
-    <Box my={4}>
-      <Grid container spacing={3}>
+    <Box>
+      <Grid container spacing={2}>
         {blogPosts.map((post: BlogPost, index: number) => (
           <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
             <Box position={'relative'}>
@@ -28,15 +29,16 @@ export default (props: NewsAndUpdatesProps) => {
                   borderRadius={2}
                   component={'img'}
                   width={'100%'}
-                  src={post.feature_image}
+                  height={'350px'}
+                  src={post.feature_image || '/images/blog-post-bg.png'}
                 />
                 <Box
                   position={'absolute'}
                   bottom={0}
                   width={'100%'}
-                  p={1}
+                  p={2}
                   sx={{
-                    borderRadius: 2,
+                    borderRadius: 1,
                     overflow: 'hidden',
                     '::after': {
                       content: '""',
@@ -55,19 +57,28 @@ export default (props: NewsAndUpdatesProps) => {
                     position={'relative'}
                     zIndex={1}
                     display={'flex'}
-                    height={100}
                     justifyContent={'space-between'}
                     flexDirection={'column'}
                   >
                     <Box>
-                      {' '}
-                      <Typography variant="h6" fontWeight={'bold'}>
-                        {post.title}
+                      <Box mb={2}>
+                        <Typography variant="h6" fontWeight={'bold'}>
+                          {post.title}
+                        </Typography>
+                      </Box>
+                      <Typography
+                        variant="body2"
+                        color={'lightslategray'}
+                        textOverflow={'ellipsis'}
+                        overflow={'hidden'}
+                        whiteSpace={'nowrap'}
+                      >
+                        {post.excerpt}
                       </Typography>
                     </Box>
                     <Box textAlign={'right'}>
                       {' '}
-                      <ViewMore label={'Learn More'} link={post.url} />
+                      <ViewMore label={'Learn More'} link={'post.url'} />
                     </Box>
                   </Box>
                 </Box>

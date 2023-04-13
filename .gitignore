@@ -43,3 +43,11 @@ crash_logs/
 .env
 loadenv.sh
 
+#elixir_LS vscode plugin
+.elixir_ls/
+
+#scratch file
+scratch.txt
+
+#images data
+images/

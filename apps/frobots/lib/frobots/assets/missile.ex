@@ -10,17 +10,20 @@ defmodule Frobots.Assets.Missile do
              :damage_near,
              :damage_far,
              :speed,
-             :range
+             :range,
+             :image
            ]}
 
   schema "missiles" do
-    field(:type, Ecto.Enum, values: ~w(Mk1 Mk2)a)
-    field(:damage_direct, {:array, :integer})
-    field(:damage_near, {:array, :integer})
-    field(:damage_far, {:array, :integer})
-    field(:speed, :integer)
-    field(:range, :integer)
-    has_many(:missile_inst, Frobots.Assets.MissileInst)
+    field :type, Ecto.Enum, values: ~w(Mk1 Mk2)a
+    field :damage_direct, {:array, :integer}
+    field :damage_near, {:array, :integer}
+    field :damage_far, {:array, :integer}
+    field :speed, :integer
+    field :range, :integer
+    has_many :missile_inst, Frobots.Assets.MissileInst
+    field :class, Ecto.Enum, values: ~w(missile)a
+    field :image, :string, default: "https://via.placeholder.com/50.png"
     timestamps()
   end
 
@@ -36,7 +39,7 @@ defmodule Frobots.Assets.Missile do
   @doc false
   def changeset(missile, attrs) do
     missile
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:image])
     |> validate_required(@fields)
     |> unique_constraint([:type])
   end

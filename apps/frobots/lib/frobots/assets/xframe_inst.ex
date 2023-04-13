@@ -10,40 +10,30 @@ defmodule Frobots.Assets.XframeInst do
              :frobot_id,
              :max_speed_ms,
              :turn_speed,
-             :sensor_hardpoints,
-             :weapon_hardpoints,
-             :cpu_hardpoints,
-             :movement_type,
              :max_health,
+             :health,
              :max_throttle,
              :accel_speed_mss
            ]}
 
   schema "xframe_inst" do
+    # note there are NO hardpoints or movement_type here. The instances can NEVER change these.
+    # Refer back to the xframe class for them
     belongs_to(:user, Frobots.Accounts.User)
     belongs_to(:xframe, Frobots.Assets.Xframe)
     belongs_to(:frobot, Frobots.Assets.Frobot)
     field(:max_speed_ms, :integer)
     field(:turn_speed, :integer)
-    field(:sensor_hardpoints, :integer)
-    field(:weapon_hardpoints, :integer)
-    field(:cpu_hardpoints, :integer)
-    field(:movement_type, Ecto.Enum, values: ~w(tracks bipedal hover)a)
     field(:max_health, :integer)
+    field(:health, :integer)
     field(:max_throttle, :integer)
     field(:accel_speed_mss, :integer)
-
     timestamps()
   end
 
   @fields [
-    :frobot_id,
-    :xframe_id,
     :max_speed_ms,
     :turn_speed,
-    :sensor_hardpoints,
-    :weapon_hardpoints,
-    :movement_type,
     :max_health,
     :max_throttle,
     :accel_speed_mss
@@ -52,7 +42,7 @@ defmodule Frobots.Assets.XframeInst do
   @doc false
   def changeset(xframe, attrs) do
     xframe
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:health])
     |> validate_required(@fields)
   end
 end
