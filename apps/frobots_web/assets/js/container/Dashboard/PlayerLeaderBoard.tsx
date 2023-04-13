@@ -81,19 +81,16 @@ export default (props: LeaderBoardProps) => {
                     {row.avatar && (
                       <Box
                         position={'relative'}
-                        width={100}
-                        height={100}
-                        sx={{ cursor: 'pointer', p: 1 }}
+                        width={46}
+                        height={45}
+                        sx={{ cursor: 'pointer' }}
                       >
                         <Box
                           component={'img'}
                           width={'100%'}
                           src={'/images/frobot_bg.png'}
-                          sx={{
-                            boxShadow: 'none',
-                            borderRadius: '6px',
-                          }}
-                        ></Box>
+                          boxShadow={'none'}
+                        />
                         <Box
                           sx={{ transform: 'translate(-50%, -50%)' }}
                           top={'50%'}
@@ -101,8 +98,8 @@ export default (props: LeaderBoardProps) => {
                           zIndex={1}
                           position={'absolute'}
                           component={'img'}
-                          width={'100%'}
-                          height={'100%'}
+                          width={'90%'}
+                          height={'90%'}
                           src={`${imageBaseUrl}${row.avatar}`}
                         />
                       </Box>
