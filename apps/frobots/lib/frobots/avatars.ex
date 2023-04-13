@@ -2,6 +2,7 @@ defmodule Frobots.Avatars do
   @moduledoc """
   The Avatars context.
   """
+  alias Frobots.Api
 
   # return frobot avatar images
   @spec get_frobot_avatars :: list
@@ -44,4 +45,16 @@ defmodule Frobots.Avatars do
       }
     ]
   end
+
+  def list_user_avatars() do
+    case ExAws.S3.list_objects_v2(Api.get_s3_bucket_name(), prefix: "images/avatars") |> ExAws.request do
+      {:error, _ } -> []
+      {:ok, ret} -> Enum.map(Map.get(ret.body, :contents), &Map.get(&1, :key))
+    end
+  end
+
+  def get_random_avatar() do
+    Enum.random(list_user_avatars())
+  end
+
 end

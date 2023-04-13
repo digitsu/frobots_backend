@@ -46,6 +46,7 @@ defmodule Frobots.Accounts.User do
   # Accounts.register_user(attrs) fails because migrated user is ignored as it not
   # in cast list
   def registration_changeset(user, attrs, opts \\ []) do
+
     user
     |> cast(attrs, [
       :email,
@@ -56,6 +57,7 @@ defmodule Frobots.Accounts.User do
       :sparks,
       :avatar
     ])
+    |> Map.put_new(:avatar, Frobots.Avatars.get_random_avatar())
     |> unique_constraint(:name)
     |> validate_email()
     |> validate_password(opts)

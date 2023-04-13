@@ -12,7 +12,7 @@ import Config
 config :frobots, display_process_name: :arena_gui
 ## in seconds
 config :frobots, status_reset_interval: 60
-config :frobots, cron_interval: 5
+config :frobots, cron_interval: 1000
 config :fubars, registry_name: :match_registry
 
 config :frobots_web,
@@ -112,7 +112,7 @@ config :logger, :file_log,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id],
-  level: :debug
+  level: :info
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

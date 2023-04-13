@@ -461,12 +461,11 @@ defmodule Frobots.Api do
     s3_base_url = Application.get_env(:ex_aws, :s3)[:host]
     s3_bucket = Application.get_env(:ex_aws, :s3)[:bucket]
 
-    {:ok, "https://#{s3_base_url}/#{s3_bucket}/"}
+    "https://#{s3_base_url}/#{s3_bucket}/"
   end
 
   def get_s3_bucket_name() do
-    s3_bucket = Application.get_env(:ex_aws, :s3)[:bucket]
-    {:ok, s3_bucket}
+    Application.get_env(:ex_aws, :s3)[:bucket]
   end
 
   def _preload_equipment_instances(frobot) do
