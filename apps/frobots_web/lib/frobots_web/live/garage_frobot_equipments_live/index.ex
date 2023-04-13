@@ -4,14 +4,13 @@ defmodule FrobotsWeb.GarageFrobotEquipmentsLive.Index do
   require Logger
 
   alias Frobots.{Assets, Accounts, Equipment}
-  alias FrobotsWeb.Simulator
 
   @impl Phoenix.LiveView
   def mount(params, session, socket) do
     # set required data via assigns
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     frobot_id = params["frobot_id"]
-    equipment_id = params["id"]
+    # equipment_id = params["id"]
 
     # Get the current frobot
     current_frobot = Assets.get_user_frobot!(current_user, frobot_id)
@@ -48,6 +47,6 @@ defmodule FrobotsWeb.GarageFrobotEquipmentsLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("react.fetch_frobot_equipments", _params, socket) do
+  def handle_event("react.fetch_frobot_equipments", _params, _socket) do
   end
 end
