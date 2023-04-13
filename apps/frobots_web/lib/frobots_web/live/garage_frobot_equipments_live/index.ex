@@ -22,7 +22,7 @@ defmodule FrobotsWeb.GarageFrobotEquipmentsLive.Index do
     # get all the equipments attached to this frobot
     attached_equipments = Equipment.list_frobot_equipment(frobot_id)
     # get all the equipments owned by current user
-    user_equipment_inventory = Equipment.list_user_equipment(current_user)
+    user_equipment_inventory = Equipment.list_user_equipment(session["user_id"])
     # # This can be improved based on the frobot selected
     # equipment_inventory = Equipment.get_all()
 
