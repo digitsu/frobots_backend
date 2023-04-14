@@ -3,53 +3,54 @@ defmodule Frobots.Avatars do
   The Avatars context.
   """
   alias Frobots.Api
+  require Logger
 
   # return frobot avatar images
   @spec get_frobot_avatars :: list
   def get_frobot_avatars() do
-    [
-      %{
-        id: 1,
-        avatar: "images/frobots/1.png",
-        pixellated_img: "images/frobots/P-1.png"
-      },
-      %{
-        id: 2,
-        avatar: "images/frobots/2.png",
-        pixellated_img: "images/frobots/P-2.png"
-      },
-      %{
-        id: 3,
-        avatar: "images/frobots/3.png",
-        pixellated_img: "images/frobots/P-3.png"
-      },
-      %{
-        id: 4,
-        avatar: "images/frobots/4.png",
-        pixellated_img: "images/frobots/P-4.png"
-      },
-      %{
-        id: 5,
-        avatar: "images/frobots/5.png",
-        pixellated_img: "images/frobots/P-5.png"
-      },
-      %{
-        id: 6,
-        avatar: "images/frobots/6.png",
-        pixellated_img: "images/frobots/P-6.png"
-      },
-      %{
-        id: 7,
-        avatar: "images/frobots/7.png",
-        pixellated_img: "images/frobots/P-7.png"
-      }
-    ]
+    case ExAws.S3.list_objects_v2(Api.get_s3_bucket_name(), prefix: "images/frobots")
+         |> ExAws.request() do
+      {:error, err} ->
+        Logger.warning(err)
+        []
+
+      {:ok, ret} ->
+        contents = Map.get(ret.body, :contents, [])
+
+        if length(contents) != 0 do
+          avatar_images =
+            Enum.map(ret.body.contents, &Map.get(&1, :key))
+            |> Enum.filter(fn name -> !Regex.match?(~r/P-/, name) end)
+
+          pixelated_images =
+            Enum.map(ret.body.contents, &Map.get(&1, :key))
+            |> Enum.filter(fn name -> Regex.match?(~r/P-/, name) end)
+
+          avatar_images
+          |> Enum.with_index(0)
+          |> Enum.map(fn {avatar, index} ->
+            id = index + 1
+
+            %{
+              id: id,
+              avatar: avatar,
+              pixellated_img:
+                Enum.find(pixelated_images, fn name -> Regex.match?(~r/P-#{id}/, name) end)
+            }
+          end)
+        else
+          []
+        end
+    end
   end
 
   def list_user_avatars() do
     case ExAws.S3.list_objects_v2(Api.get_s3_bucket_name(), prefix: "images/avatars")
          |> ExAws.request() do
-      {:error, _} -> ["https://via.placeholder.com/50.png"]
+      {:error, err} ->
+        Logger.warning(err)
+      ["https://via.placeholder.com/50.png"]
+
       {:ok, ret} -> Enum.map(Map.get(ret.body, :contents), &Map.get(&1, :key))
     end
   end
