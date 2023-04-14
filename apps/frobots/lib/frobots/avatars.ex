@@ -47,8 +47,7 @@ defmodule Frobots.Avatars do
   def list_user_avatars() do
     case ExAws.S3.list_objects_v2(Api.get_s3_bucket_name(), prefix: "images/avatars")
          |> ExAws.request() do
-      {:error, err} ->
-        Logger.warning(err)
+      {:error, _} ->
         ["https://via.placeholder.com/50.png"]
 
       {:ok, ret} ->
