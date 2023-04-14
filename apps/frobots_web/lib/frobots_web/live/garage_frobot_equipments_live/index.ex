@@ -47,6 +47,11 @@ defmodule FrobotsWeb.GarageFrobotEquipmentsLive.Index do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("react.fetch_frobot_equipments", _params, _socket) do
+  def handle_event("react.fetch_frobot_equipments_details", _params, socket) do
+    {:noreply,
+    push_event(socket, "react.return_frobot_equipments_details", %{
+      "currentUser" => "currentUser",
+      "frobotList" => "extract_frobots(socket.assigns.user_frobots)"
+    })}
   end
 end
