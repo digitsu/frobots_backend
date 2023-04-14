@@ -19,7 +19,11 @@ export default (props: any) => {
       component: (
         <BasicDetailsForm
           templates={templates}
-          starterMechs={starterMechs}
+          starterMechs={
+            starterMechs.length
+              ? starterMechs
+              : [{ id: 0, avatar: '', pixellated_img: '' }]
+          }
           s3BaseUrl={s3_base_url}
         />
       ),
