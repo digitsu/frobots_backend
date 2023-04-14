@@ -49,9 +49,10 @@ defmodule Frobots.Avatars do
          |> ExAws.request() do
       {:error, err} ->
         Logger.warning(err)
-      ["https://via.placeholder.com/50.png"]
+        ["https://via.placeholder.com/50.png"]
 
-      {:ok, ret} -> Enum.map(Map.get(ret.body, :contents), &Map.get(&1, :key))
+      {:ok, ret} ->
+        Enum.map(Map.get(ret.body, :contents), &Map.get(&1, :key))
     end
   end
 
