@@ -10,8 +10,7 @@ defmodule Frobots.Assets.CannonInst do
              :frobot_id,
              :reload_time,
              :rate_of_fire,
-             :magazine_size,
-             :image
+             :magazine_size
            ]}
 
   schema "cannon_inst" do
@@ -21,7 +20,6 @@ defmodule Frobots.Assets.CannonInst do
     field :reload_time, :integer
     field :rate_of_fire, :integer
     field :magazine_size, :integer
-    field :image, :string, default: "https://via.placeholder.com/50.png"
     timestamps()
   end
 
@@ -33,7 +31,7 @@ defmodule Frobots.Assets.CannonInst do
   @doc false
   def changeset(cannon, attrs) do
     cannon
-    |> cast(attrs, @fields ++ [:image])
+    |> cast(attrs, @fields)
     |> validate_required(@fields)
   end
 end

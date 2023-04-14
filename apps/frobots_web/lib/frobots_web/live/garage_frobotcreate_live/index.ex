@@ -3,13 +3,29 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.Assets
   alias Frobots.Accounts
-  alias Frobots.{Api, Equipment}
+  alias Frobots.{Api, Equipment, Avatars}
 
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
     # set required data via assigns
     current_user = Accounts.get_user!(id)
-    {:ok, socket |> assign(:current_user, current_user)}
+    s3_base_url = Api.get_s3_base_url()
+
+    # get templates data and store in socket
+    chassis = Equipment.list_xframes()
+    cannons = Equipment.list_cannons()
+    scanners = Equipment.list_scanners()
+    missiles = Equipment.list_missiles()
+
+    {:ok,
+     socket
+     |> assign(:current_user, current_user)
+     |> assign(:chassis, chassis)
+     |> assign(:scanners, scanners)
+     |> assign(:cannons, cannons)
+     |> assign(:missiles, missiles)
+     |> assign(:s3_base_url, s3_base_url)
+     |> assign(:starter_mechs, Avatars.get_frobot_avatars())}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -28,7 +44,9 @@ defmodule FrobotsWeb.GarageFrobotCreateLive.Index do
 
     {:noreply,
      push_event(socket, "react.return_frobot_create_details", %{
-       "templates" => templates
+       "templates" => templates,
+       "starterMechs" => socket.assigns.starter_mechs,
+       "s3_base_url" => socket.assigns.s3_base_url
      })}
   end
 

@@ -1,5 +1,7 @@
 defmodule FrobotsWeb.MatchChannel do
   use FrobotsWeb, :channel
+
+  alias Frobots.Api
   require Logger
 
   @type degree :: 0..359
@@ -47,12 +49,22 @@ defmodule FrobotsWeb.MatchChannel do
     end
   end
 
-  defp start_cluster(socket) do
+  def start_cluster(match_data) when is_map(match_data) do
+    case Api.create_match(match_data) do
+      {:ok, match} ->
+        start_cluster(match.id)
+
+      {:error, err} ->
+        {:error, "Could not start the services: " <> err}
+    end
+  end
+
+  def start_cluster(match_id) when is_integer(match_id) do
     case Fubars.Match.Supervisor.init_match(
-           Integer.to_string(Map.get(socket.assigns, :match_id)),
+           Integer.to_string(match_id),
            self()
          ) do
-      {:ok, match_name} -> {:ok, match_name}
+      {:ok, match_name} -> {:ok, match_id, match_name}
       {:error, err} -> {:error, "Could not start the services: " <> err}
     end
   end
@@ -61,31 +73,30 @@ defmodule FrobotsWeb.MatchChannel do
   def handle_in("start_match", match_data, socket) do
     # create a FUBARS cluster
     # with {:ok, match_name} <- start_cluster(socket) do
-    case start_cluster(socket) do
-      {:ok, match_name} ->
+    match_data = match_data["id"] || match_data
+
+    case start_cluster(match_data) do
+      {:ok, match_id, match_name} ->
         # now pass the match service the frobots and the match_template
         case Fubars.Match.start_match(
                via_tuple(match_name),
-               ## Removed
-               match_data |> Map.get("frobots", nil) |> Frobots.Assets.load_frobots_from_db(),
-               match_data
+               match_id
              ) do
           {:ok, frobots_map} ->
             {:reply, {:ok, frobots_map}, socket}
 
           {:error, error} ->
-            Logger.error(error)
-            {:reply, :error, socket}
+            {:reply, {:error, error}, socket}
         end
 
       {:error, error} ->
         Logger.error(error)
-        {:reply, :error, socket}
+        {:reply, {:error, error}, socket}
     end
   end
 
   @impl true
-  def handle_in("cancel_match", match_id, socket) do
+  def handle_in("cancel_match", %{"id" => match_id}, socket) do
     match_name = Fubars.Match.match_name(match_id)
     Fubars.Match.cancel_match(via_tuple(match_name))
     {:reply, :ok, socket}

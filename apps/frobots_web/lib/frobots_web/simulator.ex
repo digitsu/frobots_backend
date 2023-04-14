@@ -67,7 +67,7 @@ defmodule FrobotsWeb.Simulator do
   end
 
   @impl true
-  def handle_call({:slot, match_data}, _from, state) do
+  def handle_call({:start_match, match_data}, _from, state) do
     case Channel.push(state.match_channel, "start_match", match_data) do
       {:ok, frobots_map} ->
         {:reply, {:ok, frobots_map}, Map.put(state, :frobots_map, frobots_map)}
@@ -92,7 +92,7 @@ defmodule FrobotsWeb.Simulator do
 
   @impl true
   def handle_call({:cancel_match}, _from, state) do
-    Channel.push(state.match_channel, "cancel_match", %{match_id: state.match_id})
+    Channel.push(state.match_channel, "cancel_match", %{"id" => state.match_id})
     {:reply, :ok, state |> Map.delete(:match_id) |> Map.delete(:match_channel)}
   end
 

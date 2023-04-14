@@ -228,7 +228,7 @@ Assets.list_template_frobots():  returns a list of template frobots with the fol
 
 
 **list xframes**
-Assets.get_xframes(): Returns list of xframes
+Assets.list_xframes(): Returns list of xframes
 
 [{
 
@@ -261,7 +261,7 @@ Assets.get_xframes(): Returns list of xframes
 
 
 **list cannons**
-Assets.get_cannons(): returns list of cannons
+Assets.list_cannons(): returns list of cannons
 
 [%{
 
@@ -285,7 +285,7 @@ Assets.get_cannons(): returns list of cannons
 
 **Scanners**
 
-Assets.get_scanners(): return list of scanners
+Assets.list_scanners(): return list of scanners
 
 [%{
 
@@ -307,7 +307,7 @@ Assets.get_scanners(): return list of scanners
 
 **Missiles**
 
-Assets.get_missiles(): return list of missiles
+Assets.list_missiles(): return list of missiles
 
 [%{
 

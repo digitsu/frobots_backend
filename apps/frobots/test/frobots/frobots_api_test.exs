@@ -1,8 +1,8 @@
 defmodule Frobots.FrobotsApiTest do
   use Frobots.DataCase, async: true
   alias Frobots.Api
-  alias Frobots.Assets.Frobot
-  alias Ecto.Multi
+  #  alias Frobots.Assets.Frobot
+  #  alias Ecto.Multi
   alias Frobots.Accounts
 
   @valid_frobot_attrs %{
@@ -17,22 +17,23 @@ defmodule Frobots.FrobotsApiTest do
   test "Calling Api.create_frobot with valid attributes creates frobot" do
     {:ok, user} = user_fixture(%{sparks: 6})
 
-    multi = Api._create_frobot_build_multi(user, @valid_frobot_attrs)
+    multi = Api._frobot_insert_multi(user, @valid_frobot_attrs)
 
     assert [
              {:frobot, {:insert, frobot_cs, []}},
-             {:xframe_inst, {:insert, xframe_inst_cs, []}},
-             {:cannon_inst, {:insert, cannon_inst_cs, []}},
-             {:scanner_inst, {:insert, scanner_inst_cs, []}},
-             {:missile_inst, {:insert, missile_inst_cs, []}},
-             {:equip_xframe, {:run, equip_xframe_cs}},
-             {:equip_cannon, {:run, equip_cannon_cs}},
-             {:equip_scanner, {:run, equip_scanner_cs}},
-             {:update_user, {:run, update_user_cs}}
+             {:xframe_inst, {:insert, _xframe_inst_cs, []}},
+             {:cannon_inst, {:insert, _cannon_inst_cs, []}},
+             {:scanner_inst, {:insert, _scanner_inst_cs, []}},
+             {:missile_inst, {:insert, _missile_inst_cs, []}},
+             {:equip_xframe, {:run, _equip_xframe_cs}},
+             {:equip_cannon, {:run, _equip_cannon_cs}},
+             {:equip_scanner, {:run, _equip_scanner_cs}},
+             # {:equip_missile, {:run, _equip_missile_cs}},
+             {:update_user, {:run, _update_user_cs}}
            ] = Ecto.Multi.to_list(multi)
 
     assert frobot_cs.valid?
-    assert {:ok, frobot_id} = Api._create_frobot_run_multi(multi)
+    assert {:ok, frobot_id} = Api._run_multi(multi)
     assert frobot_id > 0
 
     refresh_user = Accounts.get_user_by(id: user.id)
@@ -42,22 +43,22 @@ defmodule Frobots.FrobotsApiTest do
   test "Calling Api.create_frobot with invalid attributes returns error" do
     {:ok, user} = user_fixture(%{sparks: 6})
 
-    multi = Api._create_frobot_build_multi(user, @invalid_frobot_attrs)
+    multi = Api._frobot_insert_multi(user, @invalid_frobot_attrs)
 
     assert [
              {:frobot, {:insert, frobot_cs, []}},
-             {:xframe_inst, {:insert, xframe_inst_cs, []}},
-             {:cannon_inst, {:insert, cannon_inst_cs, []}},
-             {:scanner_inst, {:insert, scanner_inst_cs, []}},
-             {:missile_inst, {:insert, missile_inst_cs, []}},
-             {:equip_xframe, {:run, equip_xframe_cs}},
-             {:equip_cannon, {:run, equip_cannon_cs}},
-             {:equip_scanner, {:run, equip_scanner_cs}},
-             {:update_user, {:run, update_user_cs}}
+             {:xframe_inst, {:insert, _xframe_inst_cs, []}},
+             {:cannon_inst, {:insert, _cannon_inst_cs, []}},
+             {:scanner_inst, {:insert, _scanner_inst_cs, []}},
+             {:missile_inst, {:insert, _missile_inst_cs, []}},
+             {:equip_xframe, {:run, _equip_xframe_cs}},
+             {:equip_cannon, {:run, _equip_cannon_cs}},
+             {:equip_scanner, {:run, _equip_scanner_cs}},
+             {:update_user, {:run, _update_user_cs}}
            ] = Ecto.Multi.to_list(multi)
 
     refute frobot_cs.valid?
-    assert {:error, errors} = Api._create_frobot_run_multi(multi)
+    assert {:error, _errors} = Api._run_multi(multi)
   end
 
   test "User with insufficient sparks cannot create frobot" do

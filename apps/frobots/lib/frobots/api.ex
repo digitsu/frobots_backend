@@ -35,9 +35,13 @@ defmodule Frobots.Api do
         attrs
       end
 
-    Events.create_match(match_details)
+    case Events.create_match(match_details) do
+      {:error, cs} -> {:error, Jason.encode!(Frobots.ChangesetError.translate_errors(cs))}
+      {:ok, match} -> {:ok, match}
+    end
   end
 
+  ## params = [search_pattern: "as", match_status: :done, match_type: :real]
   def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
     query =
       Match
@@ -73,6 +77,80 @@ defmodule Frobots.Api do
       case Keyword.get(params, :match_type, nil) do
         nil ->
           query
+          |> where([match, user], match.type == :real)
+
+        match_type ->
+          query
+          |> where([match, user], match.type == ^match_type)
+      end
+
+    Events.list_paginated(query, page_config, preload, order_by)
+  end
+
+  ## params = [frobot_id: 1, match_status: [:done]]
+  def list_paginated_frobot_battlelog(params \\ [], page_config \\ []) do
+    query =
+      Match
+      |> join(:left, [m], s in Slot, on: m.id == s.match_id)
+      |> join(:left, [m, s], f in Frobot, on: s.frobot_id == f.id)
+
+    match_status = Keyword.get(params, :match_status, ["pending", "running"])
+
+    query =
+      if is_list(match_status) do
+        query
+        |> where([m, s, f], m.status in ^match_status)
+      else
+        query
+        |> where([m, s, f], m.status == ^match_status)
+      end
+
+    query =
+      case Keyword.get(params, :frobot_id, nil) do
+        nil ->
+          query
+
+        frobot_id ->
+          query
+          |> where([m, s, f], f.id == ^frobot_id)
+      end
+
+    query =
+      query
+      |> select([m, s, f], %{
+        "match_id" => m.id,
+        "match_name" => m.title,
+        "winner" => "TBD",
+        "xp" => f.xp,
+        "status" => m.status,
+        "time" => m.match_time
+      })
+
+    Events.list_paginated(query, page_config)
+  end
+
+  def count_matches_by_status(status), do: Events.count_matches_by_status(status)
+
+  def get_match_details_by_id(match_id),
+    do: Events.get_match_by([id: match_id], slots: [frobot: :user])
+
+  def list_match_by(params, preload \\ [], order_by \\ []) do
+    query = Match
+
+    query =
+      case Keyword.get(params, :match_status, nil) do
+        nil ->
+          query
+
+        match_status ->
+          query
+          |> where([match], match.status == ^match_status)
+      end
+
+    query =
+      case Keyword.get(params, :match_type, nil) do
+        nil ->
+          query
           |> where([match], match.type == :real)
 
         match_type ->
@@ -80,13 +158,18 @@ defmodule Frobots.Api do
           |> where([match], match.type == ^match_type)
       end
 
-    Events.list_paginated_matches(query, page_config, preload, order_by)
+    query =
+      case Keyword.get(params, :match_time, nil) do
+        nil ->
+          query
+
+        match_time ->
+          query
+          |> where([match], match.match_time <= ^match_time)
+      end
+
+    Events.list_match_by(query, preload, order_by)
   end
-
-  def count_matches_by_status(status), do: Events.count_matches_by_status(status)
-
-  def get_match_details_by_id(match_id),
-    do: Events.list_match_by([id: match_id], slots: [frobot: :user]) |> List.first()
 
   def update_slot(match_id, slot_id, attrs) do
     case Events.get_slot_by(id: slot_id, match_id: match_id) do
@@ -98,14 +181,15 @@ defmodule Frobots.Api do
   def join_match(_user, _match) do
   end
 
+  def create_frobot(user, name, brain_code, extra_params \\ %{})
+
   def create_frobot(user, _name, _brain_code, _extra_params) when user.sparks <= 0 do
     {:error, "User does not have enough sparks."}
   end
 
   def create_frobot(_user, name, brain_code, _extra_params)
-      when name == "" or
-             brain_code == "" do
-    IO.inspect("Name and Braincode required to create frobot")
+      when name == "" or brain_code == "" do
+    # IO.inspect("Name and Braincode required to create frobot")
     {:error, "Frobot name and braincode are required."}
   end
 
@@ -131,8 +215,23 @@ defmodule Frobots.Api do
         "class" => Assets.default_user_class()
       })
 
-    _create_frobot_build_multi(user, frobot_attrs)
-    |> _create_frobot_run_multi()
+    case _frobot_insert_multi(user, frobot_attrs) |> _run_multi() do
+      {:ok, res} -> {:ok, res.frobot.id}
+      {:error, msg} -> msg
+    end
+  end
+
+  @doc ~S"""
+  This function is to reset (or set) frobot with default setup and equipment
+  """
+  def reset_frobot(frobot) do
+    frobot = frobot |> Repo.preload(:user)
+    Equipment.dequip_all(frobot)
+
+    case _frobot_update_multi(frobot.user, frobot) |> _run_multi() do
+      {:ok, res} -> res
+      {:error, msg} -> msg
+    end
   end
 
   @doc ~S"""
@@ -140,12 +239,12 @@ defmodule Frobots.Api do
     This is called internally called from create_frobot to build an Ecto.multi structure.
     Building Ecto.multi structure in separate function makes testing easier.
 
-    ex: multi_list = Api._create_frobot_build_multi(user, @valid_frobot_attrs) |> Ecto.Multi.to_list()
+    ex: multi_list = Api._frobot_insert_multi(user, @valid_frobot_attrs) |> Ecto.Multi.to_list()
 
     Where multi_list is a list of changesets that can asserted for validity.
 
   """
-  def _create_frobot_build_multi(user, frobot_attrs) do
+  def _frobot_insert_multi(user, frobot_attrs) do
     Multi.new()
     |> Multi.insert(:frobot, create_frobot_changeset(user, frobot_attrs))
     |> Multi.insert(
@@ -164,48 +263,84 @@ defmodule Frobots.Api do
     |> Multi.update(:equip_scanner, fn %{frobot: frobot, scanner_inst: scanner_inst} ->
       Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
     end)
+    # |> Multi.update(:equip_missile, fn %{frobot: frobot, missile_inst: missile_inst} ->
+    #   Equipment.equip_part_changeset(missile_inst.id, frobot.id, "Missile")
+    # end)
     |> Multi.update(:update_user, fn %{frobot: frobot} ->
-      update_user_changeset(frobot.user_id)
+      decr_sparks_changeset(frobot.user_id)
     end)
+  end
+
+  def _frobot_update_multi(user, frobot) do
+    Multi.new()
+    |> Multi.insert(
+      :xframe_inst,
+      Equipment.create_equipment_changeset(user, "Xframe", :Chassis_Mk1)
+    )
+    |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
+    |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
+    |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
+    |> Multi.update(:equip_xframe, fn %{xframe_inst: xframe_inst} ->
+      Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
+    end)
+    |> Multi.update(:equip_cannon, fn %{cannon_inst: cannon_inst} ->
+      Equipment.equip_part_changeset(cannon_inst.id, frobot.id, "Cannon")
+    end)
+    |> Multi.update(:equip_scanner, fn %{scanner_inst: scanner_inst} ->
+      Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
+    end)
+
+    #  |> Multi.update(:equip_missile, fn %{missile_inst: missile_inst} ->
+    #    Equipment.equip_part_changeset(missile_inst.id, frobot.id, "Missile")
+    #  end)
   end
 
   @doc ~S"""
     Runs Multi structure
-    This function is called after _create_frobot_build_multi.
+    This function is called after _frobot_insert_multi.
 
     The actual db operations are run in this step as a transaction and any failures are rolled back
     Function returns {:ok, frobot_id} or {:error, reason} to caller
   """
-  def _create_frobot_run_multi(multi) do
+  def _run_multi(multi) do
     case Repo.transaction(multi) do
-      {:ok, result} ->
-        {:ok, result.frobot.id}
+      {:ok, res} ->
+        {:ok, res}
 
-      {:error, :frobot, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :frobot, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :xframe_inst, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :xframe_inst, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :cannon_inst, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :cannon_inst, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :scanner_inst, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :scanner_inst, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :missile_inst, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :missile_inst, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :equip_xframe, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :equip_xframe, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :equip_cannon, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :equip_cannon, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :equip_scanner, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :equip_scanner, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
 
-      {:error, :update_user, %Ecto.Changeset{} = cs, _changes} ->
+      {:error, :update_user, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
         return_errors(cs)
     end
   end
@@ -241,7 +376,9 @@ defmodule Frobots.Api do
           "image" => "https://via.placeholder.com/50.png",
           "magazine_size" => 2,
           "rate_of_fire" => 1,
-          "reload_time" => 5
+          "reload_time" => 5,
+          "equipment_class" => "cannon",
+          "equipment_type" => :Mk1
         },
         %{
           "cannon_id" => 2,
@@ -249,7 +386,9 @@ defmodule Frobots.Api do
           "image" => "https://via.placeholder.com/50.png",
           "magazine_size" => 2,
           "rate_of_fire" => 1,
-          "reload_time" => 5
+          "reload_time" => 5,
+          "equipment_class" => "cannon",
+          "equipment_type" => :Mk2
         }
       ],
       "frobot_id" => 8,
@@ -262,7 +401,9 @@ defmodule Frobots.Api do
           "image" => "https://via.placeholder.com/50.png",
           "missile_id" => 1,
           "range" => 900,
-          "speed" => 400
+          "speed" => 400,
+          "equipment_class" => "missile",
+          "equipment_type" => :Mk1
         }
       ],
       "name" => "piper",
@@ -273,7 +414,9 @@ defmodule Frobots.Api do
           "image" => "https://via.placeholder.com/50.png",
           "max_range" => 700,
           "resolution" => 10,
-          "scanner_id" => 1
+          "scanner_id" => 1,
+          "equipment_class" => "scanner",
+          "equipment_type" => :Mk1,
         }
       ],
       "user_id" => 2,
@@ -286,6 +429,8 @@ defmodule Frobots.Api do
         "max_speed_ms" => 30,
         "max_throttle" => 100,
         "turn_speed" => 50,
+        "equipment_class" => "xframe",
+        "equipment_type" => :Chassis_Mk1,
         "xframe_id" => 1
       },
       "xp" => 0
@@ -303,12 +448,31 @@ defmodule Frobots.Api do
     end
   end
 
+  @doc ~S"""
+    Returns the base url to use to fetch images from s3.
+    Use this base url to fetch images from the appropriate bucket.
+
+    Example
+    #iex>Api.get_image_base_url()
+    #iex> {:ok, "https://ap-south-1.linodeobjects.com/frobots-assets"}
+  """
+  def get_s3_base_url() do
+    s3_base_url = Application.get_env(:ex_aws, :s3)[:host]
+    s3_bucket = Application.get_env(:ex_aws, :s3)[:bucket]
+
+    "https://#{s3_base_url}/#{s3_bucket}/"
+  end
+
+  def get_s3_bucket_name() do
+    Application.get_env(:ex_aws, :s3)[:bucket]
+  end
+
   def _preload_equipment_instances(frobot) do
     frobot
-    |> Repo.preload(:xframe_inst)
-    |> Repo.preload(:cannon_inst)
-    |> Repo.preload(:scanner_inst)
-    |> Repo.preload(:missile_inst)
+    |> Repo.preload(xframe_inst: [:xframe])
+    |> Repo.preload(cannon_inst: [:cannon])
+    |> Repo.preload(scanner_inst: [:scanner])
+    |> Repo.preload(missile_inst: [:missile])
     |> _parse_frobot_details()
   end
 
@@ -321,7 +485,8 @@ defmodule Frobots.Api do
       "avatar" => frobot.avatar,
       "xp" => frobot.xp,
       "bio" => frobot.bio,
-      "user_id" => frobot.user_id
+      "user_id" => frobot.user_id,
+      "class" => frobot.class
     }
 
     frobot_details =
@@ -355,7 +520,9 @@ defmodule Frobots.Api do
         "health" => frobot.xframe_inst.health,
         "max_throttle" => frobot.xframe_inst.max_throttle,
         "accel_speed_mss" => frobot.xframe_inst.accel_speed_mss,
-        "image" => frobot.xframe_inst.image
+        "image" => frobot.xframe_inst.xframe.image,
+        "equipment_class" => frobot.xframe_inst.xframe.class,
+        "equipment_type" => frobot.xframe_inst.xframe.type
       }
     else
       []
@@ -376,7 +543,9 @@ defmodule Frobots.Api do
             "reload_time" => cannon_inst.reload_time,
             "rate_of_fire" => cannon_inst.rate_of_fire,
             "magazine_size" => cannon_inst.magazine_size,
-            "image" => cannon_inst.image
+            "image" => cannon_inst.cannon.image,
+            "equipment_class" => cannon_inst.cannon.class,
+            "equipment_type" => cannon_inst.cannon.type
           }
         end)
       end
@@ -398,7 +567,9 @@ defmodule Frobots.Api do
             "scanner_id" => scanner_inst.scanner_id,
             "max_range" => scanner_inst.max_range,
             "resolution" => scanner_inst.resolution,
-            "image" => scanner_inst.image
+            "image" => scanner_inst.scanner.image,
+            "equipment_class" => scanner_inst.scanner.class,
+            "equipment_type" => scanner_inst.scanner.type
           }
         end)
       end
@@ -423,7 +594,9 @@ defmodule Frobots.Api do
             "damage_far" => missile_inst.damage_far,
             "speed" => missile_inst.speed,
             "range" => missile_inst.range,
-            "image" => missile_inst.image
+            "image" => missile_inst.missile.image,
+            "equipment_class" => missile_inst.missile.class,
+            "equipment_type" => missile_inst.missile.type
           }
         end)
       end
@@ -432,7 +605,8 @@ defmodule Frobots.Api do
     end
   end
 
-  defp update_user_changeset(user_id) do
+  # todo this is wrong to always decrement the sparks.
+  defp decr_sparks_changeset(user_id) do
     user = Accounts.get_user_by(id: user_id)
     attrs = %{"sparks" => user.sparks - 1}
 
@@ -470,7 +644,7 @@ defmodule Frobots.Api do
     [
       %{
         id: 1,
-        image_url: "https://ap-south-1.linodeobjects.com/frobots-assests/arena.png"
+        image_url: get_s3_base_url() <> "images/arenas/arena1.png"
       }
     ]
   end

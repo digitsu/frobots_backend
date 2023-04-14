@@ -2,18 +2,80 @@ import React, { useState } from 'react'
 import { Card, Typography, Box, Grid, Button } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import EquipmentDetails from './EquipmentDetails'
 
 interface AttachedEquipmentsProps {
   equipments: any[]
   isOwnedFrobot: boolean
+  frobotId: number
+  imageBaseUrl: string
 }
 
+const columnsPerPage = 4
+
 export default (props: AttachedEquipmentsProps) => {
-  const { equipments, isOwnedFrobot } = props
+  const { equipments, isOwnedFrobot, frobotId, imageBaseUrl } = props
+  const equipmentLength = equipments.length
   const [currentEquipment, setCurrentEquipment] = useState(equipments[0])
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [leftOffset, setOffsetLeft] = useState(0)
+  const [rightOffset, setOffsetRight] = useState(
+    equipmentLength > columnsPerPage ? columnsPerPage : equipmentLength
+  )
+
+  const getcurrentItemNumber = () => {
+    let itemNumber = 0
+    if (equipmentLength) {
+      itemNumber = leftOffset + currentIndex + 1
+    }
+
+    return `(${itemNumber} / ${equipmentLength})`
+  }
 
   const switchEquipment = (index: number) => {
     setCurrentEquipment(equipments[index])
+    setCurrentIndex(index)
+  }
+
+  const handleLeftClick = () => {
+    if (leftOffset <= 0) {
+      return
+    }
+
+    const newLeftOffset =
+      leftOffset - columnsPerPage < 0 ? 0 : leftOffset - columnsPerPage
+    setOffsetLeft(newLeftOffset)
+    setOffsetRight(
+      rightOffset - columnsPerPage < columnsPerPage
+        ? columnsPerPage
+        : rightOffset - columnsPerPage
+    )
+    setCurrentIndex(0)
+    setCurrentEquipment(equipments[newLeftOffset])
+  }
+
+  const handleRightClick = () => {
+    if (rightOffset >= equipmentLength) {
+      return
+    }
+
+    const newLeftOffset =
+      leftOffset + columnsPerPage > equipmentLength
+        ? leftOffset
+        : leftOffset + columnsPerPage
+    setOffsetLeft(newLeftOffset)
+    setOffsetRight(
+      rightOffset + columnsPerPage > equipmentLength
+        ? equipmentLength
+        : rightOffset + columnsPerPage
+    )
+    setCurrentIndex(0)
+
+    setCurrentEquipment(equipments[newLeftOffset])
+  }
+
+  const handleViewEquipmentBay = () => {
+    window.location.href = `/garage/frobot/equipment_bay?id=${frobotId}`
   }
 
   return (
@@ -38,14 +100,17 @@ export default (props: AttachedEquipmentsProps) => {
                   borderRadius: '4px',
                 }}
               >
-                <ChevronLeftIcon
-                  sx={{
-                    color: '#FFFFFF7E',
-                  }}
-                />
+                {leftOffset !== 0 && (
+                  <ChevronLeftIcon
+                    sx={{
+                      color: '#FFFFFF7E',
+                    }}
+                    onClick={handleLeftClick}
+                  />
+                )}
               </Box>
               <Typography variant={'subtitle1'}>
-                Attached Equipments (1/2)
+                Attached Equipments {getcurrentItemNumber()}
               </Typography>
               <Box
                 sx={{
@@ -54,11 +119,14 @@ export default (props: AttachedEquipmentsProps) => {
                   borderRadius: '4px',
                 }}
               >
-                <ChevronRightIcon
-                  sx={{
-                    color: '#FFFFFF',
-                  }}
-                />
+                {rightOffset !== equipmentLength && (
+                  <ChevronRightIcon
+                    sx={{
+                      color: '#FFFFFF',
+                    }}
+                    onClick={handleRightClick}
+                  />
+                )}
               </Box>
             </Box>
 
@@ -68,27 +136,51 @@ export default (props: AttachedEquipmentsProps) => {
                 '&::-webkit-scrollbar': { display: 'none' },
               }}
             >
-              <Box display={'flex'}>
-                {equipments.slice(0, 4).map((equipment: any, index: number) => (
-                  <Grid
-                    item
-                    lg={4}
-                    md={8}
-                    sm={6}
-                    xs={12}
-                    key={index}
-                    onClick={() => switchEquipment(index)}
-                  >
-                    <Box sx={{ px: 4, pb: 2 }}>
-                      <Box pl={2} component={'img'} src={equipment.avatar} />
-                      <Box textAlign={'center'} mt={3}>
-                        <Typography fontWeight={'bold'} variant="subtitle1">
-                          {equipment.name}
-                        </Typography>
+              <Box
+                display={'flex'}
+                sx={{
+                  '@media (max-width: 900px)': {
+                    overflowX: 'scroll',
+                  },
+                }}
+              >
+                {equipments
+                  .slice(leftOffset, rightOffset)
+                  .map((equipment: any, index: number) => (
+                    <Grid
+                      item
+                      lg={4}
+                      md={8}
+                      sm={6}
+                      xs={12}
+                      key={index}
+                      onClick={() => switchEquipment(index)}
+                    >
+                      <Box sx={{ px: 4, pb: 2 }} width={250} height={250}>
+                        <Box
+                          component={'img'}
+                          src={`${imageBaseUrl}${equipment.image}`}
+                          sx={{
+                            borderRadius: '20px',
+                            border:
+                              index === currentIndex
+                                ? '4px solid #00AB55'
+                                : 'none',
+                          }}
+                        />
+                        <Box textAlign={'center'} mt={3}>
+                          <Typography
+                            fontWeight={'bold'}
+                            variant="subtitle1"
+                            textTransform={'capitalize'}
+                          >
+                            {equipment.equipment_class}{' '}
+                            {equipment.equipment_type}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  </Grid>
-                ))}
+                    </Grid>
+                  ))}
               </Box>
             </Box>
           </Grid>
@@ -102,72 +194,9 @@ export default (props: AttachedEquipmentsProps) => {
               backgroundColor: '#00AB5529',
             }}
           >
-            <Box>
-              <Typography sx={{ pl: 4, pt: 2, mt: 1, mb: 2 }} variant={'h6'}>
-                {currentEquipment?.name}
-              </Typography>
-              <Box>
-                <Grid pl={4} container spacing={2}>
-                  <Grid item xs={4}>
-                    <Box textAlign="left">
-                      <Typography my={1.2} variant="subtitle2">
-                        Max Range
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        Magazine
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        Damage
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        Reload
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        RoF
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid item>
-                    <Box textAlign="center">
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        :
-                      </Typography>
-                    </Box>
-                  </Grid>
-                  <Grid pr={4} item xs={7}>
-                    <Box textAlign="right">
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.maxRange}
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.magazine}
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.damage}
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.reload}
-                      </Typography>
-                      <Typography my={1.2} variant="subtitle2">
-                        {currentEquipment?.props?.roF}
-                      </Typography>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
+            {equipmentLength !== 0 && (
+              <EquipmentDetails equipment={currentEquipment} />
+            )}
 
             {isOwnedFrobot && (
               <Box
@@ -178,6 +207,7 @@ export default (props: AttachedEquipmentsProps) => {
                 <Button
                   variant="text"
                   fullWidth
+                  onClick={handleViewEquipmentBay}
                   sx={{
                     backgroundColor: '#00AB552F',
                     color: '#5BE584',

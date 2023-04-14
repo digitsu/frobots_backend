@@ -7,10 +7,11 @@ interface frobotDetailsProps {
   frobotDetails: any
   currentUser: any
   isOwnedFrobot: boolean
+  imageBaseUrl: string
 }
 
 export default (props: frobotDetailsProps) => {
-  const { frobotDetails, isOwnedFrobot } = props
+  const { frobotDetails, isOwnedFrobot, imageBaseUrl } = props
 
   return (
     <Grid container mb={2} spacing={2}>
@@ -46,7 +47,7 @@ export default (props: frobotDetailsProps) => {
             }}
             component={'img'}
             width={'100%'}
-            src={frobotDetails.avatar}
+            src={`${imageBaseUrl}${frobotDetails.avatar}`}
           ></Box>
         </Card>
       </Grid>
@@ -88,11 +89,11 @@ export default (props: frobotDetailsProps) => {
               #{generateRandomString(31)}
             </Typography>
             <Typography variant="h6" gutterBottom mt={2}>
-              Mech/Xframe
+              Xframe
             </Typography>
             <Box display={'flex'} alignItems={'baseline'}>
               <Typography pr={2} variant="body2" gutterBottom>
-                {frobotDetails.mech || '-'}
+                {frobotDetails?.xframe_inst?.equipment_type || '-'}
               </Typography>
               {frobotDetails.isBoost && (
                 <Button

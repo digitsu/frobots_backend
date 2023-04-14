@@ -71,8 +71,10 @@ defmodule FrobotsWeb.MixProject do
   defp aliases do
     [
       setup: ["deps.get"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
+      # compile: ["run"],
+      # run: ["phx.digest", "cmd 'cd assets && npm install'"]
+      install: ["phx.digest", "cmd --cd assets npm install"]
     ]
   end
 end

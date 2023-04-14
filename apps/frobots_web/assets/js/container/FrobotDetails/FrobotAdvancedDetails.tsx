@@ -105,17 +105,17 @@ export default (props: AdvancedDetailsProps) => {
                     {frobotDetails.ranking || 0}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {frobotDetails.xframe_inst.health} /{' '}
-                    {frobotDetails.xframe_inst.max_health}
+                    {frobotDetails?.xframe_inst?.health || 0} /{' '}
+                    {frobotDetails?.xframe_inst?.max_health || 0}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {frobotDetails.xframe_inst.max_speed_ms}
+                    {frobotDetails?.xframe_inst?.max_speed_ms || 0}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {frobotDetails.xframe_inst.turn_speed}
+                    {frobotDetails?.xframe_inst?.turn_speed || 0}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {frobotDetails.xframe_inst.max_throttle}
+                    {frobotDetails?.xframe_inst?.max_throttle || 0}
                   </Typography>
                 </Box>
               </Grid>

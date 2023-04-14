@@ -14,13 +14,25 @@
     <header>
       <%= if @current_user do %>
           <div class="flex flex-row space-y-3.5 py-4 px-8 items-center justify-between  border-b-2 border-b-gray-800">
-            <p class="w-24 h-8 text-xl font-bold tracking-wider leading-relaxed text-white uppercase"><a href="/home">FROBOTS</a></p>
+            <p class="w-24 h-8 text-xl font-bold tracking-wider leading-relaxed text-white uppercase">
+              <a href="/home" class="flex items-center">
+                <img src={Routes.static_path(@conn, "/images/frobot_green.png" )} alt="logo" class="w-6 mr-2">
+                FROBOTS
+              </a>
+            </p>
             <nav role="navigation">
               <div class="inline-flex space-x-8 items-center justify-end h-8">
                 <p class="tracking-wider leading-relaxed text-gray-400"><a href="/home">Dashboard</a></p>
                 <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/garage">Garage</a> </p>
                 <p class="tracking-wider leading-relaxed text-gray-400"><a href="/arena">Arena</a></p>
                 <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/docs">Docs</a> </p>
+
+                <%= if @current_user.admin == true do %>
+                <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/admin">Admin</a> </p>
+
+                <% end %>
+
+
                 <p><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></p>
             </div>
           </nav>

@@ -1,30 +1,17 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Typography, Autocomplete, TextField, Button } from '@mui/material'
+import {
+  Box,
+  Typography,
+  Autocomplete,
+  TextField,
+  Button,
+  Grid,
+} from '@mui/material'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
 
-const starterMechs = [
-  {
-    id: 0,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot1.png',
-    name: 'Tiny Bot',
-  },
-  {
-    id: 1,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot2.png',
-    name: 'Little Buzz',
-  },
-  {
-    id: 2,
-    bgUrl: '/images/frobot_bg.png',
-    src: '/images/frobot3.png',
-    name: 'Small bee',
-  },
-]
 export default (props: any) => {
-  const { templates } = props
+  const { templates, starterMechs, s3BaseUrl } = props
   const templateFrobots =
     templates?.map(({ name, brain_code, blockly_code }, index) => ({
       label: name,
@@ -47,8 +34,9 @@ export default (props: any) => {
     (store: any) => store.createFrobot
   )
   const selectedMech = starterMech.id
+
   return (
-    <Box width={'60%'} m={'auto'} mt={10}>
+    <Box width={'65%'} m={'auto'} mt={10}>
       <Typography mb={2} variant={'body1'} fontWeight={'bold'}>
         Enter Basic Details
       </Typography>
@@ -76,31 +64,36 @@ export default (props: any) => {
       <Box my={2}>
         <Box mb={1}>
           <Typography variant="body2" color={'lightslategray'}>
-            Select Starter Mech
+            Select Frobot Avatar
           </Typography>
         </Box>
-        <Box
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'flex-start'}
-          gap={4}
-        >
+        <Grid container spacing={2}>
           {starterMechs.map((starterMech, index) => (
-            <Box onClick={() => changeStarterMechHandler(starterMech)}>
+            <Grid
+              item
+              xs={4}
+              sm={3}
+              md={2}
+              lg={12 / 7}
+              key={index}
+              onClick={() => changeStarterMechHandler(starterMech)}
+            >
               <Box
                 position={'relative'}
-                width={100}
-                height={100}
+                width={'100%'}
+                height={'100%'}
                 m={'auto'}
-                sx={{ cursor: 'pointer' }}
+                sx={{ cursor: 'pointer', p: 1 }}
               >
                 <Box
                   component={'img'}
                   width={'100%'}
-                  src={starterMech.bgUrl}
+                  src={'/images/frobot_bg.png'}
                   sx={{
                     boxShadow:
-                      selectedMech === index ? '0 0 0 2pt #00AB55' : 'none',
+                      selectedMech === starterMech.id
+                        ? '0 0 0 2pt #00AB55'
+                        : 'none',
                     borderRadius: '6px',
                   }}
                 ></Box>
@@ -111,9 +104,9 @@ export default (props: any) => {
                   zIndex={1}
                   position={'absolute'}
                   component={'img'}
-                  width={'70%'}
-                  height={'70%'}
-                  src={starterMech.src}
+                  width={'65%'}
+                  height={'65%'}
+                  src={`${s3BaseUrl}${starterMech.avatar}`}
                 />
               </Box>
               <Box textAlign={'center'} mt={1}>
@@ -121,9 +114,9 @@ export default (props: any) => {
                   {starterMech.name}
                 </Typography>
               </Box>
-            </Box>
+            </Grid>
           ))}
-        </Box>
+        </Grid>
       </Box>
       <Box my={2}>
         <Autocomplete

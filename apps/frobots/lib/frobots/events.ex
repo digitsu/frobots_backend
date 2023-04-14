@@ -166,8 +166,9 @@ defmodule Frobots.Events do
   end
 
   def change_match(%Match{} = match, attrs \\ %{}) do
-    Repo.preload(match, :battlelog)
-    |> Match.changeset(attrs)
+    match
+    |> Repo.preload([:slots, :battlelog])
+    |> Match.update_changeset(attrs)
     |> Repo.update()
     |> broadcast_change([:match, :updated])
   end
@@ -176,15 +177,8 @@ defmodule Frobots.Events do
     Match |> where(^params) |> preload(^preload) |> Repo.one()
   end
 
-  def list_match_by(params, preload \\ [], order_by \\ []) do
-    Match |> where(^params) |> preload(^preload) |> order_by(^order_by) |> Repo.all()
-  end
-
-  def list_paginated_matches(query, page_config, preload, order_by) do
-    query
-    |> preload(^preload)
-    |> order_by(^order_by)
-    |> Repo.paginate(page_config)
+  def list_match_by(query, preload \\ [], order_by \\ []) do
+    query |> preload(^preload) |> order_by(^order_by) |> Repo.all()
   end
 
   def count_matches_by_status(status) when is_atom(status) do
@@ -365,7 +359,12 @@ defmodule Frobots.Events do
 
   def send_player_leaderboard_entries() do
     data = send_leaderboard_entries()
-    uniq_names = Enum.map(data, fn x -> x.username end) |> Enum.uniq()
+
+    uniq_names =
+      Enum.map(data, fn x -> x.username end)
+      |> Enum.uniq()
+      |> Enum.filter(&(!is_nil(&1)))
+
     # group data by username, sort and rank
     for name <- uniq_names do
       user = Accounts.get_user_by(name: name)
@@ -478,5 +477,17 @@ defmodule Frobots.Events do
         }
 
     Repo.all(q)
+  end
+
+  def list_paginated(query, page_config) do
+    query
+    |> Repo.paginate(page_config)
+  end
+
+  def list_paginated(query, page_config, preload, order_by) do
+    query
+    |> preload(^preload)
+    |> order_by(^order_by)
+    |> Repo.paginate(page_config)
   end
 end

@@ -6,11 +6,10 @@ defmodule Frobots.Events.Slot do
   alias Frobots.Assets.Frobot
 
   @derive {Jason.Encoder, only: [:status, :match_id, :frobot_id, :slot_type]}
-
   schema "slots" do
     field(:slot_type, Ecto.Enum, values: [:host, :protobot, :player])
-    field(:status, Ecto.Enum, values: [:open, :closed, :joining, :ready])
-
+    field(:status, Ecto.Enum, values: [:open, :closed, :joining, :ready, :done, :cancelled])
+    field(:match_type, Ecto.Enum, values: [:simulation, :real], default: :real)
     belongs_to(:frobot, Frobot)
     belongs_to(:match, Match)
     timestamps()
@@ -21,11 +20,14 @@ defmodule Frobots.Events.Slot do
   @doc false
   def changeset(slot, attrs) do
     slot
-    |> cast(attrs, @fields ++ [:slot_type, :frobot_id, :match_id])
+    |> cast(attrs, @fields ++ [:slot_type, :frobot_id, :match_id, :match_type])
     |> cast_assoc(:match)
     |> validate_required(@fields)
     |> validate_slot_type(attrs)
-    |> unique_constraint(:frobot_id, name: :unique_frobot_id_slot)
+    |> unique_constraint(:frobot_id,
+      name: :unique_frobot_id_slot,
+      message: "is already used in a match"
+    )
   end
 
   @doc false
@@ -34,7 +36,10 @@ defmodule Frobots.Events.Slot do
     |> cast(attrs, @fields ++ [:frobot_id, :slot_type])
     |> validate_status(attrs)
     |> validate_slot_type(attrs)
-    |> unique_constraint(:frobot_id, name: :unique_frobot_id_slot)
+    |> unique_constraint(:frobot_id,
+      name: :unique_frobot_id_slot,
+      message: "is already used in a match"
+    )
   end
 
   defp validate_status(%Ecto.Changeset{valid?: true} = changeset, attrs) do

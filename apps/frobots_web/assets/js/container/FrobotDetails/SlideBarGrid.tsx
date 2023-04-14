@@ -1,4 +1,4 @@
-import { Box, Grid, styled } from '@mui/material'
+import { Box, Card, Grid, styled } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 
@@ -25,11 +25,12 @@ interface SlideBarGridProps {
   userFrobots: UserFrobot[]
   currentFrobot: any
   currentUser: any
+  imageBaseUrl: string
 }
 
 export default (props: SlideBarGridProps) => {
   const [selectedImage, setSelectedImage] = useState(0)
-  const { userFrobots, currentFrobot, currentUser } = props
+  const { userFrobots, currentFrobot, currentUser, imageBaseUrl } = props
 
   useEffect(() => {
     setSelectedImage(currentFrobot.frobot_id)
@@ -46,23 +47,48 @@ export default (props: SlideBarGridProps) => {
 
   return (
     <>
-      <Grid spacing={2} pl={2} pr={1}>
+      <Grid pl={2} pr={1} pt={1}>
         {userFrobots.map((frobot) => (
           <Grid item key={frobot.id} xs={12} pb={3}>
-            <Box
-              component={'img'}
-              src={frobot.pixellated_img}
+            <Card
               sx={{
-                justifyContent: 'center',
-                alignItems: 'center',
+                bgcolor: '#212B36',
                 borderRadius: '10px',
-                width: 50,
-                height: 50,
+                paddingTop: '100%',
+                position: 'relative',
                 border:
-                  selectedImage === frobot.id ? '4px solid #00AB55' : 'none',
+                  selectedImage === frobot.id
+                    ? '3px solid #00AB55'
+                    : '3px solid #161c24',
               }}
               onClick={() => handleImageClick(frobot)}
-            ></Box>
+            >
+              <Box
+                component={'img'}
+                src={'/images/frobot_bg.png'}
+                width="100%"
+                height="100%"
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                }}
+              />
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  p: '2px',
+                  transform: 'translate(-50%, -50%)',
+                }}
+                component={'img'}
+                width={'100%'}
+                src={`${imageBaseUrl}${frobot.avatar}`}
+              />
+            </Card>
           </Grid>
         ))}
         {currentUser.sparks && (
@@ -71,7 +97,7 @@ export default (props: SlideBarGridProps) => {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              border: '1.5px solid #637381',
+              border: '3px solid #637381',
               borderRadius: '10px',
               width: 50,
               height: 50,

@@ -10,9 +10,8 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Frobots.Assets
+alias Frobots.{Assets, Accounts}
 alias Frobots
-alias Frobots.Accounts
 
 admin_user = System.get_env("ADMIN_USER")
 admin_pass = System.get_env("ADMIN_PASS")
@@ -25,7 +24,12 @@ admin_pass = System.get_env("ADMIN_PASS")
   })
 
 for {name, brain_path} <- Frobots.frobot_paths() do
-  type = if name in [:rabbit, :target, :dummy], do: Assets.target_class(), else: Assets.prototype_class() # I, II, IV, IX, etc
+  # I, II, IV, IX, etc
+  type =
+    if name in [:target, :dummy],
+      do: Assets.target_class(),
+      else: Assets.prototype_class()
+
   frobot = %{
     "brain_code" => File.read!(brain_path),
     # template
@@ -50,5 +54,6 @@ Frobots.Assets.create_xframe!(%{
   movement_type: :bipedal,
   max_throttle: 100,
   accel_speed_mss: 5,
-  max_health: 100
+  max_health: 100,
+  image: "images/equipment/chassis_mk1.png"
 })

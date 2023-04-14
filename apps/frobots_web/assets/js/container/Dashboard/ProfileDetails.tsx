@@ -98,8 +98,6 @@ export default (props: ProfileDetailsProps) => {
           <Grid item xs={3} sm={3} md={3} lg={3}>
             <Box
               margin={'auto'}
-              height={'190px'}
-              width={'250px'}
               src={user_avatar || '/images/user_logo.png'}
               component={'img'}
             />

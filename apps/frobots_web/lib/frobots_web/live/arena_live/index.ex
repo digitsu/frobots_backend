@@ -81,8 +81,8 @@ defmodule FrobotsWeb.ArenaLive.Index do
         {:noreply,
          push_redirect(socket, to: Routes.arena_lobby_index_path(socket, :index, match.id))}
 
-      {:error, changeset} ->
-        {:noreply, assign(socket, match_changeset: changeset)}
+      {:error, error} ->
+        {:noreply, socket |> put_flash(:error, error)}
     end
   end
 

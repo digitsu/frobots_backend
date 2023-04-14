@@ -1,9 +1,23 @@
 defmodule Frobots.Equipment do
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{Frobot, XframeInst, MissileInst, ScannerInst, CannonInst}
+
+  alias Frobots.Assets.{
+    XframeInst,
+    MissileInst,
+    ScannerInst,
+    CannonInst,
+    Xframe,
+    Cannon,
+    Scanner,
+    Missile
+  }
+
   alias Frobots.Accounts
   alias Frobots.Assets
+  alias Frobots.Assets.Frobot
+  alias Frobots.Api
+  alias Ecto.Multi
 
   @equipment_structs [%XframeInst{}, %CannonInst{}, %ScannerInst{}, %MissileInst{}]
   def equipment_structs() do
@@ -26,12 +40,25 @@ defmodule Frobots.Equipment do
     )
   end
 
-  defp _is_ordnance_class?(equipment_class) do
+  defp _get_inst_schema(equipment_class) do
+    String.to_existing_atom(String.downcase(equipment_class) <> "_inst")
+  end
+
+  defp _is_ordinance_class?(equipment_class) do
     String.downcase(equipment_class) in Enum.map(
       Frobots.ordnance_classes(),
       &Atom.to_string(&1)
     )
   end
+
+  # functions to get master template data
+  def list_xframes(), do: Repo.all(Xframe)
+
+  def list_cannons(), do: Repo.all(Cannon)
+
+  def list_scanners(), do: Repo.all(Scanner)
+
+  def list_missiles(), do: Repo.all(Missile)
 
   @doc ~S"""
   EQUIPMENT INTERFACE APIs
@@ -228,38 +255,28 @@ defmodule Frobots.Equipment do
   @doc """
   dequip everything from the frobot
   """
-  def dequip_all(%Frobot{id: frobot_id}) do
-    cannons =
-      from(c in CannonInst,
-        where: c.frobot_id == ^frobot_id
-      )
+  # todo - create test for dequiping!
+  def dequip_all(%Assets.Frobot{} = frobot) do
+    multi = Multi.new()
 
-    cannons
-    |> Repo.update_all(set: [frobot_id: nil])
+    changesets =
+      for equipment <- list_frobot_equipment(frobot.id) do
+        inst_module = _get_inst_module(equipment.class)
 
-    scanners =
-      from(s in ScannerInst,
-        where: s.frobot_id == ^frobot_id
-      )
+        cs =
+          equipment
+          |> Map.replace(:frobot, nil)
+          |> inst_module.changeset()
 
-    scanners
-    |> Repo.update_all(set: [frobot_id: nil])
+        {_get_inst_schema(equipment.class), cs}
+      end
 
-    xframes =
-      from(x in XframeInst,
-        where: x.frobot_id == ^frobot_id
-      )
+    add_to_multi = fn {schema, cs}, multi ->
+      Multi.insert(multi, schema, cs)
+    end
 
-    xframes
-    |> Repo.update_all(set: [frobot_id: nil])
-
-    missiles =
-      from(m in MissileInst,
-        where: m.frobot_id == ^frobot_id
-      )
-
-    missiles
-    |> Repo.update_all(set: [frobot_id: nil])
+    multi = Enum.reduce(changesets, multi, add_to_multi)
+    Api._run_multi(multi)
   end
 
   @doc """
@@ -409,8 +426,8 @@ defmodule Frobots.Equipment do
 
       equipment = get_equipment(equipment_class, equipment_instance_id) |> Repo.preload(:frobot)
 
-      if _is_ordnance_class?(equipment_class) do
-        build_weapon_equipment_part_changeset(
+      if _is_ordinance_class?(equipment_class) do
+        build_part_changeset(
           weapon_count,
           max_weapon_endpoints,
           frobot,
@@ -418,7 +435,7 @@ defmodule Frobots.Equipment do
           inst_module
         )
       else
-        build_scanner_equipment_part_changeset(
+        build_part_changeset(
           sensor_count,
           max_sensor_hardpoints,
           frobot,
@@ -431,29 +448,14 @@ defmodule Frobots.Equipment do
     end
   end
 
-  defp build_weapon_equipment_part_changeset(
-         total_weapons,
-         weapon_hardpoints,
+  defp build_part_changeset(
+         total_parts,
+         total_hardpoints,
          frobot,
          equipment,
          inst_module
        ) do
-    if total_weapons == weapon_hardpoints do
-      nil
-    else
-      inst_module.changeset(equipment, %{})
-      |> Ecto.Changeset.put_assoc(:frobot, frobot)
-    end
-  end
-
-  defp build_scanner_equipment_part_changeset(
-         total_sensors,
-         sensor_hardpoints,
-         frobot,
-         equipment,
-         inst_module
-       ) do
-    if total_sensors == sensor_hardpoints do
+    if total_parts == total_hardpoints do
       nil
     else
       inst_module.changeset(equipment, %{})

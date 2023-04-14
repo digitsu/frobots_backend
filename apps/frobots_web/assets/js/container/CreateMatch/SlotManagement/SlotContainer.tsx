@@ -2,29 +2,13 @@ import { Box, Card, Grid, Typography } from '@mui/material'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createMatchActions } from '../../../redux/slices/createMatch'
-const slotConfig = [
-  {
-    type: 'open',
-    url: '/images/frobot.svg',
-  },
-  {
-    type: 'host',
-    url: '/images/red_frobot.svg',
-  },
-  {
-    type: 'closed',
-    url: '/images/grey_frobot.svg',
-  },
-  {
-    type: 'proto',
-    url: '/images/yellow_frobot.svg',
-  },
-]
+
 export default () => {
   const { slots, currentActiveSlot } = useSelector((store) => store.createMatch)
   const { setCurrentActiveSlot } = createMatchActions
   const dispatch = useDispatch()
   const slotId = currentActiveSlot?.id
+
   return (
     <Box sx={{ height: '100%' }}>
       <Box my={2}>

@@ -5,8 +5,9 @@ import { createMatchActions } from '../../redux/slices/createMatch'
 import CreateMatchDetails from './CreateMatchDetails'
 import ChooseArena from './ChooseArena'
 import SlotManagement from './SlotManagement'
+
 export default (props: any) => {
-  const { templates, userFrobots } = props
+  const { templates, userFrobots, s3_base_url } = props
   const dispatch = useDispatch()
   const { activeStep } = useSelector((store: any) => store.createMatch)
   const { incrementStep, decrementStep, setProtobots, setUserFrobots } =
@@ -16,7 +17,12 @@ export default (props: any) => {
     { label: 'Step 2', component: <ChooseArena /> },
     {
       label: 'Step 3',
-      component: <SlotManagement createMatch={props.createMatch} />,
+      component: (
+        <SlotManagement
+          createMatch={props.createMatch}
+          imageBaseUrl={s3_base_url}
+        />
+      ),
     },
   ]
   useEffect(() => {

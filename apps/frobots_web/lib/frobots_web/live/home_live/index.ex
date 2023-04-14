@@ -1,12 +1,12 @@
 defmodule FrobotsWeb.HomeLive.Index do
   use FrobotsWeb, :live_view
-  require Logger
-  alias Frobots.{UserStats, GlobalStats}
+  alias Frobots.{UserStats, GlobalStats, Api}
   alias Frobots.{Accounts, Assets, Events}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
+    s3_base_url = Api.get_s3_base_url()
 
     # gets battlelogs info and stores in agent for further processing for player and leaderboard entries
     # this data should really come from db
@@ -14,6 +14,7 @@ defmodule FrobotsWeb.HomeLive.Index do
 
     {:ok,
      socket
+     |> assign(:username, get_user_name(current_user))
      |> assign(:frobots, Assets.list_user_frobots(current_user))
      |> assign(:current_user, current_user)
      |> assign(:featured_frobots, get_featured_frobots())
@@ -25,7 +26,8 @@ defmodule FrobotsWeb.HomeLive.Index do
      |> assign(:blog_posts, get_blog_posts())
      |> assign(:global_stats, GlobalStats.get_global_stats(current_user))
      |> assign(:frobot_leaderboard_stats, Events.send_leaderboard_entries())
-     |> assign(:player_leaderboard_stats, Events.send_player_leaderboard_entries())}
+     |> assign(:player_leaderboard_stats, Events.send_player_leaderboard_entries())
+     |> assign(:s3_base_url, s3_base_url)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -44,25 +46,25 @@ defmodule FrobotsWeb.HomeLive.Index do
         "id" => 1,
         "name" => "X-tron",
         "xp" => "65700 xp",
-        "image_path" => "/images/frobot1.png"
+        "image_path" => "images/frobots/1.png"
       },
       %{
         "id" => 2,
         "name" => "New Horizon",
         "xp" => "65700 xp",
-        "image_path" => "/images/frobot2.png"
+        "image_path" => "images/frobots/2.png"
       },
       %{
         "id" => 3,
         "name" => "Golden Rainbow",
         "xp" => "65700 xp",
-        "image_path" => "/images/frobot3.png"
+        "image_path" => "images/frobots/3.png"
       },
       %{
         "id" => 4,
         "name" => "Steel Bully",
         "xp" => "65700 xp",
-        "image_path" => "/images/frobot4.png"
+        "image_path" => "images/frobots/4.png"
       }
     ]
   end
@@ -90,21 +92,17 @@ defmodule FrobotsWeb.HomeLive.Index do
   @impl true
   def handle_event("react.fetch_dashboard_details", _params, socket) do
     currentUserStatus = socket.assigns.current_user_stats
-    current_user_ranking_details = socket.assigns.current_user_ranking_details
-    frobot_leaderboard_stats = socket.assigns.frobot_leaderboard_stats
-    player_leaderboard_stats = socket.assigns.player_leaderboard_stats
     current_user = socket.assigns.current_user
-    global_stats = socket.assigns.global_stats
 
     {:noreply,
      push_event(socket, "react.return_dashboard_details", %{
-       "current_user_name" => current_user.name,
+       "current_user_name" => socket.assigns.username,
        "current_user_avatar" => current_user.avatar,
        "current_user_sparks" => current_user.sparks,
-       "current_user_ranking_details" => current_user_ranking_details,
-       "frobot_leaderboard_stats" => frobot_leaderboard_stats,
-       "player_leaderboard_stats" => player_leaderboard_stats,
-       "globalStats" => global_stats,
+       "current_user_ranking_details" => socket.assigns.current_user_ranking_details,
+       "frobot_leaderboard_stats" => socket.assigns.frobot_leaderboard_stats,
+       "player_leaderboard_stats" => socket.assigns.player_leaderboard_stats,
+       "globalStats" => socket.assigns.global_stats,
        "blogPosts" => socket.assigns.blog_posts,
        "featuredFrobots" => socket.assigns.featured_frobots,
        "playerStats" => %{
@@ -112,7 +110,12 @@ defmodule FrobotsWeb.HomeLive.Index do
          "matches_participated" => currentUserStatus.matches_participated,
          "total_xp" => currentUserStatus.total_xp,
          "upcoming_matches" => currentUserStatus.upcoming_matches
-       }
+       },
+       "s3_base_url" => socket.assigns.s3_base_url
      })}
+  end
+
+  def get_user_name(current_user) do
+    current_user.name || List.first(String.split(current_user.email, "@"))
   end
 end

@@ -17,7 +17,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
         {:error, {:already_started, simulator}} -> simulator
       end
 
-    templates = Assets.list_template_frobots()
+    templates = extract_frobot_details(Assets.list_template_frobots())
 
     case Assets.get_frobot(String.to_integer(frobot_id)) do
       nil ->
@@ -56,7 +56,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     user = socket.assigns.user
 
     frobotDetails = %{
-      "frobot_id" => frobot.id,
+      "id" => frobot.id,
       "name" => frobot.name,
       "avatar" => frobot.avatar,
       "blockly_code" => frobot.blockly_code,
@@ -96,7 +96,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       case Assets.update_frobot(frobot, params) do
         {:ok, updatedFrobot} ->
           frobotDetails = %{
-            "frobot_id" => updatedFrobot.id,
+            "id" => updatedFrobot.id,
             "name" => updatedFrobot.name,
             "avatar" => updatedFrobot.avatar,
             "blockly_code" => updatedFrobot.blockly_code,
@@ -133,41 +133,42 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   @impl Phoenix.LiveView
   def handle_event("start_match", match_data, socket) do
     ## Start The Match
-    player_frobot = match_data["name"]
-    protobot = socket.assigns.protobot
+    player_frobot_id = match_data["frobot_id"]
+    protobot_id = socket.assigns.protobot_id
 
-    %{
+    match_data = %{
       "user_id" => socket.assigns.user.id,
       "match_time" => DateTime.utc_now() |> DateTime.to_string(),
-      "timer" => 3600,
+      "timer" => 300,
       "arena_id" => 1,
-      "min_player_frobot" => 1,
+      "min_player_frobot" => 2,
       "max_player_frobot" => 2,
       "type" => :simulation,
       "slots" => [
         %{
-          "frobot_id" => player_frobot.id,
+          "frobot_id" => player_frobot_id,
           "status" => "ready",
-          "slot_type" => "host"
+          "slot_type" => "host",
+          "match_type" => "simulation"
         },
         %{
-          "frobot_id" => protobot.id,
+          "frobot_id" => protobot_id,
           "status" => "ready",
-          "slot_type" => "protobot"
+          "slot_type" => "protobot",
+          "match_type" => "simulation"
         }
       ],
-      "frobot_ids" => [player_frobot.id, protobot.id],
+      "frobot_ids" => [player_frobot_id, protobot_id],
       "match_template" => %{
         "entry_fee" => 0,
         "commission_rate" => 0,
         "match_type" => "individual",
-        "payout_map" => [100],
-        "max_frobots" => 3,
-        "min_frobots" => 1
+        "payout_map" => [0],
+        "max_frobots" => 2,
+        "min_frobots" => 2
       }
     }
 
-    ## TODO :: SEND Frobots DATA so the game will be constructed based on that
     case Simulator.start_match(socket.assigns.simulator, match_data) do
       {:ok, frobots_data} ->
         {:noreply,
@@ -176,7 +177,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
 
       {:error, error} ->
         Logger.error("Error in starting the match #{error}")
-        {:noreply, socket}
+        {:noreply, socket |> put_flash(:error, error)}
     end
   end
 
@@ -188,13 +189,36 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     {:noreply, socket |> assign(:match_id, nil) |> assign(:frobots_data, %{})}
   end
 
-  def handle_event("react.change-protobot", params, socket) do
-    protobot = params
-
+  # params = %{"protobot_id" => protobot_id}
+  def handle_event("react.change-protobot", %{"protobot_id" => protobot_id} = _params, socket) do
     socket =
       socket
-      |> assign(:protobot, protobot)
+      |> assign(:protobot_id, protobot_id)
 
     {:noreply, socket}
+  end
+
+  defp extract_frobot_details(frobots) do
+    Enum.map(frobots, fn %{
+                           id: id,
+                           name: name,
+                           xp: xp,
+                           class: class,
+                           brain_code: brain_code,
+                           blockly_code: blockly_code,
+                           bio: bio,
+                           avatar: avatar
+                         } ->
+      %{
+        id: id,
+        name: name,
+        xp: xp,
+        class: class,
+        brain_code: brain_code,
+        blockly_code: blockly_code,
+        bio: bio,
+        avatar: avatar
+      }
+    end)
   end
 end

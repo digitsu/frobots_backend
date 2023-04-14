@@ -40,9 +40,9 @@ export default (props: any) => {
   const [isSimulationStarted, setIsSimulationStarted] = useState(false)
 
   const templateFrobots =
-    templates?.map(({ name }, index) => ({
+    templates?.map(({ name, id }, index) => ({
       label: name,
-      id: name,
+      id: id,
     })) || []
 
   function a11yProps(index: number) {
@@ -93,7 +93,7 @@ export default (props: any) => {
     }
 
     const requestBody = {
-      frobot_id: frobot.frobot_id,
+      frobot_id: frobot.id,
       blockly_code: xmlText,
       brain_code: luaCode,
     }
@@ -114,7 +114,7 @@ export default (props: any) => {
     if (!luaCode || luaCode.trim() === '') {
       return alert("Simulation can't be started with empty lua code")
     } else {
-      runSimulation(frobot)
+      runSimulation({ frobot_id: frobot.id })
       setIsSimulationStarted(true)
     }
   }
@@ -128,7 +128,7 @@ export default (props: any) => {
 
   const handleChangeOpponent = (event, option) => {
     if (option.id) {
-      changeProtobot(option.id)
+      changeProtobot({ protobot_id: option.id })
       setIsSelectedProtobot(true)
     }
   }

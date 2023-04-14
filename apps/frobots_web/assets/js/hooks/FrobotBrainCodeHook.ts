@@ -33,7 +33,7 @@ export default {
   },
 
   runSimulation(params) {
-    this.pushEventTo(this.el, 'start_match', params)
+    this.pushEventTo(this.el, 'start_match', { ...params })
     this.handleEvent('start_match', (startMatchDetails) => {
       this.unmountComponent = mount(FrobotBrainCode)(
         this.el.id,
@@ -54,15 +54,12 @@ export default {
 
   changeProtobot(params) {
     this.pushEventTo(this.el, 'react.change-protobot', params)
-    this.handleEvent(
-      'react.change-protobot-frobot',
-      (changeProtobotDetails) => {
-        this.unmountComponent = mount(FrobotBrainCode)(
-          this.el.id,
-          this.opts({ ...changeProtobotDetails })
-        )
-      }
-    )
+    this.handleEvent('react.change-protobot', (changeProtobotDetails) => {
+      this.unmountComponent = mount(FrobotBrainCode)(
+        this.el.id,
+        this.opts({ ...changeProtobotDetails })
+      )
+    })
   },
 
   destroyed() {

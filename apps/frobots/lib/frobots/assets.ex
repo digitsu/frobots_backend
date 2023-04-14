@@ -22,12 +22,12 @@ defmodule Frobots.Assets do
     @user_class_u
   end
 
-  @spec prototype_class :: <<_::40>>
+  @spec prototype_class :: <<_::8>>
   def prototype_class() do
     @prototype_class
   end
 
-  @spec target_class :: <<_::48>>
+  @spec target_class :: <<_::8>>
   def target_class() do
     @target_class
   end
@@ -105,7 +105,6 @@ defmodule Frobots.Assets do
       nil
 
   """
-
   def get_frobot(name) when is_bitstring(name) do
     Frobot
     |> frobots_name_query(name)
@@ -259,7 +258,7 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
-  def get_xframes() do
+  def list_xframes() do
     Repo.all(Xframe)
   end
 
@@ -320,7 +319,7 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
-  def get_cannons() do
+  def list_cannons() do
     Repo.all(Cannon)
   end
 
@@ -359,7 +358,7 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
-  def get_missiles() do
+  def list_missiles() do
     Repo.all(Missile)
   end
 
@@ -398,7 +397,7 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
-  def get_scanners() do
+  def list_scanners() do
     Repo.all(Scanner)
   end
 end

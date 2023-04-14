@@ -2,20 +2,18 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
 
-  alias Frobots.{Accounts, Assets, Events}
+  alias Frobots.{Accounts, Api, Assets}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
+    s3_base_url = Api.get_s3_base_url()
 
     {:ok,
      socket
      |> assign(:current_user, current_user)
-     |> assign(
-       :current_user_ranking_details,
-       Events.get_current_user_ranking_details(current_user)
-     )
-     |> assign(:user_frobots, Assets.list_user_frobots(current_user))}
+     |> assign(:user_frobots, Assets.list_user_frobots(current_user))
+     |> assign(:s3_base_url, s3_base_url)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -43,6 +41,7 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
     {:noreply,
      push_event(socket, "react.return_user_frobots", %{
        "currentUser" => currentUser,
+       "s3_base_url" => socket.assigns.s3_base_url,
        "frobotList" => extract_frobots(socket.assigns.user_frobots)
      })}
   end

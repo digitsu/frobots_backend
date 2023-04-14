@@ -5,19 +5,31 @@ import { createFrobotActions } from '../../redux/slices/createFrobot'
 import BasicDetailsForm from './BasicDetailsForm'
 import EditBrainCode from './EditBrainCode'
 import PreviewFrobot from './PreviewFrobot'
+
 export default (props: any) => {
-  const { templates, createFrobot } = props
+  const { templates, createFrobot, starterMechs, s3_base_url } = props
   const dispatch = useDispatch()
   const { activeStep, brainCode } = useSelector(
     (store: any) => store.createFrobot
   )
   const { incrementStep, decrementStep } = createFrobotActions
   const steps = [
-    { label: 'Step 1', component: <BasicDetailsForm templates={templates} /> },
+    {
+      label: 'Step 1',
+      component: (
+        <BasicDetailsForm
+          templates={templates}
+          starterMechs={starterMechs}
+          s3BaseUrl={s3_base_url}
+        />
+      ),
+    },
     { label: 'Step 2', component: <EditBrainCode /> },
     {
       label: 'Step 3',
-      component: <PreviewFrobot createFrobot={createFrobot} />,
+      component: (
+        <PreviewFrobot createFrobot={createFrobot} s3BaseUrl={s3_base_url} />
+      ),
     },
   ]
 
@@ -71,7 +83,7 @@ export default (props: any) => {
               }}
             >
               {steps.map((item, index) => (
-                <Step>
+                <Step key={index}>
                   <StepLabel
                     StepIconComponent={(props) => (
                       <CustomStepIcon {...props} icon={index + 1} />
