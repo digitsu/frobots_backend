@@ -10,8 +10,8 @@ defmodule Frobots.Avatars do
   def get_frobot_avatars() do
     case ExAws.S3.list_objects_v2(Api.get_s3_bucket_name(), prefix: "images/frobots")
          |> ExAws.request() do
-      {:error, err} ->
-        Logger.warning(err)
+      {:error, {:http_error, _, %{status_code: errcode}}} ->
+        Logger.info(errcode)
         []
 
       {:ok, ret} ->
