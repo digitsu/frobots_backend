@@ -2,6 +2,3 @@
         path = apps/fubars
 	url = ../../../frobots/backend/fubars.git
         branch = umbrella
-[submodule "images"]
-	path = images
-	url = ../../../frobots/backend/images.git
