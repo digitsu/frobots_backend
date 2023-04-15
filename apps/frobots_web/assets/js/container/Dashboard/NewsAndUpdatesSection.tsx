@@ -78,7 +78,7 @@ export default (props: NewsAndUpdatesProps) => {
                     </Box>
                     <Box textAlign={'right'}>
                       {' '}
-                      <ViewMore label={'Learn More'} link={'post.url'} />
+                      <ViewMore label={'Learn More'} link={post.url} />
                     </Box>
                   </Box>
                 </Box>

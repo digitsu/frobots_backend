@@ -1,7 +1,7 @@
 defmodule FrobotsWeb.UsersLiveTest do
   use FrobotsWeb.ConnCase, async: true
   import Phoenix.LiveViewTest
-  alias FrobotsWeb.ConnCase
+  #  alias FrobotsWeb.ConnCase
 
   use ExUnit.Case, async: true
 

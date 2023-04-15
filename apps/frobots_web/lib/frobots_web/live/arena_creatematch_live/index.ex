@@ -8,7 +8,7 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
     current_user = Accounts.get_user!(id)
-    {:ok, s3_base_url} = Api.get_s3_base_url()
+    s3_base_url = Api.get_s3_base_url()
 
     {:ok, socket |> assign(:current_user, current_user) |> assign(:s3_base_url, s3_base_url)}
   end

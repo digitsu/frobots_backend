@@ -106,14 +106,14 @@ defmodule Frobots.ApiTest do
   test "get frobot details" do
     {:ok, myuser} = user_fixture()
     # currently fixtures only create prototype bots. (non-equipped)
-    frobot1 =
+    _frobot1 =
       Frobots.AssetsFixtures.frobot_fixture(myuser, %{
         name: "sniper",
         brain_code: "return()",
         class: Frobots.Assets.prototype_class()
       })
 
-    frobot2 =
+    _frobot2 =
       Frobots.AssetsFixtures.frobot_fixture(myuser, %{
         name: "necron99",
         brain_code: "return()",

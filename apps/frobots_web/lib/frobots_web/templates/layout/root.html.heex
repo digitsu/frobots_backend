@@ -14,7 +14,11 @@
     <header>
       <%= if @current_user do %>
           <div class="flex flex-row space-y-3.5 py-4 px-8 items-center justify-between  border-b-2 border-b-gray-800">
-            <p class="w-24 h-8 text-xl font-bold tracking-wider leading-relaxed text-white uppercase"><a href="/home">FROBOTS</a></p>
+            <p class="w-25 h-8 text-xl font-bold tracking-wider leading-relaxed text-white uppercase">
+              <a href="/home" class="flex items-center">
+                <img src={Routes.static_path(@conn, "/images/frobots-logo.png" )} alt="logo" class="w-25 h-10 ml-6">
+              </a>
+            </p>
             <nav role="navigation">
               <div class="inline-flex space-x-8 items-center justify-end h-8">
                 <p class="tracking-wider leading-relaxed text-gray-400"><a href="/home">Dashboard</a></p>

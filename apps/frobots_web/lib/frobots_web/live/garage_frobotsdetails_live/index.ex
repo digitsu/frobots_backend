@@ -6,7 +6,7 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
   @impl Phoenix.LiveView
   def mount(params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
-    {:ok, s3_base_url} = Api.get_s3_base_url()
+    s3_base_url = Api.get_s3_base_url()
 
     # get frobot id or name from the url param
     frobot_id_or_name =
