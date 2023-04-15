@@ -9,12 +9,15 @@ if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     url=$BACKEND_URL_PROD
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     url=$BACKEND_URL_STAGING
+elif [[ $CI_COMMIT_BRANCH == "main2" ]]; then
+    url=$BACKEND_URL_PROD2
 else
     url="http://nourlprovided.com"
 fi
 
 echo "$greeting back $user! Today is $day, which is the best day of the entire week!"
 echo "Your Bash shell version is: $BASH_VERSION. Enjoy!"
+echo "Testing server at $url!"
 
 ret=$(curl -LIs $url | grep HTTP | cut -d ' ' -f2 | tail -1 )
 

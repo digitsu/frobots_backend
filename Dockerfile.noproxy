@@ -1,3 +1,4 @@
+## this one has no HTTP PROXYs useful for when building locally in a machine outside of mamiana cloud
 ## build stage
 #FROM elixir:1.14.3-alpine AS build
 #FROM elixir:1.14.3-otp-24-alpine AS build
@@ -6,24 +7,15 @@
 #FROM elixir:1.13.4-alpine AS build
 
 # this suprisingly doesnt' work
-#FROM elixir:1.13.4-otp-25-alpine AS build
+FROM elixir:1.13.4-otp-25-alpine AS build
 # this works
-FROM elixir:1.13.4-alpine AS build
-
-
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-# mix needs the proxy settings in the ENV, not like npm which has a proxy setting file
-ENV HTTP_PROXY=$HTTP_PROXY
-ENV HTTPS_PROXY=$HTTPS_PROXY
-
+#FROM elixir:1.13.4-alpine AS build
 
 ARG MIX_ENV
 ENV MIX_ENV="${MIX_ENV}"
 
 # install build dependencies
 RUN apk add --no-cache build-base git nodejs npm python3 curl openssh perl yarn
-
 
 # sets work dir
 WORKDIR /app
@@ -52,8 +44,6 @@ RUN mix deps.get --only $MIX_ENV
 RUN mix deps.compile
 
 WORKDIR /app/apps/frobots_web
-RUN npm config set proxy $HTTP_PROXY
-RUN npm config set https-proxy $HTTPS_PROXY
 RUN npm i --prefix ./assets
 WORKDIR /app/apps/frobots_web/assets
 RUN yes | npx browserslist@latest --update-db
@@ -62,8 +52,6 @@ RUN yes | npx browserslist@latest --update-db
 #RUN /bin/sh -c 'source /app/.env; mix assets.deploy'
 #RUN /app/wrapper.pl mix assets.deploy
 WORKDIR /app/apps/frobots_web
-RUN yarn config set https-proxy $HTTPS_PROXY
-RUN yarn config set http-proxy $HTTP_PROXY
 RUN mix assets.deploy
 
 

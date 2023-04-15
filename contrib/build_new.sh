@@ -13,6 +13,15 @@ if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     S3_ACCESS_KEY=$S3_ACCESS_KEY_PROD
     S3_SECRET_KEY=$S3_SECRET_KEY_PROD
     S3_BUCKET=$S3_BUCKET_PROD
+    dockerfile=./Dockerfile.prod
+elif [[ $CI_COMMIT_BRANCH == "main2" ]]; then
+    ip=$FROBOTSBACKEND_PROD2
+    dbname=$POSTGRES_DB_PROD
+    mixenv=prod
+    S3_ACCESS_KEY=$S3_ACCESS_KEY_PROD
+    S3_SECRET_KEY=$S3_SECRET_KEY_PROD
+    S3_BUCKET=$S3_BUCKET_PROD
+    dockerfile=./Dockerfile.prod
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     ip=$FROBOTSBACKEND_STAGING
     # note that even dev uses the postgres_db name of frobots_prod, because there isn't any dev db that should be running on the same host so no need to worry about name clash
@@ -22,6 +31,7 @@ elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     S3_ACCESS_KEY=$S3_ACCESS_KEY_STAGING
     S3_SECRET_KEY=$S3_SECRET_KEY_STAGING
     S3_BUCKET=$S3_BUCKET_STAGING
+    dockerfile=./Dockerfile.staging
 else
     ip='not a valid branch'
 fi
@@ -70,7 +80,7 @@ docker container stop cert_copy ||true
 
 echo "Building Docker image"
 
-docker image build --build-arg MIX_ENV=${mixenv} --build-arg HTTP_PROXY=${SQUID_PROXY} --build-arg HTTPS_PROXY=${SQUID_PROXY} -t elixir/frobots_backend -f ./Dockerfile .
+docker image build --build-arg MIX_ENV=${mixenv} --build-arg HTTP_PROXY=${SQUID_PROXY} --build-arg HTTPS_PROXY=${SQUID_PROXY} -t elixir/frobots_backend -f ${dockerfile} .
 
 echo "clean up images"
 docker stop frobots_backend || true
