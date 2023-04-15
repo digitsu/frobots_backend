@@ -47,26 +47,17 @@ defmodule Frobots do
   }
 
   @equipment_classes ~w(xframe cannon scanner missile)a
-  @equipment_insts ~w(XframeInst CannonInst MissileInst ScannerInst)a
-  @part_insts ~w(CannonInst MissileInst ScannerInst)a
+
   @weapon_classes ~w(cannon)a
   @sensor_classes ~w(scanner)a
   @ammo_classes ~w(missile)a
-  @ordnance_classes ~w(cannon missile)a
+  @ordinance_classes ~w(cannon missile)a
   @cpu_classes ~w()a
 
   @parts_classes @weapon_classes ++ @sensor_classes ++ @ammo_classes ++ @cpu_classes
 
-  def equipment_insts() do
-    @equipment_insts
-  end
-
-  def part_insts() do
-    @part_insts
-  end
-
-  def ordnance_classes() do
-    @ordnance_classes
+  def ordinance_classes() do
+    @ordinance_classes
   end
 
   def parts_classes() do

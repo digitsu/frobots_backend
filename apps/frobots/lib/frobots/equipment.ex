@@ -15,7 +15,6 @@ defmodule Frobots.Equipment do
 
   alias Frobots.Accounts
   alias Frobots.Assets
-  alias Frobots.Assets.Frobot
   alias Frobots.Api
   alias Ecto.Multi
 
@@ -46,7 +45,7 @@ defmodule Frobots.Equipment do
 
   defp _is_ordinance_class?(equipment_class) do
     String.downcase(equipment_class) in Enum.map(
-      Frobots.ordnance_classes(),
+      Frobots.ordinance_classes(),
       &Atom.to_string(&1)
     )
   end
@@ -171,28 +170,27 @@ defmodule Frobots.Equipment do
   # fetch frobot equipment by frobot
   # this is how the frontend knows the ids for parts
   def list_frobot_equipment(frobot_id) do
-    equipment_classes = Frobots.equipment_classes()
+    cannons =
+      from(c in CannonInst,
+        where: c.frobot_id == ^frobot_id
+      )
 
-    equipment_classes
-    |> Enum.map(fn equipment_class ->
-      module = _get_inst_module(to_string(equipment_class))
+    scanners =
+      from(s in ScannerInst,
+        where: s.frobot_id == ^frobot_id
+      )
 
-      from(eqp in module, where: eqp.frobot_id == ^frobot_id)
-      |> Repo.all()
-    end)
-  end
+    xframes =
+      from(x in XframeInst,
+        where: x.frobot_id == ^frobot_id
+      )
 
-  # Fetch all the equipments owned by User
-  def list_user_equipment(user_id) do
-    equipment_classes = Frobots.equipment_classes()
+    missiles =
+      from(m in MissileInst,
+        where: m.frobot_id == ^frobot_id
+      )
 
-    equipment_classes
-    |> Enum.map(fn equipment_class ->
-      module = _get_inst_module(to_string(equipment_class))
-
-      from(eqp in module, where: eqp.user_id == ^user_id)
-      |> Repo.all()
-    end)
+    Repo.all(cannons) ++ Repo.all(scanners) ++ Repo.all(xframes) ++ Repo.all(missiles)
   end
 
   @doc """
@@ -245,11 +243,8 @@ defmodule Frobots.Equipment do
   @doc """
   should nil out the frobot_id on the equipment if it is currently set. It should also set anything on the frobot that may rely on this part being equipped, for instance, if there is any field indicating that it is 'ready' or 'playable' in a match. Dequip(xframe) will automatically dequip all its equipment as well.
   """
-
-  def dequip_part(equipment_id, class) do
+  def dequip_part(_equipment) do
     # remove the frobot association from a part
-    equipment = get_equipment(class, equipment_id)
-    update_equipment(class, equipment, frobot_id: nil)
   end
 
   @doc """
@@ -282,38 +277,15 @@ defmodule Frobots.Equipment do
   @doc """
   dequip everything except any xframe
   """
-  def dequip_parts(%Frobot{id: frobot_id}) do
-    cannons =
-      from(c in CannonInst,
-        where: c.frobot_id == ^frobot_id
-      )
-
-    cannons
-    |> Repo.update_all(set: [frobot_id: nil])
-
-    scanners =
-      from(s in ScannerInst,
-        where: s.frobot_id == ^frobot_id
-      )
-
-    scanners
-    |> Repo.update_all(set: [frobot_id: nil])
-
-    missiles =
-      from(m in MissileInst,
-        where: m.frobot_id == ^frobot_id
-      )
-
-    missiles
-    |> Repo.update_all(set: [frobot_id: nil])
+  def dequip_parts(_frobot) do
   end
 
   @doc """
   dequip an xframe
   """
-  def dequip_xframe(frobot) do
+  def dequip_xframe(_frobot) do
     # when you dequip an xframe, it Must dequip everything
-    dequip_all(frobot)
+    # dequip_all(_frobot)
   end
 
   @doc """
@@ -367,16 +339,9 @@ defmodule Frobots.Equipment do
     # range: 900}]
   end
 
-  def get_current_xframe(%Frobot{id: frobot_id}) do
+  def get_current_xframe(_frobot) do
     # return the installed xframe_inst, nil if none installed.
     # this is needed for frobot startup as it needs to get the info from its specific xframe (such as current health)
-    xframes =
-      from(x in XframeInst,
-        where: x.frobot_id == ^frobot_id
-      )
-
-    xframes
-    |> Repo.one()
   end
 
   # functions returning changesets..we need these as Ecto.multi requires changesets
