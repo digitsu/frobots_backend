@@ -14,28 +14,40 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
       if connected?(socket), do: Events.subscribe()
       time_left = DateTime.diff(match.match_time, DateTime.utc_now())
       Process.send_after(self(), :time_left, 1_000)
-      {:ok, socket |> assign(:match, match) |> assign(:time_left, time_left)}
+
+      {:ok,
+       socket
+       |> assign(:match, match)
+       |> assign(:time_left, time_left)
+       |> assign(:user_id, socket.assigns.current_user.id)}
     end
   end
 
   @impl Phoenix.LiveView
   def handle_event(event, %{"slot_id" => slot_id} = params, socket)
-      when event in ["joining", "ready", "closed"] do
+      when event in ["joining", "ready", "closed", "open"] do
     match = socket.assigns.match
+    current_user_id = socket.assigns.user_id
+
+    slot_type = params["slot_type"] |> to_atom()
+    frobot_id = params["frobot_id"]
 
     attrs =
       case event do
         "joining" ->
-          %{status: "joining", slot_type: params["slot_type"]}
+          %{status: "joining", slot_type: slot_type}
 
         "ready" ->
-          %{status: "ready", slot_type: params["slot_type"], frobot_id: params["frobot_id"]}
+          %{status: "ready", slot_type: slot_type, frobot_id: frobot_id}
 
         "closed" ->
           %{status: "closed", slot_type: nil}
+
+        "open" ->
+          %{status: "open", slot_type: nil}
       end
 
-    case Api.update_slot(match.id, slot_id, attrs) do
+    case Api.update_slot(match, current_user_id, slot_id, attrs) do
       {:ok, updated_slot} ->
         updated_slots =
           Enum.reduce(match.slots |> Enum.reverse(), [], fn slot, acc ->
@@ -115,4 +127,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
     Process.send_after(self(), :time_left, 1_000)
     {:noreply, socket |> assign(:time_left, time_left)}
   end
+
+  defp to_atom(value) when is_binary(value), do: String.to_atom(value)
+  defp to_atom(value), do: value
 end

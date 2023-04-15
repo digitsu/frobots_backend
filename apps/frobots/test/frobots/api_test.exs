@@ -54,7 +54,7 @@ defmodule Frobots.ApiTest do
         slot.status == :open
       end)
 
-    Api.update_slot(created_match.id, open_slot.id, %{status: :closed, slot_type: nil})
+    Api.update_slot(created_match, 1, open_slot.id, %{status: :closed, slot_type: nil})
 
     match = Api.get_match_details_by_id(created_match.id)
     assert match.id == created_match.id

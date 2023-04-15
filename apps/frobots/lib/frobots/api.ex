@@ -171,10 +171,16 @@ defmodule Frobots.Api do
     Events.list_match_by(query, preload, order_by)
   end
 
-  def update_slot(match_id, slot_id, attrs) do
-    case Events.get_slot_by(id: slot_id, match_id: match_id) do
-      nil -> {:error, :slot_not_found}
-      %Slot{} = slot -> Events.update_slot(slot, attrs)
+  def update_slot(match, user_id, slot_id, attrs) do
+    validation_check? = if attrs.slot_type == :protobot, do: match.user_id == user_id, else: true
+
+    if validation_check? do
+      case Events.get_slot_by(id: slot_id, match_id: match.id) do
+        nil -> {:error, :slot_not_found}
+        %Slot{} = slot -> Events.update_slot(slot, attrs)
+      end
+    else
+      {:error, :invalid_protobot}
     end
   end
 
