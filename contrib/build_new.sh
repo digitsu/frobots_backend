@@ -13,6 +13,13 @@ if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     S3_ACCESS_KEY=$S3_ACCESS_KEY_PROD
     S3_SECRET_KEY=$S3_SECRET_KEY_PROD
     S3_BUCKET=$S3_BUCKET_PROD
+elif [[ $CI_COMMIT_BRANCH == "main2" ]]; then
+    ip=$FROBOTSBACKEND_PROD2
+    dbname=$POSTGRES_DB_PROD
+    mixenv=prod
+    S3_ACCESS_KEY=$S3_ACCESS_KEY_PROD
+    S3_SECRET_KEY=$S3_SECRET_KEY_PROD
+    S3_BUCKET=$S3_BUCKET_PROD
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     ip=$FROBOTSBACKEND_STAGING
     # note that even dev uses the postgres_db name of frobots_prod, because there isn't any dev db that should be running on the same host so no need to worry about name clash
