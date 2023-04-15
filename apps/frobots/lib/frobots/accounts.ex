@@ -65,7 +65,8 @@ defmodule Frobots.Accounts do
       user
     else
       # check if password is hashed with Pbkdf2
-      if user && User.verify_pbkdf_hash?(user.hashed_password_old, password) do
+      if user && user.hashed_password_old != nil &&
+           User.verify_pbkdf_hash?(user.hashed_password_old, password) do
         {:ok, user} =
           User.password_changeset_skip_confirmation(user, %{"password" => password})
           |> Repo.update()
