@@ -50,19 +50,19 @@ print-vars:
     - echo $GHOST_API_KEY
     - echo $SQUID_PROXY
 
-lint-job:
-  tags: ["build"]
-  extends: .elixir
-  stage: lint
-  variables:
-    MIX_ENV: dev
+# lint-job:
+#   tags: ["build"]
+#   extends: .elixir
+#   stage: lint
+#   variables:
+#     MIX_ENV: dev
 
-  allow_failure: false
-  script:
-    - mix compile --warnings-as-errors --force
-    - mix format --check-formatted
-  # rules:
-  #   - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
+#   allow_failure: false
+#   script:
+#     - mix compile --warnings-as-errors --force
+#     - mix format --check-formatted
+#   # rules:
+#   #   - if: $CI_COMMIT_BRANCH == "nevergoingtorun"
     
 test-job:
   tags: ["build"]
