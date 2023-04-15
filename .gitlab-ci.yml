@@ -103,16 +103,7 @@ deploy-job:
     POOL_SIZE: 2
     PORT: 4000
     GIT_SUBMODULE_STRATEGY: normal
-    #SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-    #SENDGRID_API_EXPORT_MAILINGLIST_KEY: ${SENDGRID_API_EXPORT_MAILINGLIST_KEY}
-    #GHOST_API_KEY: ${GHOST_API_KEY}
-    # S3_URL: ${S3_URL}
-    # S3_BUCKET_STAGING: ${S3_BUCKET_STAGING}
-    # S3_ACCESS_KEY_STAGING: ${S3_ACCESS_KEY_STAGING}
-    # S3_SECRET_KEY_STAGING: ${S3_SECRET_KEY_STAGING}
-    # S3_BUCKET_PROD: ${S3_BUCKET_PROD}
-    # S3_ACCESS_KEY_PROD: ${S3_ACCESS_KEY_PROD}
-    # S3_SECRET_KEY_PROD: ${S3_SECRET_KEY_PROD}
+
 
     
   script:
@@ -127,6 +118,7 @@ deploy-job:
       when: never
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_BRANCH == "main2"
 
 server-test:
   image: $BUILDER_IMAGE
@@ -138,6 +130,7 @@ server-test:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_BRANCH == "main2"
  
 release_job:
   stage: release
