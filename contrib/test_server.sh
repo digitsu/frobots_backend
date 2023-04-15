@@ -9,6 +9,8 @@ if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     url=$BACKEND_URL_PROD
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     url=$BACKEND_URL_STAGING
+elif [[ $CI_COMMIT_BRANCH == "main2" ]]; then
+    url=$BACKEND_URL_PROD2
 else
     url="http://nourlprovided.com"
 fi
