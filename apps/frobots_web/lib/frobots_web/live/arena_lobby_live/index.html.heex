@@ -1,4 +1,33 @@
-<div class="body-container">
-    <p> Arena Lobby </p>
-    <%= IO.inspect(@match.id) %>
+<div>
+  <section class="w-90 m-auto"> 
+    <div class="mt-4">
+      <h1 class="font-bold">Match Lobby: <%= @match.title %></h1>
+    </div>
+
+  <div class="flex justify-between items-center my-2">
+      <div>
+        <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="/home">Dashboard</a>
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="/arena">Arena</a>
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-400 text-gray-400">
+          <a href="#"> <%= @match.title %></a>
+        </p>
+      </div>
+      <div>
+        <p class="font-bold text-xs text-gray-400">
+          QDOS <%= @current_user_ranking_details[:points] || 0%>
+        </p>
+      </div>
+    </div>
+  </section> 
+  <div id="arena-lobby" phx-hook="ArenaLobbyHook" phx-update="ignore"></div>
 </div>

@@ -1,38 +1,57 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Grid, Typography } from '@mui/material'
-import { createMatchActions } from '../../../../redux/slices/createMatch'
+import { arenaLobbyActions } from '../../../redux/slices/arenaLobbySlice'
 import { useDispatch, useSelector } from 'react-redux'
-
 export default ({
   userFrobots,
   currentStep,
   setCurrentStep,
   slotDetails,
-  imageBaseUrl,
+  updateSlot,
+  isHost,
+  setShowOptions,
 }) => {
-  const { updateSlot } = createMatchActions
-  const { currentActiveSlot } = useSelector((store: any) => store.createMatch)
+  const { updateSlot: updateSlotStore } = arenaLobbyActions
+  const { currentActiveSlot, slots, s3Url } = useSelector(
+    (store) => store.arenaLobby
+  )
   const dispatch = useDispatch()
   const [currentSlot, setCurrentSlot] = useState(null)
 
   const deployFrobot = () => {
     dispatch(
-      updateSlot({
+      updateSlotStore({
         ...currentActiveSlot,
         type: 'host',
-        name: currentSlot?.name,
+        name: `${isHost ? 'Host' : 'Player'}: ${currentSlot?.name || ' '}`,
         url: '/images/red_frobot.svg',
+        frobot_user_id: currentActiveSlot.current_user_id,
         slotDetails: currentSlot,
       })
     )
     setCurrentStep(currentStep + 1)
   }
 
+  useEffect(() => {
+    const slot = slots.find(({ id }) => id === currentActiveSlot?.id)
+    if (currentSlot) {
+      updateSlot({
+        type: 'ready',
+        payload: {
+          slot_id: slot?.id,
+          status: 'ready',
+          slot_type: isHost ? 'host' : 'player',
+          frobot_id: slot?.slotDetails.id,
+        },
+      })
+    }
+  }, [JSON.stringify(slots)])
+
   return (
     <>
       {currentStep === 1 && (
         <Box sx={{ height: 554 }}>
-          <Box sx={{ p: 3, pb: 1, height: 490, overflowY: 'scroll' }}>
+          <Box sx={{ p: 3, pb: 1, height: 433, overflowY: 'scroll' }}>
             <Grid container spacing={3}>
               {userFrobots.map((slot) => (
                 <Grid item width={'100%'}>
@@ -65,7 +84,7 @@ export default ({
                       />
                       <Box
                         component={'img'}
-                        src={`${imageBaseUrl}${slot.avatar}`}
+                        src={`${s3Url}${slot.avatar}`}
                         width={'75%'}
                         position={'absolute'}
                         top={'50%'}
@@ -95,7 +114,9 @@ export default ({
                 fullWidth
                 variant="outlined"
                 onClick={() => {
-                  setCurrentStep(currentStep - 1)
+                  isHost
+                    ? setCurrentStep(currentStep - 1)
+                    : setShowOptions(false)
                 }}
               >
                 Back
@@ -114,22 +135,15 @@ export default ({
         <Box p={2} position={'relative'} height={'100%'}>
           <Box
             component={'img'}
-            src={`${imageBaseUrl}${slotDetails.slotDetails?.avatar}`}
-            width={'60%'}
+            src={`${s3Url}${slotDetails.slotDetails?.avatar}`}
+            width={'70%'}
             m={'auto'}
           />
           <Box mx={2} my={1}>
             <Typography variant="h6">
               {slotDetails.slotDetails?.name}
             </Typography>
-            <Box
-              my={1}
-              sx={{
-                maxHeight: '45px',
-                overflowY: 'scroll',
-                '&::-webkit-scrollbar': { display: 'none' },
-              }}
-            >
+            <Box my={1} maxHeight={72} overflow={'scroll'}>
               <Typography variant="caption">
                 {slotDetails.slotDetails?.bio}
               </Typography>
