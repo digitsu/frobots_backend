@@ -220,6 +220,4 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
       }
     end)
   end
-
-
 end
