@@ -167,12 +167,25 @@ body {
   width: 70%;
  
 }
+
+header {
+  position: fixed;
+  z-index: 100;
+  background-color: #161c24;
+  width: 100%;
+}
+
 header section {
   align-items: center;
   display: flex;
   /* flex-direction: column; */
   justify-content: space-around;
 }
+
+.inner_content_wrapper {
+  padding-top: 80px;
+}
+
 .blockly-editorview {
   width: 100%;
 }
