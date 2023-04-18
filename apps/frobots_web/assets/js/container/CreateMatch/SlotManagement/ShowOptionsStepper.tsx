@@ -23,7 +23,7 @@ export default ({ slotOptions, slotDetails, imageBaseUrl }) => {
             <OccupiedSlot
               slotDetails={slotDetails?.slotDetails}
               modifyHandler={() => setShowOptions(true)}
-              imageBaseUrl={imageBaseUrl}
+              s3_base_url={imageBaseUrl}
             />
           )}
         </>
