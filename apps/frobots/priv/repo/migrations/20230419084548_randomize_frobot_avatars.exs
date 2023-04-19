@@ -55,19 +55,23 @@ defmodule Frobots.Repo.Migrations.RandomizeFrobotAvatars do
   defp save_me(struct, type) do
     case Map.has_key?(struct, :pixellated_img) do
       true ->
-        execute ~s"update #{String.downcase(Atom.to_string(type))} set pixellated_img = '#{struct.pixellated_img}' where id = '#{struct.id}' and avatar = '' returning id"
+        execute ~s"update #{String.downcase(Atom.to_string(type))} set pixellated_img = '#{struct.pixellated_img}', avatar = '#{struct.avatar}' where id = '#{struct.id}' and avatar = '' returning id"
 
       _ ->
-        nil
+        execute ~s"update #{String.downcase(Atom.to_string(type))} set avatar = '#{struct.avatar}' where id = '#{struct.id}' and avatar = '' returning id"
     end
-
-    execute ~s"update #{String.downcase(Atom.to_string(type))} set avatar = '#{struct.avatar}' where id = '#{struct.id}' and avatar = '' returning id"
   end
 
   def up do
     for {type, get_fn} <- @tables do
       for table <- get_fn.() do
-        avatar = get_name(table, type)
+        avatar =
+          case table.avatar do
+            "" -> get_name(table, type)
+            nil -> get_name(table, type)
+            avatar -> avatar
+          end
+
         p_img = get_pname(table, type, avatar)
 
         table
