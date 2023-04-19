@@ -6,7 +6,7 @@ defmodule FrobotsWeb.DocsLive.Index do
   def mount(params, _session, socket) do
     fileName = params["slug"] || "getting_started"
 
-    case File.read("docs/#{fileName}.md") do
+    case File.read("apps/frobots_web/priv/docs/#{fileName}.md") do
       {:ok, body} ->
         {:ok,
          socket
