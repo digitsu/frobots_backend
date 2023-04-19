@@ -7,7 +7,9 @@ defmodule FrobotsWeb.DocsLive.Index do
   def mount(params, _session, socket) do
     fileName = params["slug"] || "getting_started"
 
-    case File.read(Path.join([@priv_dir, "static/docs/#{fileName}.md"])) do
+    filePath = Path.join([@priv_dir, "static/docs/#{fileName}.md"])
+
+    case File.read(filePath) do
       {:ok, body} ->
         {:ok,
          socket
@@ -16,10 +18,10 @@ defmodule FrobotsWeb.DocsLive.Index do
          |> assign(:slug, fileName)
          |> assign(:document, body)}
 
-      {:error, _} ->
+      {:error, message} ->
         {:ok,
          socket
-         |> put_flash(:error, "Document not found")
+         |> put_flash(:error, "Document not found filepath : #{filePath} , error : #{message}")
          |> push_redirect(to: "/home")}
     end
   end
