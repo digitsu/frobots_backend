@@ -1,54 +1,25 @@
-defmodule Frobots.Repo.Migrations.SeedImagesForFrobotsAndUsers do
+defmodule Frobots.Repo.Migrations.RandomizeFrobotAvatars do
   use Ecto.Migration
+
   alias Frobots.Assets
   alias Frobots.Accounts
 
-  # keep images in sync!
-  # s3cmd sync -P --delete-removed ./images/ s3://frobots-assets/images/
-  # get the images pools from
-  # {:ok, ret}=    ExAws.S3.list_objects_v2("frobots-assets", prefix: "images/frobots") |> ExAws.request
+  # this actually fixes any missing avatars by picking an random one, and also sets the avatars of the protobots if they are present.
 
   @tables %{users: &Accounts.list_users/0, frobots: &Assets.list_frobots/0}
 
   @prototype Assets.prototype_class()
-  @target Assets.target_class()
-  @user_class Assets.default_user_class()
 
   defp user_image_pool() do
-    [
-      "images/avatars/1.png",
-      "images/avatars/10.png",
-      "images/avatars/11.png",
-      "images/avatars/12.png",
-      "images/avatars/13.png",
-      "images/avatars/14.png",
-      "images/avatars/15.png",
-      "images/avatars/16.png",
-      "images/avatars/17.png",
-      "images/avatars/18.png",
-      "images/avatars/19.png",
-      "images/avatars/2.png",
-      "images/avatars/20.png",
-      "images/avatars/3.png",
-      "images/avatars/4.png",
-      "images/avatars/5.png",
-      "images/avatars/6.png",
-      "images/avatars/7.png",
-      "images/avatars/8.png",
-      "images/avatars/9.png"
-    ]
+    for x <- 1..20 do
+      ~s"images/avatars/#{x}.png"
+    end
   end
 
   defp frobot_image_pool() do
-    [
-      "images/frobots/1.png",
-      "images/frobots/2.png",
-      "images/frobots/3.png",
-      "images/frobots/4.png",
-      "images/frobots/5.png",
-      "images/frobots/6.png",
-      "images/frobots/7.png"
-    ]
+    for x <- 1..61 do
+      ~s"images/frobots/#{x}.png"
+    end
   end
 
   defp get_name(struct, type) when type == :frobots and struct.class == @prototype do
@@ -71,10 +42,10 @@ defmodule Frobots.Repo.Migrations.SeedImagesForFrobotsAndUsers do
     Enum.random(user_image_pool())
   end
 
-  defp get_pname(struct, type, avatar) when type == :frobots and struct.class == @user_class do
-    re = ~r/.*\/(.*).png/
+  defp get_pname(_struct, type, avatar) when type == :frobots do
+    re = ~r/.*\/[S-]*[P-]*(.*).png/
     [str, mt] = Regex.run(re, avatar)
-    String.replace(str, mt, "P-" <> mt)
+    String.replace(str, ~r"(.*\/)(.*)(.png)", "\\1" <> "P-" <> mt <> "\\3")
   end
 
   defp get_pname(_struct, _type, _avatar) do
@@ -84,13 +55,13 @@ defmodule Frobots.Repo.Migrations.SeedImagesForFrobotsAndUsers do
   defp save_me(struct, type) do
     case Map.has_key?(struct, :pixellated_img) do
       true ->
-        execute ~s"update #{String.downcase(Atom.to_string(type))} set pixellated_img = '#{struct.pixellated_img}' where id = '#{struct.id}' returning id"
+        execute ~s"update #{String.downcase(Atom.to_string(type))} set pixellated_img = '#{struct.pixellated_img}' where id = '#{struct.id}' and avatar = '' returning id"
 
       _ ->
         nil
     end
 
-    execute ~s"update #{String.downcase(Atom.to_string(type))} set avatar = '#{struct.avatar}' where id = '#{struct.id}' returning id"
+    execute ~s"update #{String.downcase(Atom.to_string(type))} set avatar = '#{struct.avatar}' where id = '#{struct.id}' and avatar = '' returning id"
   end
 
   def up do
