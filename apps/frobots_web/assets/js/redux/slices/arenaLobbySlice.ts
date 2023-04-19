@@ -59,7 +59,7 @@ const initialState = {
 }
 
 const ArenaLobbySlice = createSlice({
-  name: 'createFrobot',
+  name: 'arenaLobby',
   initialState,
   reducers: {
     incrementStep: (state) => {
