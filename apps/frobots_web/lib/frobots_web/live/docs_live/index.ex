@@ -1,12 +1,13 @@
 defmodule FrobotsWeb.DocsLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
+  @priv_dir :code.priv_dir(:frobots_web)
 
   @impl Phoenix.LiveView
   def mount(params, _session, socket) do
     fileName = params["slug"] || "getting_started"
 
-    case File.read("apps/frobots_web/priv/static/docs/#{fileName}.md") do
+    case File.read(Path.join([@priv_dir, "static/docs/#{fileName}.md"])) do
       {:ok, body} ->
         {:ok,
          socket
