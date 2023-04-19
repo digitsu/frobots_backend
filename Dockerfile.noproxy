@@ -98,7 +98,7 @@ USER "${USER}"
 # copy release executables
 COPY --from=build --chown="${USER}":"${USER}" /app/_build/"${MIX_ENV}"/rel/frobots_backend ./
 COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots/priv/templates /app/_build/"${MIX_ENV}"/lib/frobots/priv/templates/
-
+COPY --from=build --chown="${USER}":"${USER}" /app/apps/frobots_web/priv/static/docs /app/_build/"${MIX_ENV}"/lib/frobots_web/priv/static/docs/
 
 ENV FROBOTS_SSL_KEY_PATH="/var/certs/frobots_cert.key"
 ENV FROBOTS_SSL_CERT_PATH="/var/certs/frobots_cert.pem"
