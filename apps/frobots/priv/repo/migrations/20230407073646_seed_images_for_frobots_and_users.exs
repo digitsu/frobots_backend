@@ -52,11 +52,15 @@ defmodule Frobots.Repo.Migrations.SeedImagesForFrobotsAndUsers do
   end
 
   defp get_name(struct, type) when type == :frobots and struct.class == @prototype do
-    ~s"images/protobots/#{String.capitalize(struct.name)}.png"
+    ~s"images/protobots/S-#{String.downcase(struct.name)}.png"
   end
 
-  defp get_name(struct, type) when type == :frobots and struct.class == @target do
-    ~s"images/protobots/Target.png"
+  defp get_name(struct, type) when type == :frobots and struct.name == "target" do
+    ~s"images/protobots/S-target.png"
+  end
+
+  defp get_name(struct, type) when type == :frobots and struct.name == "dummy" do
+    ~s"images/protobots/S-dummy.png"
   end
 
   defp get_name(_struct, type) when type == :frobots do
