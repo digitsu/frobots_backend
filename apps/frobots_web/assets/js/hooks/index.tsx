@@ -13,6 +13,7 @@ import ArenaCreateMatch from './ArenaCreateMatch'
 import FrobotEquipmentBayHook from './FrobotEquipmentBayHook'
 import ArenaLobbyHook from './ArenaLobbyHook'
 import DocsHook from './DocsHook'
+import UserProfileHook from './UserProfileHook'
 
 interface HookType {
   [key: string]: {
@@ -38,5 +39,6 @@ Hooks.ArenaCreateMatch = ArenaCreateMatch
 Hooks.FrobotEquipmentBayHook = FrobotEquipmentBayHook
 Hooks.ArenaLobbyHook = ArenaLobbyHook
 Hooks.DocsHook = DocsHook
+Hooks.UserProfileHook = UserProfileHook
 
 export default Hooks
