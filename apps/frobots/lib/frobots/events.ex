@@ -543,7 +543,7 @@ defmodule Frobots.Events do
 
     kills =
       Enum.reduce(damage_map, 0, fn
-        {_k, 100} = m, count ->
+        {_k, 100}, count ->
           if Map.get(death_map, key, %{"killed_by" => ""})["killed_by"] == key do
             count + 1
           else
