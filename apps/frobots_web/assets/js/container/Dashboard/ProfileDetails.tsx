@@ -22,6 +22,10 @@ interface ProfileDetailsProps {
 export default (props: ProfileDetailsProps) => {
   const { user_name, user_avatar, ranking_details } = props
 
+  const handleOpenUserProfile = () => {
+    window.location.href = `/profile`
+  }
+
   return (
     <Card>
       <Box p={3} height={240}>
@@ -100,6 +104,7 @@ export default (props: ProfileDetailsProps) => {
               margin={'auto'}
               src={user_avatar || '/images/user_logo.png'}
               component={'img'}
+              onClick={handleOpenUserProfile}
             />
           </Grid>
         </Grid>
