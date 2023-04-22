@@ -219,7 +219,7 @@ export default (props: UserProfileEditProps) => {
                 >
                   <Button
                     variant="outlined"
-                    disabled={!userName && userName.length === 0}
+                    disabled={!userName}
                     onClick={updatePlayer}
                   >
                     Save
