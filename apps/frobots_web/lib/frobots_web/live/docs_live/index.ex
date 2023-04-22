@@ -1,12 +1,15 @@
 defmodule FrobotsWeb.DocsLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
+  @priv_dir :code.priv_dir(:frobots_web)
 
   @impl Phoenix.LiveView
   def mount(params, _session, socket) do
     fileName = params["slug"] || "getting_started"
 
-    case File.read("docs/#{fileName}.md") do
+    filePath = Path.join([@priv_dir, "static/docs/#{fileName}.md"])
+
+    case File.read(filePath) do
       {:ok, body} ->
         {:ok,
          socket
@@ -15,10 +18,10 @@ defmodule FrobotsWeb.DocsLive.Index do
          |> assign(:slug, fileName)
          |> assign(:document, body)}
 
-      {:error, _} ->
+      {:error, message} ->
         {:ok,
          socket
-         |> put_flash(:error, "Document not found")
+         |> put_flash(:error, "Document not found filepath : #{filePath} , error : #{message}")
          |> push_redirect(to: "/home")}
     end
   end

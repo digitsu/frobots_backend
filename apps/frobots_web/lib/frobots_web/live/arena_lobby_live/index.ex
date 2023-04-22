@@ -129,6 +129,13 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
      })}
   end
 
+  def handle_event("match_results", %{}, socket) do
+    match_id = socket.assigns.match.id
+
+    {:noreply,
+     push_event(socket, "react.return_match_results", Events.get_match_details(match_id))}
+  end
+
   defp wait_for_socket(socket) do
     unless Socket.connected?(socket) do
       wait_for_socket(socket)

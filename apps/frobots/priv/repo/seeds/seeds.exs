@@ -16,12 +16,16 @@ alias Frobots
 admin_user = System.get_env("ADMIN_USER")
 admin_pass = System.get_env("ADMIN_PASS")
 
-{:ok, user} =
-  Accounts.register_user(%{
-    name: "god",
-    email: admin_user,
-    password: admin_pass
-  })
+user = case Accounts.get_user_by_email(admin_user) do
+  nil ->
+    {:ok, user} = Accounts.register_user(%{
+      name: "god",
+      email: admin_user,
+      password: admin_pass
+    })
+    user
+  %Frobots.Accounts.User{} = user -> user
+end
 
 for {name, brain_path} <- Frobots.frobot_paths() do
   # I, II, IV, IX, etc
@@ -38,22 +42,25 @@ for {name, brain_path} <- Frobots.frobot_paths() do
     "xp" => 0
   }
 
-  Assets.create_frobot!(user, frobot)
+  case Assets.get_frobot(Atom.to_string(name)) do
+    nil -> Assets.create_frobot!(user, frobot)
+    _ -> nil
+  end
 end
 
 Accounts.update_profile(Accounts.get_user_by(email: admin_user), %{admin: true})
 
-Frobots.Assets.create_xframe!(%{
-  type: "Chassis_Mk1",
-  max_speed_ms: 30,
-  turn_speed: 50,
-  ## not sure of the values
-  sensor_hardpoints: 1,
-  weapon_hardpoints: 1,
-  cpu_hardpoints: 1,
-  movement_type: :bipedal,
-  max_throttle: 100,
-  accel_speed_mss: 5,
-  max_health: 100,
-  image: "images/equipment/chassis_mk1.png"
-})
+# Frobots.Assets.create_xframe!(%{
+#   type: "Chassis_Mk1",
+#   max_speed_ms: 30,
+#   turn_speed: 50,
+#   ## not sure of the values
+#   sensor_hardpoints: 1,
+#   weapon_hardpoints: 1,
+#   cpu_hardpoints: 1,
+#   movement_type: :bipedal,
+#   max_throttle: 100,
+#   accel_speed_mss: 5,
+#   max_health: 100,
+#   image: "images/equipment/chassis_mk1.png"
+# })

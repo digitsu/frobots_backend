@@ -479,6 +479,84 @@ defmodule Frobots.Events do
     Repo.all(q)
   end
 
+  def get_match_details(match_id) do
+    q =
+      from m in "matches",
+        where: m.status == "done" and m.id == ^match_id,
+        join: s in "slots",
+        on: m.id == s.match_id,
+        join: f in "frobots",
+        on: s.frobot_id == f.id,
+        join: b in "battlelogs",
+        on: b.match_id == m.id,
+        join: u in "users",
+        on: u.id == f.user_id,
+        select: %{
+          "winner" => b.winners,
+          "status" => m.status,
+          "time" => m.match_time,
+          "frobot" => %{
+            "id" => f.id,
+            "name" => f.name,
+            "avatar" => f.avatar,
+            "pixellated_image" => f.pixellated_img,
+            "xp" => f.xp
+          },
+          "user_name" => u.name,
+          "death_map" => b.death_map,
+          "xp_earned" => 0
+        }
+
+    q
+    |> Repo.all()
+    |> Enum.map(fn e ->
+      %{
+        "winner" => e["winner"],
+        "status" => e["status"],
+        "time" => e["time"],
+        "frobot" => %{
+          "id" => e["frobot"]["id"],
+          "name" => e["frobot"]["name"],
+          "avatar" => e["frobot"]["avatar"],
+          "pixellated_image" => e["frobot"]["pixellated_image"],
+          "xp" => e["frobot"]["xp"]
+        },
+        "user_name" => e["user_name"],
+        "health" => get_health(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
+        "kills" => get_kill(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
+        "xp_earned" => e["xp_earned"]
+      }
+    end)
+  end
+
+  defp get_health(death_map, frobot_name, frobot_id) do
+    key = "#{frobot_name}##{frobot_id}"
+    damage_map = Map.get(death_map, key, %{"damage_map" => %{}})["damage_map"]
+    damage = Map.get(damage_map, key, 0)
+    health = 100 - damage
+    health
+  end
+
+  defp get_kill(death_map, frobot_name, frobot_id) do
+    key = "#{frobot_name}##{frobot_id}"
+    damage_map = Map.get(death_map, key, %{"damage_map" => %{}})["damage_map"]
+
+    kills =
+      Enum.reduce(damage_map, 0, fn
+        {_k, 100}, count ->
+          if Map.get(death_map, key, %{"killed_by" => ""})["killed_by"] == key do
+            count + 1
+          else
+            count
+          end
+
+        _, count ->
+          count
+      end)
+
+    kills
+  end
+
   def list_paginated(query, page_config) do
     query
     |> Repo.paginate(page_config)
