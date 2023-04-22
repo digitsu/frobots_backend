@@ -426,13 +426,14 @@ const equipments = {
 }
 
 export default (props: any) => {
-  const { frobotDetails, currentUser, userFrobots } = props
+  const { frobotDetails, currentUser, s3_base_url, userFrobots } = props
 
   const isOwnedFrobot = true
 
   return (
     <Box display={'flex'} width={'100%'} sx={{ pb: 2, pr: 5 }}>
       <SlideBarGrid
+        imageBaseUrl={s3_base_url}
         userFrobots={userFrobots}
         currentFrobot={frobotDetails}
         currentUser={currentUser}
