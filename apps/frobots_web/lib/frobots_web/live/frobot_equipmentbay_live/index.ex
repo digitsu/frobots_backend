@@ -22,12 +22,12 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
          |> assign(:user, current_user)
          |> assign(:frobot, frobot_details)
          |> assign(:user_frobots, Assets.list_user_frobots(current_user))
-         |> assign(:equipments, Equipment.list_equipments())
+         |> assign(:equipments, Equipment.list_frobot_unattached_equipments(frobot_id))
          |> assign(:s3_base_url, Api.get_s3_base_url())
          |> assign(
-          :current_user_ranking_details,
-          Events.get_current_user_ranking_details(current_user)
-        )}
+           :current_user_ranking_details,
+           Events.get_current_user_ranking_details(current_user)
+         )}
 
       {:error, message} ->
         {:ok,
