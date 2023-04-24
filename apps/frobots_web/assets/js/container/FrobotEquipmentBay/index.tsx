@@ -47,7 +47,7 @@ export default (props: any) => {
 
         <AttachedEquipments
           equipments={[
-            frobotDetails.xframe_inst,
+            ...frobotDetails.xframe_inst,
             ...frobotDetails.cannon_inst,
             ...frobotDetails.scanner_inst,
             ...frobotDetails.missile_inst,

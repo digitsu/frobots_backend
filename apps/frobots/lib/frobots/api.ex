@@ -437,19 +437,21 @@ defmodule Frobots.Api do
         }
       ],
       "user_id" => 2,
-      "xframe_inst" => %{
-        "accel_speed_mss" => 5,
-        "health" => nil,
-        "id" => 1,
-        "image" => "https://via.placeholder.com/50.png",
-        "max_health" => 100,
-        "max_speed_ms" => 30,
-        "max_throttle" => 100,
-        "turn_speed" => 50,
-        "equipment_class" => "xframe",
-        "equipment_type" => :Chassis_Mk1,
-        "xframe_id" => 1
-      },
+      "xframe_inst" => [
+        %{
+          "accel_speed_mss" => 5,
+          "health" => nil,
+          "id" => 1,
+          "image" => "https://via.placeholder.com/50.png",
+          "max_health" => 100,
+          "max_speed_ms" => 30,
+          "max_throttle" => 100,
+          "turn_speed" => 50,
+          "equipment_class" => "xframe",
+          "equipment_type" => :Chassis_Mk1,
+          "xframe_id" => 1
+        }
+      ],
       "xp" => 0
      }
     ```
@@ -528,19 +530,27 @@ defmodule Frobots.Api do
 
   defp _get_xframe_inst_details(frobot) do
     if Map.has_key?(frobot, :xframe_inst) do
-      %{
-        "id" => frobot.xframe_inst.id,
-        "xframe_id" => frobot.xframe_inst.xframe_id,
-        "max_speed_ms" => frobot.xframe_inst.max_speed_ms,
-        "turn_speed" => frobot.xframe_inst.turn_speed,
-        "max_health" => frobot.xframe_inst.max_health,
-        "health" => frobot.xframe_inst.health,
-        "max_throttle" => frobot.xframe_inst.max_throttle,
-        "accel_speed_mss" => frobot.xframe_inst.accel_speed_mss,
-        "image" => frobot.xframe_inst.xframe.image,
-        "equipment_class" => frobot.xframe_inst.xframe.class,
-        "equipment_type" => frobot.xframe_inst.xframe.type
-      }
+      xframe_inst = Map.get(frobot, :xframe_inst)
+
+      if !is_nil(xframe_inst) do
+        [
+          %{
+            "id" => Map.get(xframe_inst, :id),
+            "xframe_id" => Map.get(xframe_inst, :xframe_id),
+            "max_speed_ms" => Map.get(xframe_inst, :max_speed_ms),
+            "turn_speed" => Map.get(xframe_inst, :turn_speed),
+            "max_health" => Map.get(xframe_inst, :max_health),
+            "health" => Map.get(xframe_inst, :health),
+            "max_throttle" => Map.get(xframe_inst, :max_throttle),
+            "accel_speed_mss" => Map.get(xframe_inst, :accel_speed_mss),
+            "image" => frobot.xframe_inst.xframe.image,
+            "equipment_class" => frobot.xframe_inst.xframe.class,
+            "equipment_type" => frobot.xframe_inst.xframe.type
+          }
+        ]
+      else
+        []
+      end
     else
       []
     end
