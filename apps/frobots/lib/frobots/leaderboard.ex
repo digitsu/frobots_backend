@@ -8,6 +8,7 @@ defmodule Frobots.Leaderboard do
   alias Frobots.Events.Match
   alias Frobots.Leaderboard.Stats
   alias Frobots.ChangesetError
+  require Logger
 
   def create_or_update_entry(match_id) do
     match = Events.get_match_by([id: match_id], :battlelog)
@@ -28,7 +29,7 @@ defmodule Frobots.Leaderboard do
     stat = %{
       "points" => points,
       "xp" => frobot.xp + points,
-      "attempts" => 0,
+      "attempts" => get_match_attempts_count(winning_frobot),
       "matches_participated" => matches_participated,
       "matches_won" => matches_won,
       "frobot_id" => frobot.id
@@ -90,6 +91,19 @@ defmodule Frobots.Leaderboard do
     |> Enum.count()
   end
 
+  def get_match_attempts_count(frobot_id) do
+    q =
+      from m in "matches",
+        join: b in "battlelogs",
+        on: b.match_id == m.id,
+        where: m.status in ["timeout", "cancelled"] and ^frobot_id in m.frobots,
+        distinct: m.id,
+        select: m.id
+
+    Repo.all(q)
+    |> Enum.count()
+  end
+
   def compute_points(winner_frobot_id, participants, starting_points) do
     # we have winning frobot and participants
     q =
@@ -103,8 +117,6 @@ defmodule Frobots.Leaderboard do
         select: m.id
 
     occurences = Repo.all(q) |> Enum.count()
-
-    IO.inspect("Participant occurences: #{occurences}")
 
     points =
       case occurences do
@@ -141,11 +153,12 @@ defmodule Frobots.Leaderboard do
 
     case result do
       {:ok, _stat} ->
-        IO.inspect("all ok")
+        Logger.info("Updated successful")
 
       # Updated with success
       {:error, changeset} ->
-        IO.inspect(ChangesetError.translate_errors(changeset))
+        errors = ChangesetError.translate_errors(changeset)
+        Logger.error("Updated failed", errors)
     end
   end
 
