@@ -1,12 +1,18 @@
 defmodule FrobotsWeb.ArenaLobbyLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
-  alias Frobots.{Api, Events}
+  alias Frobots.{Api, Events, Assets, Accounts}
   alias PhoenixClient.{Socket, Channel}
 
   @impl Phoenix.LiveView
-  def mount(%{"match_id" => match_id} = _params, _session, socket) do
+  def mount(
+        %{"match_id" => match_id} = _params,
+        %{"user_id" => id, "user_token" => user_token},
+        socket
+      ) do
     match = Api.get_match_details_by_id(match_id)
+    s3_base_url = Api.get_s3_base_url()
+    current_user = Accounts.get_user_by_session_token(user_token)
 
     if is_nil(match) do
       {:noreply, put_flash(socket, :error, "invalid match id")}
@@ -19,7 +25,12 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
        socket
        |> assign(:match, match)
        |> assign(:time_left, time_left)
-       |> assign(:user_id, socket.assigns.current_user.id)}
+       |> assign(:user_id, id)
+       |> assign(:s3_base_url, s3_base_url)
+       |> assign(
+         :current_user_ranking_details,
+         Events.get_current_user_ranking_details(current_user)
+       )}
     end
   end
 
@@ -91,6 +102,40 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
     end
   end
 
+  def handle_event("react.fetch_lobby_details", %{}, socket) do
+    %{match: match, user_id: user_id, s3_base_url: s3_base_url} = socket.assigns
+    templateFrobots = extract_frobot_details(Assets.list_template_frobots())
+
+    userFrobots =
+      extract_frobot_details(Assets.get_available_user_frobots(socket.assigns.user_id))
+
+    {:noreply,
+     push_event(socket, "react.return_lobby_details", %{
+       "match" => %{
+         "id" => match.id,
+         "slots" => extract_slot_details(match.slots),
+         "description" => match.description,
+         "title" => match.title,
+         "timer" => match.timer,
+         "max_player_frobot" => match.max_player_frobot,
+         "min_player_frobot" => match.min_player_frobot,
+         "match_time" => match.match_time
+       },
+       "user_id" => match.user_id,
+       "current_user_id" => user_id,
+       "templates" => templateFrobots,
+       "frobots" => userFrobots,
+       "s3_base_url" => s3_base_url
+     })}
+  end
+
+  def handle_event("match_results", %{}, socket) do
+    match_id = socket.assigns.match.id
+
+    {:noreply,
+     push_event(socket, "react.return_match_results", Events.get_match_details(match_id))}
+  end
+
   defp wait_for_socket(socket) do
     unless Socket.connected?(socket) do
       wait_for_socket(socket)
@@ -130,4 +175,56 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
 
   defp to_atom(value) when is_binary(value), do: String.to_atom(value)
   defp to_atom(value), do: value
+
+  defp extract_frobot_details(frobots) do
+    Enum.map(frobots, fn %{
+                           id: id,
+                           name: name,
+                           xp: xp,
+                           class: class,
+                           brain_code: brain_code,
+                           blockly_code: blockly_code,
+                           bio: bio,
+                           avatar: avatar
+                         } ->
+      %{
+        id: id,
+        name: name,
+        xp: xp,
+        class: class,
+        brain_code: brain_code,
+        blockly_code: blockly_code,
+        bio: bio,
+        avatar: avatar
+      }
+    end)
+  end
+
+  defp extract_slot_details(slots) do
+    Enum.map(slots, fn %{
+                         frobot: frobot,
+                         frobot_id: frobot_id,
+                         id: id,
+                         match_id: match_id,
+                         slot_type: slot_type,
+                         status: status
+                       } ->
+      user_id =
+        if frobot do
+          Map.get(frobot, :user_id, nil)
+        else
+          nil
+        end
+
+      %{
+        frobot: frobot,
+        frobot_user_id: user_id,
+        frobot_id: frobot_id,
+        id: id,
+        match_id: match_id,
+        slot_type: slot_type,
+        status: status
+      }
+    end)
+  end
 end

@@ -31,74 +31,68 @@ export default ({
   return (
     <>
       {currentStep === 1 && (
-        <Box
-          sx={{
-            p: 3,
-            pb: 1,
-            height: '100%',
-            maxHeight: 490,
-            overflowY: 'scroll',
-          }}
-        >
-          <Grid container spacing={3}>
-            {protobots.map((slot: any) => (
-              <Grid item width={'100%'} key={slot.id}>
-                <Box
-                  display={'flex'}
-                  alignItems={'left'}
-                  justifyContent={'flex-start'}
-                  gap={3}
-                  p={1}
-                  sx={{
-                    cursor: 'pointer',
-                    ':hover': {
-                      boxShadow: '0 0 0 2pt #00AB55',
-                      backgroundColor: `#1C3F3B`,
-                    },
-                    boxShadow:
-                      currentSlot?.id === slot.id
-                        ? '0 0 0 2pt #00AB55'
-                        : 'none',
-                    backgroundColor:
-                      currentSlot?.id === slot.id ? `#1C3F3B` : 'transparent',
-                  }}
-                  onClick={() => setCurrentSlot(slot)}
-                >
-                  <Box position={'relative'} width={'30%'} m={'auto'}>
+        <Box sx={{ height: 620 }}>
+          <Box
+            sx={{
+              p: 3,
+              pb: 1,
+              height: '100%',
+              maxHeight: 490,
+              overflowY: 'scroll',
+            }}
+          >
+            <Box>
+              <Grid container spacing={3}>
+                {protobots.map((slot) => (
+                  <Grid item width={'100%'}>
                     <Box
-                      component={'img'}
-                      width={'100%'}
-                      src={'/images/frobot_bg.png'}
-                    />
-                    <Box
-                      sx={{ transform: 'translate(-50%, -50%)' }}
-                      top={'50%'}
-                      left={'50%'}
-                      zIndex={1}
-                      position={'absolute'}
-                      component={'img'}
-                      width={'65%'}
-                      height={'65%'}
-                      src={`${imageBaseUrl}${slot?.avatar}`}
-                    />
-                  </Box>
-                  <Box width={'70%'}>
-                    <Typography variant="subtitle1">{slot.name}</Typography>
-                    <Box
+                      display={'flex'}
+                      alignItems={'center'}
+                      justifyContent={'flex-start'}
+                      gap={3}
+                      p={1}
                       sx={{
-                        height: '120px',
-                        overflowY: 'scroll',
-                        '&::-webkit-scrollbar': { display: 'none' },
+                        cursor: 'pointer',
+                        ':hover': {
+                          boxShadow: '0 0 0 2pt #00AB55',
+                          backgroundColor: `#1C3F3B`,
+                        },
+                        boxShadow:
+                          currentSlot?.id === slot.id
+                            ? '0 0 0 2pt #00AB55'
+                            : 'none',
+                        backgroundColor:
+                          currentSlot?.id === slot.id
+                            ? `#1C3F3B`
+                            : 'transparent',
                       }}
+                      onClick={() => setCurrentSlot(slot)}
                     >
-                      <Typography variant="caption" gutterBottom>
-                        {slot.bio || '-'}
-                      </Typography>
+                      <Box position={'relative'}>
+                        <Box
+                          component={'img'}
+                          width={70}
+                          src={'/images/frobot_bg.png'}
+                        />
+                        <Box
+                          component={'img'}
+                          src={`${imageBaseUrl}${slot.avatar}`}
+                          width={'75%'}
+                          position={'absolute'}
+                          top={'50%'}
+                          left={'50%'}
+                          sx={{ transform: 'translate(-50%,-50%)' }}
+                        />
+                      </Box>
+                      <Box flex={6}>
+                        <Typography variant="subtitle1">{slot.name}</Typography>
+                        <Typography variant="caption">{slot.bio}</Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </Box>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
+            </Box>
             <Box
               sx={{
                 position: 'absolute',
@@ -123,7 +117,7 @@ export default ({
                 </Button>
               </Box>
             </Box>
-          </Grid>
+          </Box>
         </Box>
       )}
 

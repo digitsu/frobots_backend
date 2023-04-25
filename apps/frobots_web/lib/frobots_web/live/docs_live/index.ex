@@ -1,12 +1,29 @@
 defmodule FrobotsWeb.DocsLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
+  @priv_dir :code.priv_dir(:frobots_web)
 
   @impl Phoenix.LiveView
-  def mount(_params, _session, socket) do
-    # set required data via assigns
-    # for example..fetch leaderboard entries and pass to liveview as follow
-    {:ok, socket}
+  def mount(params, _session, socket) do
+    fileName = params["slug"] || "getting_started"
+
+    filePath = Path.join([@priv_dir, "static/docs/#{fileName}.md"])
+
+    case File.read(filePath) do
+      {:ok, body} ->
+        {:ok,
+         socket
+         |> assign(:page_title, "Docs")
+         |> assign(:page_sub_title, " · Frobots Programming Guide")
+         |> assign(:slug, fileName)
+         |> assign(:document, body)}
+
+      {:error, message} ->
+        {:ok,
+         socket
+         |> put_flash(:error, "Document not found filepath : #{filePath} , error : #{message}")
+         |> push_redirect(to: "/home")}
+    end
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -16,13 +33,15 @@ defmodule FrobotsWeb.DocsLive.Index do
   end
 
   defp apply_action(socket, :index, _params) do
-    # entries = Frobots.LeaderBoard.get()
-    # {:ok,socket
-    # |> assign(:entries, entries)
-    # }
-
-    #  socket
-    # |> assign_new(:rider_search, fn -> rider_search end)
     socket
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("react.get_document", _params, socket) do
+    {:noreply,
+     push_event(socket, "react.return_document", %{
+       "article" => socket.assigns.document,
+       "slug" => socket.assigns.slug
+     })}
   end
 end

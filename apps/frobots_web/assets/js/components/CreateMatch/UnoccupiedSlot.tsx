@@ -4,8 +4,13 @@ import React from 'react'
 type UnoccupiedComponentProps = {
   modifyHandler: () => any
   type: string
+  showModifyButton?: boolean
 }
-export default ({ modifyHandler, type }: UnoccupiedComponentProps) => {
+export default ({
+  modifyHandler,
+  type,
+  showModifyButton = true,
+}: UnoccupiedComponentProps) => {
   const label = type.toLocaleLowerCase() === 'open' ? 'Open' : 'Closed'
   return (
     <Box position={'relative'} height={'100%'}>
@@ -38,9 +43,11 @@ export default ({ modifyHandler, type }: UnoccupiedComponentProps) => {
           bottom: 0,
         }}
       >
-        <Button fullWidth variant="contained" onClick={modifyHandler}>
-          Modify
-        </Button>
+        {showModifyButton === true && (
+          <Button fullWidth variant="contained" onClick={modifyHandler}>
+            Modify
+          </Button>
+        )}
       </Box>
     </Box>
   )

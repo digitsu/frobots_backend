@@ -8,19 +8,22 @@ type OccupiedComponentProps = {
     name: string
     bio: string
   }
-  imageBaseUrl: string
+  imageBaseUrl?: string
+  showModifyButton?: boolean
+  s3_base_url?: string
 }
 
 export default ({
   slotDetails,
   modifyHandler,
-  imageBaseUrl,
+  showModifyButton = true,
+  s3_base_url,
 }: OccupiedComponentProps) => {
   return (
     <Box p={2} position={'relative'} height={'100%'}>
       <Box
         component={'img'}
-        src={`${imageBaseUrl}${slotDetails?.avatar}`}
+        src={`${s3_base_url}${slotDetails?.avatar}`}
         width={'60%'}
         m={'auto'}
       />
@@ -47,9 +50,11 @@ export default ({
           bottom: 0,
         }}
       >
-        <Button fullWidth variant="contained" onClick={modifyHandler}>
-          Modify
-        </Button>
+        {showModifyButton && (
+          <Button fullWidth variant="contained" onClick={modifyHandler}>
+            Modify
+          </Button>
+        )}
       </Box>
     </Box>
   )
