@@ -4,51 +4,65 @@ defmodule Frobots.Leaderboard do
   """
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Events
+  alias Frobots.{Events, Assets}
   alias Frobots.Events.Match
-  alias Frobots.Assets
   alias Frobots.Leaderboard.Stats
+  alias Frobots.ChangesetError
 
   def create_or_update_entry(match_id) do
-    # 1. given match id retrieve match. Preload battlelog
     match = Events.get_match_by([id: match_id], :battlelog)
-
 
     # now get winner and participants
     participants = match.frobots
-    winners =  match.battlelog.winners
+    winners = match.battlelog.winners
     winning_frobot = hd(winners)
     frobot = Assets.get_frobot(winning_frobot)
 
     matches_participated = get_match_participation_count([winning_frobot])
     matches_won = get_matches_won_count(winning_frobot)
+
     # start with 10 points, actual points are reduced based on how many times winning frobot fought
     # with same combination of participants
-    points = compute_points(winning_frobot, participants, 10, frobot.user_id)
+    points = compute_points(winning_frobot, participants, 10)
 
     stat = %{
-        "points" => points,
-        "xp" => frobot.xp + points,
-        "attempts" => 0,
-        "matches_participated" => matches_participated,
-        "matches_won" => matches_won,
-        "frobot_id" => frobot.id
-      }
+      "points" => points,
+      "xp" => frobot.xp + points,
+      "attempts" => 0,
+      "matches_participated" => matches_participated,
+      "matches_won" => matches_won,
+      "frobot_id" => frobot.id
+    }
 
-    # check if there is an entry in leaderboard_starts with winner frobot_id
-    #  if yes update exisiting row
+    # check if there is an entry in leaderboard_starts with winner frobot_id if yes update exisiting row
     #  else insert new row
-    case get_entry(match.id) do
+    case get_entry(winning_frobot) do
       nil ->
         # new entry
+        IO.inspect("Adding new leaderboard entry")
         create_entry(stat)
+        update_frobot_xp(winning_frobot, points)
+
       entry ->
         # update entry
-        stat = Map.delete(stat, "frobot_id")
+        IO.inspect("Updating leaderboard entry")
+
+        stat =
+          Map.delete(stat, "frobot_id")
+          |> Map.merge(%{"points" => entry.points + points})
+
         update_entry(entry, stat)
+        update_frobot_xp(winning_frobot, points)
     end
   end
 
+  def update_frobot_xp(frobot_id, points) do
+    # find frobot
+    frobot = Assets.get_frobot(frobot_id)
+    new_xp = frobot.xp + points
+    # get xp and add to points
+    Assets.update_frobot(frobot, %{"xp" => new_xp})
+  end
 
   # total number of matches participated
   def get_match_participation_count(frobot_id_list) do
@@ -76,32 +90,41 @@ defmodule Frobots.Leaderboard do
     |> Enum.count()
   end
 
-  def compute_points(winner_frobot_id, participants, starting_points, user_id) do
+  def compute_points(winner_frobot_id, participants, starting_points) do
     # we have winning frobot and participants
-    q = from m in "matches",
+    q =
+      from m in "matches",
         join: b in "battlelogs",
         on: b.match_id == m.id,
-        where: m.status == "done"
-                and ^winner_frobot_id in b.winners
-                and m.frobots == ^participants
-                and m.user_id == ^user_id,
+        where:
+          m.status == "done" and
+            ^winner_frobot_id in b.winners and
+            m.frobots == ^participants,
         select: m.id
 
     occurences = Repo.all(q) |> Enum.count()
 
-    points = case occurences do
-      1 ->
-        starting_points / 2
-      2 ->
-        starting_points / 2
+    IO.inspect("Participant occurences: #{occurences}")
 
-      3 ->
-        1
-      _ ->
-        10
-    end
+    points =
+      case occurences do
+        1 ->
+          10
 
-    round(points)
+        2 ->
+          starting_points / 2
+
+        3 ->
+          starting_points / 4
+
+        4 ->
+          1
+
+        _ ->
+          0
+      end
+
+    trunc(points)
   end
 
   def create_entry(attrs) do
@@ -111,13 +134,28 @@ defmodule Frobots.Leaderboard do
   end
 
   def update_entry(stat, attrs) do
-    # Repo.update(entry, stats)
-    stat
-    |> Stats.changeset(attrs)
-    |> Repo.update()
+    result =
+      stat
+      |> Stats.changeset(attrs)
+      |> Repo.update()
+
+    case result do
+      {:ok, _stat} ->
+        IO.inspect("all ok")
+
+      # Updated with success
+      {:error, changeset} ->
+        IO.inspect(ChangesetError.translate_errors(changeset))
+    end
   end
 
   def get_entry(id) do
-    Repo.get(Stats, id)
+    Repo.get_by(Stats, frobot_id: id)
+  end
+
+  def get_stats(limit \\ 50) do
+    # we do not want to pull all stats in db
+    q = from(s in Stats, order_by: [desc: s.points], limit: ^limit)
+    Repo.all(q)
   end
 end

@@ -15,6 +15,7 @@ defmodule Frobots.Application do
       # Start a worker by calling: Frobots.Worker.start_link(arg)
       # {Frobots.Worker, arg}
       Frobots.Agents.WinnersBucket,
+      Frobots.DatabaseListener,
       Frobots.MatchChannel,
       Frobots.Cron.ScheduledMatch,
       Frobots.Cron.JoiningStatus
