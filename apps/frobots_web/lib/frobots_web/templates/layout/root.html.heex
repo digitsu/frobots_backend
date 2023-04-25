@@ -28,11 +28,33 @@
 
                 <%= if @current_user.admin == true do %>
                 <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/admin">Admin</a> </p>
-
                 <% end %>
 
+                <div class="navbar-user-dropdown tracking-wider leading-relaxed text-gray-400">
+                  <button onclick='document.getElementById("navbar-user-dropdown").classList.toggle("show");' class="navbar-user-dropdown-btn">
+                    <img src={Routes.static_path(@conn, "/images/user-icon.png" )} alt="logo" class="w-15 h-8 mr-6">
+                  </button>
+                  <div id="navbar-user-dropdown" class="navbar-user-dropdown-content">
+                    <div class="navbar-user-dropdown-content-item">
+                      <p class="text-md font-bold text-400">
+                        <%= @current_user.name %>
+                      </p>
+                      <p class="text-md text-gray-400">
+                        <%= @current_user.email %>
+                      </p>
+                    <hr />
+                    </div>
+                    <div class="navbar-user-dropdown-content-item">
+                      <a href="/profile">Profile</a>
+                      <a href="/garage">Garage</a>
+                    </div>
+                    <hr />
+                    <div class="navbar-user-dropdown-content-item">
+                      <%= link "Log out" , to: Routes.user_session_path(@conn, :delete), method: :delete %>
+                    </div>
+                  </div>
+                </div>
 
-                <p><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></p>
             </div>
           </nav>
           </div>
