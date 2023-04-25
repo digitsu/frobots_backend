@@ -66,6 +66,7 @@ defmodule Frobots.Events.Slot do
   defp validate_status_fsm(:open, :closed), do: true
   defp validate_status_fsm(:closed, :open), do: true
   defp validate_status_fsm(:joining, :ready), do: true
+  defp validate_status_fsm(:done, _), do: false
   defp validate_status_fsm(_, :done), do: true
   defp validate_status_fsm(_, :cancelled), do: true
   defp validate_status_fsm(_, _), do: false

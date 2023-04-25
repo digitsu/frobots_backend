@@ -39,9 +39,9 @@ defmodule FrobotsWeb.ArenaLive.Index do
      |> assign(:page_size, page_size)
      |> assign(:total_entries, total_entries)
      |> assign(:total_pages, total_pages)
-     |> assign(:live_matches_count, Api.count_matches_by_status(:running))
-     |> assign(:completed_matches_count, Api.count_matches_by_status(:done))
-     |> assign(:upcoming_matches_count, Api.count_matches_by_status(:pending))}
+     |> assign(:live_matches_count, Api.count_matches_by_status_for_user(:running, current_user.id))
+     |> assign(:completed_matches_count, Api.count_matches_by_status_for_user(:done, current_user.id))
+     |> assign(:upcoming_matches_count, Api.count_matches_by_status_for_user(:pending, current_user.id))}
   end
 
   # %{

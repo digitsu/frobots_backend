@@ -15,52 +15,23 @@ defmodule FrobotsWeb.ArenaMatchesLive.Index do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     if connected?(socket), do: Events.subscribe()
 
-    %{
-      entries: matches,
-      page_number: page,
-      page_size: page_size,
-      total_entries: total_entries,
-      total_pages: total_pages
-    } = Api.list_paginated_matches([match_status: match_status], [], [:user], desc: :inserted_at)
+    matches = Api.list_matches_by_status_for_user(match_status, current_user.id)
+    matches |> Enum.group_by(fn match -> match_type(match.user_id, current_user.id) end)
 
     {:ok,
      socket
      |> assign(:current_user, current_user)
-     |> assign(:matches, matches)
+     |> assign(:joined_matches, matches["joined"])
+     |> assign(:host_matches, matches["host"])
      |> assign(:match_status, match_status)
-     |> assign(:page, page)
-     |> assign(:page_size, page_size)
-     |> assign(:total_entries, total_entries)
-     |> assign(:total_pages, total_pages)
-     |> assign(:live_matches, Events.count_matches_by_status(:running))
-     |> assign(:completed_matches, Events.count_matches_by_status(:done))
-     |> assign(:upcoming_matches, Events.count_matches_by_status(:pending))}
+    }
   end
+
+  defp match_type(user_id, user_id), do: "host"
+  defp match_type(_, _), do: "joined"
 
   # add additional handle param events as needed to handle button clicks etc
   @impl Phoenix.LiveView
-  def handle_params(%{"page" => page} = params, _, socket) do
-    match_status = params["match_status"]
-
-    %{
-      entries: matches,
-      page_number: page,
-      page_size: page_size,
-      total_entries: total_entries,
-      total_pages: total_pages
-    } =
-      Api.list_paginated_matches([match_status: match_status], [page: page], [:user],
-        desc: :inserted_at
-      )
-
-    {:noreply,
-     socket
-     |> assign(:matches, matches)
-     |> assign(:page, page)
-     |> assign(:page_size, page_size)
-     |> assign(:total_entries, total_entries)
-     |> assign(:total_pages, total_pages)}
-  end
 
   def handle_params(_, _, socket) do
     {:noreply, socket}
