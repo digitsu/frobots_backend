@@ -203,7 +203,9 @@ defmodule Frobots.Events do
         where: m.status == ^status and m.type == :real,
         join: s in "slots",
         on: m.id == s.match_id,
-        where: s.user_id == ^user_id,
+        join: f in "frobots",
+        on: s.frobot_id == f.id,
+        where: f.user_id == ^user_id,
         select: count(m.id)
     )
   end
@@ -213,12 +215,14 @@ defmodule Frobots.Events do
   end
 
   def list_matches_by_status_for_user(status, user_id) do
-    Repo.one(
+    Repo.all(
       from m in Match,
         where: m.status == ^status and m.type == :real,
         join: s in "slots",
         on: m.id == s.match_id,
-        where: s.user_id == ^user_id,
+        join: f in "frobots",
+        on: s.frobot_id == f.id,
+        where: f.user_id == ^user_id,
         select: %{
           id: m.id,
           status: m.status,

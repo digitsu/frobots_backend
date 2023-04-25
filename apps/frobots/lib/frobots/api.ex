@@ -130,7 +130,9 @@ defmodule Frobots.Api do
   end
 
   def count_matches_by_status(status), do: Events.count_matches_by_status(status)
-  def count_matches_by_status_for_user(status, user_id), do: Events.count_matches_by_status_for_user(status, user_id)
+
+  def count_matches_by_status_for_user(status, user_id),
+    do: Events.count_matches_by_status_for_user(status, user_id)
 
   def get_match_details_by_id(match_id),
     do: Events.get_match_by([id: match_id], slots: [frobot: :user])
@@ -172,7 +174,13 @@ defmodule Frobots.Api do
     Events.list_match_by(query, preload, order_by)
   end
 
-  def list_matches_by_status_for_user(status, user_id), do: Events.list_matches_by_status_for_user(status, user_id)
+  def list_matches_by_status_for_user(status, user_id),
+    do:
+      Events.list_matches_by_status_for_user(status, user_id)
+      |> Enum.group_by(fn match -> match_type(match.user_id, user_id) end)
+
+  defp match_type(user_id, user_id), do: "host"
+  defp match_type(_, _), do: "joined"
 
   def update_slot(match, user_id, slot_id, attrs) do
     validation_check? = if attrs.slot_type == :protobot, do: match.user_id == user_id, else: true

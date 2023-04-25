@@ -20,8 +20,8 @@ config :frobots_web, FrobotsWeb.Endpoint,
   ]
 
 ## in seconds
-config :frobots, status_reset_interval: 60*30
-config :frobots, cron_interval: 1000*30*30
+config :frobots, status_reset_interval: 60 * 30
+config :frobots, cron_interval: 1000 * 30 * 30
 
 # ## SSL Support
 #
