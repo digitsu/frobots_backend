@@ -20,8 +20,9 @@ defmodule FrobotsWeb.ArenaMatchesLive.Index do
     {:ok,
      socket
      |> assign(:current_user, current_user)
-     |> assign(:joined_matches, matches["joined"])
-     |> assign(:host_matches, matches["host"])
+     |> assign(:joined_matches, Map.get(matches, "joined", []))
+     |> assign(:host_matches, Map.get(matches, "host", []))
+     |> assign(:watch_matches, Map.get(matches, "watch", []))
      |> assign(:match_status, match_status)}
   end
 
