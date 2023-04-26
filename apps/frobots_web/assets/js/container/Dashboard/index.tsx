@@ -233,7 +233,7 @@ export default (props: any) => {
           </Grid>
         </Grid>
       </Box>
-      <Box>
+      <Box width={'90%'} m={'auto'}>
         <Grid container spacing={2} my={2}>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <FeaturedFrobotSection

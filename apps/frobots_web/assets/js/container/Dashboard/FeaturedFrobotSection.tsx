@@ -4,7 +4,7 @@ import { Grid, Box, Typography } from '@mui/material'
 type FeaturedFrobot = {
   id: number
   name: string
-  image_path: string
+  avatar: string
   xp: number
 }
 
@@ -27,6 +27,7 @@ export default (props: FeaturedFrobotsProps) => {
         p: 3,
         backgroundColor: '#212B36',
         color: '#fff',
+        borderRadius: 4,
       }}
     >
       <Box width={'90%'} m={'auto'}>
@@ -37,6 +38,7 @@ export default (props: FeaturedFrobotsProps) => {
           {featuredFrobots.map((featuredFrobot: FeaturedFrobot) => (
             <Grid
               item
+              xl={3}
               lg={3}
               md={4}
               sm={6}
@@ -52,13 +54,17 @@ export default (props: FeaturedFrobotsProps) => {
                     src={'/images/frobot_bg.png'}
                   ></Box>
                   <Box
-                    sx={{ transform: 'translate(-50%, -50%)' }}
+                    sx={{
+                      transform: 'translate(-50%, -50%)',
+                      objectFit: 'cover',
+                      borderRadius: '20px 20px 10px 10px',
+                    }}
                     top={'50%'}
                     left={'50%'}
                     zIndex={1}
                     position={'absolute'}
                     component={'img'}
-                    src={`${imageBaseUrl}${featuredFrobot.image_path}`}
+                    src={`${imageBaseUrl}${featuredFrobot.avatar}`}
                   />
                 </Box>
                 <Box textAlign={'center'} mt={3}>
