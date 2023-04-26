@@ -30,11 +30,16 @@ export default ({ createFrobot, s3BaseUrl }) => {
                 src={'/images/frobot_bg.png'}
               ></Box>
               <Box
-                sx={{ transform: 'translate(-50%, -50%)' }}
+                sx={{
+                  transform: 'translate(-50%, -50%)',
+                  objectFit: 'cover',
+                }}
                 top={'50%'}
                 left={'50%'}
                 zIndex={1}
                 position={'absolute'}
+                width={'100%'}
+                height={'100%'}
                 component={'img'}
                 src={`${s3BaseUrl}${starterMech.avatar}`}
               />

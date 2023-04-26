@@ -67,7 +67,11 @@ export default (props: any) => {
             Select Frobot Avatar
           </Typography>
         </Box>
-        <Grid container spacing={2}>
+        <Grid
+          container
+          spacing={2}
+          sx={{ minHeight: '350px', maxHeight: '350px', overflow: 'scroll' }}
+        >
           {starterMechs.map((starterMech, index) => (
             <Grid
               item
@@ -83,11 +87,12 @@ export default (props: any) => {
                 width={'100%'}
                 height={'100%'}
                 m={'auto'}
-                sx={{ cursor: 'pointer', p: 1 }}
+                sx={{ cursor: 'pointer' }}
               >
                 <Box
                   component={'img'}
                   width={'100%'}
+                  height={'100%'}
                   src={'/images/frobot_bg.png'}
                   sx={{
                     boxShadow:
@@ -95,17 +100,22 @@ export default (props: any) => {
                         ? '0 0 0 2pt #00AB55'
                         : 'none',
                     borderRadius: '6px',
+                    objectFit: 'cover',
                   }}
                 ></Box>
                 <Box
-                  sx={{ transform: 'translate(-50%, -50%)' }}
+                  sx={{
+                    transform: 'translate(-50%, -50%)',
+                    borderRadius: '6px',
+                    objectFit: 'cover',
+                  }}
                   top={'50%'}
                   left={'50%'}
                   zIndex={1}
                   position={'absolute'}
                   component={'img'}
-                  width={'65%'}
-                  height={'65%'}
+                  width={'100%'}
+                  height={'100%'}
                   src={`${s3BaseUrl}${starterMech.avatar}`}
                 />
               </Box>
