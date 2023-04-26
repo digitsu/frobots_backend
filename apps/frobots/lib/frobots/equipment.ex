@@ -195,6 +195,53 @@ defmodule Frobots.Equipment do
     end)
   end
 
+  # Fetch all the equipment with details
+  def list_user_equipment_details(user_id) do
+    cannon_q =
+      from(c in CannonInst,
+        join: detail in Cannon,
+        as: :cannon,
+        on: c.cannon_id == detail.id,
+        where: c.user_id == ^user_id
+      )
+
+    missile_q =
+      from(c in MissileInst,
+        join: detail in Missile,
+        as: :missile,
+        on: c.missile_id == detail.id,
+        where: c.user_id == ^user_id
+      )
+
+    scanner_q =
+      from(c in ScannerInst,
+        join: detail in Scanner,
+        as: :scanner,
+        on: c.scanner_id == detail.id,
+        where: c.user_id == ^user_id
+      )
+
+    xframe_q =
+      from(c in XframeInst,
+        join: detail in Xframe,
+        as: :xframe,
+        on: c.xframe_id == detail.id,
+        where: c.user_id == ^user_id
+      )
+
+    cannons = Repo.all(cannon_q) |> Repo.preload(:cannon)
+    xframes = Repo.all(xframe_q) |> Repo.preload(:xframe)
+    scanners = Repo.all(scanner_q) |> Repo.preload(:scanner)
+    missiles = Repo.all(missile_q) |> Repo.preload(:missile)
+
+    %{
+      "xframes" => xframes,
+      "missiles" => missiles,
+      "scanners" => scanners,
+      "cannons" => cannons
+    }
+  end
+
   @doc """
   get all types of equipments that are not attached to a particular frobot
   """
