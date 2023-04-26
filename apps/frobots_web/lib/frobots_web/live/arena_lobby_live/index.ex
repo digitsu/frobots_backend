@@ -18,8 +18,14 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
       {:noreply, put_flash(socket, :error, "invalid match id")}
     else
       if connected?(socket), do: Events.subscribe()
-      time_left = DateTime.diff(match.match_time, DateTime.utc_now())
-      Process.send_after(self(), :time_left, 1_000)
+
+      time_left =
+        if match.status == :pending or match.status == :running do
+          Process.send_after(self(), :time_left, 1_000)
+          DateTime.diff(match.match_time, DateTime.utc_now())
+        else
+          nil
+        end
 
       {:ok,
        socket
@@ -133,7 +139,9 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
     match_id = socket.assigns.match.id
 
     {:noreply,
-     push_event(socket, "react.return_match_results", Events.get_match_details(match_id))}
+     push_event(socket, "react.return_match_results", %{
+       "match_results" => Events.get_match_details(match_id)
+     })}
   end
 
   defp wait_for_socket(socket) do
