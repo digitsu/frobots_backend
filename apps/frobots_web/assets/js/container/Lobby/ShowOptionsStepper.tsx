@@ -4,11 +4,11 @@ import UnoccupiedSlot from '../../components/CreateMatch/UnoccupiedSlot'
 import OccupiedSlot from '../../components/CreateMatch/OccupiedSlot'
 import { useSelector } from 'react-redux'
 
-export default ({ slotDetails, updateSlot, s3_base_url, isHost }) => {
+export default ({ slotDetails, updateSlot, isHost }) => {
   const [showOptions, setShowOptions] = useState(false)
   const { frobot_user_id, current_user_id } = slotDetails
   const showModifyButton = isHost || frobot_user_id === current_user_id
-  const { s3Url } = useSelector((store) => store.arenaLobby)
+  const { s3Url, currentActiveSlot } = useSelector((store) => store.arenaLobby)
   return (
     <>
       {showOptions ? (
@@ -35,7 +35,19 @@ export default ({ slotDetails, updateSlot, s3_base_url, isHost }) => {
             <OccupiedSlot
               slotDetails={slotDetails?.slotDetails}
               modifyHandler={() => setShowOptions(true)}
+              showRemoveButton={frobot_user_id === current_user_id || isHost}
               showModifyButton={showModifyButton}
+              clearFrobotHandler={() => {
+                updateSlot({
+                  type: 'open',
+                  payload: {
+                    slot_id: currentActiveSlot?.id,
+                    status: 'open',
+                    slot_type: null,
+                    frobot_id: null,
+                  },
+                })
+              }}
               s3_base_url={s3Url}
             />
           )}
