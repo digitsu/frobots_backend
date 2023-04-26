@@ -49,3 +49,6 @@ loadenv.sh
 #scratch file
 scratch.txt
 
+#vscode
+.vscode/
+
