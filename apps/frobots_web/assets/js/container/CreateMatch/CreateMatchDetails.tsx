@@ -1,17 +1,10 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Typography, Autocomplete, TextField, Button } from '@mui/material'
+import { Box, Typography, TextField, Button } from '@mui/material'
 import { createMatchActions } from '../../redux/slices/createMatch'
 
 export default (props: any) => {
   const { templates } = props
-  const templateFrobots =
-    templates?.map(({ name, brain_code, blockly_code }, index) => ({
-      label: name,
-      brain_code,
-      blockly_code,
-      id: index,
-    })) || []
   const dispatch = useDispatch()
   const {
     incrementStep,
