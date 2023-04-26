@@ -58,10 +58,10 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
           %{status: "ready", slot_type: slot_type, frobot_id: frobot_id}
 
         "closed" ->
-          %{status: "closed", slot_type: nil}
+          %{status: "closed", slot_type: nil, frobot_id: nil}
 
         "open" ->
-          %{status: "open", slot_type: nil}
+          %{status: "open", slot_type: nil, frobot_id: nil}
       end
 
     case Api.update_slot(match, current_user_id, slot_id, attrs) do
