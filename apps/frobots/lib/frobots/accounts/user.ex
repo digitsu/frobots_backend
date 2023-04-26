@@ -71,8 +71,6 @@ defmodule Frobots.Accounts.User do
     |> put_change(:avatar, Frobots.Avatars.get_random_avatar())
   end
 
-
-
   def profile_changeset(user, attrs) do
     user
     |> cast(attrs, [:email, :name, :sparks, :avatar, :admin])
