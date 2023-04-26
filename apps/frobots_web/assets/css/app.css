@@ -14,6 +14,23 @@ body {
   font-size: 1em;
 }
 
+body {
+  overflow: overlay;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #424C58;
+}
+
+::-webkit-scrollbar-track {
+  background: #161c24;
+}
+
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
