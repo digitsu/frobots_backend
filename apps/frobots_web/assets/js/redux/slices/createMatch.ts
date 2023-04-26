@@ -7,7 +7,7 @@ const initialState = {
   matchDescription: '',
   matchTime: moment(new Date()).format('YYYY-MM-DDTHH:mm'),
   countDownTimer: 0,
-  mapSelected: {},
+  mapSelected: null,
   minFrobots: 1,
   maxFrobots: 1,
   slotPositions: 6,

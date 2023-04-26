@@ -661,7 +661,31 @@ defmodule Frobots.Api do
     [
       %{
         id: 1,
-        image_url: get_s3_base_url() <> "images/arenas/arena1.png"
+        image_url: "images/arenas/arena1.png",
+        arena_name: "Bloodbath Basin",
+        arena_description:
+          "A shallow, rocky basin filled with blood-red water that hides deadly surprises."
+      },
+      %{
+        id: 2,
+        image_url: "images/arenas/arena2.png",
+        arena_name: "Kraken's Keep",
+        arena_description:
+          "A fortress perched on the edge of a massive ocean trench where opponents battle."
+      },
+      %{
+        id: 3,
+        image_url: "images/arenas/arena3.png",
+        arena_name: "Phantom Palace",
+        arena_description:
+          "A grand palace filled with eerie illusions and ghostly apparitions that haunt opponents."
+      },
+      %{
+        id: 4,
+        image_url: "images/arenas/arena4.png",
+        arena_name: "Midnight Mirage",
+        arena_description:
+          "A dark and mysterious arena where opponents must navigate treacherous terrain and illusions."
       }
     ]
   end

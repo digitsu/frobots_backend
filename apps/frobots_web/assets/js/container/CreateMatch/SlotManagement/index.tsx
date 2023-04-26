@@ -1,4 +1,5 @@
 import { Grid, Box, Button } from '@mui/material'
+import moment from 'moment'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import SlotContainer from './SlotContainer'
@@ -13,6 +14,7 @@ export default ({ createMatch, imageBaseUrl }) => {
     minFrobots: min_player_frobot,
     maxFrobots: max_player_frobot,
     slots: storeSlots,
+    mapSelected,
   } = useSelector((store) => store.createMatch)
   const launchMatch = () => {
     const slots = storeSlots.map((slot) => {
@@ -32,9 +34,9 @@ export default ({ createMatch, imageBaseUrl }) => {
     createMatch({
       title,
       description,
-      match_time,
+      match_time: moment(match_time).utc().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'),
       timer,
-      arena_id: 1,
+      arena_id: mapSelected?.id,
       min_player_frobot,
       max_player_frobot,
       slots,

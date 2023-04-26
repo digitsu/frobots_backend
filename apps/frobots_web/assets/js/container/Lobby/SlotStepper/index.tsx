@@ -44,6 +44,7 @@ export default ({ slotDetails, updateSlot, isHost, setShowOptions }) => {
           slot_id: currentActiveSlot?.id,
           status: currentSlot?.type,
           slot_type: null,
+          frobot_id: null,
         },
       })
     }
@@ -91,7 +92,21 @@ export default ({ slotDetails, updateSlot, isHost, setShowOptions }) => {
             <SlotOption slot={slot} />
           ))}
         </Grid>
-        <Box textAlign={'center'} mt={4} width={'100%'} display={'flex'}>
+        <Box
+          textAlign={'center'}
+          mt={4}
+          width={'100%'}
+          display={'flex'}
+          flexDirection={'column'}
+        >
+          <Button
+            sx={{ mb: 1 }}
+            fullWidth
+            variant="outlined"
+            onClick={() => setShowOptions(false)}
+          >
+            Back
+          </Button>
           <Button fullWidth variant="contained" onClick={slotSelectionHandler}>
             Select And Continue
           </Button>
@@ -140,6 +155,7 @@ export default ({ slotDetails, updateSlot, isHost, setShowOptions }) => {
           setCurrentStep={setCurrentStep}
           slotDetails={slotDetails}
           updateSlot={updateSlot}
+          setShowOptions={setShowOptions}
         />
       )}
       {currentSlot?.type === 'closed' && (
