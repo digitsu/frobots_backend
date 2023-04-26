@@ -19,7 +19,7 @@ export default (props: any) => {
       <Box mt={4}>
         <Grid container alignItems="left" justifyContent="left" spacing={5}>
           {frobotList.map((frobot: FrobotInterface) => (
-            <Grid item md={3} key={frobot.id}>
+            <Grid item xl={3} lg={3} md={4} sm={6} xs={12} key={frobot.id}>
               <Card
                 sx={{
                   backgroundColor: '#212B36',
@@ -41,11 +41,13 @@ export default (props: any) => {
                           position: 'absolute',
                           top: '50%',
                           left: '50%',
-                          p: 5,
                           transform: 'translate(-50%, -50%)',
+                          objectFit: 'cover',
+                          borderRadius: '20px 20px 10px 10px',
                         }}
                         component={'img'}
                         width={'100%'}
+                        height={'100%'}
                         src={`${s3_base_url}${frobot.avatar}`}
                       />
                     </Box>
@@ -68,7 +70,7 @@ export default (props: any) => {
           ))}
 
           {currentUser.sparks && (
-            <Grid item md={3}>
+            <Grid item xl={3} lg={3} md={3} sm={6} xs={12}>
               <Card
                 sx={{
                   backgroundColor: '#212B36',
@@ -83,6 +85,7 @@ export default (props: any) => {
                         width="100%"
                         height="100%"
                         sx={{ filter: 'grayscale(1)' }}
+                        borderRadius="20px 20px 10px 10px"
                         component={'img'}
                         src={'/images/createfrobot_bg.png'}
                       ></Box>

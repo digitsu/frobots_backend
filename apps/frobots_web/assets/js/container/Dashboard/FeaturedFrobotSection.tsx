@@ -30,7 +30,7 @@ export default (props: FeaturedFrobotsProps) => {
         borderRadius: 4,
       }}
     >
-      <Box width={'90%'} m={'auto'}>
+      <Box width={'100%'} m={'auto'}>
         <Typography sx={{ pl: 0, mt: 1, mb: 2 }} variant={'body1'}>
           Featured Frobots
         </Typography>
