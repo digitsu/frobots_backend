@@ -2,11 +2,7 @@ import DashboardHook from './DashboardHook'
 import FrobotsListHook from './FrobotsListHook'
 import ArenaHomeHook from './ArenaHomeHook'
 import FrobotCreateHook from './FrobotCreateHook'
-import {
-  LiveMatchesHook,
-  UpcomingMatchesHook,
-  PastMatchesHook,
-} from './ArenaMatchesHook'
+import ArenaMatchesHook from './ArenaMatchesHook'
 import FrobotDetailsHook from './FrobotDetailsHook'
 import FrobotBrainCodeHook from './FrobotBrainCodeHook'
 import ArenaCreateMatch from './ArenaCreateMatch'
@@ -30,9 +26,7 @@ Hooks.DashboardContentHook = DashboardHook
 Hooks.FrobotsListHook = FrobotsListHook
 Hooks.FrobotCreateHook = FrobotCreateHook
 Hooks.ArenaContentHook = ArenaHomeHook
-Hooks.LiveMatchesHook = LiveMatchesHook
-Hooks.UpcomingMatchesHook = UpcomingMatchesHook
-Hooks.PastMatchesHook = PastMatchesHook
+Hooks.ArenaMatchesHook = ArenaMatchesHook
 Hooks.FrobotDetailsHook = FrobotDetailsHook
 Hooks.FrobotBrainCodeHook = FrobotBrainCodeHook
 Hooks.ArenaCreateMatch = ArenaCreateMatch

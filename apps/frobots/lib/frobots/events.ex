@@ -226,7 +226,10 @@ defmodule Frobots.Events do
         select: %{
           id: m.id,
           status: m.status,
-          user_id: m.user_id
+          user_id: m.user_id,
+          title: m.title,
+          description: m.description,
+          arena_id: m.arena_id
         }
     )
   end
