@@ -195,7 +195,7 @@ defmodule Frobots.Equipment do
     end)
   end
 
-  # Fetch all the equipment with details
+  # Fetch all the user equipments with details
   def list_user_equipment_details(user_id) do
     cannon_q =
       from(c in CannonInst,
@@ -235,85 +235,57 @@ defmodule Frobots.Equipment do
     missiles = Repo.all(missile_q) |> Repo.preload(:missile)
 
     %{
-      "xframes" => xframes,
-      "missiles" => missiles,
-      "scanners" => scanners,
-      "cannons" => cannons
+      "xframes" => _get_xframe_inst_details(xframes),
+      "missiles" => _get_missile_inst_details(missiles),
+      "scanners" => _get_scanner_inst_details(scanners),
+      "cannons" => _get_cannon_inst_details(cannons)
     }
   end
 
-  @doc """
-  get all types of equipments that are not attached to a particular frobot
-  """
-  def list_frobot_unattached_equipments(frobot_id) do
-    attached_cannon_ids =
+  # Fetch all the frobot equipments with details
+  def list_frobot_equipment_details(frobot_id) do
+    cannon_q =
       from(c in CannonInst,
-        where: c.frobot_id == ^frobot_id,
-        order_by: [asc: c.cannon_id],
-        distinct: c.cannon_id,
-        select: c.cannon_id
+        join: detail in Cannon,
+        as: :cannon,
+        on: c.cannon_id == detail.id,
+        where: c.frobot_id == ^frobot_id
       )
-      |> Repo.all()
 
-    attached_missile_ids =
-      from(m in MissileInst,
-        where: m.frobot_id == ^frobot_id,
-        order_by: [asc: m.missile_id],
-        distinct: m.missile_id,
-        select: m.missile_id
+    missile_q =
+      from(c in MissileInst,
+        join: detail in Missile,
+        as: :missile,
+        on: c.missile_id == detail.id,
+        where: c.frobot_id == ^frobot_id
       )
-      |> Repo.all()
 
-    attached_scanner_ids =
-      from(s in ScannerInst,
-        where: s.frobot_id == ^frobot_id,
-        order_by: [asc: s.scanner_id],
-        distinct: s.scanner_id,
-        select: s.scanner_id
+    scanner_q =
+      from(c in ScannerInst,
+        join: detail in Scanner,
+        as: :scanner,
+        on: c.scanner_id == detail.id,
+        where: c.frobot_id == ^frobot_id
       )
-      |> Repo.all()
 
-    attached_xframe_ids =
-      from(x in XframeInst,
-        where: x.frobot_id == ^frobot_id,
-        order_by: [asc: x.xframe_id],
-        distinct: x.xframe_id,
-        select: x.xframe_id
+    xframe_q =
+      from(c in XframeInst,
+        join: detail in Xframe,
+        as: :xframe,
+        on: c.xframe_id == detail.id,
+        where: c.frobot_id == ^frobot_id
       )
-      |> Repo.all()
 
-    cannons =
-      from(cannon in Cannon,
-        where: cannon.id not in ^attached_cannon_ids
-      )
-      |> Repo.all()
-
-    missiles =
-      from(
-        missile in Missile,
-        where: missile.id not in ^attached_missile_ids
-      )
-      |> Repo.all()
-
-    scanners =
-      from(
-        scanner in Scanner,
-        where: scanner.id not in ^attached_scanner_ids
-      )
-      |> Repo.all()
-
-    xframes =
-      from(
-        xframe in Xframe,
-        where: xframe.id not in ^attached_xframe_ids
-      )
-      |> Repo.all()
+    cannons = Repo.all(cannon_q) |> Repo.preload(:cannon)
+    xframes = Repo.all(xframe_q) |> Repo.preload(:xframe)
+    scanners = Repo.all(scanner_q) |> Repo.preload(:scanner)
+    missiles = Repo.all(missile_q) |> Repo.preload(:missile)
 
     %{
-      "xframes" => _get_xframe_details(xframes),
-      "missiles" => _get_missile_details(missiles),
-      "scanners" => _get_scanner_details(scanners),
-      "cannons" => _get_cannon_details(cannons)
+      "xframes" => _get_xframe_inst_details(xframes),
+      "missiles" => _get_missile_inst_details(missiles),
+      "scanners" => _get_scanner_inst_details(scanners),
+      "cannons" => _get_cannon_inst_details(cannons)
     }
   end
 
@@ -598,77 +570,85 @@ defmodule Frobots.Equipment do
     {weapon_count, sensor_count, ammo_count}
   end
 
-  defp _get_cannon_details(cannon_list) do
-    if Enum.empty?(cannon_list) do
+  defp _get_cannon_inst_details(cannon_inst_list) do
+    if Enum.empty?(cannon_inst_list) do
       []
     else
-      Enum.map(cannon_list, fn cannon ->
+      Enum.map(cannon_inst_list, fn cannon_inst ->
         %{
-          "id" => Map.get(cannon, :id),
-          "reload_time" => Map.get(cannon, :reload_time),
-          "rate_of_fire" => Map.get(cannon, :rate_of_fire),
-          "magazine_size" => Map.get(cannon, :magazine_size),
-          "image" => Map.get(cannon, :image),
-          "equipment_class" => Map.get(cannon, :class),
-          "equipment_type" => Map.get(cannon, :type)
+          "id" => Map.get(cannon_inst, :id),
+          "cannon_id" => Map.get(cannon_inst, :cannon_id),
+          "equipment_class" => Map.get(cannon_inst.cannon, :class),
+          "equipment_type" => Map.get(cannon_inst.cannon, :type),
+          "frobot_id" => Map.get(cannon_inst, :frobot_id),
+          "image" => Map.get(cannon_inst.cannon, :image),
+          "magazine_size" => Map.get(cannon_inst, :magazine_size),
+          "rate_of_fire" => Map.get(cannon_inst, :rate_of_fire),
+          "reload_time" => Map.get(cannon_inst, :reload_time)
         }
       end)
     end
   end
 
-  defp _get_scanner_details(scanner_list) do
-    if Enum.empty?(scanner_list) do
+  defp _get_scanner_inst_details(scanner_inst_list) do
+    if Enum.empty?(scanner_inst_list) do
       []
     else
-      Enum.map(scanner_list, fn scanner ->
+      Enum.map(scanner_inst_list, fn scanner_inst ->
         %{
-          "id" => Map.get(scanner, :id),
-          "max_range" => Map.get(scanner, :max_range),
-          "resolution" => Map.get(scanner, :resolution),
-          "image" => Map.get(scanner, :image),
-          "equipment_class" => Map.get(scanner, :class),
-          "equipment_type" => Map.get(scanner, :type)
+          "id" => Map.get(scanner_inst, :id),
+          "scanner_id" => Map.get(scanner_inst, :scanner_id),
+          "equipment_class" => Map.get(scanner_inst.scanner, :class),
+          "equipment_type" => Map.get(scanner_inst.scanner, :type),
+          "frobot_id" => Map.get(scanner_inst, :frobot_id),
+          "image" => Map.get(scanner_inst.scanner, :image),
+          "max_range" => Map.get(scanner_inst, :max_range),
+          "resolution" => Map.get(scanner_inst, :resolution)
         }
       end)
     end
   end
 
-  defp _get_missile_details(missile_list) do
-    if Enum.empty?(missile_list) do
+  defp _get_missile_inst_details(missile_inst_list) do
+    if Enum.empty?(missile_inst_list) do
       []
     else
-      Enum.map(missile_list, fn missile ->
+      Enum.map(missile_inst_list, fn missile_inst ->
         %{
-          "id" => Map.get(missile, :id),
-          "damage_direct" => Map.get(missile, :damage_direct),
-          "damage_near" => Map.get(missile, :damage_near),
-          "damage_far" => Map.get(missile, :damage_far),
-          "speed" => Map.get(missile, :speed),
-          "range" => Map.get(missile, :range),
-          "image" => Map.get(missile, :image),
-          "equipment_class" => Map.get(missile, :class),
-          "equipment_type" => Map.get(missile, :type)
+          "id" => Map.get(missile_inst, :id),
+          "missile_id" => Map.get(missile_inst, :missile_id),
+          "equipment_class" => Map.get(missile_inst.missile, :class),
+          "equipment_type" => Map.get(missile_inst.missile, :type),
+          "frobot_id" => Map.get(missile_inst, :frobot_id),
+          "image" => Map.get(missile_inst.missile, :image),
+          "damage_direct" => Map.get(missile_inst, :damage_direct),
+          "damage_near" => Map.get(missile_inst, :damage_near),
+          "damage_far" => Map.get(missile_inst, :damage_far),
+          "range" => Map.get(missile_inst, :range),
+          "speed" => Map.get(missile_inst, :speed)
         }
       end)
     end
   end
 
-  defp _get_xframe_details(xframe_list) do
-    if Enum.empty?(xframe_list) do
+  defp _get_xframe_inst_details(xframe_inst_list) do
+    if Enum.empty?(xframe_inst_list) do
       []
     else
-      Enum.map(xframe_list, fn xframe ->
+      Enum.map(xframe_inst_list, fn xframe_inst ->
         %{
-          "id" => Map.get(xframe, :id),
-          "max_speed_ms" => Map.get(xframe, :max_speed_ms),
-          "turn_speed" => Map.get(xframe, :turn_speed),
-          "max_health" => Map.get(xframe, :max_health),
-          "health" => Map.get(xframe, :health),
-          "max_throttle" => Map.get(xframe, :max_throttle),
-          "accel_speed_mss" => Map.get(xframe, :accel_speed_mss),
-          "image" => Map.get(xframe, :image),
-          "equipment_class" => Map.get(xframe, :class),
-          "equipment_type" => Map.get(xframe, :type)
+          "id" => Map.get(xframe_inst, :id),
+          "xframe_id" => Map.get(xframe_inst, :xframe_id),
+          "equipment_class" => Map.get(xframe_inst.xframe, :class),
+          "equipment_type" => Map.get(xframe_inst.xframe, :type),
+          "frobot_id" => Map.get(xframe_inst, :frobot_id),
+          "image" => Map.get(xframe_inst.xframe, :image),
+          "accel_speed_mss" => Map.get(xframe_inst, :accel_speed_mss),
+          "health" => Map.get(xframe_inst, :health),
+          "max_speed_ms" => Map.get(xframe_inst, :max_speed_ms),
+          "max_health" => Map.get(xframe_inst, :max_health),
+          "max_throttle" => Map.get(xframe_inst, :max_throttle),
+          "turn_speed" => Map.get(xframe_inst, :turn_speed)
         }
       end)
     end

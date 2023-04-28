@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Card, Typography, Box, Grid, Button } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import { useDispatch, useSelector } from 'react-redux'
+import { frobotEquipmentActions } from '../../redux/slices/frobotEquipment'
 
 interface AttachedEquipmentsProps {
   equipments: any[]
@@ -10,28 +12,69 @@ interface AttachedEquipmentsProps {
   imageBaseUrl: string
 }
 
-export default (props: AttachedEquipmentsProps) => {
-  const { equipments, imageBaseUrl, isOwnedFrobot } = props
-  const itemsPerPage = 8
-  const [firstIndex, setfirstIndex] = useState(0)
-  const [lastIndex, setlastIndex] = useState(itemsPerPage)
+const itemsPerPage = 8
 
-  const totalSections = Math.ceil(equipments?.length / itemsPerPage)
+export default (props: AttachedEquipmentsProps) => {
+  const dispatch = useDispatch()
+  const { setCurrentEquipment, setActiveEquipmentKey } = frobotEquipmentActions
+  const { activeEquipmentKey } = useSelector(
+    (store: any) => store.frobotEquipment
+  )
+  const { equipments, imageBaseUrl, isOwnedFrobot } = props
+  const equipmentLength = equipments.length
+  const [leftOffset, setOffsetLeft] = useState(0)
+  const [rightOffset, setOffsetRight] = useState(
+    equipmentLength > itemsPerPage ? itemsPerPage : equipmentLength
+  )
+
   const [currentSection, setCurrentSection] = useState(1)
+  const totalSections = Math.ceil(equipments?.length / itemsPerPage)
+
+  const switchEquipment = (equipment: any) => {
+    dispatch(setCurrentEquipment(equipment))
+    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+  }
+
   const handlePreviousButton = () => {
-    if (currentSection > 1) {
-      setCurrentSection(currentSection - 1)
-      setfirstIndex(firstIndex - itemsPerPage)
-      setlastIndex(lastIndex - itemsPerPage)
+    if (leftOffset <= 0) {
+      return
     }
+
+    setCurrentSection(currentSection - 1)
+    const newLeftOffset =
+      leftOffset - itemsPerPage < 0 ? 0 : leftOffset - itemsPerPage
+    setOffsetLeft(newLeftOffset)
+    setOffsetRight(
+      rightOffset - itemsPerPage < itemsPerPage
+        ? itemsPerPage
+        : rightOffset - itemsPerPage
+    )
+
+    const equipment = equipments[newLeftOffset]
+    dispatch(setCurrentEquipment(equipment))
+    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
   }
 
   const handleNextButton = () => {
-    if (currentSection < totalSections) {
-      setCurrentSection(currentSection + 1)
-      setfirstIndex(firstIndex + itemsPerPage)
-      setlastIndex(lastIndex + itemsPerPage)
+    if (rightOffset >= equipmentLength) {
+      return
     }
+
+    setCurrentSection(currentSection + 1)
+    const newLeftOffset =
+      leftOffset + itemsPerPage > equipmentLength
+        ? leftOffset
+        : leftOffset + itemsPerPage
+    setOffsetLeft(newLeftOffset)
+    setOffsetRight(
+      rightOffset + itemsPerPage > equipmentLength
+        ? equipmentLength
+        : rightOffset + itemsPerPage
+    )
+
+    const equipment = equipments[rightOffset]
+    dispatch(setCurrentEquipment(equipment))
+    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
   }
 
   return (
@@ -62,13 +105,13 @@ export default (props: AttachedEquipmentsProps) => {
               >
                 <ChevronLeftIcon
                   sx={{
-                    color: firstIndex === 0 ? '#FFFFFF7E' : '#FFFFFF',
+                    color: currentSection === 1 ? '#FFFFFF7E' : '#FFFFFF',
                   }}
                 />
               </Box>
               <Grid container spacing={2}>
                 {equipments
-                  .slice(firstIndex, lastIndex)
+                  .slice(leftOffset, rightOffset)
                   .map((equipment, index) => (
                     <Grid item xs={6} sm={4} md={3} lg={12 / 8} key={index}>
                       <Box pb={1} textAlign={'center'} mt={3}>
@@ -98,9 +141,16 @@ export default (props: AttachedEquipmentsProps) => {
                           width={'100%'}
                           src={`${imageBaseUrl}${equipment.image}`}
                           sx={{
+                            cursor: 'pointer',
+                            p: 1,
                             borderRadius: '6px',
+                            border:
+                              equipment.equiment_key === activeEquipmentKey
+                                ? '4px solid #00AB55'
+                                : 'none',
                           }}
-                        ></Box>
+                          onClick={() => switchEquipment(equipment)}
+                        />
                         {isOwnedFrobot && (
                           <Box
                             display="flex"
@@ -136,7 +186,7 @@ export default (props: AttachedEquipmentsProps) => {
                 <ChevronRightIcon
                   sx={{
                     color:
-                      equipments.length < lastIndex + 1
+                      totalSections === currentSection
                         ? '#FFFFFF7E'
                         : '#FFFFFF',
                   }}
