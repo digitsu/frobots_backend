@@ -65,7 +65,6 @@ defmodule FrobotsWeb.UserProfileLive.Index do
   end
 
   def handle_event("react.update_user_email", params, socket) do
-    IO.inspect(params)
     user = socket.assigns.user
     %{"current_password" => password, "user" => user_params} = params
 
@@ -106,12 +105,8 @@ defmodule FrobotsWeb.UserProfileLive.Index do
   end
 
   def handle_event("react.update_user_password", params, socket) do
-    IO.inspect(params)
-
     %{"current_password" => password, "user" => user_params} = params
     user = socket.assigns.user
-
-    IO.inspect(user_params)
 
     case Accounts.update_user_password(user, password, user_params) do
       {:ok, user} ->

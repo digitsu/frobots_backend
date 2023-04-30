@@ -10,7 +10,7 @@ defmodule FrobotsWeb.HomeLive.Index do
 
     # gets battlelogs info and stores in agent for further processing for player and leaderboard entries
     # this data should really come from db
-    Events.prep_leaderboard_entries()
+    # Events.prep_leaderboard_entries()
 
     {:ok,
      socket

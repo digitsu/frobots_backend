@@ -1,7 +1,8 @@
 defmodule Frobots.UserStats do
   defstruct frobots_count: 0, total_xp: 0, matches_participated: 0, upcoming_matches: 0
 
-  alias Frobots.{Accounts, Events, Assets}
+  alias Jason.Encoder.Frobots.Leaderboard
+  alias Frobots.{Accounts, Leaderboard, Assets}
 
   @doc ~S"""
     get current user stats.
@@ -28,7 +29,7 @@ defmodule Frobots.UserStats do
       end)
 
     frobot_ids = Enum.map(user_frobots, fn x -> x.id end)
-    match_participation_count = Events.get_match_participation_count(frobot_ids)
+    match_participation_count = Leaderboard.get_match_participation_count(frobot_ids)
 
     # return map
 

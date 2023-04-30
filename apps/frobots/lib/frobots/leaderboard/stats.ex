@@ -3,7 +3,15 @@ defmodule Frobots.Leaderboard.Stats do
   import Ecto.Changeset
 
   @derive {Jason.Encoder,
-           only: [:points, :xp, :attempts, :matches_won, :matches_participated, :frobot_id, :user_id]}
+           only: [
+             :points,
+             :xp,
+             :attempts,
+             :matches_won,
+             :matches_participated,
+             :frobot_id,
+             :user_id
+           ]}
   ## avatar, username to be preloaded
   schema "leaderboard_stats" do
     field :points, :integer, default: 0

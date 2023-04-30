@@ -172,4 +172,119 @@ defmodule Frobots.Leaderboard do
     q = from(s in Stats, order_by: [desc: s.points], limit: ^limit)
     Repo.all(q)
   end
+
+  def get_current_user_stats(user) do
+    result = Ecto.Adapters.SQL.query!(Repo, "select
+          distinct
+          u.id,
+          u.name as username,
+          u.avatar,
+          lsv.xp,
+          lsv.points,
+          lsv.matches_participated,
+          lsv.matches_won,
+          lsv.attempts,
+          (select count(*) from frobots f where f.user_id = u.id) as frobot_count,
+          RANK () OVER (
+            ORDER BY points DESC
+          ) rank
+        from
+          leaderboard_stats_view lsv,
+          users u
+        where
+          lsv.user_id = u.id and u.id = $1
+        order by rank asc;", [user.id])
+
+    Enum.map(result.rows, fn row ->
+      %{
+        "id" => Enum.at(row, 0),
+        "username" => Enum.at(row, 1),
+        "avatar" => Enum.at(row, 2),
+        "xp" => Enum.at(row, 3),
+        "points" => Enum.at(row, 4),
+        "matches_participated" => Enum.at(row, 5),
+        "matches_won" => Enum.at(row, 6),
+        "attempts" => Enum.at(row, 7),
+        "frobot_count" => Enum.at(row, 8),
+        "rank" => Enum.at(row, 9)
+      }
+    end)
+    |> Enum.at(0)
+  end
+
+  # get leaderboard entries for all players
+  def get_player_leaderboard() do
+    result = Ecto.Adapters.SQL.query!(Repo, "select
+          distinct
+          u.id,
+          u.name as username,
+          u.avatar,
+          lsv.xp,
+          lsv.points,
+          lsv.matches_participated,
+          lsv.matches_won,
+          lsv.attempts,
+          (select count(*) from frobots f where f.user_id = u.id) as frobot_count,
+          RANK () OVER (
+            ORDER BY points DESC
+          ) rank
+        from
+          leaderboard_stats_view lsv,
+          users u
+        where
+          lsv.user_id = u.id
+        order by rank asc;", [])
+
+    Enum.map(result.rows, fn row ->
+      %{
+        "id" => Enum.at(row, 0),
+        "username" => Enum.at(row, 1),
+        "avatar" => Enum.at(row, 2),
+        "xp" => Enum.at(row, 3),
+        "points" => Enum.at(row, 4),
+        "matches_participated" => Enum.at(row, 5),
+        "matches_won" => Enum.at(row, 6),
+        "attempts" => Enum.at(row, 7),
+        "frobot_count" => Enum.at(row, 8),
+        "rank" => Enum.at(row, 9)
+      }
+    end)
+  end
+
+  # get leaderboard entries for all frobots
+  def get_frobot_leaderboard() do
+    result = Ecto.Adapters.SQL.query!(Repo, "select
+        ls.frobot_id,
+        u.name as username,
+        (select f.name from frobots f where f.id = ls.frobot_id) as frobot,
+        (select f.avatar from frobots f where f.id = ls.frobot_id) as avatar,
+        ls.xp,
+        ls.points,
+        ls.matches_participated,
+        ls.matches_won,
+        ls.attempts,
+        RANK () OVER (
+          ORDER BY ls.points DESC
+        )   rank
+      from
+        leaderboard_stats ls,
+        users u
+      where
+        ls.user_id = u.id;", [])
+
+    Enum.map(result.rows, fn row ->
+      %{
+        "frobot_id" => Enum.at(row, 0),
+        "username" => Enum.at(row, 1),
+        "frobot" => Enum.at(row, 2),
+        "avatar" => Enum.at(row, 3),
+        "xp" => Enum.at(row, 4),
+        "points" => Enum.at(row, 5),
+        "matches_participated" => Enum.at(row, 6),
+        "matches_won" => Enum.at(row, 7),
+        "attempts" => Enum.at(row, 8),
+        "rank" => Enum.at(row, 9)
+      }
+    end)
+  end
 end
