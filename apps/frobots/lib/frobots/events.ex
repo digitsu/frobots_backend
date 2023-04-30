@@ -230,6 +230,8 @@ defmodule Frobots.Events do
     battlelogs |> Enum.filter(has_valid_match?)
   end
 
+
+  # TODO: remove this....fetch leaderboard entries from leaderboard_stats
   def prep_leaderboard_entries() do
     WinnersBucket.reset()
 
@@ -264,6 +266,8 @@ defmodule Frobots.Events do
     end
   end
 
+
+  # TODO: modify to read data from table instead
   def send_leaderboard_entries() do
     # fetch from agent, consolidate scores and lastly sort by points (high to low)
     WinnersBucket.value()
@@ -278,6 +282,8 @@ defmodule Frobots.Events do
     |> elem(0)
   end
 
+
+  # TODO: SRI remove this...
   # send player leaderboard entries
   @spec maybe_consolidate_scores(any) :: list
   def maybe_consolidate_scores(entries) do
@@ -320,17 +326,21 @@ defmodule Frobots.Events do
     end
   end
 
+
+  # TODO: SRI remove this - all of this is handled inside Leaderboard module
   # referred to - https://lobste.rs/s/ionz4l/ranking_list_algorithm_elixir
   def do_ranking(%{points: points} = curr, {%{points: points}, rank, count}) do
     count = count + 1
     {Map.put(curr, :rank, rank), {curr, rank, count}}
   end
 
+  # TODO: remove this - all of this is handled inside Leaderboard module
   def do_ranking(curr, {_, rank, count}) do
     next_rank = rank + count + 1
     {Map.put(curr, :rank, next_rank), {curr, next_rank, 0}}
   end
 
+  # TODO: SRI remove this - all of this is handled inside Leaderboard module
   # total number of matches participated
   def get_match_participation_count(frobot_id_list) do
     # https://stackoverflow.com/questions/63143363/elixir-check-array-contains-all-the-values-of-another-array
@@ -344,6 +354,8 @@ defmodule Frobots.Events do
     |> Enum.count()
   end
 
+
+  # TODO: SRI remove this - all of this is handled inside Leaderboard module
   def get_matches_won_count(frobot_id) do
     q =
       from m in "matches",
@@ -357,6 +369,9 @@ defmodule Frobots.Events do
     |> Enum.count()
   end
 
+
+  #  SRI Modify this to read data from leaderboard entries
+  # query data grouped by user id
   def send_player_leaderboard_entries() do
     data = send_leaderboard_entries()
 

@@ -28,6 +28,7 @@ defmodule Frobots.Leaderboard do
 
     stat = %{
       "points" => points,
+      "user_id" => match.user_id,
       "xp" => frobot.xp + points,
       "attempts" => get_match_attempts_count(winning_frobot),
       "matches_participated" => matches_participated,
