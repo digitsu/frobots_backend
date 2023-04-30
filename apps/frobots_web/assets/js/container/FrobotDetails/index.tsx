@@ -49,6 +49,11 @@ export default (props: FrobotDetailsProps) => {
               currentUser={currentUser}
               isOwnedFrobot={isOwnedFrobot}
               imageBaseUrl={s3_base_url}
+              xFrameDetails={
+                frobotDetails?.xframe_inst
+                  ? frobotDetails?.xframe_inst[0]
+                  : undefined
+              }
             />
 
             {frobotDetails.class === 'U' && (

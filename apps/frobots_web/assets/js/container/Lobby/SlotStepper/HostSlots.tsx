@@ -15,38 +15,34 @@ export default ({
   const { currentActiveSlot, slots, s3Url } = useSelector(
     (store) => store.arenaLobby
   )
-  const dispatch = useDispatch()
   const [currentSlot, setCurrentSlot] = useState(null)
 
   const deployFrobot = () => {
-    dispatch(
-      updateSlotStore({
-        ...currentActiveSlot,
-        type: 'host',
-        name: `${isHost ? 'Host' : 'Player'}: ${currentSlot?.name || ' '}`,
-        url: '/images/red_frobot.svg',
-        frobot_user_id: currentActiveSlot.current_user_id,
-        slotDetails: currentSlot,
-      })
-    )
+    const slot = slots.find(({ id }) => id === currentActiveSlot?.id)
     setCurrentStep(currentStep + 1)
+    updateSlot({
+      type: 'ready',
+      payload: {
+        slot_id: slot?.id,
+        status: 'ready',
+        slot_type: isHost ? 'host' : 'player',
+        frobot_id: currentSlot.id,
+      },
+    })
   }
 
-  useEffect(() => {
-    const slot = slots.find(({ id }) => id === currentActiveSlot?.id)
-    if (currentSlot) {
-      updateSlot({
-        type: 'ready',
-        payload: {
-          slot_id: slot?.id,
-          status: 'ready',
-          slot_type: isHost ? 'host' : 'player',
-          frobot_id: slot?.slotDetails.id,
-        },
-      })
-    }
-  }, [JSON.stringify(slots)])
-
+  const clearSlotHandler = () => {
+    updateSlot({
+      type: 'open',
+      payload: {
+        slot_id: currentActiveSlot?.id,
+        status: 'open',
+        slot_type: null,
+        frobot_id: null,
+      },
+    })
+    setShowOptions(false)
+  }
   return (
     <>
       {currentStep === 1 && (
@@ -132,40 +128,52 @@ export default ({
         </Box>
       )}
       {currentStep === 2 && (
-        <Box p={2} position={'relative'} height={'100%'}>
-          <Box
-            component={'img'}
-            src={`${s3Url}${slotDetails.slotDetails?.avatar}`}
-            width={'70%'}
-            m={'auto'}
-          />
-          <Box mx={2} my={1}>
-            <Typography variant="h6">
-              {slotDetails.slotDetails?.name}
-            </Typography>
-            <Box my={1} maxHeight={72} overflow={'scroll'}>
-              <Typography variant="caption">
-                {slotDetails.slotDetails?.bio}
+        <Box
+          p={2}
+          position={'relative'}
+          height={'100%'}
+          display={'flex'}
+          justifyContent={'space-between'}
+          flexDirection={'column'}
+        >
+          <Box>
+            <Box
+              component={'img'}
+              src={`${s3Url}${slotDetails.slotDetails?.avatar}`}
+              width={'70%'}
+              m={'auto'}
+            />
+            <Box mx={2} my={1}>
+              <Typography variant="h6">
+                {slotDetails.slotDetails?.name}
               </Typography>
+              {slotDetails.slotDetails?.bio && (
+                <Box my={1} maxHeight={72} overflow={'scroll'}>
+                  <Typography variant="caption">
+                    {slotDetails.slotDetails?.bio}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Box>
-          <Box
-            sx={{
-              position: 'absolute',
-              left: '50%',
-              px: 4,
-              transform: 'translate(-50%, -50%)',
-              width: '100%',
-              bottom: 0,
-            }}
-          >
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={() => setCurrentStep(0)}
-            >
-              Modify
-            </Button>
+          <Box>
+            <Box>
+              <Button
+                sx={{ mb: 1 }}
+                fullWidth
+                variant="outlined"
+                onClick={clearSlotHandler}
+              >
+                Remove
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={() => setCurrentStep(0)}
+              >
+                Modify
+              </Button>
+            </Box>
           </Box>
         </Box>
       )}

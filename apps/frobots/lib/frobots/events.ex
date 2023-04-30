@@ -193,6 +193,47 @@ defmodule Frobots.Events do
     )
   end
 
+  def count_matches_by_status_for_user(status, user_id) when is_atom(status) do
+    count_matches_by_status_for_user(Atom.to_string(status), user_id)
+  end
+
+  def count_matches_by_status_for_user(status, user_id) do
+    Repo.one(
+      from m in Match,
+        where: m.status == ^status and m.type == :real,
+        join: s in "slots",
+        on: m.id == s.match_id,
+        join: f in "frobots",
+        on: s.frobot_id == f.id,
+        where: f.user_id == ^user_id,
+        select: count(m.id)
+    )
+  end
+
+  def list_matches_by_status_for_user(status, user_id) when is_atom(status) do
+    list_matches_by_status_for_user(Atom.to_string(status), user_id)
+  end
+
+  def list_matches_by_status_for_user(status, user_id) do
+    Repo.all(
+      from m in Match,
+        where: m.status == ^status and m.type == :real,
+        join: s in "slots",
+        on: m.id == s.match_id,
+        join: f in "frobots",
+        on: s.frobot_id == f.id,
+        where: f.user_id == ^user_id,
+        select: %{
+          id: m.id,
+          status: m.status,
+          user_id: m.user_id,
+          title: m.title,
+          description: m.description,
+          arena_id: m.arena_id
+        }
+    )
+  end
+
   def update_slot(%Slot{} = slot, attrs \\ %{}) do
     slot
     |> Slot.update_changeset(attrs)

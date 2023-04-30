@@ -10,11 +10,11 @@ export default ({ isHost }) => {
   const slotId = currentActiveSlot?.id
   return (
     <Box sx={{ height: '100%' }}>
-      <Card sx={{ height: '100%' }}>
+      <Card sx={{ height: '100%', pb: 4 }}>
         <Box pt={9} px={2} pb={0}>
           <Grid container spacing={1}>
             {slots.map((slot) => (
-              <Grid item lg={4}>
+              <Grid item xl={4} lg={4} md={3} sm={4} xs={6}>
                 <Box
                   display={'flex'}
                   alignItems={'center'}
@@ -44,7 +44,8 @@ export default ({ isHost }) => {
                       component={'img'}
                       src={slot.url}
                       m={'auto'}
-                      width={'100%'}
+                      width={76}
+                      height={82}
                       sx={{
                         filter: isHost
                           ? 'none'

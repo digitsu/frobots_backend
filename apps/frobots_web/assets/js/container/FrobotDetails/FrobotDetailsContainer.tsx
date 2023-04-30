@@ -8,10 +8,11 @@ interface frobotDetailsProps {
   currentUser: any
   isOwnedFrobot: boolean
   imageBaseUrl: string
+  xFrameDetails: any
 }
 
 export default (props: frobotDetailsProps) => {
-  const { frobotDetails, isOwnedFrobot, imageBaseUrl } = props
+  const { frobotDetails, isOwnedFrobot, imageBaseUrl, xFrameDetails } = props
 
   return (
     <Grid container mb={2} spacing={2}>
@@ -42,8 +43,8 @@ export default (props: frobotDetailsProps) => {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              p: 5,
               transform: 'translate(-50%, -50%)',
+              objectFit: 'cover',
             }}
             component={'img'}
             width={'100%'}
@@ -93,7 +94,7 @@ export default (props: frobotDetailsProps) => {
             </Typography>
             <Box display={'flex'} alignItems={'baseline'}>
               <Typography pr={2} variant="body2" gutterBottom>
-                {frobotDetails?.xframe_inst?.equipment_type || '-'}
+                {xFrameDetails?.equipment_type || '-'}
               </Typography>
               {frobotDetails.isBoost && (
                 <Button
@@ -127,6 +128,7 @@ export default (props: frobotDetailsProps) => {
       <FrobotAdvancedDetails
         frobotDetails={frobotDetails}
         isOwnedFrobot={isOwnedFrobot}
+        xFrameDetails={xFrameDetails}
       />
     </Grid>
   )

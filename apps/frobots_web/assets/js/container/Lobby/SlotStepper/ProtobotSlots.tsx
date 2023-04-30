@@ -8,6 +8,7 @@ export default ({
   setCurrentStep,
   slotDetails,
   updateSlot,
+  setShowOptions,
 }) => {
   const { updateSlot: updateSlotStore } = arenaLobbyActions
   const { currentActiveSlot, slots, s3Url } = useSelector(
@@ -16,30 +17,36 @@ export default ({
   const dispatch = useDispatch()
   const [currentSlot, setCurrentSlot] = useState(null)
   const deployProtobot = () => {
-    dispatch(
-      updateSlotStore({
-        ...currentActiveSlot,
-        type: 'proto',
-        name: `NPC: ${currentSlot.name}`,
-        url: '/images/yellow_frobot.svg',
-        slotDetails: currentSlot,
-      })
-    )
+    const slot = slots.find(({ id }) => id === currentActiveSlot?.id)
+    updateSlot({
+      type: 'ready',
+      payload: {
+        slot_id: slot?.id,
+        status: 'ready',
+        slot_type: 'protobot',
+        frobot_id: currentSlot.id,
+      },
+    })
     setCurrentStep(currentStep + 1)
+    setShowOptions(false)
+  }
+
+  const clearSlotHandler = () => {
+    updateSlot({
+      type: 'open',
+      payload: {
+        slot_id: currentActiveSlot?.id,
+        status: 'open',
+        slot_type: null,
+        frobot_id: null,
+      },
+    })
+    setShowOptions(false)
   }
 
   useEffect(() => {
-    const slot = slots.find(({ id }) => id === currentActiveSlot?.id)
     if (currentSlot) {
-      updateSlot({
-        type: 'ready',
-        payload: {
-          slot_id: slot?.id,
-          status: 'ready',
-          slot_type: 'protobot',
-          frobot_id: slot?.slotDetails.id,
-        },
-      })
+      setCurrentStep(0)
     }
   }, [JSON.stringify(slots)])
   return (
@@ -136,33 +143,43 @@ export default ({
       )}
 
       {currentStep === 2 && (
-        <Box p={2} position={'relative'} height={'100%'}>
-          <Box
-            component={'img'}
-            src={`${s3Url}${slotDetails.slotDetails?.avatar}`}
-            width={'70%'}
-            m={'auto'}
-          />
-          <Box mx={2} my={1}>
-            <Typography variant="h6">
-              {slotDetails.slotDetails?.name}
-            </Typography>
-            <Box my={1} maxHeight={72} overflow={'scroll'}>
-              <Typography variant="caption">
-                {slotDetails.slotDetails?.bio}
+        <Box
+          p={2}
+          position={'relative'}
+          height={'100%'}
+          display={'flex'}
+          justifyContent={'space-between'}
+          flexDirection={'column'}
+        >
+          <Box>
+            <Box
+              component={'img'}
+              src={`${s3Url}${slotDetails.slotDetails?.avatar}`}
+              width={'70%'}
+              m={'auto'}
+            />
+            <Box mx={2} my={1}>
+              <Typography variant="h6">
+                {slotDetails.slotDetails?.name}
               </Typography>
+              {slotDetails.slotDetails?.bio && (
+                <Box my={1} maxHeight={72} overflow={'scroll'}>
+                  <Typography variant="caption">
+                    {slotDetails.slotDetails?.bio}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Box>
-          <Box
-            sx={{
-              position: 'absolute',
-              left: '50%',
-              px: 4,
-              transform: 'translate(-50%, -50%)',
-              width: '100%',
-              bottom: 0,
-            }}
-          >
+          <Box>
+            <Button
+              sx={{ mb: 1 }}
+              fullWidth
+              variant="outlined"
+              onClick={clearSlotHandler}
+            >
+              Remove
+            </Button>
             <Button
               fullWidth
               variant="contained"

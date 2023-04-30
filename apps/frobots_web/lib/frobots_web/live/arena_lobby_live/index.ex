@@ -18,8 +18,14 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
       {:noreply, put_flash(socket, :error, "invalid match id")}
     else
       if connected?(socket), do: Events.subscribe()
-      time_left = DateTime.diff(match.match_time, DateTime.utc_now())
-      Process.send_after(self(), :time_left, 1_000)
+
+      time_left =
+        if match.status == :pending or match.status == :running do
+          Process.send_after(self(), :time_left, 1_000)
+          DateTime.diff(match.match_time, DateTime.utc_now())
+        else
+          nil
+        end
 
       {:ok,
        socket
@@ -52,10 +58,10 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
           %{status: "ready", slot_type: slot_type, frobot_id: frobot_id}
 
         "closed" ->
-          %{status: "closed", slot_type: nil}
+          %{status: "closed", slot_type: nil, frobot_id: nil}
 
         "open" ->
-          %{status: "open", slot_type: nil}
+          %{status: "open", slot_type: nil, frobot_id: nil}
       end
 
     case Api.update_slot(match, current_user_id, slot_id, attrs) do
@@ -103,7 +109,9 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   end
 
   def handle_event("react.fetch_lobby_details", %{}, socket) do
-    %{match: match, user_id: user_id, s3_base_url: s3_base_url} = socket.assigns
+    %{match: match, user_id: user_id, s3_base_url: s3_base_url, time_left: time_left} =
+      socket.assigns
+
     templateFrobots = extract_frobot_details(Assets.list_template_frobots())
 
     userFrobots =
@@ -119,13 +127,18 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
          "timer" => match.timer,
          "max_player_frobot" => match.max_player_frobot,
          "min_player_frobot" => match.min_player_frobot,
-         "match_time" => match.match_time
+         "match_time" => match.match_time,
+         "arena" =>
+           Enum.find(Api.list_arena(), fn item ->
+             item[:id] == match.arena_id
+           end)
        },
        "user_id" => match.user_id,
        "current_user_id" => user_id,
        "templates" => templateFrobots,
        "frobots" => userFrobots,
-       "s3_base_url" => s3_base_url
+       "s3_base_url" => s3_base_url,
+       "time_left" => time_left
      })}
   end
 
@@ -133,7 +146,9 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
     match_id = socket.assigns.match.id
 
     {:noreply,
-     push_event(socket, "react.return_match_results", Events.get_match_details(match_id))}
+     push_event(socket, "react.return_match_results", %{
+       "match_results" => Events.get_match_details(match_id)
+     })}
   end
 
   defp wait_for_socket(socket) do
@@ -151,6 +166,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   @impl Phoenix.LiveView
   def handle_info({Events, [:slot, :updated], updated_slot}, socket) do
     match = socket.assigns.match
+    match_id = match.id
 
     updated_slots =
       Enum.reduce(match.slots |> Enum.reverse(), [], fn slot, acc ->
@@ -163,7 +179,16 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
       |> Enum.sort_by(& &1.id)
 
     updated_match = Map.put(match, :slots, updated_slots)
-    {:noreply, socket |> assign(:match, updated_match)}
+    updated_match_from_be = Api.get_match_details_by_id(match_id)
+    frobots = extract_frobot_details(Assets.get_available_user_frobots(socket.assigns.user_id))
+
+    {:noreply,
+     socket
+     |> assign(:match, updated_match)
+     |> push_event(:updatedmatchlist, %{
+       match: extract_slot_details(updated_match_from_be.slots),
+       frobots: frobots
+     })}
   end
 
   def handle_info(:time_left, socket) do
