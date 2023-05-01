@@ -6,6 +6,7 @@ defmodule FrobotsWeb.AdminLive.Index do
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
+
     cond do
       Accounts.user_is_admin?(current_user) ->
         bucket = Api.get_s3_bucket_name()
@@ -19,6 +20,7 @@ defmodule FrobotsWeb.AdminLive.Index do
          |> assign(:uploaded_files, [])
          |> assign(:image_files, files)
          |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 2)}
+
       true ->
         {:error, "Not authorized"}
     end
