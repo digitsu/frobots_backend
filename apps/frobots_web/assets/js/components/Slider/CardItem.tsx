@@ -85,7 +85,14 @@ export const SliderCardItem: FC<CardItemProps> = ({
                 <Typography variant="h6" fontWeight={'bold'}>
                   {title}
                 </Typography>
-                <Typography variant="caption">{description}</Typography>
+                <Typography
+                  variant="caption"
+                  textOverflow={'ellipsis'}
+                  overflow={'hidden'}
+                  whiteSpace={'nowrap'}
+                >
+                  {description}
+                </Typography>
               </Box>
               <Box textAlign={'right'}>
                 {' '}
