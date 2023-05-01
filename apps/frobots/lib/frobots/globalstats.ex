@@ -15,6 +15,7 @@ defmodule Frobots.GlobalStats do
             players_online: 0,
             players_registered: 0
 
+  alias Frobots.Leaderboard
   alias Frobots.{Events, Assets}
 
   @doc ~S"""
@@ -36,7 +37,7 @@ defmodule Frobots.GlobalStats do
     user_frobots = Assets.get_user_frobots(current_user.id)
 
     %Frobots.GlobalStats{
-      matches_played: Events.get_match_participation_count(user_frobots),
+      matches_played: Leaderboard.get_match_participation_count(user_frobots),
       upcoming_matches: Events.count_matches_by_status(:pending),
       completed_matches: Events.count_matches_by_status(:done),
       current_matches: Events.count_matches_by_status(:running),
