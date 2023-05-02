@@ -74,7 +74,6 @@ defmodule FrobotsWeb.HomeLive.Index do
        "frobot_leaderboard_stats" => socket.assigns.frobot_leaderboard_stats,
        "player_leaderboard_stats" => socket.assigns.player_leaderboard_stats,
        "globalStats" => socket.assigns.global_stats,
-       "blogPosts" => socket.assigns.blog_posts,
        "featuredFrobots" => extract_frobots(socket.assigns.featured_frobots),
        "playerStats" => %{
          "frobots_count" => currentUserStatus.frobots_count,
@@ -82,7 +81,8 @@ defmodule FrobotsWeb.HomeLive.Index do
          "total_xp" => currentUserStatus.total_xp,
          "upcoming_matches" => currentUserStatus.upcoming_matches
        },
-       "s3_base_url" => socket.assigns.s3_base_url
+       "s3_base_url" => socket.assigns.s3_base_url,
+       "latestBlogPost" => List.first(socket.assigns.blog_posts)
      })}
   end
 
