@@ -7,22 +7,31 @@ import {Game} from "./game.js"
 
 let game = null;
 
-function connectToSocket(match_id) {
+function connectToSocket({ match_id, match_details, arena, s3_base_url }) {
+  console.log("Inside Socket " );
   // connects to the socket endpoint
-  let socket = new Socket("/socket", {params: {token: window.userToken}})
+  let socket = new Socket('/socket', { params: { token: window.userToken } })
   socket.connect()
-  let channel = socket.channel("match:" + match_id, {})
+  let channel = socket.channel('match:' + match_id, {})
   // joins the channel
-  channel.join()
-  .receive("ok", resp => { 
-    //Create a Pixi Application
-    game = new Game([], []);
-    game.header()
-  })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+  channel
+    .join()
+    .receive('ok', (resp) => {
+      console.log("Socket connected");
+      //Create a Pixi Application
+      game = new Game([], [], { match_id, match_details, arena, s3_base_url })
+      game.header()
+    })
+    .receive('error', (resp) => {
+      console.log('Unable to join', resp)
+    })
+
+    console.log("Socket outside");
   //
-  channel.on("arena_event", payload => {
-      game.event(payload);
+  channel.on('arena_event', (payload) => {
+    console.log("Inside Arena");
+    console.log("PAYLOAD ",payload);
+    game.event(payload)
   })
 }
 

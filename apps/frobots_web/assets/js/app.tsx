@@ -31,8 +31,14 @@ window.liveSocket = liveSocket
 
 window.addEventListener(`phx:match`, (e) => {
   let match_id = e.detail.id
-  console.log('MAtch ID:', match_id)
+  let match_details = e.detail.match_details
+  let arena = e.detail.arena
+  let s3_base_url = e.detail.s3_base_url
+
+  console.log('Props:', e.detail)
   if (match_id) {
-    connectToSocket(match_id)
+    connectToSocket({ match_id, match_details, arena, s3_base_url })
   }
 })
+
+

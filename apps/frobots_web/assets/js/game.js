@@ -6,7 +6,11 @@ import { Missile } from './missile.js'
 // const trophy = new PIXI.Sprite(trophyTexture);
 
 export class Game {
-  constructor(tanks, missiles) {
+  constructor(
+    tanks,
+    missiles,
+    { match_id, match_details, arena, s3_base_url }
+  ) {
     this.app = new PIXI.Application({
       width: 1000,
       height: 1000,
@@ -14,23 +18,36 @@ export class Game {
     })
     this.tanks = tanks
     this.missiles = missiles
-    this.app.view.classList.add('garage-pixy-simulation')
-
-    for (var i = 1; i < 1000; i = i + 10) {
-      var vertical = new PIXI.Graphics()
-      vertical.lineStyle(2, 0x00008b)
-      vertical.moveTo(i, 0)
-      vertical.lineTo(i, 1000)
-      this.app.stage.addChild(vertical)
+    if (match_details.type != 'real') {
+      this.app.view.classList.add('garage-pixy-simulation')
     }
 
-    for (var i = 1; i < 1000; i = i + 10) {
-      var horizontal = new PIXI.Graphics()
-      horizontal.lineStyle(2, 0x00008b)
-      horizontal.moveTo(0, i)
-      horizontal.lineTo(1000, i)
-      this.app.stage.addChild(horizontal)
-    }
+
+
+    // Url for arena image
+    // const bgUrl = s3_base_url + arena.image_url
+     const bgUrl = '/images/arena_default.png'
+
+    // adds static bg
+    const background = PIXI.Sprite.from(bgUrl)
+    background.width = this.app.renderer.width
+    background.height = this.app.renderer.height
+    this.app.stage.addChild(background)
+
+    //ads black overlay
+    // create a new Graphics object
+    const overlay = new PIXI.Graphics()
+
+    // draw a black rectangle that covers the entire stage
+    overlay.beginFill(0x000000)
+    overlay.drawRect(0, 0, this.app.renderer.width, this.app.renderer.height)
+    overlay.endFill()
+
+    // set the alpha of the Graphics object to 0.5 (50% opacity)
+    overlay.alpha = 0.5
+
+    // add the Graphics object to the stage
+    this.app.stage.addChild(overlay)
 
     this.stats = new PIXI.Text('', {
       fontSize: 20,
@@ -42,13 +59,15 @@ export class Game {
     this.app.stage.addChild(this.stats)
   }
 
+  
+
   header() {
     document.body.appendChild(this.app.view)
   }
 
   event(payload) {
     var { args, event } = payload
-    console.log(event)
+
     if (event == 'create_tank') {
       var tank_name = args[0]
       var [x, y] = args[1]
