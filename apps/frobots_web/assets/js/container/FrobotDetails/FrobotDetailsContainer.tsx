@@ -2,6 +2,7 @@ import React from 'react'
 import { Grid, Box, Card, Typography, Button } from '@mui/material'
 import { generateRandomString } from '../../utils/util'
 import FrobotAdvancedDetails from './FrobotAdvancedDetails'
+import { EditOutlined } from '@mui/icons-material'
 
 interface frobotDetailsProps {
   frobotDetails: any
@@ -9,10 +10,17 @@ interface frobotDetailsProps {
   isOwnedFrobot: boolean
   imageBaseUrl: string
   xFrameDetails: any
+  handleEditState: (value?: string) => void
 }
 
 export default (props: frobotDetailsProps) => {
-  const { frobotDetails, isOwnedFrobot, imageBaseUrl, xFrameDetails } = props
+  const {
+    frobotDetails,
+    isOwnedFrobot,
+    imageBaseUrl,
+    xFrameDetails,
+    handleEditState,
+  } = props
 
   return (
     <Grid container mb={2} spacing={2}>
@@ -77,6 +85,24 @@ export default (props: frobotDetailsProps) => {
               p: 4,
             }}
           >
+            {isOwnedFrobot && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  px: '13px',
+                  flexDirection: 'row-reverse',
+                }}
+              >
+                <EditOutlined
+                  fontSize="small"
+                  sx={{
+                    color: '#FFFFFF7E',
+                  }}
+                  onClick={() => handleEditState()}
+                />
+              </Box>
+            )}
+
             <Typography variant="h6" component="h2" gutterBottom>
               Name
             </Typography>

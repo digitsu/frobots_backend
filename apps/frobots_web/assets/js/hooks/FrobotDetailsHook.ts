@@ -16,6 +16,10 @@ export default {
     this.pushEventTo(this.el, 'react.filter_frobot_battle_logs', params)
   },
 
+  updateBasicDetails(params: any) {
+    this.pushEventTo(this.el, 'react.update_frobot_details', params)
+  },
+
   destroyed() {
     if (!this.unmountComponent) {
       console.error('Component unmounted')
@@ -30,6 +34,7 @@ export default {
       name: 'FrobotDetails',
       ...frobotDetails,
       updateBattleSearch: this.updateBattleSearch.bind(this),
+      updateBasicDetails: this.updateBasicDetails.bind(this),
     }
   },
 }
