@@ -31,7 +31,7 @@ defmodule Frobots.Assets.CannonInst do
   @doc false
   def changeset(cannon, attrs) do
     cannon
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:frobot_id])
     |> validate_required(@fields)
   end
 end

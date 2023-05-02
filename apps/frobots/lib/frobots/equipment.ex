@@ -343,7 +343,7 @@ defmodule Frobots.Equipment do
   def dequip_part(equipment_id, class) do
     # remove the frobot association from a part
     equipment = get_equipment(class, equipment_id)
-    update_equipment(class, equipment, frobot_id: nil)
+    update_equipment(equipment, class, %{frobot_id: nil})
   end
 
   @doc """
