@@ -93,7 +93,6 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
 
     case Channel.push(match_channel, "start_match", %{"id" => String.to_integer(match_id)}) do
       {:ok, _frobots_map} ->
-        IO.inspect("PUSHING DATA")
         ## Redirect to a page where they are listing to the channel for events
         {:noreply, socket |> assign(:match_channel, match_channel)}
 
@@ -107,7 +106,6 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   def handle_event("load_simulater", _value, socket) do
     ## push event to simulater
     assigns = socket.assigns()
-    IO.inspect("MATCH FROM LOAD")
     # match = Api.get_match_details_by_id(assigns.match_id)
     match = assigns.match
     arena = assigns.arena

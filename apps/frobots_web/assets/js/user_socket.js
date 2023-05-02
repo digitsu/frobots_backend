@@ -8,7 +8,6 @@ import {Game} from "./game.js"
 let game = null;
 
 function connectToSocket({ match_id, match_details, arena, s3_base_url }) {
-  console.log("Inside Socket " );
   // connects to the socket endpoint
   let socket = new Socket('/socket', { params: { token: window.userToken } })
   socket.connect()
@@ -17,7 +16,6 @@ function connectToSocket({ match_id, match_details, arena, s3_base_url }) {
   channel
     .join()
     .receive('ok', (resp) => {
-      console.log("Socket connected");
       //Create a Pixi Application
       game = new Game([], [], { match_id, match_details, arena, s3_base_url })
       game.header()
@@ -29,8 +27,7 @@ function connectToSocket({ match_id, match_details, arena, s3_base_url }) {
     console.log("Socket outside");
   //
   channel.on('arena_event', (payload) => {
-    console.log("Inside Arena");
-    console.log("PAYLOAD ",payload);
+    console.log("Inside Arena Event");
     game.event(payload)
   })
 }
