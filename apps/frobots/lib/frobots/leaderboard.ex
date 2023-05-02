@@ -146,6 +146,10 @@ defmodule Frobots.Leaderboard do
     |> Repo.insert()
   end
 
+  def delete_all_stats() do
+    Repo.delete_all(Stats)
+  end
+
   def update_entry(stat, attrs) do
     result =
       stat
