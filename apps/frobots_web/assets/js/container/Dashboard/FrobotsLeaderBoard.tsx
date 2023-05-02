@@ -18,6 +18,7 @@ interface FrobotLeaderBoard {
   attempts: number
   avatar: string
   frobot: string
+  frobot_id: number
   matches_participated: number
   matches_won: number
   points: number
@@ -33,8 +34,8 @@ interface LeaderBoardProps {
 export default (props: LeaderBoardProps) => {
   const { leaderBoardData, imageBaseUrl } = props
 
-  const handleOpenFrobotDetails = (frobotName: string) => {
-    window.location.href = `/garage/frobot?name=${frobotName}`
+  const handleOpenFrobotDetails = (frobot_id: number) => {
+    window.location.href = `/garage/frobot?id=${frobot_id}`
   }
 
   return (
@@ -72,7 +73,7 @@ export default (props: LeaderBoardProps) => {
               leaderBoardData.map((row, index) => (
                 <TableRow
                   key={index}
-                  onClick={() => handleOpenFrobotDetails(row.frobot)}
+                  onClick={() => handleOpenFrobotDetails(row.frobot_id)}
                 >
                   <TableCell
                     sx={{
