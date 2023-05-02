@@ -42,7 +42,7 @@ defmodule Frobots.Assets.XframeInst do
   @doc false
   def changeset(xframe, attrs) do
     xframe
-    |> cast(attrs, @fields ++ [:health])
+    |> cast(attrs, @fields ++ [:health, :frobot_id])
     |> validate_required(@fields)
   end
 end
