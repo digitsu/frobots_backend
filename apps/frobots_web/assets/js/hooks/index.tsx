@@ -10,6 +10,7 @@ import FrobotEquipmentBayHook from './FrobotEquipmentBayHook'
 import ArenaLobbyHook from './ArenaLobbyHook'
 import DocsHook from './DocsHook'
 import UserProfileHook from './UserProfileHook'
+import BlogsHook from './BlogsHook'
 
 interface HookType {
   [key: string]: {
@@ -34,5 +35,6 @@ Hooks.FrobotEquipmentBayHook = FrobotEquipmentBayHook
 Hooks.ArenaLobbyHook = ArenaLobbyHook
 Hooks.DocsHook = DocsHook
 Hooks.UserProfileHook = UserProfileHook
+Hooks.BlogsHook = BlogsHook
 
 export default Hooks
