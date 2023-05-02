@@ -6,8 +6,7 @@ import GlobalStats from './GlobalStats'
 import Notifications from './Notifications'
 import FeaturedFrobotSection from './FeaturedFrobotSection'
 import ProfileDetails from './ProfileDetails'
-import JoinMatchBanner from './JoinMatchBanner'
-import NewsAndUpdatesSection from './NewsAndUpdatesSection'
+import NewsAndUpdatesBanner from './NewsAndUpdatesBanner'
 
 export default (props: any) => {
   const {
@@ -17,11 +16,11 @@ export default (props: any) => {
     current_user_name,
     current_user_avatar,
     current_user_sparks,
-    blogPosts,
     featuredFrobots,
     frobot_leaderboard_stats,
     player_leaderboard_stats,
     s3_base_url,
+    latestBlogPost,
   } = props
 
   const handleOpenGarage = useCallback(
@@ -62,6 +61,16 @@ export default (props: any) => {
 
   return (
     <>
+      {latestBlogPost && (
+        <Box width={'90%'} m={'auto'}>
+          <Grid container spacing={2} my={2}>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <NewsAndUpdatesBanner post={latestBlogPost} />
+            </Grid>
+          </Grid>
+        </Box>
+      )}
+
       <Box width={'90%'} m={'auto'}>
         <Grid container spacing={2}>
           <Grid item lg={6} md={12} sm={12} xs={12}>
@@ -240,16 +249,6 @@ export default (props: any) => {
               featuredFrobots={featuredFrobots}
               imageBaseUrl={s3_base_url}
             />
-          </Grid>
-          <Grid item lg={12} md={12} sm={12} xs={12}>
-            <JoinMatchBanner />
-          </Grid>
-        </Grid>
-      </Box>
-      <Box width={'90%'} m={'auto'}>
-        <Grid container spacing={2} my={2}>
-          <Grid item lg={12} md={12} sm={12} xs={12}>
-            <NewsAndUpdatesSection blogPosts={blogPosts} />
           </Grid>
         </Grid>
       </Box>
