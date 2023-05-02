@@ -1,7 +1,7 @@
 defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
-  alias Frobots.{Accounts, Assets, Api, Events}
+  alias Frobots.{Accounts, Assets, Api, Avatars, Events}
 
   @impl Phoenix.LiveView
   def mount(params, session, socket) do
@@ -44,7 +44,8 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
            |> assign(:page, page)
            |> assign(:page_size, page_size)
            |> assign(:total_entries, total_entries)
-           |> assign(:s3_base_url, s3_base_url)}
+           |> assign(:s3_base_url, s3_base_url)
+           |> assign(:frobot_avatars, Avatars.get_frobot_avatars())}
 
         {:error, message} ->
           {:ok,
@@ -89,7 +90,8 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
        "total_entries" => socket.assigns.total_entries,
        "page" => socket.assigns.page,
        "page_size" => socket.assigns.page_size,
-       "s3_base_url" => socket.assigns.s3_base_url
+       "s3_base_url" => socket.assigns.s3_base_url,
+       "avatars" => socket.assigns.frobot_avatars
      })}
   end
 
@@ -147,8 +149,49 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
        "page" => page,
        "page_size" => page_size,
        "match_status" => params["match_status"],
-       "s3_base_url" => socket.assigns.s3_base_url
+       "s3_base_url" => socket.assigns.s3_base_url,
+       "avatars" => socket.assigns.starter_mechs
      })}
+  end
+
+  def handle_event("react.update_frobot_details", params, socket) do
+    current_user = socket.assigns.user
+    user_frobots = extract_frobots(socket.assigns.user_frobots)
+
+    case Assets.update_frobot(Assets.get_frobot!(params["frobot_id"]), params) do
+      {:ok, _} ->
+        currentUser = %{
+          "id" => current_user.id,
+          "avatar" => current_user.avatar,
+          "email" => current_user.email,
+          "name" => current_user.name,
+          "sparks" => current_user.sparks
+        }
+
+        {:ok, frobot} = Api.get_frobot_details(params["frobot_id"])
+
+        {:noreply,
+         push_event(
+           socket
+           |> assign(:frobot, frobot)
+           |> put_flash(:info, "frobot updated successfully"),
+           "react.return_frobot_details",
+           %{
+             "frobotDetails" => frobot,
+             "currentUser" => currentUser,
+             "userFrobots" => user_frobots,
+             "battles" => socket.assigns.battles,
+             "total_entries" => socket.assigns.total_entries,
+             "page" => socket.assigns.page,
+             "page_size" => socket.assigns.page_size,
+             "s3_base_url" => socket.assigns.s3_base_url,
+             "avatars" => socket.assigns.frobot_avatars
+           }
+         )}
+
+      {:error, _changeset} ->
+        {:noreply, socket |> put_flash(:error, "Error while updating frobot")}
+    end
   end
 
   def extract_frobots(frobots) do
