@@ -15,6 +15,7 @@ defmodule Frobots.PopulateLeaderboard do
     WinnersBucket.reset()
     # 1. get battle logs
     battlelogs = get_battlelogs() |> filter_valid()
+
     if !Enum.empty?(battlelogs) do
       for battlelog <- battlelogs do
         # get battlelog winner..we get the user from this
@@ -58,11 +59,9 @@ defmodule Frobots.PopulateLeaderboard do
     )
     |> Enum.map(fn entry ->
       # insert each entry into leaderboard_stats
-      IO.inspect entry
+      IO.inspect(entry)
       Leaderboard.create_entry(entry)
     end)
-
-
   end
 
   # send player leaderboard entries
