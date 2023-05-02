@@ -88,7 +88,6 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
 
     {:ok, _response, match_channel} = Channel.join(phoenix_socket, "match:" <> match_id)
 
-
     wait_for_socket(phoenix_socket)
 
     case Channel.push(match_channel, "start_match", %{"id" => String.to_integer(match_id)}) do
@@ -99,7 +98,6 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
       {:error, error} ->
         {:noreply, socket |> assign(:match_channel, match_channel) |> put_flash(:error, error)}
     end
-
   end
 
   @impl Phoenix.LiveView
@@ -111,7 +109,6 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
     arena = assigns.arena
     s3_base_url = assigns.s3_base_url
 
-
     # IO.inspect(match)
     matchDetails = %{
       "arena_id" => match.arena_id,
@@ -122,12 +119,12 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
       "status" => match.status,
       "frobots" => match.frobots
     }
+
     #     socket_opts = Application.get_env(:phoenix_client, :socket)
 
     # {:ok, phoenix_socket} = Socket.start_link(socket_opts)
     # wait_for_socket(phoenix_socket)
     # {:ok, _response, match_channel} = Channel.join(phoenix_socket, "match:" <>  assigns.match_id)
-
 
     # IO.inspect(matchDetails)
     # {:ok, match_id} = Simulator.start_match(assigns.simulator)
