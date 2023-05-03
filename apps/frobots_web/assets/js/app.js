@@ -46,12 +46,16 @@ liveSocket.enableDebug()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
-window.addEventListener(`phx:match`, (e) => {
-  let match_id = e.detail.id
-  console.log('MAtch ID:', match_id)
-  if (match_id) {
-    connectToSocket(match_id)
-  }
+// window.addEventListener(`phx:match`, (e) => {
+//   let match_id = e.detail.id
+//   console.log('MAtch ID:', match_id)
+//   if (match_id) {
+//     // connectToSocket(match_id)
+//   }
+// })
+
+window.addEventListener(`phx:arena_event`, (e) => {
+  console.log('ArenaEvent:Received', e)
 })
 
 // Close the navbar user dropdown if the user clicks outside of it
