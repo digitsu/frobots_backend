@@ -16,12 +16,21 @@ interface NewsAndUpdatesProps {
 export default ({ post }: NewsAndUpdatesProps) => {
   return (
     <Card>
-      <Box position={'relative'} width={'100%'} m={'auto'}>
+      <Box
+        position={'relative'}
+        width={'100%'}
+        height={'400px'}
+        overflow={'hidden'}
+        m={'auto'}
+      >
         <Box
           borderRadius={2}
           component={'img'}
           width={'100%'}
-          height={'350px'}
+          height={'100%'}
+          sx={{
+            objectFit: 'cover',
+          }}
           src={post.feature_image || '/images/blog-post-bg.png'}
         />
         <Box
