@@ -353,8 +353,10 @@ defmodule Frobots.Equipment do
   def dequip_all(%Assets.Frobot{} = frobot) do
     multi = Multi.new()
 
+    all_equipments = List.flatten(list_frobot_equipment(frobot.id))
+
     changesets =
-      for equipment <- list_frobot_equipment(frobot.id) do
+      for equipment <- all_equipments do
         inst_module = _get_inst_module(equipment.class)
 
         cs =
