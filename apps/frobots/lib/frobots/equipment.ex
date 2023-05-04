@@ -385,17 +385,17 @@ defmodule Frobots.Equipment do
 
         cs =
           equipment
-          |> Map.replace(:frobot, nil)
+          |> Map.replace(:frobot_id, nil)
           |> inst_module.changeset(%{})
 
         {_get_inst_schema(equipment), cs}
       end
 
-    add_to_multi = fn {schema, cs}, multi ->
-      Multi.insert(multi, schema, cs)
+    update_multi = fn {schema, cs}, multi ->
+      Multi.update(multi, schema, cs)
     end
 
-    multi = Enum.reduce(changesets, multi, add_to_multi)
+    multi = Enum.reduce(changesets, multi, update_multi)
     Api._run_multi(multi)
   end
 
