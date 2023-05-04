@@ -135,8 +135,18 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     ## Start The Match
     player_frobot_id = match_data["frobot_id"]
     protobot_ids = socket.assigns.protobot_ids
-    protobot_slots = protobot_ids |> Enum.map(fn id -> %{"frobot_id" => id, "status" => "ready", "slot_type" => "protobot",
-    "match_type" => "simulation"} end)
+
+    protobot_slots =
+      protobot_ids
+      |> Enum.map(fn id ->
+        %{
+          "frobot_id" => id,
+          "status" => "ready",
+          "slot_type" => "protobot",
+          "match_type" => "simulation"
+        }
+      end)
+
     match_data = %{
       "user_id" => socket.assigns.user.id,
       "match_time" => DateTime.utc_now() |> DateTime.to_string(),
@@ -152,9 +162,9 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
           "slot_type" => "host",
           "match_type" => "simulation"
         }
-      | protobot_slots
+        | protobot_slots
       ],
-      "frobot_ids" => [player_frobot_id] ++ protobot_ids ,
+      "frobot_ids" => [player_frobot_id] ++ protobot_ids,
       "match_template" => %{
         "entry_fee" => 0,
         "commission_rate" => 0,
