@@ -34,12 +34,36 @@ defmodule Frobots.Equipment do
     apply(Frobots.Assets, _get_fn(equipment_class), [equipment_type])
   end
 
+  defp _get_inst_module(%ScannerInst{}) do
+    _get_inst_module("scanner")
+  end
+  defp _get_inst_module(%MissileInst{}) do
+    _get_inst_module("missile")
+  end
+  defp _get_inst_module(%CannonInst{}) do
+    _get_inst_module("cannon")
+  end
+  defp _get_inst_module(%XframeInst{}) do
+    _get_inst_module("xframe")
+  end
   defp _get_inst_module(equipment_class) do
     String.to_existing_atom(
       "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
     )
   end
 
+  defp _get_inst_schema(%ScannerInst{}) do
+    _get_inst_schema("scanner")
+  end
+  defp _get_inst_schema(%MissileInst{}) do
+    _get_inst_schema("missile")
+  end
+  defp _get_inst_schema(%CannonInst{}) do
+    _get_inst_schema("cannon")
+  end
+  defp _get_inst_schema(%XframeInst{}) do
+    _get_inst_schema("xframe")
+  end
   defp _get_inst_schema(equipment_class) do
     String.to_existing_atom(String.downcase(equipment_class) <> "_inst")
   end
@@ -178,7 +202,7 @@ defmodule Frobots.Equipment do
       module = _get_inst_module(to_string(equipment_class))
 
       from(eqp in module, where: eqp.frobot_id == ^frobot_id)
-      |> Repo.all()
+      |> Repo.all() |> Repo.preload(equipment_class)
     end)
   end
 
@@ -357,14 +381,14 @@ defmodule Frobots.Equipment do
 
     changesets =
       for equipment <- all_equipments do
-        inst_module = _get_inst_module(equipment.class)
+        inst_module = _get_inst_module(equipment)
 
         cs =
           equipment
           |> Map.replace(:frobot, nil)
-          |> inst_module.changeset()
+          |> inst_module.changeset(%{})
 
-        {_get_inst_schema(equipment.class), cs}
+        {_get_inst_schema(equipment), cs}
       end
 
     add_to_multi = fn {schema, cs}, multi ->
