@@ -211,7 +211,6 @@ defmodule Frobots.Equipment do
 
       from(eqp in module, where: eqp.frobot_id == ^frobot_id)
       |> Repo.all()
-      |> Repo.preload(equipment_class)
     end)
   end
 
@@ -394,8 +393,7 @@ defmodule Frobots.Equipment do
 
         cs =
           equipment
-          |> Map.replace(:frobot_id, nil)
-          |> inst_module.changeset(%{})
+          |> inst_module.changeset(%{frobot_id: nil})
 
         {_get_inst_schema(equipment), cs}
       end
