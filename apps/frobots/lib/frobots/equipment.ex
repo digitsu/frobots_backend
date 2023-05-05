@@ -34,10 +34,42 @@ defmodule Frobots.Equipment do
     apply(Frobots.Assets, _get_fn(equipment_class), [equipment_type])
   end
 
+  defp _get_inst_module(%ScannerInst{}) do
+    _get_inst_module("scanner")
+  end
+
+  defp _get_inst_module(%MissileInst{}) do
+    _get_inst_module("missile")
+  end
+
+  defp _get_inst_module(%CannonInst{}) do
+    _get_inst_module("cannon")
+  end
+
+  defp _get_inst_module(%XframeInst{}) do
+    _get_inst_module("xframe")
+  end
+
   defp _get_inst_module(equipment_class) do
     String.to_existing_atom(
       "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
     )
+  end
+
+  defp _get_inst_schema(%ScannerInst{}) do
+    _get_inst_schema("scanner")
+  end
+
+  defp _get_inst_schema(%MissileInst{}) do
+    _get_inst_schema("missile")
+  end
+
+  defp _get_inst_schema(%CannonInst{}) do
+    _get_inst_schema("cannon")
+  end
+
+  defp _get_inst_schema(%XframeInst{}) do
+    _get_inst_schema("xframe")
   end
 
   defp _get_inst_schema(equipment_class) do
@@ -353,23 +385,24 @@ defmodule Frobots.Equipment do
   def dequip_all(%Assets.Frobot{} = frobot) do
     multi = Multi.new()
 
+    all_equipments = List.flatten(list_frobot_equipment(frobot.id))
+
     changesets =
-      for equipment <- list_frobot_equipment(frobot.id) do
-        inst_module = _get_inst_module(equipment.class)
+      for equipment <- all_equipments do
+        inst_module = _get_inst_module(equipment)
 
         cs =
           equipment
-          |> Map.replace(:frobot, nil)
-          |> inst_module.changeset()
+          |> inst_module.changeset(%{frobot_id: nil})
 
-        {_get_inst_schema(equipment.class), cs}
+        {_get_inst_schema(equipment), cs}
       end
 
-    add_to_multi = fn {schema, cs}, multi ->
-      Multi.insert(multi, schema, cs)
+    update_multi = fn {schema, cs}, multi ->
+      Multi.update(multi, schema, cs)
     end
 
-    multi = Enum.reduce(changesets, multi, add_to_multi)
+    multi = Enum.reduce(changesets, multi, update_multi)
     Api._run_multi(multi)
   end
 
