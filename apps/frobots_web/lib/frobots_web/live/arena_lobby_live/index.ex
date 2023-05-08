@@ -196,12 +196,6 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
      })}
   end
 
-  defp wait_for_socket(socket) do
-    unless Socket.connected?(socket) do
-      wait_for_socket(socket)
-    end
-  end
-
   # add additional handle param events as needed to handle button clicks etc
   @impl Phoenix.LiveView
   def handle_params(_, _, socket) do

@@ -3,7 +3,6 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   use FrobotsWeb, :live_view
 
   alias Frobots.Api
-  alias PhoenixClient.{Socket, Channel}
 
   @impl Phoenix.LiveView
   def mount(
@@ -231,11 +230,5 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
     #  socket
     # |> assign_new(:rider_search, fn -> rider_search end)
     socket
-  end
-
-  defp wait_for_socket(socket) do
-    unless Socket.connected?(socket) do
-      wait_for_socket(socket)
-    end
   end
 end
