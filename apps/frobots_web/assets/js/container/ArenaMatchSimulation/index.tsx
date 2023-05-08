@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { Box, Grid, Typography, Card } from '@mui/material'
-import FrobotsListContainer from './FrobotsListContainer'
-import FrobotDetailsPreview from './FrobotDetailsPreview'
+
 import { useDispatch } from 'react-redux'
 import { matchSimulationActions } from '../../redux/slices/matchSimulationSlice'
 
