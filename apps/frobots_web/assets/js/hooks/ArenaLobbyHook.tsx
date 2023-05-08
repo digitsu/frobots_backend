@@ -13,15 +13,6 @@ export default {
   updateSlot({ type, payload }) {
     this.pushEventTo(this.el, type, payload)
   },
-  startMatch(params) {
-    this.pushEventTo(this.el, 'start_match', { ...params })
-    this.handleEvent('start_match', (startMatchDetails) => {
-      this.unmountComponent = mount(Lobby)(
-        this.el.id,
-        this.opts({ ...startMatchDetails })
-      )
-    })
-  },
 
   destroyed() {
     if (!this.unmountComponent) {
@@ -35,7 +26,6 @@ export default {
       name: 'ArenaLobbyHook',
       ...arenaLobbyDetails,
       updateSlot: this.updateSlot.bind(this),
-      startMatch: this.startMatch.bind(this),
     }
   },
 }
