@@ -142,7 +142,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   end
 
   @impl true
-  def handle_info({:move_tank, frobot, loc, heading, speed} = msg, socket) do
+  def handle_info({:move_tank, _frobot, _loc, _heading, _speed} = msg, socket) do
     {:noreply,
      socket
      |> push_event(:arena_event, encode_event(msg))}
