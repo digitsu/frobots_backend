@@ -85,8 +85,8 @@ export default (props: any) => {
   }, [])
 
   return (
-      <Box width={'90%'} m={'auto'}>
-        {/* <Grid container spacing={2}>
+    <Box width={'90%'} m={'auto'}>
+      {/* <Grid container spacing={2}>
           <Grid
             item
             md={12}
@@ -99,6 +99,6 @@ export default (props: any) => {
             <FrobotDetailsPreview isHost={isHost} updateSlot={undefined} />
           </Grid>
         </Grid> */}
-      </Box>
-   )
+    </Box>
+  )
 }

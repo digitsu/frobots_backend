@@ -22,11 +22,9 @@ export class Game {
       this.app.view.classList.add('garage-pixy-simulation')
     }
 
-
-
     // Url for arena image
     // const bgUrl = s3_base_url + arena.image_url
-     const bgUrl = '/images/arena_default.png'
+    const bgUrl = '/images/arena_default.png'
 
     // adds static bg
     const background = PIXI.Sprite.from(bgUrl)
@@ -58,8 +56,6 @@ export class Game {
     })
     this.app.stage.addChild(this.stats)
   }
-
-  
 
   header() {
     document.body.appendChild(this.app.view)
@@ -261,8 +257,8 @@ export class Game {
 
   createMissile(missile_name, x, y) {
     const missile_sprite = new PIXI.Graphics()
-    missile_sprite.beginFill(0xffa500) 
-    missile_sprite.drawCircle(5, 5, 2.5) 
+    missile_sprite.beginFill(0xffa500)
+    missile_sprite.drawCircle(5, 5, 2.5)
     missile_sprite.endFill()
     missile_sprite.x = x
     missile_sprite.y = y

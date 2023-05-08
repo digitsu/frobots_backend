@@ -17,7 +17,6 @@ export default (props) => {
     s3_base_url,
     user_id,
     time_left,
-    startMatch,
   } = props
   const dispatch = useDispatch()
   const isHost = user_id === current_user_id
@@ -65,19 +64,8 @@ export default (props) => {
       window.location.href = `/arena/${match.id}/results`
     }
   }
-    const handleStartOrJoinMatch = () => {
-      let action;
-      //TODO 
-      if (isHost) {
-        action='start'
-      }
-      else
-      {
-         action = 'join'
-      }
-      window.location.href = `/arena/match/simulation?match_id=${match.id}&action=${action}`
-    }
-
+    
+  
   return (
     <Box width={'90%'} m={'auto'}>
       <Grid container spacing={2}>
@@ -112,4 +100,4 @@ export default (props) => {
       </Grid>
     </Box>
   )
-}
+  }

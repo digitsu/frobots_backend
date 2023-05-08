@@ -2,10 +2,10 @@
 // you uncomment its entry in "assets/js/app.js".
 
 // Bring in Phoenix channels client library:
-import {Socket} from "phoenix"
-import {Game} from "./game.js"
+import { Socket } from 'phoenix'
+import { Game } from './game.js'
 
-let game = null;
+let game = null
 
 function connectToSocket({ match_id, match_details, arena, s3_base_url }) {
   // connects to the socket endpoint
@@ -24,12 +24,9 @@ function connectToSocket({ match_id, match_details, arena, s3_base_url }) {
       console.log('Unable to join', resp)
     })
 
-    console.log("Socket outside");
-  //
   channel.on('arena_event', (payload) => {
-    console.log("Inside Arena Event");
     game.event(payload)
   })
 }
 
-export {connectToSocket}
+export { connectToSocket }
