@@ -64,7 +64,8 @@ export default (props) => {
       window.location.href = `/arena/${match.id}/results`
     }
   }
-
+    
+  
   return (
     <Box width={'90%'} m={'auto'}>
       <Grid container spacing={2}>
@@ -99,4 +100,4 @@ export default (props) => {
       </Grid>
     </Box>
   )
-}
+  }

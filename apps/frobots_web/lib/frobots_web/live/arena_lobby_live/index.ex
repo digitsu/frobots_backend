@@ -2,7 +2,6 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
   alias Frobots.{Api, Events, Assets, Accounts}
-  alias PhoenixClient.{Socket, Channel}
 
   @impl Phoenix.LiveView
   def mount(
@@ -30,6 +29,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
       {:ok,
        socket
        |> assign(:match, match)
+       |> assign(:match_id, match_id)
        |> assign(:time_left, time_left)
        |> assign(:user_id, id)
        |> assign(:s3_base_url, s3_base_url)
@@ -87,26 +87,58 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
     end
   end
 
-  def handle_event("start_match", _params, socket) do
-    match_id = socket.assigns.match_id
-    socket_opts = Application.get_env(:phoenix_client, :socket)
-    {:ok, phoenix_socket} = Socket.start_link(socket_opts)
-    wait_for_socket(phoenix_socket)
+  # def handle_event("start_match", _params, socket) do
+  #   match_id = socket.assigns.match_id
+  #   socket_opts = Application.get_env(:phoenix_client, :socket)
+  #   {:ok, phoenix_socket} = Socket.start_link(socket_opts)
+  #   wait_for_socket(phoenix_socket)
 
-    {:ok, _response, match_channel} =
-      Channel.join(phoenix_socket, "match:" <> Integer.to_string(match_id))
+  #   {:ok, _response, match_channel} = Channel.join(phoenix_socket, "match:" <> match_id)
 
-    wait_for_socket(phoenix_socket)
+  #   wait_for_socket(phoenix_socket)
 
-    case Channel.push(match_channel, "start_match", %{"id" => match_id}) do
-      {:ok, _frobots_map} ->
-        ## Redirect to a page where they are listing to the channel for events
-        {:noreply, socket |> assign(:match_channel, match_channel)}
+  #   case Channel.push(match_channel, "start_match", %{"id" => String.to_integer(match_id)}) do
+  #     {:ok, _frobots_map} ->
+  #       ## Redirect to a page where they are listing to the channel for events
+  #       {:noreply, socket |> assign(:match_channel, match_channel)}
 
-      {:error, error} ->
-        {:noreply, socket |> assign(:match_channel, match_channel) |> put_flash(:error, error)}
-    end
-  end
+  #     {:error, error} ->
+  #       {:noreply, socket |> assign(:match_channel, match_channel) |> put_flash(:error, error)}
+  #   end
+  # end
+
+  ## To connect to socket
+
+  # @impl Phoenix.LiveView
+  # def handle_event("load_simulater", _value, socket) do
+  #   ## push event to simulater
+  #   assigns = socket.assigns()
+  #   IO.inspect("MATCH FROM LOAD")
+  #   # match = Api.get_match_details_by_id(assigns.match_id)
+  #   match_id = assigns.match_id
+
+  #   # # IO.inspect(match)
+  #   #     matchDetails = %{
+  #   #   "arena_id" => match.arena_id,
+  #   #   "match_time" => match.match_time,
+  #   #   "slots" => match.slots,
+  #   #   "title" => match.title,
+  #   #   "type" => match.type,
+  #   #   "status" => match.status,
+  #   #   "frobots" =>match.frobots
+  #   # }
+  #   # IO.inspect(matchDetails)
+  #   # assigns = socket.assigns()
+  #   # {:ok} = Simulator.request_match(assigns.simulator)
+  #   # {:ok, match_id} = Simulator.request_match(assigns.simulator)
+  #   {:noreply, socket |> push_event(:match, %{id: match_id})}
+  # end
+
+  # defp wait_for_socket(socket) do
+  #   unless Socket.connected?(socket) do
+  #     wait_for_socket(socket)
+  #   end
+  # end
 
   def handle_event("react.fetch_lobby_details", %{}, socket) do
     %{match: match, user_id: user_id, s3_base_url: s3_base_url, time_left: time_left} =
@@ -150,12 +182,6 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
      push_event(socket, "react.return_match_results", %{
        "match_results" => Events.get_match_details(match_id)
      })}
-  end
-
-  defp wait_for_socket(socket) do
-    unless Socket.connected?(socket) do
-      wait_for_socket(socket)
-    end
   end
 
   # add additional handle param events as needed to handle button clicks etc

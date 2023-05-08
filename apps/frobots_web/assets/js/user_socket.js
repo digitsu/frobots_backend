@@ -2,28 +2,31 @@
 // you uncomment its entry in "assets/js/app.js".
 
 // Bring in Phoenix channels client library:
-import {Socket} from "phoenix"
-import {Game} from "./game.js"
+import { Socket } from 'phoenix'
+import { Game } from './game.js'
 
-let game = null;
+let game = null
 
-function connectToSocket(match_id) {
+function connectToSocket({ match_id, match_details, arena, s3_base_url }) {
   // connects to the socket endpoint
-  let socket = new Socket("/socket", {params: {token: window.userToken}})
+  let socket = new Socket('/socket', { params: { token: window.userToken } })
   socket.connect()
-  let channel = socket.channel("match:" + match_id, {})
+  let channel = socket.channel('match:' + match_id, {})
   // joins the channel
-  channel.join()
-  .receive("ok", resp => { 
-    //Create a Pixi Application
-    game = new Game([], []);
-    game.header()
-  })
-  .receive("error", resp => { console.log("Unable to join", resp) })
-  //
-  channel.on("arena_event", payload => {
-      game.event(payload);
+  channel
+    .join()
+    .receive('ok', (resp) => {
+      //Create a Pixi Application
+      game = new Game([], [], { match_id, match_details, arena, s3_base_url })
+      game.header()
+    })
+    .receive('error', (resp) => {
+      console.log('Unable to join', resp)
+    })
+
+  channel.on('arena_event', (payload) => {
+    game.event(payload)
   })
 }
 
-export {connectToSocket}
+export { connectToSocket }

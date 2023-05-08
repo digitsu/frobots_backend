@@ -1,0 +1,49 @@
+<div>
+  <section class="w-90 m-auto">
+    <div class="mt-4">
+      <h1 class="font-bold">Match : <%= @match_id %>
+      </h1>
+    </div>
+    
+  <div class="flex justify-between items-center my-2">
+      <div>
+        <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="/home">Dashboard</a>
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="/arena">Arena</a>
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          .
+        </p>
+            <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="/arena">My Live Matches</a>
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          .
+        </p>
+          <p class="inline-block items-left font-bold text-xs text-400 text-gray-400">
+          <a href="/arena">Match <%= @match_id %></a>
+        </p>
+      </div>
+      <div>
+        <p class="font-bold text-xs text-gray-400">
+          TIMER <%="00:00:00:00" %>
+        </p>
+      </div>
+    </div>
+
+  </section>
+
+    <div id="match-simulation" phx-hook="ArenaMatchSimulationHook" phx-update="ignore"></div>
+
+</div>
+
+
+  <button id="show " phx-click="load_simulater"> Init Match </button>
+  
+  <button phx-click="start_match"> Start Match </button>
+
