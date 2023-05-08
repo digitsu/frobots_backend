@@ -131,7 +131,8 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
          "arena" =>
            Enum.find(Api.list_arena(), fn item ->
              item[:id] == match.arena_id
-           end)
+           end),
+         "status" => match.status
        },
        "user_id" => match.user_id,
        "current_user_id" => user_id,
