@@ -34,6 +34,7 @@ export default (props) => {
     max_player_frobot,
     slots,
     arena,
+    status
   } = match
   const sortedSlots = slotMapper(slots, current_user_id, user_id, s3_base_url)
   useEffect(() => {
@@ -58,6 +59,12 @@ export default (props) => {
     dispatch(setSlots(updated_matches))
   })
 
+  const matchActionHandler = () => {
+    if(status === 'done'){
+      window.location.href = `/arena/${match.id}/results`
+    }
+  }
+
   return (
     <Box width={'90%'} m={'auto'}>
       <Grid container spacing={2}>
@@ -68,8 +75,8 @@ export default (props) => {
             alignItems={'center'}
             justifyContent={'flex-end'}
           >
-            <Button sx={{ px: 3 }} variant="contained">
-              {isHost ? 'Start Match' : 'Join'}
+            <Button sx={{ px: 3 }} variant="contained" onClick={matchActionHandler}>
+              {status !== 'done' ?(isHost ? 'Start Match' : 'Join') : 'View Results'}
             </Button>
           </Box>
         </Grid>
