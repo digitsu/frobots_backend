@@ -12,8 +12,8 @@ export default {
     })
   },
 
-  runSimulation(params) {
-    this.pushEventTo(this.el, 'load_simulater', { ...params })
+  runSimulation() {
+    this.pushEventTo(this.el, 'start_match')
   },
 
   destroyed() {

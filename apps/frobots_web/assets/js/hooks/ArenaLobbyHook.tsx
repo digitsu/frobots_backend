@@ -13,7 +13,9 @@ export default {
   updateSlot({ type, payload }) {
     this.pushEventTo(this.el, type, payload)
   },
-
+  startMatch() {
+    this.pushEventTo(this.el, 'start_match_redirect')
+  },
   destroyed() {
     if (!this.unmountComponent) {
       console.error('Component unmounted')
@@ -26,6 +28,7 @@ export default {
       name: 'ArenaLobbyHook',
       ...arenaLobbyDetails,
       updateSlot: this.updateSlot.bind(this),
+      startMatch: this.startMatch.bind(this),
     }
   },
 }

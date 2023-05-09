@@ -40,6 +40,7 @@ export default ({ createMatch, imageBaseUrl }) => {
       min_player_frobot,
       max_player_frobot,
       slots,
+      type: 'real',
     })
   }
   const isAllSlotsClosed = storeSlots.every((slot) => slot?.type === 'closed')

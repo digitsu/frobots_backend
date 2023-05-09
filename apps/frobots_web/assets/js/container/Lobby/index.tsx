@@ -17,6 +17,7 @@ export default (props) => {
     s3_base_url,
     user_id,
     time_left,
+    startMatch,
   } = props
   const dispatch = useDispatch()
   const isHost = user_id === current_user_id
@@ -34,7 +35,7 @@ export default (props) => {
     max_player_frobot,
     slots,
     arena,
-    status
+    status,
   } = match
   const sortedSlots = slotMapper(slots, current_user_id, user_id, s3_base_url)
   useEffect(() => {
@@ -59,13 +60,19 @@ export default (props) => {
     dispatch(setSlots(updated_matches))
   })
 
+  window.addEventListener('phx:redirecttomatch', (e) => {
+    const match_id = e.detail.match_id
+    window.location.href = `/arena/${match_id}/simulation`
+  })
+
   const matchActionHandler = () => {
-    if(status === 'done'){
+    if (status === 'done') {
       window.location.href = `/arena/${match.id}/results`
+    } else {
+      startMatch()
     }
   }
-    
-  
+
   return (
     <Box width={'90%'} m={'auto'}>
       <Grid container spacing={2}>
@@ -76,8 +83,16 @@ export default (props) => {
             alignItems={'center'}
             justifyContent={'flex-end'}
           >
-            <Button sx={{ px: 3 }} variant="contained" onClick={matchActionHandler}>
-              {status !== 'done' ?(isHost ? 'Start Match' : 'Join') : 'View Results'}
+            <Button
+              sx={{ px: 3 }}
+              variant="contained"
+              onClick={matchActionHandler}
+            >
+              {status !== 'done'
+                ? isHost
+                  ? 'Start Match'
+                  : 'Join'
+                : 'View Results'}
             </Button>
           </Box>
         </Grid>
@@ -100,4 +115,4 @@ export default (props) => {
       </Grid>
     </Box>
   )
-  }
+}

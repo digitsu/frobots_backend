@@ -34,22 +34,10 @@ export default {
 
   runSimulation(params) {
     this.pushEventTo(this.el, 'start_match', { ...params })
-    this.handleEvent('start_match', (startMatchDetails) => {
-      this.unmountComponent = mount(FrobotBrainCode)(
-        this.el.id,
-        this.opts({ ...startMatchDetails })
-      )
-    })
   },
 
   cancelSimulation(params) {
     this.pushEventTo(this.el, 'cancel_match', params)
-    this.handleEvent('cancel_match', (cancelMatchDetails) => {
-      this.unmountComponent = mount(FrobotBrainCode)(
-        this.el.id,
-        this.opts({ ...cancelMatchDetails })
-      )
-    })
   },
 
   changeProtobot(params) {
