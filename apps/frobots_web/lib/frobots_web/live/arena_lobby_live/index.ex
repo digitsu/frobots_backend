@@ -184,6 +184,14 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
      })}
   end
 
+  def handle_event("start_match_redirect", %{}, socket) do
+    {:noreply,
+     socket
+     |> push_event(:redirecttomatch, %{
+       match_id: socket.assigns.match.id
+     })}
+  end
+
   # add additional handle param events as needed to handle button clicks etc
   @impl Phoenix.LiveView
   def handle_params(_, _, socket) do

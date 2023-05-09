@@ -41,7 +41,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   end
 
   def handle_event("react.fetch_match_details", %{}, socket) do
-    %{match: match, user_id: user_id, s3_base_url: s3_base_url} = socket.assigns
+    %{match: match, user_id: user_id, s3_base_url: s3_base_url, arena: arena} = socket.assigns
 
     {:noreply,
      push_event(socket, "react.return_match_details", %{
@@ -51,13 +51,15 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
          "description" => match.description,
          "title" => match.title,
          "timer" => match.timer,
+         "type" => match.type,
          "max_player_frobot" => match.max_player_frobot,
          "min_player_frobot" => match.min_player_frobot,
          "match_time" => match.match_time
        },
        "user_id" => match.user_id,
        "current_user_id" => user_id,
-       "s3_base_url" => s3_base_url
+       "s3_base_url" => s3_base_url,
+       "arena" => arena
      })}
   end
 
@@ -92,7 +94,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
 
     {:noreply,
      socket
-     |> push_event(:match, %{
+     |> push_event(:arena_event, %{
        id: assigns.match_id,
        match_details: matchDetails,
        s3_base_url: s3_base_url,

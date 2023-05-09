@@ -23,7 +23,9 @@ export default (props) => {
           )
         )}
       </Grid>
-      {match_results.length === 0 && <Typography>No Results for this Match</Typography>}
+      {match_results.length === 0 && (
+        <Typography>No Results for this Match</Typography>
+      )}
     </Box>
   )
 }

@@ -3,7 +3,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   use FrobotsWeb, :live_view
   require Logger
 
-  alias Frobots.{Assets, Accounts, Events}
+  alias Frobots.{Assets, Accounts, Events, Api}
   alias FrobotsWeb.Simulator
 
   @impl Phoenix.LiveView
@@ -126,7 +126,16 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     ## Request Match & Join Match ID Channel
     assigns = socket.assigns()
     {:ok, match_id} = Simulator.request_match(assigns.simulator)
-    {:noreply, socket |> assign(:match_id, match_id) |> push_event(:match, %{id: match_id})}
+    s3_base_url = Api.get_s3_base_url()
+
+    {:noreply,
+     socket
+     |> assign(:match_id, match_id)
+     |> push_event(:match, %{
+       id: match_id,
+       s3_base_url: s3_base_url,
+       match_details: %{type: "simulation"}
+     })}
   end
 
   # move to arena_liveview

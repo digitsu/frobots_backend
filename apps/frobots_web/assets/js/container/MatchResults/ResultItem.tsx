@@ -22,17 +22,20 @@ export default ({
           width={80}
         />
         <Box>
-          <Typography variant='subtitle1'>{frobot.name}</Typography>
+          <Typography variant="subtitle1">{frobot.name}</Typography>
           <Typography>{user_name}</Typography>
           <Typography>XP: {frobot.xp}</Typography>
         </Box>
         <Box>
-          <Typography variant='body2'>Health: {health}%</Typography>
-          <Typography variant='body2'>XP Earned: +{xp_earned}</Typography>
-          <Typography variant='body2'>Kills: {kills}</Typography>
+          <Typography variant="body2">Health: {health}%</Typography>
+          <Typography variant="body2">XP Earned: +{xp_earned}</Typography>
+          <Typography variant="body2">Kills: {kills}</Typography>
         </Box>
         <Box>
-          <Typography variant='caption' color={winner.includes(frobot.id) ? '#00AB55' : '#FF0000'}>
+          <Typography
+            variant="caption"
+            color={winner.includes(frobot.id) ? '#00AB55' : '#FF0000'}
+          >
             {winner.includes(frobot.id) ? 'Winner' : 'Lost'}
           </Typography>
         </Box>
