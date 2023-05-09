@@ -9,6 +9,7 @@ import {
   Button,
   Autocomplete,
   TextField,
+  Chip,
 } from '@mui/material'
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
@@ -38,7 +39,7 @@ export default (props: any) => {
   const [isSelectedProtobot, setIsSelectedProtobot] = useState(false)
   const [isRequestedMatch, setIsRequestedMatch] = useState(false)
   const [isSimulationStarted, setIsSimulationStarted] = useState(false)
-
+  const [opponents, setOpponents] = useState([])
   const templateFrobots =
     templates?.map(({ name, id }, index) => ({
       label: name,
@@ -126,12 +127,20 @@ export default (props: any) => {
     setIsSelectedProtobot(false)
   }
 
-  const handleChangeOpponent = (event, option) => {
-    if (option.id) {
-      changeProtobot({ protobot_id: option.id })
+  const handleChangeOpponent = (_event, option) => {
+    if (option?.length >= 1) {
+      const ids = option.map(({ id }) => id)
+      changeProtobot({ protobot_ids: ids })
       setIsSelectedProtobot(true)
+      setOpponents(option)
+    } else {
+      setOpponents([])
+      setIsSelectedProtobot(false)
     }
   }
+  const filteredOptions = templateFrobots.filter(
+    (option) => !opponents.map(({ id }) => id).includes(option.id)
+  )
 
   return !isRequestedMatch ? (
     <Box mt={5}>
@@ -154,7 +163,7 @@ export default (props: any) => {
               width={'100%'}
               px={2.5}
             >
-              <Box>
+              <Box flex={5}>
                 <Tabs
                   value={tabIndex}
                   onChange={handleChange}
@@ -177,13 +186,14 @@ export default (props: any) => {
                   />
                 </Tabs>
               </Box>
-              <Box display={'flex'}>
+              <Box display={'flex'} flex={6} mb={1} alignItems={'center'}>
                 {isOwnFrobot && (
                   <Button
                     variant="outlined"
                     color="inherit"
                     size="small"
                     onClick={saveConfig}
+                    sx={{ flex: 1 }}
                   >
                     Save
                   </Button>
@@ -193,9 +203,22 @@ export default (props: any) => {
                     pl: 1,
                     pr: 1,
                     width: 200,
+                    flex: isSelectedProtobot ? 3 : 5,
                   }}
+                  multiple
+                  key={'opponents'}
                   onChange={handleChangeOpponent}
-                  options={templateFrobots}
+                  options={filteredOptions}
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <div key={index} style={{ display: 'inline-block' }}>
+                        <Chip
+                          label={option.label}
+                          {...getTagProps({ index })}
+                        />
+                      </div>
+                    ))
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -213,6 +236,7 @@ export default (props: any) => {
                     color="inherit"
                     size="small"
                     onClick={handleRequestMatch}
+                    sx={{ flex: 1 }}
                   >
                     Request Simulation
                   </Button>

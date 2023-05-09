@@ -1,19 +1,32 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box } from '@mui/material'
+import { useDispatch } from 'react-redux'
 import SlideBarGrid from '../FrobotDetails/SlideBarGrid'
 import AttachedEquipments from './AttachedEquipments'
 import AvailableEquipments from './AvailableEquipments'
+import { frobotEquipmentActions } from '../../redux/slices/frobotEquipment'
 
 export default (props: any) => {
+  const dispatch = useDispatch()
   const {
-    frobotDetails,
     currentUser,
+    frobotDetails,
     s3_base_url,
-    availableEquipments,
+    frobotEquipments,
     userFrobots,
+    equipmentInventory,
   } = props
+  const { setCurrentEquipment, setActiveEquipmentKey } = frobotEquipmentActions
   const isOwnedFrobot = frobotDetails.user_id === currentUser.id
   const frobotId = frobotDetails.frobot_id
+
+  useEffect(() => {
+    const currentEquipment = equipmentInventory.length
+      ? equipmentInventory[0]
+      : frobotEquipments[0]
+    dispatch(setCurrentEquipment(currentEquipment))
+    dispatch(setActiveEquipmentKey(currentEquipment.equiment_key))
+  })
 
   return (
     <Box display={'flex'} width={'100%'} sx={{ pb: 2, pr: 5 }}>
@@ -34,24 +47,14 @@ export default (props: any) => {
         }}
       >
         <AvailableEquipments
-          availableEquipments={[
-            ...availableEquipments.cannons,
-            ...availableEquipments.missiles,
-            ...availableEquipments.scanners,
-            ...availableEquipments.xframes,
-          ]}
+          availableEquipments={equipmentInventory}
           isOwnedFrobot={isOwnedFrobot}
           frobotId={frobotId}
           imageBaseUrl={s3_base_url}
         />
 
         <AttachedEquipments
-          equipments={[
-            frobotDetails.xframe_inst,
-            ...frobotDetails.cannon_inst,
-            ...frobotDetails.scanner_inst,
-            ...frobotDetails.missile_inst,
-          ]}
+          equipments={frobotEquipments}
           isOwnedFrobot={isOwnedFrobot}
           frobotId={frobotId}
           imageBaseUrl={s3_base_url}

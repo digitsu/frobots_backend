@@ -7,14 +7,19 @@ import ChooseArena from './ChooseArena'
 import SlotManagement from './SlotManagement'
 
 export default (props: any) => {
-  const { templates, userFrobots, s3_base_url } = props
+  const { templates, userFrobots, s3_base_url, arenas } = props
   const dispatch = useDispatch()
-  const { activeStep } = useSelector((store: any) => store.createMatch)
+  const { activeStep, mapSelected } = useSelector(
+    (store: any) => store.createMatch
+  )
   const { incrementStep, decrementStep, setProtobots, setUserFrobots } =
     createMatchActions
   const steps = [
     { label: 'Step 1', component: <CreateMatchDetails /> },
-    { label: 'Step 2', component: <ChooseArena /> },
+    {
+      label: 'Step 2',
+      component: <ChooseArena arenas={arenas} s3_base_url={s3_base_url} />,
+    },
     {
       label: 'Step 3',
       component: (
@@ -25,6 +30,7 @@ export default (props: any) => {
       ),
     },
   ]
+  const isNextDisabled = activeStep === 1 && mapSelected === null
   useEffect(() => {
     dispatch(setProtobots(templates))
     dispatch(setUserFrobots(userFrobots))
@@ -110,6 +116,7 @@ export default (props: any) => {
                     ? 'visible'
                     : 'hidden',
               }}
+              disabled={isNextDisabled}
             >
               Next
             </Button>

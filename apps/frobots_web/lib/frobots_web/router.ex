@@ -118,6 +118,7 @@ defmodule FrobotsWeb.Router do
     live "/teams", TeamLive.Index, :index
     live "/matches", MatchLive.Index, :index
     live "/docs", DocsLive.Index, :index
+    live "/blogs", NewsAndUpdatesLive.Index, :index
     live "/profile", UserProfileLive.Index, :index
 
     live "/admin", AdminLive.Index, :index
@@ -127,6 +128,8 @@ defmodule FrobotsWeb.Router do
     live "/arena/:match_status/matches", ArenaMatchesLive.Index, :index
     live "/arena/create", ArenaCreateMatchLive.Index, :index
     live "/arena/:match_id", ArenaLobbyLive.Index, :index
+    live "/arena/:match_id/results", MatchResultsLive.Index, :index
+    live "/arena/match/simulation", ArenaMatchSimulationLive.Index, :index
 
     # manage users
     live "/users", UsersLive.Index, :index
@@ -136,9 +139,9 @@ defmodule FrobotsWeb.Router do
     live "/garage", GarageFrobotsListLive.Index, :index
     live "/garage/create", GarageFrobotCreateLive.Index, :index
     live "/garage/frobot", GarageFrobotsDetailsLive.Index, :index
-    live "/garage/frobot/equipments", GarageFrobotEquipmentsLive.Index, :index
     live "/garage/frobot/braincode", FrobotBraincodeLive.Index, :index
     live "/garage/frobot/equipment_bay", FrobotEquipmentBayLive.Index, :index
+    live "/garage/frobot/edit", FrobotDetailsEditLive.Index, :index
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update

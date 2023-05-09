@@ -39,14 +39,17 @@ defmodule Frobots.Agents.WinnersBucket do
   def update_item(username, winner, participants, occurences, points) do
     latest_points =
       case occurences do
+        1 ->
+          10
+
         2 ->
           points / 2
 
         3 ->
-          points / 2
+          points / 4
 
-        4 ->
-          1
+          4 -
+            1
 
         _ ->
           0
@@ -62,7 +65,7 @@ defmodule Frobots.Agents.WinnersBucket do
             "frobot_id" => winner,
             "frobots" => participants,
             "occurences" => occurences,
-            "points" => x["points"] + latest_points
+            "points" => x["points"] + trunc(latest_points)
           }
         else
           x

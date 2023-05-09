@@ -10,14 +10,14 @@ defmodule FrobotsWeb.HomeLive.Index do
 
     # gets battlelogs info and stores in agent for further processing for player and leaderboard entries
     # this data should really come from db
-    Events.prep_leaderboard_entries()
+    # Events.prep_leaderboard_entries()
 
     {:ok,
      socket
      |> assign(:username, get_user_name(current_user))
      |> assign(:frobots, Assets.list_user_frobots(current_user))
      |> assign(:current_user, current_user)
-     |> assign(:featured_frobots, get_featured_frobots())
+     |> assign(:featured_frobots, Assets.list_template_frobots())
      |> assign(:current_user_stats, UserStats.get_user_stats(current_user))
      |> assign(
        :current_user_ranking_details,
@@ -38,35 +38,6 @@ defmodule FrobotsWeb.HomeLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-  end
-
-  defp get_featured_frobots() do
-    [
-      %{
-        "id" => 1,
-        "name" => "X-tron",
-        "xp" => "65700 xp",
-        "image_path" => "images/frobots/1.png"
-      },
-      %{
-        "id" => 2,
-        "name" => "New Horizon",
-        "xp" => "65700 xp",
-        "image_path" => "images/frobots/2.png"
-      },
-      %{
-        "id" => 3,
-        "name" => "Golden Rainbow",
-        "xp" => "65700 xp",
-        "image_path" => "images/frobots/3.png"
-      },
-      %{
-        "id" => 4,
-        "name" => "Steel Bully",
-        "xp" => "65700 xp",
-        "image_path" => "images/frobots/4.png"
-      }
-    ]
   end
 
   def get_blog_posts() do
@@ -103,19 +74,50 @@ defmodule FrobotsWeb.HomeLive.Index do
        "frobot_leaderboard_stats" => socket.assigns.frobot_leaderboard_stats,
        "player_leaderboard_stats" => socket.assigns.player_leaderboard_stats,
        "globalStats" => socket.assigns.global_stats,
-       "blogPosts" => socket.assigns.blog_posts,
-       "featuredFrobots" => socket.assigns.featured_frobots,
+       "featuredFrobots" => extract_frobots(socket.assigns.featured_frobots),
        "playerStats" => %{
          "frobots_count" => currentUserStatus.frobots_count,
          "matches_participated" => currentUserStatus.matches_participated,
          "total_xp" => currentUserStatus.total_xp,
          "upcoming_matches" => currentUserStatus.upcoming_matches
        },
-       "s3_base_url" => socket.assigns.s3_base_url
+       "s3_base_url" => socket.assigns.s3_base_url,
+       "latestBlogPost" => List.first(socket.assigns.blog_posts)
      })}
   end
 
   def get_user_name(current_user) do
     current_user.name || List.first(String.split(current_user.email, "@"))
+  end
+
+  def extract_frobots(frobots) do
+    Enum.map(
+      frobots,
+      fn %{
+           id: id,
+           name: name,
+           class: class,
+           xp: xp,
+           avatar: avatar,
+           bio: bio,
+           pixellated_img: pixellated_img,
+           user_id: user_id,
+           inserted_at: inserted_at,
+           updated_at: updated_at
+         } ->
+        %{
+          id: id,
+          name: name,
+          class: class,
+          xp: xp,
+          avatar: avatar,
+          bio: bio,
+          pixellated_img: pixellated_img,
+          user_id: user_id,
+          inserted_at: inserted_at,
+          updated_at: updated_at
+        }
+      end
+    )
   end
 end

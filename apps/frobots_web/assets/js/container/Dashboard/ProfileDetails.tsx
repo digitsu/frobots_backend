@@ -26,6 +26,10 @@ export default (props: ProfileDetailsProps) => {
     window.location.href = `/profile`
   }
 
+  const getRanking = (rank: number) => {
+    return rank === 0 ? 'Not Ranked' : `# ${rank}`
+  }
+
   return (
     <Card>
       <Box p={3} height={240}>
@@ -47,7 +51,7 @@ export default (props: ProfileDetailsProps) => {
                     :
                   </Typography>
                   <Typography flex={2} variant="caption">
-                    # {ranking_details?.rank || 0}
+                    {getRanking(ranking_details?.rank || 0)}
                   </Typography>
                 </Box>
                 <Box

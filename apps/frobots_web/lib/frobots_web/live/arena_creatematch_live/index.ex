@@ -54,11 +54,14 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
     userFrobots =
       extract_frobot_details(Assets.get_available_user_frobots(socket.assigns.current_user.id))
 
+    arenas = Api.list_arena()
+
     {:noreply,
      push_event(socket, "react.return_create_match_details", %{
        "s3_base_url" => socket.assigns.s3_base_url,
        "templates" => templateFrobots,
-       "userFrobots" => userFrobots
+       "userFrobots" => userFrobots,
+       "arenas" => arenas
      })}
   end
 

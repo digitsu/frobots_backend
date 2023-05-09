@@ -5,6 +5,8 @@ import LobbySlotContainer from './LobbySlotContainer'
 import LobbySlotDetails from './LobbySlotDetails'
 import { arenaLobbyActions } from '../../redux/slices/arenaLobbySlice'
 import { useDispatch } from 'react-redux'
+import { formatCounterTime, slotMapper } from '../../utils/util'
+
 export default (props) => {
   const {
     match,
@@ -14,78 +16,56 @@ export default (props) => {
     current_user_id,
     s3_base_url,
     user_id,
+    time_left,
   } = props
   const dispatch = useDispatch()
   const isHost = user_id === current_user_id
-  const { setSlots, setProtobots, setUserFrobots, setS3BaseUrl } =
-    arenaLobbyActions
+  const {
+    setSlots,
+    setProtobots,
+    setUserFrobots,
+    setS3BaseUrl,
+    setCountdownTimer,
+  } = arenaLobbyActions
   const {
     title,
     description,
     min_player_frobot,
     max_player_frobot,
-    timer,
     slots,
+    arena,
+    status
   } = match
-  const slotInfo = slots.map((slot) => {
-    const slotType = slot.status?.toLowerCase()
-    const slotImage = {
-      open: '/images/frobot.svg',
-      closed: '/images/grey_frobot.svg',
-      host: '/images/red_frobot.svg',
-      player: '/images/red_frobot.svg',
-      protobot: '/images/yellow_frobot.svg',
-      done: '/images/grey_frobot.svg',
-    }
-    if (slotType === 'open' || slotType === 'closed') {
-      return {
-        id: slot?.id,
-        type: slot.status.toLowerCase(),
-        url: slotImage[slotType],
-        name: slotType === 'open' ? 'Open' : 'Closed',
-        slotDetails: slot.frobot,
-        current_user_id,
-        frobot_user_id: slot.frobot_user_id,
-      }
-    } else if (slotType === 'done' && slot?.frobot === null) {
-      return {
-        id: slot?.id,
-        type: slot.status.toLowerCase(),
-        url: slotImage[slotType],
-        name: 'Unoccupied',
-        slotDetails: slot.frobot,
-        current_user_id,
-        frobot_user_id: slot.frobot_user_id,
-      }
-    } else {
-      const isHostFrobot = slot?.frobot_user_id === user_id
-      const frobotLabel = isHostFrobot
-        ? `Host: ${slot.frobot?.name || ' '}`
-        : `Player ${slot?.frobot_user_id || ' '}: ${slot.frobot?.name || ' '}`
-      const name =
-        slot?.slot_type?.toLowerCase() === 'protobot'
-          ? `NPC : ${slot.frobot?.name || ' '}`
-          : frobotLabel
-      return {
-        id: slot?.id,
-        type: slot.status.toLowerCase(),
-        url: slotImage[slot?.slot_type],
-        name,
-        slotDetails: slot.frobot,
-        current_user_id,
-        frobot_user_id: slot.frobot_user_id,
-      }
-    }
-  })
-  const sortedSlots = slotInfo.sort((a, b) => a.id - b.id)
+  const sortedSlots = slotMapper(slots, current_user_id, user_id, s3_base_url)
   useEffect(() => {
     dispatch(setSlots(sortedSlots))
+    dispatch(setCountdownTimer(formatCounterTime(time_left)))
   }, [])
   useEffect(() => {
     dispatch(setProtobots(templates))
     dispatch(setUserFrobots(frobots))
     dispatch(setS3BaseUrl(s3_base_url))
   }, [templates, frobots, s3_base_url])
+
+  window.addEventListener(`phx:updatedmatchlist`, (e) => {
+    const updated_matches = slotMapper(
+      e.detail.match,
+      current_user_id,
+      user_id,
+      s3_base_url
+    )
+    const frobots = e.detail.frobots
+    dispatch(setUserFrobots(frobots))
+    dispatch(setSlots(updated_matches))
+  })
+
+  const matchActionHandler = () => {
+    if(status === 'done'){
+      window.location.href = `/arena/${match.id}/results`
+    }
+  }
+    
+  
   return (
     <Box width={'90%'} m={'auto'}>
       <Grid container spacing={2}>
@@ -96,18 +76,19 @@ export default (props) => {
             alignItems={'center'}
             justifyContent={'flex-end'}
           >
-            <Button sx={{ px: 3 }} variant="contained">
-              {isHost ? 'Start Match' : 'Join'}
+            <Button sx={{ px: 3 }} variant="contained" onClick={matchActionHandler}>
+              {status !== 'done' ?(isHost ? 'Start Match' : 'Join') : 'View Results'}
             </Button>
           </Box>
         </Grid>
-        <Grid item md={12} lg={12} sm={12}>
+        <Grid item md={12} lg={12} sm={12} xs={12}>
           <LobbyDetails
             title={title}
             description={description}
             min_player_frobot={min_player_frobot}
             max_player_frobot={max_player_frobot}
-            timer={timer}
+            arena={arena}
+            matchTime={match?.match_time}
           />
         </Grid>
         <Grid item md={12} lg={6} sm={12}>
@@ -119,4 +100,4 @@ export default (props) => {
       </Grid>
     </Box>
   )
-}
+  }

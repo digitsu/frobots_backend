@@ -59,6 +59,16 @@ defmodule FrobotsWeb.MatchChannel do
     end
   end
 
+  def start_cluster(match_id) when is_binary(match_id) do
+    case Fubars.Match.Supervisor.init_match(
+           match_id,
+           self()
+         ) do
+      {:ok, match_name} -> {:ok, match_id, match_name}
+      {:error, err} -> {:error, "Could not start the services: " <> err}
+    end
+  end
+
   def start_cluster(match_id) when is_integer(match_id) do
     case Fubars.Match.Supervisor.init_match(
            Integer.to_string(match_id),
@@ -66,6 +76,27 @@ defmodule FrobotsWeb.MatchChannel do
          ) do
       {:ok, match_name} -> {:ok, match_id, match_name}
       {:error, err} -> {:error, "Could not start the services: " <> err}
+    end
+  end
+
+  def start_match(match_id) do
+    case start_cluster(match_id) do
+      {:ok, match_id, match_name} ->
+        # now pass the match service the frobots and the match_template
+        case Fubars.Match.start_match(
+               via_tuple(match_name),
+               match_id
+             ) do
+          {:ok, frobots_map} ->
+            {:ok, frobots_map}
+
+          {:error, error} ->
+            {:error, error}
+        end
+
+      {:error, error} ->
+        Logger.error(error)
+        {:error, error}
     end
   end
 

@@ -13,6 +13,7 @@ export default {
   updateSlot({ type, payload }) {
     this.pushEventTo(this.el, type, payload)
   },
+
   destroyed() {
     if (!this.unmountComponent) {
       console.error('Component unmounted')

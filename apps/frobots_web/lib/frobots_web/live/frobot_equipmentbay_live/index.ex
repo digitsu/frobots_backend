@@ -15,25 +15,36 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
        |> push_redirect(to: "/garage")}
     end
 
-    case Api.get_frobot_details(String.to_integer(frobot_id)) do
-      {:ok, frobot_details} ->
+    case Assets.get_frobot(String.to_integer(frobot_id)) do
+      nil ->
         {:ok,
          socket
-         |> assign(:user, current_user)
-         |> assign(:frobot, frobot_details)
-         |> assign(:user_frobots, Assets.list_user_frobots(current_user))
-         |> assign(:equipments, Equipment.list_frobot_unattached_equipments(frobot_id))
-         |> assign(:s3_base_url, Api.get_s3_base_url())
-         |> assign(
-           :current_user_ranking_details,
-           Events.get_current_user_ranking_details(current_user)
-         )}
+         |> put_flash(:error, "Not found any frobot with id #{frobot_id}")
+         |> push_redirect(to: "/garage")}
 
-      {:error, message} ->
-        {:ok,
-         socket
-         |> put_flash(:error, message)
-         |> push_redirect(to: "/garage/frobot?id=#{frobot_id}")}
+      frobot ->
+        if frobot.user_id !== current_user.id do
+          {:ok,
+           socket
+           |> put_flash(:error, "You don't have access to view this frobot")
+           |> push_redirect(to: "/garage")}
+        else
+          {:ok,
+           socket
+           |> assign(:frobot, frobot)
+           |> assign(:user, current_user)
+           |> assign(:s3_base_url, Api.get_s3_base_url())
+           |> assign(:user_frobots, Assets.list_user_frobots(current_user))
+           |> assign(:attached_equipments, Equipment.list_frobot_equipment_details(frobot_id))
+           |> assign(
+             :user_equipment_inventory,
+             Equipment.list_user_equipment_details(current_user.id)
+           )
+           |> assign(
+             :current_user_ranking_details,
+             Events.get_current_user_ranking_details(current_user)
+           )}
+        end
     end
   end
 
@@ -49,7 +60,14 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
 
   @impl true
   def handle_event("react.fetch_frobot_equipment_bay_details", _params, socket) do
-    current_user = socket.assigns.user
+    %{
+      user: current_user,
+      frobot: frobot,
+      s3_base_url: s3_base_url,
+      user_frobots: user_frobots,
+      attached_equipments: attached_equipments,
+      user_equipment_inventory: user_equipment_inventory
+    } = socket.assigns
 
     currentUser = %{
       "id" => current_user.id,
@@ -59,13 +77,36 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
       "sparks" => current_user.sparks
     }
 
+    frobotDetails = %{
+      "frobot_id" => frobot.id,
+      "name" => frobot.name,
+      "bio" => frobot.bio,
+      "pixellated_img" => frobot.pixellated_img,
+      "user_id" => frobot.user_id,
+      "avatar" => frobot.avatar,
+      "class" => frobot.class,
+      "inserted_at" => frobot.inserted_at
+    }
+
+    equipment_inventory = _format_equipment_details(user_equipment_inventory)
+
+    available_equipments =
+      if Enum.empty?(equipment_inventory) do
+        []
+      else
+        Enum.filter(equipment_inventory, fn equipment ->
+          equipment["frobot_id"] !== frobot.id
+        end)
+      end
+
     {:noreply,
      push_event(socket, "react.return_frobot_equipment_bay_details", %{
-       "frobotDetails" => socket.assigns.frobot,
-       "availableEquipments" => socket.assigns.equipments,
        "currentUser" => currentUser,
-       "userFrobots" => extract_frobots(socket.assigns.user_frobots),
-       "s3_base_url" => socket.assigns.s3_base_url
+       "frobotDetails" => frobotDetails,
+       "s3_base_url" => s3_base_url,
+       "userFrobots" => extract_frobots(user_frobots),
+       "frobotEquipments" => _format_equipment_details(attached_equipments),
+       "equipmentInventory" => available_equipments
      })}
   end
 
@@ -103,5 +144,23 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
         }
       end
     )
+  end
+
+  defp _format_equipment_details(equipments) do
+    final_equipments =
+      equipments["xframes"] ++
+        equipments["cannons"] ++ equipments["scanners"] ++ equipments["missiles"]
+
+    if Enum.empty?(final_equipments) do
+      []
+    else
+      Enum.map(final_equipments, fn equipment ->
+        Map.put(
+          equipment,
+          "equiment_key",
+          "#{equipment["id"]}-#{equipment["equipment_class"]}-#{equipment["equipment_type"]}"
+        )
+      end)
+    end
   end
 end

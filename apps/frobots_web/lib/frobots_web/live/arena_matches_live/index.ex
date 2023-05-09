@@ -2,7 +2,6 @@ defmodule FrobotsWeb.ArenaMatchesLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
 
-  alias FrobotsWeb.Router.Helpers, as: Routes
   alias Frobots.Api
   alias Frobots.Events
   alias Frobots.Accounts
@@ -15,54 +14,52 @@ defmodule FrobotsWeb.ArenaMatchesLive.Index do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     if connected?(socket), do: Events.subscribe()
 
-    %{
-      entries: matches,
-      page_number: page,
-      page_size: page_size,
-      total_entries: total_entries,
-      total_pages: total_pages
-    } = Api.list_paginated_matches([match_status: match_status], [], [:user], desc: :inserted_at)
+    matches = Api.list_matches_by_status_for_user(match_status, current_user.id)
+
+    display_status_name =
+      if match_status === "pending" do
+        "Upcoming"
+      else
+        if match_status === "running" do
+          "Live"
+        else
+          "Completed"
+        end
+      end
 
     {:ok,
      socket
      |> assign(:current_user, current_user)
-     |> assign(:matches, matches)
+     |> assign(:joined_matches, Map.get(matches, "joined", []))
+     |> assign(:host_matches, Map.get(matches, "host", []))
+     |> assign(:watch_matches, Map.get(matches, "watch", []))
+     |> assign(:arenas, Api.list_arena())
      |> assign(:match_status, match_status)
-     |> assign(:page, page)
-     |> assign(:page_size, page_size)
-     |> assign(:total_entries, total_entries)
-     |> assign(:total_pages, total_pages)
-     |> assign(:live_matches, Events.count_matches_by_status(:running))
-     |> assign(:completed_matches, Events.count_matches_by_status(:done))
-     |> assign(:upcoming_matches, Events.count_matches_by_status(:pending))}
+     |> assign(:display_status_name, display_status_name)
+     |> assign(
+       :current_user_ranking_details,
+       Events.get_current_user_ranking_details(current_user)
+     )
+     |> assign(:s3_base_url, Api.get_s3_base_url())}
   end
 
   # add additional handle param events as needed to handle button clicks etc
   @impl Phoenix.LiveView
-  def handle_params(%{"page" => page} = params, _, socket) do
-    match_status = params["match_status"]
-
-    %{
-      entries: matches,
-      page_number: page,
-      page_size: page_size,
-      total_entries: total_entries,
-      total_pages: total_pages
-    } =
-      Api.list_paginated_matches([match_status: match_status], [page: page], [:user],
-        desc: :inserted_at
-      )
-
-    {:noreply,
-     socket
-     |> assign(:matches, matches)
-     |> assign(:page, page)
-     |> assign(:page_size, page_size)
-     |> assign(:total_entries, total_entries)
-     |> assign(:total_pages, total_pages)}
-  end
 
   def handle_params(_, _, socket) do
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("react.fetch_arena_matches", _params, socket) do
+    {:noreply,
+     push_event(socket, "react.return_arena_matches", %{
+       "arenas" => socket.assigns.arenas,
+       "match_status" => socket.assigns.match_status,
+       "joined_matches" => socket.assigns.joined_matches,
+       "host_matches" => socket.assigns.host_matches,
+       "watch_matches" => socket.assigns.watch_matches,
+       "s3_base_url" => socket.assigns.s3_base_url
+     })}
   end
 end

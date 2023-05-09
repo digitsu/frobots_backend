@@ -4,10 +4,11 @@ import { Grid, Card, Box, Typography, Button } from '@mui/material'
 interface AdvancedDetailsProps {
   frobotDetails: any
   isOwnedFrobot: boolean
+  xFrameDetails: any
 }
 
 export default (props: AdvancedDetailsProps) => {
-  const { frobotDetails, isOwnedFrobot } = props
+  const { frobotDetails, isOwnedFrobot, xFrameDetails } = props
 
   const handleOpenBrainCode = () => {
     window.location.href = `/garage/frobot/braincode?id=${frobotDetails.frobot_id}`
@@ -105,17 +106,17 @@ export default (props: AdvancedDetailsProps) => {
                     {frobotDetails.ranking || 0}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {frobotDetails?.xframe_inst?.health || 0} /{' '}
-                    {frobotDetails?.xframe_inst?.max_health || 0}
+                    {xFrameDetails?.health || 0} /{' '}
+                    {xFrameDetails?.max_health || 0}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {frobotDetails?.xframe_inst?.max_speed_ms || 0}
+                    {xFrameDetails?.max_speed_ms || 0}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {frobotDetails?.xframe_inst?.turn_speed || 0}
+                    {xFrameDetails?.turn_speed || 0}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {frobotDetails?.xframe_inst?.max_throttle || 0}
+                    {xFrameDetails?.max_throttle || 0}
                   </Typography>
                 </Box>
               </Grid>

@@ -6,17 +6,24 @@ defmodule FrobotsWeb.AdminLive.Index do
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
-    bucket = Api.get_s3_bucket_name()
-    base_url = Api.get_s3_base_url()
 
-    files = get_files(bucket, base_url)
+    cond do
+      Accounts.user_is_admin?(current_user) ->
+        bucket = Api.get_s3_bucket_name()
+        base_url = Api.get_s3_base_url()
 
-    {:ok,
-     socket
-     |> assign(:current_user, current_user)
-     |> assign(:uploaded_files, [])
-     |> assign(:image_files, files)
-     |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 2)}
+        files = get_files(bucket, base_url)
+
+        {:ok,
+         socket
+         |> assign(:current_user, current_user)
+         |> assign(:uploaded_files, [])
+         |> assign(:image_files, files)
+         |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 2)}
+
+      true ->
+        {:error, "Not authorized"}
+    end
   end
 
   def get_files(bucket, base_url) do
