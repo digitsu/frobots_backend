@@ -72,7 +72,7 @@ defmodule FrobotsWeb.GarageLive.Index do
 
     ## TODO :: SEND Frobots DATA so the game will be constructed based on that
     case Simulator.start_match(assigns.simulator, match_data) do
-      {:ok, frobots_data} ->
+      {:ok, frobots_data, _match_id} ->
         {:noreply,
          socket
          |> assign(:frobots_data, frobots_data)}
