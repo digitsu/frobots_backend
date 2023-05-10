@@ -70,11 +70,15 @@ defmodule FrobotsWeb.Simulator do
   def handle_call({:start_match, match_data}, _from, state) do
     case Channel.push(state.lobby_channel, "start_match", match_data) do
       {:ok, %{"frobots_map" => frobots_map, "match_id" => match_id}} ->
-        {:ok, _response, match_channel} =
-          Channel.join(state.socket, "match:#{match_id}")
+        {:ok, _response, match_channel} = Channel.join(state.socket, "match:#{match_id}")
 
         wait_for_socket(state.socket)
-        {:reply, {:ok, frobots_map, match_id}, state |> Map.put(:frobots_map, frobots_map) |> Map.put(:match_id, match_id) |> Map.put(:match_channel, match_channel)}
+
+        {:reply, {:ok, frobots_map, match_id},
+         state
+         |> Map.put(:frobots_map, frobots_map)
+         |> Map.put(:match_id, match_id)
+         |> Map.put(:match_channel, match_channel)}
 
       {:error, error} ->
         {:reply, {:error, error}, state}
@@ -84,8 +88,7 @@ defmodule FrobotsWeb.Simulator do
   @impl true
   def handle_call({:request_match}, _from, state) do
     {:ok, match_id} = Channel.push(state.lobby_channel, "request_match", %{})
-    {:reply, {:ok, match_id},
-     state |> Map.put(:match_id, match_id) }
+    {:reply, {:ok, match_id}, state |> Map.put(:match_id, match_id)}
   end
 
   @impl true
