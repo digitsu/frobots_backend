@@ -16,23 +16,14 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
 
     arena = Enum.find(arenas, fn %{id: arena_id} -> arena_id == match.arena_id end)
 
-    match_channel =
-      if connected?(socket) do
-        topic = "match:match#{match_id}"
-        IO.inspect("SUBSCRIBING TO #{topic}")
-        Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
-        # socket_opts = Application.get_env(:phoenix_client, :socket)
-        # {:ok, phoenix_socket} = Socket.start_link(socket_opts)
-        # wait_for_socket(phoenix_socket)
-        # {:ok, _response, match_channel} = Channel.join(phoenix_socket, "match:" <> match_id)
-        # wait_for_socket(phoenix_socket)
-
-        # match_channel |> IO.inspect(label: "Match Channel INSIDE CONNECTED")
-      end
+    if connected?(socket) do
+      topic = "match:match#{match_id}"
+      IO.inspect("SUBSCRIBING TO #{topic}")
+      Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
+    end
 
     {:ok,
      socket
-     |> assign(:match_channel, match_channel)
      |> assign(:match, match)
      |> assign(:arena, arena)
      |> assign(:match_id, match_id)

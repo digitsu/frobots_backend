@@ -185,9 +185,10 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     }
 
     case Simulator.start_match(socket.assigns.simulator, match_data) do
-      {:ok, frobots_data} ->
+      {:ok, frobots_data, match_id} ->
         {:noreply,
          socket
+         |> assign(:match_id, match_id)
          |> assign(:frobots_data, frobots_data)}
 
       {:error, error} ->
@@ -210,6 +211,12 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       socket
       |> assign(:protobot_ids, protobot_ids)
 
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info(msg, socket) do
+    IO.inspect(msg)
     {:noreply, socket}
   end
 

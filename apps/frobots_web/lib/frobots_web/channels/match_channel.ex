@@ -114,7 +114,7 @@ defmodule FrobotsWeb.MatchChannel do
                match_id
              ) do
           {:ok, frobots_map} ->
-            {:reply, {:ok, frobots_map}, socket}
+            {:reply, {:ok, %{"frobots_map" => frobots_map, "match_id" => match_id}}, socket}
 
           {:error, error} ->
             {:reply, {:error, error}, socket}
