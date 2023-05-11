@@ -14,6 +14,7 @@ import {
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
+import { Game } from '../../game'
 
 const BlankBlocklyCode =
   '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
@@ -35,6 +36,7 @@ export default (props: any) => {
   const [blocklyCode, setBlocklyCode] = useState(
     frobot.blockly_code || BlankBlocklyCode
   )
+  const [gameState, setGameState] = useState({ event: () => {} })
   const [blocklyLuaCode, setBlocklyLuaCode] = useState('')
   const [isSelectedProtobot, setIsSelectedProtobot] = useState(false)
   const [isRequestedMatch, setIsRequestedMatch] = useState(false)
@@ -102,21 +104,13 @@ export default (props: any) => {
     updateFrobotCode(requestBody)
   }
 
-  const handleRequestMatch = () => {
-    if (!luaCode || luaCode.trim() === '') {
-      return alert("Match can't be requested with empty lua code")
-    } else {
-      requestMatch()
-      setIsRequestedMatch(true)
-    }
-  }
-
   const handleRunSimulation = () => {
     if (!luaCode || luaCode.trim() === '') {
       return alert("Simulation can't be started with empty lua code")
     } else {
       runSimulation({ frobot_id: frobot.id })
       setIsSimulationStarted(true)
+      setIsRequestedMatch(true)
     }
   }
 
@@ -125,6 +119,7 @@ export default (props: any) => {
     setIsRequestedMatch(false)
     setIsSimulationStarted(false)
     setIsSelectedProtobot(false)
+    gameState.destroy()
   }
 
   const handleChangeOpponent = (_event, option) => {
@@ -142,6 +137,28 @@ export default (props: any) => {
     (option) => !opponents.map(({ id }) => id).includes(option.id)
   )
 
+  useEffect(() => {
+    if (isSimulationStarted) {
+      const game = new Game([], [], {
+        match_id: null,
+        match_details: { type: 'simulation', id: frobot?.id },
+        arena: null,
+        s3_base_url: '',
+      })
+      game.header()
+      if (game !== null) {
+        //  const frobots = slots.filter((slot) => slot.frobot !== null)
+        // for(let i=0;i<frobots.length ; i++){
+        //     game.event({args : [frobots[i].frobot.name,[200,300]], event : 'create_tank'})
+        // }
+        setGameState(game)
+      }
+    }
+  }, [isSimulationStarted])
+
+  window.addEventListener(`phx:simulator_event`, (e) => {
+    gameState.event(e.detail)
+  })
   return !isRequestedMatch ? (
     <Box mt={5}>
       <>
@@ -235,10 +252,10 @@ export default (props: any) => {
                     variant="outlined"
                     color="inherit"
                     size="small"
-                    onClick={handleRequestMatch}
+                    onClick={handleRunSimulation}
                     sx={{ flex: 1 }}
                   >
-                    Request Simulation
+                    Simulate
                   </Button>
                 )}{' '}
               </Box>
@@ -273,31 +290,19 @@ export default (props: any) => {
     </Box>
   ) : (
     <Box display="flex" justifyContent="flex-end" pb={5}>
-      {isRequestedMatch && !isSimulationStarted ? (
-        <Box pr={1}>
-          <Button
-            variant="outlined"
-            color="inherit"
-            size="small"
-            onClick={handleRunSimulation}
-          >
-            Run Simulation
-          </Button>
-        </Box>
-      ) : (
-        <></>
-      )}
       {isSimulationStarted && (
-        <Box>
-          <Button
-            variant="outlined"
-            color="inherit"
-            size="small"
-            onClick={handleCancelSimulation}
-          >
-            Cancel Simulation
-          </Button>
-        </Box>
+        <>
+          <Box>
+            <Button
+              variant="outlined"
+              color="inherit"
+              size="small"
+              onClick={handleCancelSimulation}
+            >
+              Cancel Simulation
+            </Button>
+          </Box>
+        </>
       )}
     </Box>
   )
