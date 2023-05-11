@@ -1,19 +1,42 @@
 import React from 'react'
-import { Box, Grid, Typography, Button, Card } from '@mui/material'
+import { Box, Grid, Typography, Button } from '@mui/material'
 import { useSelector } from 'react-redux'
 
 interface EquipmentDetailsPrpos {
   isOwnedFrobot: boolean
   imageBaseUrl: string
+  attachEquipment: any
+  detachEquipment: any
+  redeployEquipment: any
+  currentFrobotId: string
 }
 
 export default (props: EquipmentDetailsPrpos) => {
-  const { imageBaseUrl } = props
-  const { equipment } = useSelector((store: any) => store.frobotEquipment)
+  const {
+    imageBaseUrl,
+    attachEquipment,
+    currentFrobotId,
+    detachEquipment,
+    redeployEquipment,
+  } = props
+  const { activeEquipment } = useSelector((store: any) => store.frobotEquipment)
+
+  const handleOnClickAttach = () =>
+    attachEquipment({
+      id: activeEquipment.id,
+      equipment_class: activeEquipment.equipment_class,
+      frobot_id: currentFrobotId,
+    })
+
+  const handleOnClickDetach = () => detachEquipment(activeEquipment)
+
+  const handleOnClickRedeploy = (equipment: any) => {
+    redeployEquipment({ ...equipment, current_frobot_id: currentFrobotId })
+  }
 
   return (
     <>
-      {equipment ? (
+      {activeEquipment ? (
         <Grid container spacing={2}>
           <Grid item xs={12} sm={12} md={6} lg={6}>
             <Box position={'relative'} width={'100%'} m={'auto'}>
@@ -21,7 +44,7 @@ export default (props: EquipmentDetailsPrpos) => {
                 component={'img'}
                 height={'100%'}
                 borderRadius={'16px'}
-                src={`${imageBaseUrl}${equipment.image}`}
+                src={`${imageBaseUrl}${activeEquipment.image}`}
               ></Box>
             </Box>
           </Grid>
@@ -34,10 +57,11 @@ export default (props: EquipmentDetailsPrpos) => {
                       sx={{ pl: 4, pt: 2, mt: 1, mb: 2 }}
                       variant={'h5'}
                     >
-                      {equipment.equipment_class} {equipment.equipment_type}
+                      {activeEquipment.equipment_class}{' '}
+                      {activeEquipment.equipment_type}
                     </Typography>
                     <Box>
-                      {equipment.equipment_class === 'cannon' && (
+                      {activeEquipment.equipment_class === 'cannon' && (
                         <Box>
                           <Grid container spacing={2} pl={4}>
                             <Grid item xs={4}>
@@ -69,13 +93,13 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Grid pr={4} item xs={7}>
                               <Box textAlign="right">
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.magazine_size}
+                                  {activeEquipment?.magazine_size}
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.reload_time}
+                                  {activeEquipment?.reload_time} s
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.rate_of_fire}
+                                  {activeEquipment?.rate_of_fire} s
                                 </Typography>
                               </Box>
                             </Grid>
@@ -83,7 +107,7 @@ export default (props: EquipmentDetailsPrpos) => {
                         </Box>
                       )}
 
-                      {equipment.equipment_class === 'scanner' && (
+                      {activeEquipment.equipment_class === 'scanner' && (
                         <Box>
                           <Grid container spacing={2} pl={4}>
                             <Grid item xs={4}>
@@ -109,10 +133,10 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Grid pr={4} item xs={7}>
                               <Box textAlign="right">
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.max_range}
+                                  {activeEquipment?.max_range} m
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.resolution}
+                                  +/- {activeEquipment?.resolution} deg
                                 </Typography>
                               </Box>
                             </Grid>
@@ -120,7 +144,7 @@ export default (props: EquipmentDetailsPrpos) => {
                         </Box>
                       )}
 
-                      {equipment.equipment_class === 'missile' && (
+                      {activeEquipment.equipment_class === 'missile' && (
                         <Box>
                           <Grid container spacing={2} pl={4}>
                             <Grid item xs={4}>
@@ -164,19 +188,20 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Grid item xs={7}>
                               <Box textAlign="right">
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.range}
+                                  {activeEquipment?.range} m
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.speed}
+                                  {activeEquipment?.speed} m
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.damage_direct}
+                                  {activeEquipment?.damage_direct} [range,
+                                  damage]
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.damage_far}
+                                  {activeEquipment?.damage_far}
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.damage_near}
+                                  {activeEquipment?.damage_near}
                                 </Typography>
                               </Box>
                             </Grid>
@@ -184,7 +209,7 @@ export default (props: EquipmentDetailsPrpos) => {
                         </Box>
                       )}
 
-                      {equipment.equipment_class === 'xframe' && (
+                      {activeEquipment.equipment_class === 'xframe' && (
                         <Box>
                           <Grid container spacing={2} pl={4}>
                             <Grid item xs={4}>
@@ -228,19 +253,19 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Grid item xs={7}>
                               <Box textAlign="right">
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.accel_speed_mss}
+                                  {activeEquipment?.accel_speed_mss} m/s^2
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.max_speed_ms}
+                                  {activeEquipment?.max_speed_ms} m/s
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.max_throttle}
+                                  {activeEquipment?.max_throttle}
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.turn_speed}
+                                  {activeEquipment?.turn_speed}%
                                 </Typography>
                                 <Typography my={2} variant="subtitle2">
-                                  {equipment?.max_health}
+                                  {activeEquipment?.max_health} ap
                                 </Typography>
                               </Box>
                             </Grid>
@@ -248,7 +273,23 @@ export default (props: EquipmentDetailsPrpos) => {
                         </Box>
                       )}
                       <Box mt={3}>
-                        {equipment.frobot_id ? (
+                        {activeEquipment.frobot_id &&
+                          activeEquipment.frobot_id !== currentFrobotId && (
+                            <Button
+                              variant="text"
+                              fullWidth
+                              sx={{
+                                backgroundColor: '#00AB552F',
+                                color: '#5BE584',
+                                width: '100%',
+                              }}
+                              onClick={handleOnClickRedeploy}
+                            >
+                              Redeploy
+                            </Button>
+                          )}
+
+                        {!activeEquipment.frobot_id && (
                           <Button
                             variant="text"
                             fullWidth
@@ -257,20 +298,24 @@ export default (props: EquipmentDetailsPrpos) => {
                               color: '#5BE584',
                               width: '100%',
                             }}
-                          >
-                            Redeploy
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="text"
-                            fullWidth
-                            sx={{
-                              backgroundColor: '#00AB552F',
-                              color: '#5BE584',
-                              width: '100%',
-                            }}
+                            onClick={handleOnClickAttach}
                           >
                             Attach
+                          </Button>
+                        )}
+
+                        {activeEquipment.frobot_id === currentFrobotId && (
+                          <Button
+                            variant="text"
+                            fullWidth
+                            sx={{
+                              backgroundColor: '#1C4250',
+                              color: '#5BE584',
+                              width: '100%',
+                            }}
+                            onClick={handleOnClickDetach}
+                          >
+                            Detach
                           </Button>
                         )}
                       </Box>
@@ -291,7 +336,7 @@ export default (props: EquipmentDetailsPrpos) => {
           justifyContent="center"
         >
           <Typography variant={'subtitle1'}>
-            {"Equipment's not available for this bot !"}
+            {'Please choose an equipment to see the details !'}
           </Typography>
         </Box>
       )}

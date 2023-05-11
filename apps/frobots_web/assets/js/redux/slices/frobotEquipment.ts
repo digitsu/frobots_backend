@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  equipment: {},
+  activeEquipment: {},
   activeEquipmentKey: '',
 }
 
@@ -10,7 +10,7 @@ const equipmentSlice = createSlice({
   initialState,
   reducers: {
     setCurrentEquipment: (state, action) => {
-      state.equipment = action.payload
+      state.activeEquipment = action.payload
     },
     setActiveEquipmentKey: (state, action) => {
       state.activeEquipmentKey = action.payload

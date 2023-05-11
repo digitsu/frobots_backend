@@ -8,9 +8,13 @@ import { frobotEquipmentActions } from '../../redux/slices/frobotEquipment'
 
 interface AvailableEquipmentPrpos {
   availableEquipments: any[]
+  equipmentsCount: number
   isOwnedFrobot: boolean
   frobotId: string
   imageBaseUrl: string
+  attachEquipment: any
+  detachEquipment: any
+  redeployEquipment: any
 }
 
 const itemsPerPage = 6
@@ -22,18 +26,27 @@ export default (props: AvailableEquipmentPrpos) => {
     (store: any) => store.frobotEquipment
   )
 
-  const { availableEquipments, imageBaseUrl, isOwnedFrobot } = props
-  const equipmentLength = availableEquipments.length
+  const {
+    availableEquipments,
+    equipmentsCount,
+    imageBaseUrl,
+    isOwnedFrobot,
+    attachEquipment,
+    frobotId,
+    detachEquipment,
+    redeployEquipment,
+  } = props
+
   const [leftOffset, setOffsetLeft] = useState(0)
   const [rightOffset, setOffsetRight] = useState(
-    equipmentLength > itemsPerPage ? itemsPerPage : equipmentLength
+    equipmentsCount > itemsPerPage ? itemsPerPage : equipmentsCount
   )
   const [currentSection, setCurrentSection] = useState(1)
-  const totalSections = Math.ceil(availableEquipments?.length / itemsPerPage)
+  const totalSections = Math.ceil(equipmentsCount / itemsPerPage)
 
   const switchEquipment = (equipment: any) => {
     dispatch(setCurrentEquipment(equipment))
-    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+    dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
 
   const handleClickPrevious = () => {
@@ -41,41 +54,45 @@ export default (props: AvailableEquipmentPrpos) => {
       return
     }
 
-    setCurrentSection(currentSection - 1)
     const newLeftOffset =
       leftOffset - itemsPerPage < 0 ? 0 : leftOffset - itemsPerPage
-    setOffsetLeft(newLeftOffset)
-    setOffsetRight(
-      rightOffset - itemsPerPage < itemsPerPage
-        ? itemsPerPage
-        : rightOffset - itemsPerPage
-    )
-
     const equipment = availableEquipments[newLeftOffset]
+
+    setCurrentSection(currentSection - 1)
+    setOffsetRight(leftOffset)
+    setOffsetLeft(newLeftOffset)
     dispatch(setCurrentEquipment(equipment))
-    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+    dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
 
   const handleClickNext = () => {
-    if (rightOffset >= equipmentLength) {
+    if (rightOffset >= equipmentsCount) {
       return
     }
 
-    setCurrentSection(currentSection + 1)
-    const newLeftOffset =
-      leftOffset + itemsPerPage > equipmentLength
-        ? leftOffset
-        : leftOffset + itemsPerPage
-    setOffsetLeft(newLeftOffset)
-    setOffsetRight(
-      rightOffset + itemsPerPage > equipmentLength
-        ? equipmentLength
+    const newRightOffset =
+      rightOffset + itemsPerPage > equipmentsCount
+        ? equipmentsCount
         : rightOffset + itemsPerPage
-    )
-
     const equipment = availableEquipments[rightOffset]
+
+    setCurrentSection(currentSection + 1)
+    setOffsetLeft(rightOffset)
+    setOffsetRight(newRightOffset)
     dispatch(setCurrentEquipment(equipment))
-    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+    dispatch(setActiveEquipmentKey(equipment?.equipment_key))
+  }
+
+  const handleOnClickAttach = (equipment) => {
+    attachEquipment({
+      id: equipment.id,
+      equipment_class: equipment.equipment_class,
+      frobot_id: frobotId,
+    })
+  }
+
+  const handleOnClickRedeploy = (equipment: any) => {
+    redeployEquipment({ ...equipment, current_frobot_id: frobotId })
   }
 
   return (
@@ -86,6 +103,10 @@ export default (props: AvailableEquipmentPrpos) => {
             <EquipmentDetails
               imageBaseUrl={imageBaseUrl}
               isOwnedFrobot={isOwnedFrobot}
+              attachEquipment={attachEquipment}
+              currentFrobotId={frobotId}
+              detachEquipment={detachEquipment}
+              redeployEquipment={redeployEquipment}
             />
           </Card>
         </Grid>
@@ -152,10 +173,9 @@ export default (props: AvailableEquipmentPrpos) => {
                         src={`${imageBaseUrl}${equipment.image}`}
                         sx={{
                           cursor: 'pointer',
-                          p: 1,
                           borderRadius: '6px',
                           border:
-                            equipment.equiment_key === activeEquipmentKey
+                            equipment.equipment_key === activeEquipmentKey
                               ? '4px solid #00AB55'
                               : 'none',
                         }}
@@ -177,6 +197,7 @@ export default (props: AvailableEquipmentPrpos) => {
                               backgroundColor: '#ffab0029',
                               width: '100',
                             }}
+                            onClick={() => handleOnClickRedeploy(equipment)}
                           >
                             Redeploy
                           </Button>
@@ -197,6 +218,7 @@ export default (props: AvailableEquipmentPrpos) => {
                               backgroundColor: '#ffab0029',
                               width: '100',
                             }}
+                            onClick={() => handleOnClickAttach(equipment)}
                           >
                             Attach
                           </Button>

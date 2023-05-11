@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import SlideBarGrid from '../FrobotDetails/SlideBarGrid'
 import AttachedEquipments from './AttachedEquipments'
 import AvailableEquipments from './AvailableEquipments'
@@ -15,17 +15,49 @@ export default (props: any) => {
     frobotEquipments,
     userFrobots,
     equipmentInventory,
+    detachEquipment,
+    attachEquipment,
+    redeployEquipment,
   } = props
   const { setCurrentEquipment, setActiveEquipmentKey } = frobotEquipmentActions
   const isOwnedFrobot = frobotDetails.user_id === currentUser.id
   const frobotId = frobotDetails.frobot_id
+  const [attachedEquipments, setAttachedEquipments] = useState(frobotEquipments)
+  const [availableEquipments, setAvailableEquipments] =
+    useState(equipmentInventory)
+  const { activeEquipmentKey } = useSelector(
+    (store: any) => store.frobotEquipment
+  )
 
   useEffect(() => {
     const currentEquipment = equipmentInventory.length
       ? equipmentInventory[0]
       : frobotEquipments[0]
     dispatch(setCurrentEquipment(currentEquipment))
-    dispatch(setActiveEquipmentKey(currentEquipment.equiment_key))
+    dispatch(setActiveEquipmentKey(currentEquipment.equipment_key))
+    setAttachedEquipments(frobotEquipments)
+    setAvailableEquipments(equipmentInventory)
+  }, [])
+
+  window.addEventListener(`phx:frobot_equipments_updated`, (e: any) => {
+    setAttachedEquipments(e.detail.frobotEquipments)
+    setAvailableEquipments(e.detail.equipmentInventory)
+
+    if (activeEquipmentKey) {
+      const currentEquipment = [
+        ...e.detail.equipmentInventory,
+        ...e.detail.frobotEquipments,
+      ].find((equipment: any) => equipment.equipment_key === activeEquipmentKey)
+
+      dispatch(setCurrentEquipment(currentEquipment))
+      dispatch(setActiveEquipmentKey(currentEquipment.equipment_key))
+    } else {
+      const currentEquipment = e.detail.equipmentInventory.length
+        ? e.detail.equipmentInventory[0]
+        : e.detail.frobotEquipments[0]
+      dispatch(setCurrentEquipment(currentEquipment))
+      dispatch(setActiveEquipmentKey(currentEquipment.equipment_key))
+    }
   })
 
   return (
@@ -47,17 +79,23 @@ export default (props: any) => {
         }}
       >
         <AvailableEquipments
-          availableEquipments={equipmentInventory}
+          availableEquipments={availableEquipments}
+          equipmentsCount={availableEquipments.length}
           isOwnedFrobot={isOwnedFrobot}
           frobotId={frobotId}
           imageBaseUrl={s3_base_url}
+          attachEquipment={attachEquipment}
+          detachEquipment={detachEquipment}
+          redeployEquipment={redeployEquipment}
         />
 
         <AttachedEquipments
-          equipments={frobotEquipments}
+          equipments={attachedEquipments}
+          equipmentsCount={attachedEquipments.length}
           isOwnedFrobot={isOwnedFrobot}
           frobotId={frobotId}
           imageBaseUrl={s3_base_url}
+          detachEquipment={detachEquipment}
         />
       </Box>
     </Box>

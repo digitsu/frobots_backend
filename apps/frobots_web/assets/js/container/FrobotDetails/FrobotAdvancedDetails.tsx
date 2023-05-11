@@ -100,20 +100,20 @@ export default (props: AdvancedDetailsProps) => {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid pr={3} item xs={7}>
+              <Grid pr={3} item xs={7} m={'auto'}>
                 <Box textAlign="right">
                   <Typography my={2.2} variant="subtitle2">
                     {frobotDetails.ranking || 0}
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
                     {xFrameDetails?.health || 0} /{' '}
-                    {xFrameDetails?.max_health || 0}
+                    {xFrameDetails?.max_health || 0} ap
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {xFrameDetails?.max_speed_ms || 0}
+                    {xFrameDetails?.max_speed_ms || 0} m/s
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
-                    {xFrameDetails?.turn_speed || 0}
+                    {xFrameDetails?.turn_speed || 0}%
                   </Typography>
                   <Typography my={2.2} variant="subtitle2">
                     {xFrameDetails?.max_throttle || 0}
