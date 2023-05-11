@@ -100,7 +100,11 @@ export class Game {
       var [x, y] = args[1]
       var heading = args[2]
       var speed = args[3]
-      this.moveTank(tank_name, x, y, heading, speed)
+      if (this.tanks.map(({ name }) => name).includes(tank_name)) {
+        this.moveTank(tank_name, x, y, heading, speed)
+      } else {
+        this.createTank(tank_name, x, y, heading, speed)
+      }
     } else if (event == 'kill_tank') {
       var tank_name = args[0]
       var tank_index = this.tanks.findIndex((tank) => tank.name == tank_name)
@@ -207,11 +211,13 @@ export class Game {
       }, 5000)
       if (this.match_details.type === 'real') {
         window.location.href = `/arena/${this.match_details.id}/results`
+      } else {
+        window.location.href = `/garage/frobot/braincode?id=${this.match_details?.id}`
       }
     } else {
       console.log('Unhandled Payload Received -->', payload)
     }
-    this.stats.text = this.get_stats(this.tanks)
+    this.stats.text = this.get_stats()
   }
 
   createTank(tank_name, x, y, heading, speed) {
@@ -296,10 +302,10 @@ export class Game {
     this.app.stage.addChild(missile_sprite)
   }
 
-  get_stats(tanks) {
+  get_stats() {
     let stats = ''
-    for (let i = 0; i < tanks.length; i++) {
-      stats += get_stat(tanks[i]) + '\n'
+    for (let i = 0; i < this.tanks.length; i++) {
+      stats += get_stat(this.tanks[i]) + '\n'
     }
     return stats
   }

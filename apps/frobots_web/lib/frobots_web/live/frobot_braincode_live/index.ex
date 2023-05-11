@@ -186,10 +186,17 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
 
     case Simulator.start_match(socket.assigns.simulator, match_data) do
       {:ok, frobots_data, match_id} ->
+        topic = "match:match#{match_id}"
+        IO.inspect("SUBSCRIBING TO #{topic}")
+        Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
+
         {:noreply,
          socket
          |> assign(:match_id, match_id)
-         |> assign(:frobots_data, frobots_data)}
+         |> assign(:frobots_data, frobots_data)
+         |> push_event(:simulator_event, %{
+           id: match_id
+         })}
 
       {:error, error} ->
         Logger.error("Error in starting the match #{error}")
@@ -212,6 +219,88 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       |> assign(:protobot_ids, protobot_ids)
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:fsm_state, _frobot, _fsm_state} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:fsm_debug, _frobot, _fsm_state} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:scan, _frobot, _deg, _res} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:damage, _frobot, _damage} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:create_tank, _frobot, _loc} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:move_tank, _frobot, _loc, _heading, _speed} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:kill_tank, _frobot} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:create_miss, _m_name, _loc} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:move_miss, _m_name, _loc} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:kill_miss, _m_name} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:game_over, _winners} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  def encode_event(evt_tuple) do
+    [evt | args] = Tuple.to_list(evt_tuple)
+    %{event: evt, args: args}
   end
 
   @impl true
