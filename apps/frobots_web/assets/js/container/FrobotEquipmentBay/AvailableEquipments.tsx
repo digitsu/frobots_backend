@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Grid, Typography, Button, Card } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -48,6 +48,29 @@ export default (props: AvailableEquipmentPrpos) => {
     dispatch(setCurrentEquipment(equipment))
     dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
+
+  useEffect(() => {
+    let newCurrentSection = currentSection
+    let newLeftOffset = leftOffset
+    let newRightOffset = rightOffset
+
+    if (currentSection > totalSections) {
+      newCurrentSection = currentSection - 1
+      newLeftOffset =
+        leftOffset - itemsPerPage < 0 ? 0 : leftOffset - itemsPerPage
+
+      newRightOffset = leftOffset
+    } else if (currentSection === totalSections) {
+      newRightOffset =
+        rightOffset + itemsPerPage > equipmentsCount
+          ? equipmentsCount
+          : rightOffset + itemsPerPage
+    }
+
+    setCurrentSection(newCurrentSection)
+    setOffsetLeft(newLeftOffset)
+    setOffsetRight(newRightOffset)
+  }, [equipmentsCount])
 
   const handleClickPrevious = () => {
     if (leftOffset <= 0) {
