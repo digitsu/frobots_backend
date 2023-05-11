@@ -355,16 +355,22 @@ defmodule Frobots.Equipment do
   """
 
   def equip_xframe(xframe_inst_id, frobot_id) do
-    result =
-      equip_xframe_changeset(xframe_inst_id, frobot_id)
-      |> Repo.update()
+    case xframe_equipped?(frobot_id) do
+      true ->
+        {:error, "xframe already equipped"}
 
-    case result do
-      {:ok, _xframe_inst} ->
-        {:ok, "frobot equipped with xframe instance"}
+      false ->
+        result =
+          equip_xframe_changeset(xframe_inst_id, frobot_id)
+          |> Repo.update()
 
-      {:error, %Ecto.Changeset{}} ->
-        {:error, "There was an error in equip_xframe"}
+        case result do
+          {:ok, _xframe_inst} ->
+            {:ok, "frobot equipped with xframe instance"}
+
+          {:error, %Ecto.Changeset{}} ->
+            {:error, "There was an error in equip_xframe"}
+        end
     end
   end
 
@@ -684,6 +690,15 @@ defmodule Frobots.Equipment do
           "turn_speed" => Map.get(xframe_inst, :turn_speed)
         }
       end)
+    end
+  end
+
+  defp xframe_equipped?(frobot_id) do
+    xframe = from(xfi in XframeInst, where: xfi.frobot_id == ^frobot_id) |> Repo.all()
+
+    case xframe do
+      [] -> false
+      _ -> true
     end
   end
 end
