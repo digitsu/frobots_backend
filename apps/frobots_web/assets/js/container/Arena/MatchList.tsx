@@ -198,10 +198,11 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                       justifyContent: 'space-around',
                     }}
                   >
-                    {match.status !== 'completed' ? (
+                    {match.status !== 'done' ? (
                       <>
                         <Button
                           disabled={match.status === 'cancelled'}
+                          href={`/arena/${match.id}`}
                           variant="outlined"
                           size="medium"
                           sx={{
@@ -240,6 +241,8 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                           Replay
                         </Button>
                         <Button
+                          target={'_blank'}
+                          href={`/arena/${match.id}/results`}
                           disabled={match.status === 'cancelled'}
                           variant="outlined"
                           size="medium"
