@@ -298,15 +298,15 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
      |> push_event(:simulator_event, encode_event(msg))}
   end
 
-  def encode_event(evt_tuple) do
-    [evt | args] = Tuple.to_list(evt_tuple)
-    %{event: evt, args: args}
-  end
-
   @impl true
   def handle_info(msg, socket) do
     IO.inspect(msg)
     {:noreply, socket}
+  end
+
+  def encode_event(evt_tuple) do
+    [evt | args] = Tuple.to_list(evt_tuple)
+    %{event: evt, args: args}
   end
 
   defp extract_frobot_details(frobots) do
