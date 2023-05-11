@@ -71,10 +71,10 @@ export default ({ equipment }: EquipmentDetailProps) => {
                     {equipment?.magazine_size}
                   </Typography>
                   <Typography my={1.2} variant="subtitle2">
-                    {equipment?.reload_time}
+                    {equipment?.reload_time} s
                   </Typography>
                   <Typography my={1.2} variant="subtitle2">
-                    {equipment?.rate_of_fire}
+                    {equipment?.rate_of_fire} s
                   </Typography>
                 </Box>
               </Grid>
@@ -107,10 +107,10 @@ export default ({ equipment }: EquipmentDetailProps) => {
               <Grid pr={4} item xs={7}>
                 <Box textAlign="right">
                   <Typography my={1.2} variant="subtitle2">
-                    {equipment?.max_range}
+                    {equipment?.max_range} m
                   </Typography>
                   <Typography my={1.2} variant="subtitle2">
-                    {equipment?.resolution}
+                    +/- {equipment?.resolution} deg
                   </Typography>
                 </Box>
               </Grid>
@@ -161,13 +161,13 @@ export default ({ equipment }: EquipmentDetailProps) => {
               <Grid pr={4} item xs={7}>
                 <Box textAlign="right">
                   <Typography my={1.2} variant="subtitle2">
-                    {equipment?.range}
+                    {equipment?.range} m
                   </Typography>
                   <Typography my={1.2} variant="subtitle2">
-                    {equipment?.speed}
+                    {equipment?.speed} m
                   </Typography>
                   <Typography my={1.2} variant="subtitle2">
-                    {equipment?.damage_direct}
+                    {equipment?.damage_direct} [range, damage]
                   </Typography>
                   <Typography my={1.2} variant="subtitle2">
                     {equipment?.damage_far}
