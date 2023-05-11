@@ -30,15 +30,33 @@ export default (props: AttachedEquipmentsProps) => {
     isOwnedFrobot,
   } = props
   const [leftOffset, setOffsetLeft] = useState(0)
-  const [rightOffset, setOffsetRight] = useState(itemsPerPage)
+  const [rightOffset, setOffsetRight] = useState(
+    equipmentsCount > itemsPerPage ? itemsPerPage : equipmentsCount
+  )
   const [currentSection, setCurrentSection] = useState(1)
-  const [totalSections, setTotalSections] = useState(0)
+  const totalSections = Math.ceil(equipmentsCount / itemsPerPage)
 
   useEffect(() => {
-    setOffsetRight(
-      equipmentsCount > itemsPerPage ? itemsPerPage : equipmentsCount
-    )
-    setTotalSections(Math.ceil(equipmentsCount / itemsPerPage))
+    let newCurrentSection = currentSection
+    let newLeftOffset = leftOffset
+    let newRightOffset = rightOffset
+
+    if (currentSection > totalSections) {
+      newCurrentSection = currentSection - 1
+      newLeftOffset =
+        leftOffset - itemsPerPage < 0 ? 0 : leftOffset - itemsPerPage
+
+      newRightOffset = leftOffset
+    } else if (currentSection === totalSections) {
+      newRightOffset =
+        rightOffset + itemsPerPage > equipmentsCount
+          ? equipmentsCount
+          : rightOffset + itemsPerPage
+    }
+
+    setCurrentSection(newCurrentSection)
+    setOffsetLeft(newLeftOffset)
+    setOffsetRight(newRightOffset)
   }, [equipmentsCount])
 
   const switchEquipment = (equipment: any) => {

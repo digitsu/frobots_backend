@@ -185,7 +185,7 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
 
     case Equipment.dequip_part(equipment_id, equipment_class) do
       {:ok, _equipment_inst} ->
-        get_latest_info(current_frobot_id, "frobot redeployed part instance", socket)
+        get_latest_info(current_frobot_id, "Successfully redeployed part instance", socket)
 
       {:error, reason} ->
         {:noreply, socket |> put_flash(:error, reason)}
