@@ -61,6 +61,7 @@ export default (props: EquipmentDetailsPrpos) => {
                   width={'100%'}
                   position={'absolute'}
                   top={'10%'}
+                  textTransform={'capitalize'}
                 >
                   {activeEquipment.equipment_class}{' '}
                   {activeEquipment.equipment_type}
