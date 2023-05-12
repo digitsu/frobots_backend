@@ -14,7 +14,9 @@ import {
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
-import { Game } from '../../game'
+import { Game, tankHead } from '../../game_updated'
+import { Tank } from '../../tank'
+import * as PIXI from 'pixi.js'
 
 const BlankBlocklyCode =
   '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
@@ -24,7 +26,6 @@ export default (props: any) => {
     frobot,
     currentUser,
     updateFrobotCode,
-    requestMatch,
     runSimulation,
     cancelSimulation,
     changeProtobot,
@@ -119,6 +120,7 @@ export default (props: any) => {
     setIsRequestedMatch(false)
     setIsSimulationStarted(false)
     setIsSelectedProtobot(false)
+    setOpponents([])
     gameState.destroy()
   }
 
@@ -138,27 +140,47 @@ export default (props: any) => {
   )
 
   useEffect(() => {
+    const opponentFrobots = opponents.map(({ label: name, id }) => ({
+      name,
+      id,
+    }))
+    const tanks = [...opponentFrobots, frobot].map(({ name, id }) => {
+      var asset = tankHead(`${name}#${id}`)
+      var tank_sprite = new PIXI.Sprite(
+        PIXI.Texture.from('/images/' + asset + '.png')
+      )
+      tank_sprite.x = 0
+      tank_sprite.y = 0
+      return {
+        Tank: new Tank(`${name}#${id}`, 748, 610, 219, 100, tank_sprite),
+        asset: { [`${name}#${id}`]: asset },
+      }
+    })
+
     if (isSimulationStarted) {
-      const game = new Game([], [], {
-        match_id: null,
-        match_details: { type: 'simulation', id: frobot?.id },
-        arena: null,
-        s3_base_url: '',
-      })
+      const game = new Game(
+        tanks.map(({ Tank }) => Tank),
+        [],
+        {
+          match_id: null,
+          match_details: { type: 'simulation', id: frobot?.id },
+          arena: null,
+          s3_base_url: '',
+          tankIcons: tanks.map(({ asset }) => asset),
+        }
+      )
       game.header()
       if (game !== null) {
-        //  const frobots = slots.filter((slot) => slot.frobot !== null)
-        // for(let i=0;i<frobots.length ; i++){
-        //     game.event({args : [frobots[i].frobot.name,[200,300]], event : 'create_tank'})
-        // }
         setGameState(game)
       }
     }
   }, [isSimulationStarted])
 
-  window.addEventListener(`phx:simulator_event`, (e) => {
+  const handleGameEvent = (e) => {
     gameState.event(e.detail)
-  })
+  }
+  window.addEventListener(`phx:simulator_event`, handleGameEvent)
+
   return !isRequestedMatch ? (
     <Box mt={5}>
       <>
@@ -292,16 +314,27 @@ export default (props: any) => {
     <Box display="flex" justifyContent="flex-end" pb={5}>
       {isSimulationStarted && (
         <>
-          <Box>
-            <Button
-              variant="outlined"
-              color="inherit"
-              size="small"
-              onClick={handleCancelSimulation}
-            >
-              Cancel Simulation
-            </Button>
-          </Box>
+          <Grid container spacing={1}>
+            <Grid item md={12}>
+              <Box my={2} display={'flex'} justifyContent={'flex-end'}>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  size="small"
+                  onClick={handleCancelSimulation}
+                >
+                  Cancel Simulation
+                </Button>
+              </Box>
+            </Grid>
+            <Grid item sm={12} md={9} lg={9} xl={9}>
+              {' '}
+              <Box id="garage-simulation" />
+            </Grid>
+            <Grid item sm={12} md={3} lg={3} xl={3}>
+              <Box id="game-stats" />
+            </Grid>
+          </Grid>
         </>
       )}
     </Box>

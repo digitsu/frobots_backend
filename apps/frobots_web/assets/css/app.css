@@ -224,7 +224,7 @@ header section {
   margin-top: 2px;
   border-radius: 10px;
   color: #fff;
-  border: 25px solid #323332;
+  border: 25px solid #212B36;
   
 }
 
@@ -312,4 +312,20 @@ header section {
 
 .show {
   display: block;
+}
+
+
+#garage-simulation canvas{
+  width: 100% !important;
+}
+
+#game-stats{
+  overflow:  scroll;
+  height: 100%;
+}
+
+#game-stats canvas{
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 10px;
 }
