@@ -60,7 +60,7 @@
           </div>
       <% end %>
     </header>
-    <div class="inner_content_wrapper">
+    <div class={if @current_user, do: "inner_content_wrapper"}>
       <%= @inner_content %>
     </div>
   </body>
