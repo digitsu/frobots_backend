@@ -1,37 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="csrf-token" content={csrf_token_value()}>
-    <%= live_title_tag assigns[:page_title] || "FrobotsWeb", suffix: assigns[:page_sub_title] || " · Phoenix Framework" %>
-    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
-    <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
-  </head>
-  <body>
-    <header>
-      <%= if @current_user do %>
-          <div class="flex flex-row space-y-3.5 py-4 px-8 items-center justify-between  border-b-2 border-b-gray-800">
-            <p class="w-25 h-8 text-xl font-bold tracking-wider leading-relaxed text-white uppercase">
-              <a href="/home" class="flex items-center">
-                <img src={Routes.static_path(@conn, "/images/frobots-logo.png" )} alt="Frobots" class="w-25 h-14 ml-6">
-              </a>
-            </p>
-            <nav role="navigation">
-              <div class="inline-flex space-x-8 items-center justify-end h-8">
-                <p class="tracking-wider leading-relaxed text-gray-400"><a href="/home">Dashboard</a></p>
-                <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/garage">Garage</a> </p>
-                <p class="tracking-wider leading-relaxed text-gray-400"><a href="/arena">Arena</a></p>
-                <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/docs">Docs</a> </p>
 
-                <%= if @current_user.admin == true do %>
-                <p class="tracking-wider leading-relaxed text-gray-400">  <a href="/admin">Admin</a> </p>
-                <% end %>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content={csrf_token_value()}>
+  <%= live_title_tag assigns[:page_title] || "FrobotsWeb" , suffix: assigns[:page_sub_title] || " · Phoenix Framework"
+    %>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css" )} />
+    <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js" )}></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <%= if @current_user do %>
+      <div class="flex flex-row space-y-3.5 py-4 px-8 items-center justify-between  border-b-2 border-b-gray-800">
+        <p class="w-25 h-8 text-xl font-bold tracking-wider leading-relaxed text-white uppercase">
+          <a href="/home" class="flex items-center">
+            <img src={Routes.static_path(@conn, "/images/frobots-logo.png" )} alt="Frobots" class="w-25 h-14 ml-6">
+          </a>
+        </p>
+        <nav role="navigation">
+          <div class="inline-flex space-x-8 items-center justify-end h-8">
+            <p class="tracking-wider leading-relaxed text-gray-400"><a href="/home">Dashboard</a></p>
+            <p class="tracking-wider leading-relaxed text-gray-400"> <a href="/garage">Garage</a> </p>
+            <p class="tracking-wider leading-relaxed text-gray-400"><a href="/arena">Arena</a></p>
+            <p class="tracking-wider leading-relaxed text-gray-400"> <a href="/docs">Docs</a> </p>
+
+            <%= if @current_user.admin==true do %>
+              <p class="tracking-wider leading-relaxed text-gray-400"> <a href="/admin">Admin</a> </p>
+              <% end %>
 
                 <div class="navbar-user-dropdown tracking-wider leading-relaxed text-gray-400">
-                  <button onclick='document.getElementById("navbar-user-dropdown").classList.toggle("show");' class="navbar-user-dropdown-btn">
+                  <button onclick='document.getElementById("navbar-user-dropdown").classList.toggle("show");'
+                    class="navbar-user-dropdown-btn">
                     <img src={Routes.static_path(@conn, "/images/user-icon.png" )} alt="logo" class="w-15 h-8 mr-6">
                   </button>
                   <div id="navbar-user-dropdown" class="navbar-user-dropdown-content">
@@ -42,7 +46,7 @@
                       <p class="text-md text-gray-400">
                         <%= @current_user.email %>
                       </p>
-                    <hr />
+                      <hr />
                     </div>
                     <div class="navbar-user-dropdown-content-item">
                       <a href="/profile">Profile</a>
@@ -55,13 +59,14 @@
                   </div>
                 </div>
 
-            </div>
-          </nav>
           </div>
+        </nav>
+      </div>
       <% end %>
-    </header>
-    <div class={if @current_user, do: "inner_content_wrapper"}>
-      <%= @inner_content %>
-    </div>
-  </body>
+  </header>
+  <div class={if @current_user, do: "inner_content_wrapper" }>
+    <%= @inner_content %>
+  </div>
+</body>
+
 </html>

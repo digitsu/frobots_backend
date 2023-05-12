@@ -54,6 +54,13 @@ export default (props: AttachedEquipmentsProps) => {
           : rightOffset + itemsPerPage
     }
 
+    if (currentSection === 0) {
+      newCurrentSection = 1
+      newLeftOffset = 0
+      newRightOffset =
+        equipmentsCount > itemsPerPage ? itemsPerPage : equipmentsCount
+    }
+
     setCurrentSection(newCurrentSection)
     setOffsetLeft(newLeftOffset)
     setOffsetRight(newRightOffset)
