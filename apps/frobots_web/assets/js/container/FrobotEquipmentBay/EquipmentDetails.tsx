@@ -61,6 +61,7 @@ export default (props: EquipmentDetailsPrpos) => {
                   width={'100%'}
                   position={'absolute'}
                   top={'10%'}
+                  textTransform={'capitalize'}
                 >
                   {activeEquipment.equipment_class}{' '}
                   {activeEquipment.equipment_type}
@@ -77,263 +78,211 @@ export default (props: EquipmentDetailsPrpos) => {
                   }}
                 >
                   {activeEquipment.equipment_class === 'xframe' && (
-                    <>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Accel Speed
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.accel_speed_mss} m/s^2
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Max Speed
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.max_speed_ms} m/s
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Max Throttle
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.max_throttle}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Turn Speed
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.turn_speed}%
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Max Health
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.max_health} ap
-                        </Typography>
-                      </Box>
-                    </>
+                    <Box>
+                      <Grid container spacing={3} pl={4}>
+                        <Grid item xs={4}>
+                          <Box textAlign="left">
+                            <Typography my={4} variant="subtitle2">
+                              Accel Speed
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Max Speed
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Max Throttle
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Turn Speed
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Max Health
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item>
+                          <Box textAlign="center">
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid pr={4} item xs={7}>
+                          <Box textAlign="right">
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.accel_speed_mss} m/s^2
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.max_speed_ms} m/s
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.max_throttle}
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.turn_speed}%
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.max_health} ap
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </Box>
                   )}
-
                   {activeEquipment.equipment_class === 'cannon' && (
-                    <>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Magazine
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.magazine_size}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Reload
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.reload_time} s
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Rate of Fire
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.rate_of_fire} s
-                        </Typography>
-                      </Box>
-                    </>
+                    <Box>
+                      <Grid container spacing={3} pl={4}>
+                        <Grid item xs={4}>
+                          <Box textAlign="left">
+                            <Typography my={4} variant="subtitle2">
+                              Magazine
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Reload
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Rate of Fire
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item>
+                          <Box textAlign="center">
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid pr={4} item xs={7}>
+                          <Box textAlign="right">
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.magazine_size}
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.reload_time} s
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.rate_of_fire} s
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </Box>
                   )}
-
                   {activeEquipment.equipment_class === 'scanner' && (
-                    <>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Max Range
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.max_range} m
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Resolution
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          +/- {activeEquipment?.resolution} deg
-                        </Typography>
-                      </Box>
-                    </>
+                    <Box>
+                      <Grid container spacing={2} pl={4}>
+                        <Grid item xs={4}>
+                          <Box textAlign="left">
+                            <Typography my={4} variant="subtitle2">
+                              Max Range
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Resolution
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item>
+                          <Box textAlign="center">
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid pr={4} item xs={7}>
+                          <Box textAlign="right">
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.max_range} m
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              +/- {activeEquipment?.resolution} deg
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </Box>
                   )}
-
                   {activeEquipment.equipment_class === 'missile' && (
-                    <>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Range
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.range} m
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Speed
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.speed} m
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Direct Damage
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.damage_direct} [range, damage]
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Far Damage
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.damage_far}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Typography my={2} variant="subtitle2">
-                          Near Damage
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          :
-                        </Typography>
-                        <Typography my={2} variant="subtitle2">
-                          {activeEquipment?.damage_near}
-                        </Typography>
-                      </Box>
-                    </>
+                    <Box>
+                      <Grid container spacing={2} pl={4}>
+                        <Grid item xs={4}>
+                          <Box textAlign="left">
+                            <Typography my={4} variant="subtitle2">
+                              Range
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Speed
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Direct Damage
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Far Damage
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Near Damage
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item>
+                          <Box textAlign="center">
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid pr={4} item xs={7}>
+                          <Box textAlign="right">
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.range} m
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.speed} m
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.damage_direct} [range, damage]
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.damage_far}
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.damage_near}
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </Box>
                   )}
                 </Box>
               </Box>
@@ -344,7 +293,7 @@ export default (props: EquipmentDetailsPrpos) => {
                   px: 4,
                   transform: 'translate(-50%, -50%)',
                   width: '100%',
-                  bottom: 0,
+                  bottom: 10,
                 }}
               >
                 {activeEquipment.frobot_id &&
