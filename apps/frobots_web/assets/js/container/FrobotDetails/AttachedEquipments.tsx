@@ -33,7 +33,7 @@ export default (props: AttachedEquipmentsProps) => {
   }
 
   const switchEquipment = (index: number) => {
-    setCurrentEquipment(equipments[index])
+    setCurrentEquipment(equipments[leftOffset + index])
     setCurrentIndex(index)
   }
 
@@ -194,29 +194,38 @@ export default (props: AttachedEquipmentsProps) => {
               backgroundColor: '#00AB5529',
             }}
           >
-            {equipmentLength !== 0 && (
-              <EquipmentDetails equipment={currentEquipment} />
-            )}
-
-            {isOwnedFrobot && (
+            <Box position={'relative'} height={'100%'}>
+              <Box height={'100%'}>
+                {equipmentLength !== 0 && (
+                  <EquipmentDetails equipment={currentEquipment} />
+                )}
+              </Box>
               <Box
                 sx={{
-                  m: 4,
+                  position: 'absolute',
+                  left: '50%',
+                  px: 4,
+                  transform: 'translate(-50%, -50%)',
+                  width: '100%',
+                  bottom: 10,
                 }}
               >
-                <Button
-                  variant="text"
-                  fullWidth
-                  onClick={handleViewEquipmentBay}
-                  sx={{
-                    backgroundColor: '#00AB552F',
-                    color: '#5BE584',
-                  }}
-                >
-                  View Equipment Bay
-                </Button>
+                {isOwnedFrobot && (
+                  <Button
+                    variant="text"
+                    fullWidth
+                    onClick={handleViewEquipmentBay}
+                    sx={{
+                      width: '100%',
+                      backgroundColor: '#00AB552F',
+                      color: '#5BE584',
+                    }}
+                  >
+                    View Equipment Bay
+                  </Button>
+                )}
               </Box>
-            )}
+            </Box>
           </Grid>
         </Grid>
       </Card>
