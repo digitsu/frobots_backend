@@ -3,7 +3,10 @@ import { Box, Button, Grid, Typography, Card } from '@mui/material'
 
 import { useDispatch } from 'react-redux'
 import { matchSimulationActions } from '../../redux/slices/matchSimulationSlice'
-import { Game } from '../../game'
+import { Game, tankHead } from '../../game_updated'
+import { Tank } from '../../tank'
+import * as PIXI from 'pixi.js'
+
 export default (props: any) => {
   const { match, current_user_id, user_id, s3_base_url, arena, runSimulation } =
     props
@@ -11,6 +14,7 @@ export default (props: any) => {
   const isHost = user_id === current_user_id
   const { setSlots, setS3BaseUrl } = matchSimulationActions
   const [gameState, setGameState] = useState({ event: () => {} })
+  const [isGameStarted, setisGameStarted] = useState(match.status === 'running')
   const {
     title,
     description,
@@ -19,8 +23,9 @@ export default (props: any) => {
     timer,
     slots,
     id,
+    status,
   } = match
-
+  console.log(match.status)
   const slotInfo = slots.map((slot) => {
     const slotType = slot.status?.toLowerCase()
     const slotImage = {
@@ -71,25 +76,50 @@ export default (props: any) => {
       }
     }
   })
+  const showStartMatchButton = isHost && status === 'pending'
 
-  const sortedSlots = slotInfo.sort((a, b) => a.id - b.id)
   useEffect(() => {
-    dispatch(setSlots(sortedSlots))
-    const game = new Game([], [], {
-      match_id: match.id,
-      match_details: match,
-      arena,
-      s3_base_url,
-    })
-    game.header()
-    if (game !== null) {
-      //  const frobots = slots.filter((slot) => slot.frobot !== null)
-      // for(let i=0;i<frobots.length ; i++){
-      //     game.event({args : [frobots[i].frobot.name,[200,300]], event : 'create_tank'})
-      // }
-      setGameState(game)
+    if (showStartMatchButton) {
+      startMatchaHandler()
     }
   }, [])
+
+  useEffect(() => {
+    if (isGameStarted) {
+      const players = slots
+        .filter((frobot) => frobot.frobot !== null)
+        .map((frobot) => ({ name: frobot.frobot.name, id: frobot.frobot_id }))
+      const tanks = [...players].map(({ name, id }) => {
+        var asset = tankHead(`${name}#${id}`)
+        var tank_sprite = new PIXI.Sprite(
+          PIXI.Texture.from('/images/' + asset + '.png')
+        )
+        tank_sprite.x = 0
+        tank_sprite.y = 0
+        tank_sprite.width = 15
+        tank_sprite.height = 15
+        return {
+          Tank: new Tank(`${name}#${id}`, 748, 610, 219, 100, tank_sprite),
+          asset: { [`${name}#${id}`]: asset },
+        }
+      })
+      const game = new Game(
+        tanks.map(({ Tank }) => Tank),
+        [],
+        {
+          match_id: match.id,
+          match_details: match,
+          arena,
+          s3_base_url,
+          tankIcons: tanks.map(({ asset }) => asset),
+        }
+      )
+      game.header()
+      if (game !== null) {
+        setGameState(game)
+      }
+    }
+  }, [isGameStarted])
   useEffect(() => {
     dispatch(setS3BaseUrl(s3_base_url))
   }, [s3_base_url])
@@ -98,32 +128,21 @@ export default (props: any) => {
     gameState.event(e.detail)
   })
 
+  const startMatchaHandler = () => {
+    setisGameStarted(true)
+    runSimulation()
+  }
+
   return (
     <Box width={'90%'} m={'auto'}>
-      <Box my={2}>
-        {isHost && (
-          <Button variant="contained" onClick={runSimulation}>
-            Start Match
-          </Button>
-        )}
-      </Box>
-      <Grid container>
-        <Grid id="game-arena" item md={12} lg={9}></Grid>
-        <Grid item md={12} lg={3}></Grid>
+      <Grid container mt={4}>
+        <Grid item sm={12} md={9} lg={9} xl={9}>
+          <Box id="game-arena" />
+        </Grid>
+        <Grid item sm={12} md={3} lg={3} xl={3}>
+          <Box id="game-stats" />
+        </Grid>
       </Grid>
-      {/* <Grid container spacing={2}>
-          <Grid
-            item
-            md={12}
-            lg={6}
-            sm={12}
-          >
-            <FrobotsListContainer isHost={isHost} />
-          </Grid>
-          <Grid item md={12} lg={6} sm={12} xs={12}>
-            <FrobotDetailsPreview isHost={isHost} updateSlot={undefined} />
-          </Grid>
-        </Grid> */}
     </Box>
   )
 }

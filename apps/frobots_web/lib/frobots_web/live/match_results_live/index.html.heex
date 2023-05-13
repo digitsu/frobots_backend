@@ -22,7 +22,7 @@
           .
         </p>
         <p class="inline-block items-left font-bold text-xs text-400 text-gray-400">
-        <a>
+        <a  href={"/arena/#{@match.id}"}>
           <%= if @match.title do %>
           <%= @match.title %>
         <% else %>
@@ -30,6 +30,12 @@
         <% end %>
       </a>
         </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-400 text-gray-400">
+         Results
+          </p>
       </div>
     </div>
     <div id="match-results" phx-hook="ArenaMatchResults" phx-update="ignore"></div>

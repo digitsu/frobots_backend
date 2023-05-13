@@ -151,6 +151,8 @@ export default (props: any) => {
       )
       tank_sprite.x = 0
       tank_sprite.y = 0
+      tank_sprite.width = 15
+      tank_sprite.height = 15
       return {
         Tank: new Tank(`${name}#${id}`, 748, 610, 219, 100, tank_sprite),
         asset: { [`${name}#${id}`]: asset },
