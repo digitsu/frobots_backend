@@ -16,19 +16,23 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
 
     arena = Enum.find(arenas, fn %{id: arena_id} -> arena_id == match.arena_id end)
 
-    if connected?(socket) do
-      topic = "match:match#{match_id}"
-      IO.inspect("SUBSCRIBING TO #{topic}")
-      Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
-    end
+    if match.status == :done do
+      {:ok, socket |> push_redirect(to: "/arena/#{match_id}/results")}
+    else
+      if connected?(socket) do
+        topic = "match:match#{match_id}"
+        IO.inspect("SUBSCRIBING TO #{topic}")
+        Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
+      end
 
-    {:ok,
-     socket
-     |> assign(:match, match)
-     |> assign(:arena, arena)
-     |> assign(:match_id, match_id)
-     |> assign(:user_id, id)
-     |> assign(:s3_base_url, s3_base_url)}
+      {:ok,
+       socket
+       |> assign(:match, match)
+       |> assign(:arena, arena)
+       |> assign(:match_id, match_id)
+       |> assign(:user_id, id)
+       |> assign(:s3_base_url, s3_base_url)}
+    end
   end
 
   def handle_event("react.fetch_match_details", %{}, socket) do
@@ -45,7 +49,8 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
          "type" => match.type,
          "max_player_frobot" => match.max_player_frobot,
          "min_player_frobot" => match.min_player_frobot,
-         "match_time" => match.match_time
+         "match_time" => match.match_time,
+         "status" => match.status
        },
        "user_id" => match.user_id,
        "current_user_id" => user_id,

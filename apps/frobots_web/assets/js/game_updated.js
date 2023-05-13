@@ -48,7 +48,7 @@ export class Game {
       }
     } else {
       // Url for arena image
-      const bgUrl = s3_base_url + arena.image_url
+      const bgUrl = `/${arena.image_url}`
       //const bgUrl = '/images/arena_default.png'
 
       // adds static bg
@@ -202,10 +202,10 @@ export class Game {
       const statusSection = document.getElementById('game-stats')
       statusSection.appendChild(this.statusView.view)
     } else {
-      const game_arena = document.getElementById('game-arena')
-      game_arena.style.width = '100vw'
-      game_arena.style.height = '100vh'
-      game_arena.appendChild(this.app.view)
+      const el = document.getElementById('game-arena')
+      el.appendChild(this.app.view)
+      const statusSection = document.getElementById('game-stats')
+      statusSection.appendChild(this.statusView.view)
     }
   }
 
@@ -526,18 +526,3 @@ function removeExplode(explode_sprite) {
   explode_sprite.y = undefined
   return
 }
-
-function adjustText() {
-  const screenWidth = window.innerWidth
-  const textWidth = PIXI.TextMetrics.measureText(text.text, text.style).width
-
-  // If text width is greater than the screen width, scale down the text
-  if (textWidth > screenWidth) {
-    const scaleRatio = screenWidth / textWidth
-    text.scale.set(scaleRatio)
-  } else {
-    text.scale.set(1)
-  }
-}
-
-window.addEventListener('resize', adjustText)

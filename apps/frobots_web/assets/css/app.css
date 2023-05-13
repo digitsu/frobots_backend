@@ -315,7 +315,7 @@ header section {
 }
 
 
-#garage-simulation canvas{
+#garage-simulation canvas,#game-arena canvas{
   width: 100% !important;
 }
 
@@ -329,3 +329,6 @@ header section {
   height: 100% !important;
   border-radius: 10px;
 }
+
+
+
