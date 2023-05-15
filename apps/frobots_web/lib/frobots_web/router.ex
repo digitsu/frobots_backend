@@ -120,6 +120,7 @@ defmodule FrobotsWeb.Router do
     live "/docs", DocsLive.Index, :index
     live "/blogs", NewsAndUpdatesLive.Index, :index
     live "/profile", UserProfileLive.Index, :index
+    live "/player", PlayerProfileLive.Index, :index
 
     live "/admin", AdminLive.Index, :index
 
