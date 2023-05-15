@@ -43,7 +43,9 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
                     :tank
                   )
 
-                Fubars.Rig.get_state(tank) |> Map.from_struct()
+                Fubars.Rig.get_state(tank)
+                |> Map.from_struct()
+                |> Map.take([:curr_loc, :health, :status, :name, :max_health, :heading, :speed])
               end)
           }
         end
@@ -60,7 +62,8 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   end
 
   def handle_event("react.fetch_match_details", %{}, socket) do
-    %{match: match, user_id: user_id, s3_base_url: s3_base_url, arena: arena} = socket.assigns
+    %{match: match, user_id: user_id, s3_base_url: s3_base_url, arena: arena, snapshot: snapshot} =
+      socket.assigns
 
     {:noreply,
      push_event(socket, "react.return_match_details", %{
@@ -79,7 +82,8 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
        "user_id" => match.user_id,
        "current_user_id" => user_id,
        "s3_base_url" => s3_base_url,
-       "arena" => arena
+       "arena" => arena,
+       "snapshot" => snapshot
      })}
   end
 

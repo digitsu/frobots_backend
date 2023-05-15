@@ -8,8 +8,15 @@ import { Tank } from '../../tank'
 import * as PIXI from 'pixi.js'
 
 export default (props: any) => {
-  const { match, current_user_id, user_id, s3_base_url, arena, runSimulation } =
-    props
+  const {
+    match,
+    current_user_id,
+    user_id,
+    s3_base_url,
+    arena,
+    runSimulation,
+    snapshot,
+  } = props
   const dispatch = useDispatch()
   const isHost = user_id === current_user_id
   const { setSlots, setS3BaseUrl } = matchSimulationActions
@@ -25,7 +32,6 @@ export default (props: any) => {
     id,
     status,
   } = match
-  console.log(match.status)
   const slotInfo = slots.map((slot) => {
     const slotType = slot.status?.toLowerCase()
     const slotImage = {
@@ -80,46 +86,73 @@ export default (props: any) => {
 
   useEffect(() => {
     if (showStartMatchButton) {
-      startMatchaHandler()
+      startMatchHandler()
     }
   }, [])
 
   useEffect(() => {
-    if (isGameStarted) {
-      const players = slots
+    if (match.status === 'done') {
+      window.location.href = `/arena/${match.id}/results`
+    }
+  }, [])
+
+  useEffect(() => {
+    const players =
+      snapshot?.tank ||
+      slots
         .filter((frobot) => frobot.frobot !== null)
-        .map((frobot) => ({ name: frobot.frobot.name, id: frobot.frobot_id }))
-      const tanks = [...players].map(({ name, id }) => {
-        var asset = tankHead(`${name}#${id}`)
+        .map((frobot) => ({
+          name: `${frobot.frobot.name}#${frobot.frobot_id}`,
+          curr_loc: [0, 0],
+          max_health: 100,
+          health: 100,
+          heading: 0,
+          speed: 0,
+        }))
+    const tanks = [...players].map(
+      ({ name, curr_loc, health, max_health, heading, speed }) => {
+        var asset = tankHead(`${name}`)
         var tank_sprite = new PIXI.Sprite(
           PIXI.Texture.from('/images/' + asset + '.png')
         )
+        const loc_x = curr_loc[0]
+        const loc_y = curr_loc[1]
         tank_sprite.x = 0
         tank_sprite.y = 0
         tank_sprite.width = 15
         tank_sprite.height = 15
+        const damage = max_health - health
         return {
-          Tank: new Tank(`${name}#${id}`, 748, 610, 219, 100, tank_sprite),
-          asset: { [`${name}#${id}`]: asset },
+          Tank: new Tank(
+            `${name}`,
+            loc_x,
+            loc_y,
+            heading,
+            speed,
+            tank_sprite,
+            damage
+          ),
+          asset: { [`${name}`]: asset },
         }
-      })
-      const game = new Game(
-        tanks.map(({ Tank }) => Tank),
-        [],
-        {
-          match_id: match.id,
-          match_details: match,
-          arena,
-          s3_base_url,
-          tankIcons: tanks.map(({ asset }) => asset),
-        }
-      )
-      game.header()
-      if (game !== null) {
-        setGameState(game)
       }
+    )
+    const game = new Game(
+      tanks.map(({ Tank }) => Tank),
+      [],
+      {
+        match_id: match.id,
+        match_details: match,
+        arena,
+        s3_base_url,
+        tankIcons: tanks.map(({ asset }) => asset),
+      }
+    )
+    game.header()
+    if (game !== null) {
+      setGameState(game)
     }
-  }, [isGameStarted])
+  }, [])
+
   useEffect(() => {
     dispatch(setS3BaseUrl(s3_base_url))
   }, [s3_base_url])
@@ -128,7 +161,7 @@ export default (props: any) => {
     gameState.event(e.detail)
   })
 
-  const startMatchaHandler = () => {
+  const startMatchHandler = () => {
     setisGameStarted(true)
     runSimulation()
   }
