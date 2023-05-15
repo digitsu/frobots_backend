@@ -15,6 +15,7 @@ import EmptyTableData from '../../components/generic/EmptyTableData'
 const tableHeads = ['Player', 'Frobots', 'XP', 'Wins', 'Rank']
 
 interface PlayerLeaderBoard {
+  id: number
   attempts: string
   avatar: string
   frobots_count: number
@@ -33,6 +34,10 @@ interface LeaderBoardProps {
 
 export default (props: LeaderBoardProps) => {
   const { leaderBoardData, imageBaseUrl } = props
+
+  const handleOpenPlayerProfile = (user_id: number) => {
+    window.location.href = `/player?id=${user_id}`
+  }
 
   return (
     <Paper sx={{ backgroundColor: '#212B36', borderRadius: 4 }}>
@@ -67,7 +72,10 @@ export default (props: LeaderBoardProps) => {
           <TableBody>
             {leaderBoardData.length ? (
               leaderBoardData.map((row, index) => (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  onClick={() => handleOpenPlayerProfile(row?.id)}
+                >
                   <TableCell
                     sx={{
                       color: '#fff',

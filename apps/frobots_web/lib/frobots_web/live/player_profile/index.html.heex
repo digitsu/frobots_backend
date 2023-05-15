@@ -1,0 +1,23 @@
+<section class="w-100 m-auto">
+  <div class="justify-between items-center my-4 w-90 m-auto">
+    <div class="font-bold text-lg">
+      <h5>
+        <%= @username %>
+      </h5>
+    </div>
+    <div class="flex justify-between items-center my-2">
+      <div>
+        <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="#" onclick="history.go(-1)">Back</a>
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400" style="margin-left: 3px; margin-right: 3px;">
+          .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          <%= @username %>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="player-profile" phx-hook="PlayerProfileHook" phx-update="ignore"></div>
+</section>
