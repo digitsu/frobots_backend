@@ -215,7 +215,7 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                         </Button>
                         <Button
                           disabled={match.status === 'cancelled'}
-                          href={`/arena/${match.id}/simulate`}
+                          href={`/arena/${match.id}/simulation`}
                           variant="outlined"
                           size="medium"
                           sx={{
