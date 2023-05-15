@@ -18,21 +18,45 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
 
     if match.status == :done do
       {:ok, socket |> push_redirect(to: "/arena/#{match_id}/results")}
-    else
+    end
+
+    snapshot =
       if connected?(socket) do
         topic = "match:match#{match_id}"
         IO.inspect("SUBSCRIBING TO #{topic}")
         Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
+
+        ## GET SNAPSHOT EVENT
+        if match.status == :running do
+          arena_name = Fubars.Match.arena_name(match_id |> to_string())
+          arena = Fubars.via_tuple(arena_name)
+          arena_state = Fubars.Arena.get_state(arena)
+
+          _snapshot = %{
+            missile: arena_state.missile,
+            tank:
+              Enum.map(arena_state.tank, fn {tank_name, _} ->
+                {:ok, tank} =
+                  Fubars.Registry.lookup(
+                    Fubars.via_tuple(arena_state.rig_registry_name),
+                    tank_name,
+                    :tank
+                  )
+
+                Fubars.Rig.get_state(tank) |> Map.from_struct()
+              end)
+          }
+        end
       end
 
-      {:ok,
-       socket
-       |> assign(:match, match)
-       |> assign(:arena, arena)
-       |> assign(:match_id, match_id)
-       |> assign(:user_id, id)
-       |> assign(:s3_base_url, s3_base_url)}
-    end
+    {:ok,
+     socket
+     |> assign(:match, match)
+     |> assign(:arena, arena)
+     |> assign(:match_id, match_id)
+     |> assign(:user_id, id)
+     |> assign(:s3_base_url, s3_base_url)
+     |> assign(:snapshot, snapshot)}
   end
 
   def handle_event("react.fetch_match_details", %{}, socket) do
