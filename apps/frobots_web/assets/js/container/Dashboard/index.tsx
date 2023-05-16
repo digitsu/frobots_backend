@@ -89,7 +89,12 @@ export default (props: any) => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3} onClick={handleOpenArena}>
+                  <Box
+                    display={'flex'}
+                    gap={3}
+                    onClick={handleOpenArena}
+                    sx={{ cursor: 'pointer' }}
+                  >
                     <Box
                       component={'img'}
                       src={'/images/ranking.svg'}
@@ -121,7 +126,12 @@ export default (props: any) => {
                       borderStyle: 'dotted',
                     }}
                   />
-                  <Box display={'flex'} gap={3} onClick={handleOpenGarage}>
+                  <Box
+                    display={'flex'}
+                    gap={3}
+                    onClick={handleOpenGarage}
+                    sx={{ cursor: 'pointer' }}
+                  >
                     <Box
                       component={'img'}
                       src={'/images/frobot.svg'}
@@ -151,7 +161,12 @@ export default (props: any) => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3} onClick={handleOpenPastMatches}>
+                  <Box
+                    display={'flex'}
+                    gap={3}
+                    onClick={handleOpenPastMatches}
+                    sx={{ cursor: 'pointer' }}
+                  >
                     <Box
                       component={'img'}
                       src={'/images/stats.svg'}
@@ -185,6 +200,7 @@ export default (props: any) => {
                     display={'flex'}
                     gap={3}
                     onClick={handleOpenUpcomingMatches}
+                    sx={{ cursor: 'pointer' }}
                   >
                     <Box
                       component={'img'}
@@ -220,9 +236,8 @@ export default (props: any) => {
                 user_name={current_user_name}
                 user_avatar={`${s3_base_url}${current_user_avatar}`}
               />
-              <Box>
-                <GlobalStats globalStats={globalStats} />
-              </Box>
+
+              <GlobalStats globalStats={globalStats} />
             </Box>
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>

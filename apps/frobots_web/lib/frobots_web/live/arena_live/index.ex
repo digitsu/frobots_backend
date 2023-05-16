@@ -50,6 +50,10 @@ defmodule FrobotsWeb.ArenaLive.Index do
      |> assign(
        :upcoming_matches_count,
        Api.count_matches_by_status_for_user(:pending, current_user.id)
+     )
+     |> assign(
+       :current_user_ranking_details,
+       Events.get_current_user_ranking_details(current_user)
      )}
   end
 

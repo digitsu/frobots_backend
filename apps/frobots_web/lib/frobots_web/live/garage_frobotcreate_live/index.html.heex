@@ -1,10 +1,33 @@
-<section>
-  <div class="flex justify-between items-center my-4 w-90 m-auto">
-    <div class="font-bold text-lg my-4">
-        <h6>Create Frobot</h6>
+<section class="w-90 m-auto">
+  <div class="justify-between items-center my-4 m-auto">
+    <div class="font-bold text-lg">
+      <h5>
+        Create Frobot
+      </h5>
     </div>
-    <div>
-      <p class="font-bold text-xs text-gray-400">QDOS 40000</p>
+    <div class="flex justify-between items-center my-2">
+      <div>
+        <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="/home">Dashboard</a>
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-400">
+          <a href="/garage">Garage</a>
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          .
+        </p>
+        <p class="inline-block items-left font-bold text-xs text-gray-400">
+          Create Frobot
+        </p>
+      </div>
+      <div>
+        <p class="font-bold text-xs text-gray-400">
+          Sparks available : <%= @current_user.sparks || 0%>
+        </p>
+      </div>
     </div>
   </div>
   <div id="create-frobot" phx-hook="FrobotCreateHook" phx-update="ignore"></div>

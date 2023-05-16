@@ -1,7 +1,7 @@
 defmodule FrobotsWeb.UserProfileLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
-  alias Frobots.{Accounts, Api, Avatars, ChangesetError}
+  alias Frobots.{Accounts, Api, Avatars, ChangesetError, Events}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -13,7 +13,11 @@ defmodule FrobotsWeb.UserProfileLive.Index do
      |> assign(:user, current_user)
      |> assign(:username, get_user_name(current_user))
      |> assign(:s3_base_url, s3_base_url)
-     |> assign(:avatars, Avatars.list_user_avatars())}
+     |> assign(:avatars, Avatars.list_user_avatars())
+     |> assign(
+       :current_user_ranking_details,
+       Events.get_current_user_ranking_details(current_user)
+     )}
   end
 
   # add additional handle param events as needed to handle button clicks etc
