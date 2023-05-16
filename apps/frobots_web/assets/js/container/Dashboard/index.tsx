@@ -236,9 +236,8 @@ export default (props: any) => {
                 user_name={current_user_name}
                 user_avatar={`${s3_base_url}${current_user_avatar}`}
               />
-              <Box>
-                <GlobalStats globalStats={globalStats} />
-              </Box>
+
+              <GlobalStats globalStats={globalStats} />
             </Box>
           </Grid>
           <Grid item lg={6} md={12} sm={12} xs={12}>
