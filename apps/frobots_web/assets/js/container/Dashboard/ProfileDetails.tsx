@@ -106,6 +106,7 @@ export default (props: ProfileDetailsProps) => {
           <Grid item xs={3} sm={3} md={3} lg={3}>
             <Box
               margin={'auto'}
+              sx={{ cursor: 'pointer' }}
               src={user_avatar || '/images/user_logo.png'}
               component={'img'}
               onClick={handleOpenUserProfile}

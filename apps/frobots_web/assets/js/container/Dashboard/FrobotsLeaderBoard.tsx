@@ -23,6 +23,7 @@ interface FrobotLeaderBoard {
   matches_won: number
   points: number
   username: string
+  useremail: string
   xp: number
 }
 
@@ -36,6 +37,18 @@ export default (props: LeaderBoardProps) => {
 
   const handleOpenFrobotDetails = (frobot_id: number) => {
     window.location.href = `/garage/frobot?id=${frobot_id}`
+  }
+
+  const getPlayerName = (data: FrobotLeaderBoard) => {
+    let playerName = '-'
+
+    if (data.username) {
+      playerName = data.username
+    } else if (data.useremail) {
+      playerName = data.useremail.split('@')[0]
+    }
+
+    return playerName
   }
 
   return (
@@ -71,10 +84,7 @@ export default (props: LeaderBoardProps) => {
           <TableBody>
             {leaderBoardData.length ? (
               leaderBoardData.map((row, index) => (
-                <TableRow
-                  key={index}
-                  onClick={() => handleOpenFrobotDetails(row.frobot_id)}
-                >
+                <TableRow key={index}>
                   <TableCell
                     sx={{
                       color: '#fff',
@@ -91,6 +101,7 @@ export default (props: LeaderBoardProps) => {
                         width={46}
                         height={45}
                         sx={{ cursor: 'pointer' }}
+                        onClick={() => handleOpenFrobotDetails(row.frobot_id)}
                       >
                         <Box
                           component={'img'}
@@ -117,7 +128,7 @@ export default (props: LeaderBoardProps) => {
                     sx={{ color: '#fff', borderColor: '#333D49' }}
                     align="left"
                   >
-                    {row.username}
+                    {getPlayerName(row)}
                   </TableCell>
                   <TableCell
                     sx={{ color: '#fff', borderColor: '#333D49' }}
