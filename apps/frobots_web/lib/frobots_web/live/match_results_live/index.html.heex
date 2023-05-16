@@ -1,42 +1,43 @@
 <section class="w-90 m-auto">
-    <div class="mt-4">
-       <h1 class="font-bold">
-        <%= if @match.title do %>
+  <div class="mt-4">
+    <h1 class="font-bold">
+      <%= if @match.title do %>
         Match Results: <%= @match.title %>
-        <% else %>
+      <% else %>
         Match Results: <%= @match.id %>
-        <% end %></h1>
-    </div>
-    <div class="flex justify-between items-center my-2">
-      <div>
-        <p class="inline-block items-left font-bold text-xs text-400">
-          <a href="/home">Dashboard</a>
-        </p>
-        <p class="inline-block items-left font-bold text-xs text-gray-400">
-          .
-        </p>
-        <p class="inline-block items-left font-bold text-xs text-400">
-          <a href="/arena">Arena</a>
-        </p>
-        <p class="inline-block items-left font-bold text-xs text-gray-400">
-          .
-        </p>
-        <p class="inline-block items-left font-bold text-xs text-400 text-gray-400">
-        <a  href={"/arena/#{@match.id}"}>
+      <% end %>
+    </h1>
+  </div>
+  <div class="flex justify-between items-center my-2">
+    <div>
+      <p class="inline-block items-left font-bold text-xs text-400">
+        <a href="/home">Dashboard</a>
+      </p>
+      <p class="inline-block items-left font-bold text-xs text-gray-400">
+        .
+      </p>
+      <p class="inline-block items-left font-bold text-xs text-400">
+        <a href="/arena">Arena</a>
+      </p>
+      <p class="inline-block items-left font-bold text-xs text-gray-400">
+        .
+      </p>
+      <p class="inline-block items-left font-bold text-xs text-400 text-gray-400">
+        <a href={"/arena/#{@match.id}"}>
           <%= if @match.title do %>
-          <%= @match.title %>
-        <% else %>
-        Match <%= @match.id %>
-        <% end %>
-      </a>
-        </p>
-        <p class="inline-block items-left font-bold text-xs text-gray-400">
-          .
-        </p>
-        <p class="inline-block items-left font-bold text-xs text-400 text-gray-400">
-         Results
-          </p>
-      </div>
+            <%= @match.title %>
+          <% else %>
+            Match <%= @match.id %>
+          <% end %>
+        </a>
+      </p>
+      <p class="inline-block items-left font-bold text-xs text-gray-400">
+        .
+      </p>
+      <p class="inline-block items-left font-bold text-xs text-400 text-gray-400">
+        Results
+      </p>
     </div>
-    <div id="match-results" phx-hook="ArenaMatchResults" phx-update="ignore"></div>
-  </section>    
+  </div>
+  <div id="match-results" phx-hook="ArenaMatchResults" phx-update="ignore"></div>
+</section>
