@@ -35,7 +35,7 @@ defmodule Frobots.Accounts do
 
   """
   def count_users do
-    Repo.all(User) |> Enum.count()
+    Repo.one(from(u in User, select: count(u.id)))
   end
 
   @doc """
