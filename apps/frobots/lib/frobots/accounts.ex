@@ -26,6 +26,19 @@ defmodule Frobots.Accounts do
   end
 
   @doc """
+  Returns the count of users.
+
+  ## Examples
+
+      iex> count_users()
+      2
+
+  """
+  def count_users do
+    Repo.all(User) |> Enum.count()
+  end
+
+  @doc """
   Gets a user by email.
 
   ## Examples
