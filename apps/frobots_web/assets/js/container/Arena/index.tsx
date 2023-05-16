@@ -119,7 +119,12 @@ export default (props: any) => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3} onClick={handleOpenLiveMatches}>
+                  <Box
+                    display={'flex'}
+                    gap={3}
+                    onClick={handleOpenLiveMatches}
+                    sx={{ cursor: 'pointer' }}
+                  >
                     <Box
                       component={'img'}
                       src={'/images/stats.svg'}
@@ -160,6 +165,7 @@ export default (props: any) => {
                     display={'flex'}
                     gap={3}
                     onClick={handleOpenUpcomingMatches}
+                    sx={{ cursor: 'pointer' }}
                   >
                     <Box
                       component={'img'}
@@ -199,7 +205,12 @@ export default (props: any) => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box display={'flex'} gap={3} onClick={handleOpenPastMatches}>
+                  <Box
+                    display={'flex'}
+                    gap={3}
+                    onClick={handleOpenPastMatches}
+                    sx={{ cursor: 'pointer' }}
+                  >
                     <Box
                       component={'img'}
                       src={'/images/stats.svg'}
