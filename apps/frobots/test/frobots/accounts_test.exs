@@ -61,6 +61,10 @@ defmodule Frobots.AccountsTest do
       assert Accounts.list_users() == [user]
     end
 
+    test "count_users/0 returns the number of users" do
+      assert is_number(Accounts.count_users())
+    end
+
     test "get_user!/1 returns the user with given id" do
       {:ok, user} = user_fixture()
       assert Accounts.get_user!(user.id) == user

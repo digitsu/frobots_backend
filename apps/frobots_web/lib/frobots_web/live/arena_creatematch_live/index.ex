@@ -4,13 +4,21 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
   alias Frobots.Assets
   alias Frobots.Accounts
   alias Frobots.Api
+  alias Frobots.Events
 
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
     current_user = Accounts.get_user!(id)
     s3_base_url = Api.get_s3_base_url()
 
-    {:ok, socket |> assign(:current_user, current_user) |> assign(:s3_base_url, s3_base_url)}
+    {:ok,
+     socket
+     |> assign(:current_user, current_user)
+     |> assign(:s3_base_url, s3_base_url)
+     |> assign(
+       :current_user_ranking_details,
+       Events.get_current_user_ranking_details(current_user)
+     )}
   end
 
   # add additional handle param events as needed to handle button clicks etc

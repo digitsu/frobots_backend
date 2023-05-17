@@ -19,7 +19,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
       if connected?(socket), do: Events.subscribe()
 
       time_left =
-        if match.status == :pending or match.status == :running do
+        if match.status == :pending do
           Process.send_after(self(), :time_left, 1_000)
           DateTime.diff(match.match_time, DateTime.utc_now())
         else
