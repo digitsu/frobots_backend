@@ -133,7 +133,12 @@ export default ({
               </Button>
               <Box mt={1}>
                 {' '}
-                <Button fullWidth variant="contained" onClick={deployProtobot}>
+                <Button
+                  disabled={protobots.length === 0 || currentSlot === null}
+                  fullWidth
+                  variant="contained"
+                  onClick={deployProtobot}
+                >
                   Deploy Protobot
                 </Button>
               </Box>

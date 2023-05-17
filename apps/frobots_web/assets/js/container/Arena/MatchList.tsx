@@ -213,19 +213,24 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                         >
                           Join
                         </Button>
-                        <Button
-                          disabled={match.status === 'cancelled'}
-                          href={`/arena/${match.id}/simulation`}
-                          variant="outlined"
-                          size="medium"
-                          sx={{
-                            color: '#00B8D9',
-                            borderColor: '#00B8D9',
-                            padding: '0px 25px',
-                          }}
-                        >
-                          Watch
-                        </Button>
+                        {
+                          <Button
+                            disabled={
+                              match.status === 'cancelled' ||
+                              match.status === 'pending'
+                            }
+                            href={`/arena/${match.id}/simulation`}
+                            variant="outlined"
+                            size="medium"
+                            sx={{
+                              color: '#00B8D9',
+                              borderColor: '#00B8D9',
+                              padding: '0px 25px',
+                            }}
+                          >
+                            Watch
+                          </Button>
+                        }
                       </>
                     ) : (
                       <>

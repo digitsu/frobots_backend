@@ -53,13 +53,13 @@ export default ({ createMatch, imageBaseUrl }) => {
         alignSelf={'stretch'}
         sx={{ width: '90%', m: 'auto' }}
       >
-        <Grid item md={12} lg={6}>
+        <Grid item xs={12} sm={12} md={12} lg={6}>
           <SlotContainer />
         </Grid>
-        <Grid item md={12} lg={6}>
+        <Grid item xs={12} sm={12} md={12} lg={6}>
           <SlotDetails imageBaseUrl={imageBaseUrl} />
         </Grid>
-        <Grid item md={12} mb={4}>
+        <Grid item xs={12} sm={12} md={12} mb={4}>
           <Box
             display={'flex'}
             alignItems={'center'}

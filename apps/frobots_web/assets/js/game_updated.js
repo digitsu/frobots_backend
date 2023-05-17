@@ -275,11 +275,11 @@ export class Game {
       var y3 = y + 700 * Math.sin((Math.PI * (deg + res)) / 180)
 
       let g = new PIXI.Graphics()
-      g.position.set(0, 0)
+      g.position.set(7.5, 7.5)
       g.lineStyle(1, 0xffffff).moveTo(x, y).lineTo(x2, y2)
 
       let g2 = new PIXI.Graphics()
-      g2.position.set(0, 0)
+      g2.position.set(7.5, 7.5)
       g2.lineStyle(1, 0xffffff).moveTo(x, y).lineTo(x3, y3)
 
       var new_tank = tank.update_scan(g, g2, deg, res)

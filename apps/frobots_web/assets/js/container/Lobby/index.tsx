@@ -1,11 +1,16 @@
 import { Grid, Box, Button } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import LobbyDetails from './LobbyDetails'
 import LobbySlotContainer from './LobbySlotContainer'
 import LobbySlotDetails from './LobbySlotDetails'
 import { arenaLobbyActions } from '../../redux/slices/arenaLobbySlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { formatCounterTime, slotMapper } from '../../utils/util'
+import Popup from '../../components/Popup'
+import {
+  AttentionHostLobbyPromptDescription,
+  AttentionHostLobbyPromptTitle,
+} from '../../mock/texts'
 
 export default (props) => {
   const {
@@ -33,11 +38,13 @@ export default (props) => {
     description,
     min_player_frobot,
     max_player_frobot,
-    slots,
     arena,
     status,
+    slots,
   } = match
+  const { slots: storeSlots } = useSelector((store) => store.arenaLobby)
   const sortedSlots = slotMapper(slots, current_user_id, user_id, s3_base_url)
+  const [showModal, setShowModal] = useState(false)
   useEffect(() => {
     dispatch(setSlots(sortedSlots))
     dispatch(setCountdownTimer(formatCounterTime(time_left)))
@@ -69,8 +76,21 @@ export default (props) => {
     if (status === 'done') {
       window.location.href = `/arena/${match.id}/results`
     } else {
-      startMatch()
+      if (isHost) {
+        const vacantSlots = storeSlots.filter((slot) => slot.status === 'open')
+        if (vacantSlots.length >= 1) {
+          setShowModal(true)
+        } else {
+          startMatch()
+        }
+      } else {
+        window.location.href = `/arena/${match.id}/simulation`
+      }
     }
+  }
+
+  const startMatchHandler = () => {
+    startMatch()
   }
 
   return (
@@ -89,7 +109,7 @@ export default (props) => {
               onClick={matchActionHandler}
             >
               {status !== 'done'
-                ? isHost
+                ? isHost && status === 'pending'
                   ? 'Start Match'
                   : 'Join'
                 : 'View Results'}
@@ -113,6 +133,15 @@ export default (props) => {
           <LobbySlotDetails updateSlot={updateSlot} isHost={isHost} />
         </Grid>
       </Grid>
+      <Popup
+        open={showModal}
+        label={AttentionHostLobbyPromptTitle}
+        description={AttentionHostLobbyPromptDescription}
+        successLabel={'Start'}
+        cancelLabel={'Close'}
+        successAction={startMatchHandler}
+        cancelAction={() => setShowModal(false)}
+      />
     </Box>
   )
 }

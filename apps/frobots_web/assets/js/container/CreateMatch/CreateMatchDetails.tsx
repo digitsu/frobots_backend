@@ -18,7 +18,8 @@ export default (props: any) => {
     useSelector((store: any) => store.createMatch)
   const timerOptions = [1, 2, 3, 5, 10].map((count, index) => ({
     id: index,
-    label: count,
+    label: count === 1 ? `${count} Minute` : `${count} Minutes`,
+    val: count,
   }))
   return (
     <Box width={'60%'} m={'auto'} mt={10}>
@@ -62,7 +63,7 @@ export default (props: any) => {
           options={timerOptions}
           disableClearable
           onChange={(_item, target) => {
-            dispatch(setCountdownTimer(target.label * 60))
+            dispatch(setCountdownTimer(target.val * 60))
           }}
           renderInput={(params) => (
             <TextField

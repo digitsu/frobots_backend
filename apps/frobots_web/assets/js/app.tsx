@@ -6,7 +6,6 @@ import { LiveSocket } from 'phoenix_live_view'
 import topbar from '../vendor/topbar'
 import { connectToSocket } from './user_socket'
 import Hooks from './hooks'
-import { Game } from './game.js'
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
