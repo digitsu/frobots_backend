@@ -51,8 +51,15 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
         end
       end
 
+    time_left =
+      if match.status == :running do
+        Process.send_after(self(), :time_left, 1_000)
+        match.timer - (System.os_time(:second) - match.started_at)
+      end
+
     {:ok,
      socket
+     |> assign(:time_left, time_left)
      |> assign(:match, match)
      |> assign(:arena, arena)
      |> assign(:match_id, match_id)
@@ -91,8 +98,19 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
     match_id = socket.assigns.match_id |> String.to_integer()
 
     case FrobotsWeb.MatchChannel.start_match(match_id) do
-      {:ok, _frobots_map} -> {:noreply, socket}
-      {:error, error} -> {:noreply, socket |> put_flash(:error, error)}
+      {:ok, _frobots_map} ->
+        match = Api.get_match_details_by_id(match_id)
+
+        time_left =
+          if match.status == :running do
+            Process.send_after(self(), :time_left, 1_000)
+            match.timer - (System.os_time(:second) - match.started_at)
+          end
+
+        {:noreply, socket |> assign(:time_left, time_left)}
+
+      {:error, error} ->
+        {:noreply, socket |> put_flash(:error, error)}
     end
   end
 
@@ -207,6 +225,17 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
     {:noreply,
      socket
      |> push_event(:arena_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info(:time_left, socket) do
+    time_left =
+      if socket.assigns.time_left > 0 do
+        socket.assigns.time_left - 1
+      end
+
+    Process.send_after(self(), :time_left, 1_000)
+    {:noreply, socket |> assign(:time_left, time_left)}
   end
 
   @impl true

@@ -12,6 +12,7 @@ defmodule Frobots.Events.Match do
     field :description, :string
     field :match_time, :utc_datetime
     field :timer, :integer, default: 3600
+    field :started_at, :integer
     field :arena_id, :integer
     field :min_player_frobot, :integer
     field :max_player_frobot, :integer
@@ -40,7 +41,8 @@ defmodule Frobots.Events.Match do
     :status,
     :frobots,
     :user_id,
-    :type
+    :type,
+    :started_at
   ]
 
   @doc false
@@ -63,7 +65,7 @@ defmodule Frobots.Events.Match do
 
   def update_changeset(match, attrs) do
     match
-    |> cast(attrs, [:status])
+    |> cast(attrs, [:status, :started_at])
     |> cast_assoc(:slots, with: &Slot.update_changeset/2)
     |> validate_required([
       :status
