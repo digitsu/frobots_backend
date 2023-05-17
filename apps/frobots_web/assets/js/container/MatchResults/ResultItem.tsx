@@ -15,23 +15,26 @@ export default ({
         display={'flex'}
         alignItems={'center'}
         justifyContent={'space-between'}
+        gap={2}
       >
-        <Box
-          component={'img'}
-          src={`${s3_base_Url}${frobot.avatar}`}
-          width={80}
-        />
-        <Box>
+        <Box flex={1}>
+          <Box
+            component={'img'}
+            src={`${s3_base_Url}${frobot.avatar}`}
+            width={80}
+          />
+        </Box>
+        <Box flex={2}>
           <Typography variant="subtitle1">{frobot.name}</Typography>
           <Typography>{user_name}</Typography>
           <Typography>XP: {frobot.xp}</Typography>
         </Box>
-        <Box>
+        <Box flex={2}>
           <Typography variant="body2">Health: {health}%</Typography>
           <Typography variant="body2">XP Earned: +{xp_earned}</Typography>
           <Typography variant="body2">Kills: {kills}</Typography>
         </Box>
-        <Box>
+        <Box flex={1}>
           <Typography
             variant="caption"
             color={winner.includes(frobot.id) ? '#00AB55' : '#FF0000'}

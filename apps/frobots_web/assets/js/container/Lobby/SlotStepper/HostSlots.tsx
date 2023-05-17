@@ -119,7 +119,12 @@ export default ({
               </Button>
               <Box mt={1}>
                 {' '}
-                <Button fullWidth variant="contained" onClick={deployFrobot}>
+                <Button
+                  disabled={userFrobots.length === 0 || currentSlot === null}
+                  fullWidth
+                  variant="contained"
+                  onClick={deployFrobot}
+                >
                   Deploy Frobot
                 </Button>
               </Box>

@@ -20,8 +20,8 @@ export default ({
       updateSlot({
         ...currentActiveSlot,
         type: 'proto',
-        name: currentSlot.name,
-        url: '/images/yellow_frobot.svg',
+        name: `NPC: ${currentSlot.name}`,
+        url: `${imageBaseUrl}${currentSlot.avatar}`,
         slotDetails: currentSlot,
       })
     )
@@ -112,7 +112,12 @@ export default ({
               </Button>
               <Box mt={1}>
                 {' '}
-                <Button fullWidth variant="contained" onClick={deployProtobot}>
+                <Button
+                  fullWidth
+                  disabled={currentSlot === null || protobots.length === 0}
+                  variant="contained"
+                  onClick={deployProtobot}
+                >
                   Deploy Protobot
                 </Button>
               </Box>

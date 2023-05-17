@@ -11,7 +11,9 @@ export default ({
   imageBaseUrl,
 }) => {
   const { updateSlot } = createMatchActions
-  const { currentActiveSlot } = useSelector((store: any) => store.createMatch)
+  const { currentActiveSlot, slots } = useSelector(
+    (store: any) => store.createMatch
+  )
   const dispatch = useDispatch()
   const [currentSlot, setCurrentSlot] = useState(null)
 
@@ -20,13 +22,20 @@ export default ({
       updateSlot({
         ...currentActiveSlot,
         type: 'host',
-        name: currentSlot?.name,
-        url: '/images/red_frobot.svg',
+        name: `Host: ${currentSlot?.name}`,
+        url: `${imageBaseUrl}${currentSlot.avatar}`,
         slotDetails: currentSlot,
       })
     )
     setCurrentStep(currentStep + 1)
   }
+
+  const usedFrobots = slots
+    .filter((item) => item.slotDetails)
+    .map((item) => (item ? item.slotDetails.id : item))
+  const filteredFrobots = userFrobots.filter(
+    ({ id }) => !usedFrobots.includes(id)
+  )
 
   return (
     <>
@@ -34,7 +43,7 @@ export default ({
         <Box sx={{ height: 554 }}>
           <Box sx={{ p: 3, pb: 1, height: 490, overflowY: 'scroll' }}>
             <Grid container spacing={3}>
-              {userFrobots.map((slot) => (
+              {filteredFrobots.map((slot) => (
                 <Grid item width={'100%'}>
                   <Box
                     display={'flex'}
@@ -102,7 +111,12 @@ export default ({
               </Button>
               <Box mt={1}>
                 {' '}
-                <Button fullWidth variant="contained" onClick={deployFrobot}>
+                <Button
+                  fullWidth
+                  disabled={userFrobots.length === 0 || currentSlot === null}
+                  variant="contained"
+                  onClick={deployFrobot}
+                >
                   Deploy Frobot
                 </Button>
               </Box>
