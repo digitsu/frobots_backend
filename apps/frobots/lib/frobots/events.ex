@@ -201,16 +201,29 @@ defmodule Frobots.Events do
   end
 
   def count_matches_by_status_for_user(status, user_id) do
-    Repo.one(
-      from m in Match,
-        where: m.status == ^status and m.type == :real,
-        join: s in "slots",
-        on: m.id == s.match_id,
-        join: f in "frobots",
-        on: s.frobot_id == f.id,
-        where: f.user_id == ^user_id,
-        select: count(m.id)
-    )
+    host_matches =
+      Repo.one(
+        from m in Match,
+          where: m.status == ^status and m.type == :real and m.user_id == ^user_id,
+          select: count(m.id)
+      )
+
+    participation_matches =
+      Repo.one(
+        from m in Match,
+          where: m.status == ^status and m.type == :real,
+          join: s in "slots",
+          on: m.id == s.match_id,
+          join: f in "frobots",
+          on: s.frobot_id == f.id,
+          where: f.user_id == ^user_id and m.user_id != ^user_id,
+          distinct: m.id,
+          group_by: m.id,
+          select: count(m.id)
+      )
+
+    if(is_nil(host_matches), do: 0, else: host_matches) +
+      if is_nil(participation_matches), do: 0, else: participation_matches
   end
 
   def list_matches_by_status_for_user(status, user_id) when is_atom(status) do
