@@ -97,10 +97,16 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Typography my={4} variant="subtitle2">
                               Max Health
                             </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Attached Frobot
+                            </Typography>
                           </Box>
                         </Grid>
                         <Grid item>
                           <Box textAlign="center">
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
                             <Typography my={4} variant="subtitle2">
                               :
                             </Typography>
@@ -135,6 +141,9 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Typography my={4} variant="body2">
                               {activeEquipment?.max_health} ap
                             </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.frobot_name || 'Unattached'}
+                            </Typography>
                           </Box>
                         </Grid>
                       </Grid>
@@ -154,6 +163,9 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Typography my={4} variant="subtitle2">
                               Rate of Fire
                             </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Attached Frobot
+                            </Typography>
                           </Box>
                         </Grid>
                         <Grid item>
@@ -164,6 +176,10 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Typography my={4} variant="subtitle2">
                               :
                             </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
+
                             <Typography my={4} variant="subtitle2">
                               :
                             </Typography>
@@ -179,6 +195,10 @@ export default (props: EquipmentDetailsPrpos) => {
                             </Typography>
                             <Typography my={4} variant="body2">
                               {activeEquipment?.rate_of_fire} s
+                            </Typography>
+
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.frobot_name || 'Unattached'}
                             </Typography>
                           </Box>
                         </Grid>
@@ -196,10 +216,16 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Typography my={4} variant="subtitle2">
                               Resolution
                             </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Attached Frobot
+                            </Typography>
                           </Box>
                         </Grid>
                         <Grid item>
                           <Box textAlign="center">
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
                             <Typography my={4} variant="subtitle2">
                               :
                             </Typography>
@@ -215,6 +241,9 @@ export default (props: EquipmentDetailsPrpos) => {
                             </Typography>
                             <Typography my={4} variant="body2">
                               +/- {activeEquipment?.resolution} deg
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.frobot_name || 'Unattached'}
                             </Typography>
                           </Box>
                         </Grid>
@@ -241,10 +270,16 @@ export default (props: EquipmentDetailsPrpos) => {
                             <Typography my={4} variant="subtitle2">
                               Near Damage
                             </Typography>
+                            <Typography my={4} variant="subtitle2">
+                              Attached Frobot
+                            </Typography>
                           </Box>
                         </Grid>
                         <Grid item>
                           <Box textAlign="center">
+                            <Typography my={4} variant="subtitle2">
+                              :
+                            </Typography>
                             <Typography my={4} variant="subtitle2">
                               :
                             </Typography>
@@ -278,6 +313,9 @@ export default (props: EquipmentDetailsPrpos) => {
                             </Typography>
                             <Typography my={4} variant="body2">
                               {activeEquipment?.damage_near}
+                            </Typography>
+                            <Typography my={4} variant="body2">
+                              {activeEquipment?.frobot_name || 'Unattached'}
                             </Typography>
                           </Box>
                         </Grid>

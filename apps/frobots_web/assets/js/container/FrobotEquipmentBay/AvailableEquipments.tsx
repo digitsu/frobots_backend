@@ -199,8 +199,7 @@ export default (props: AvailableEquipmentPrpos) => {
                       </Box>
 
                       <Box
-                        component={'img'}
-                        src={`${imageBaseUrl}${equipment.image}`}
+                        position={'relative'}
                         sx={{
                           cursor: 'pointer',
                           borderRadius: '6px',
@@ -209,8 +208,37 @@ export default (props: AvailableEquipmentPrpos) => {
                               ? '4px solid #00AB55'
                               : 'none',
                         }}
-                        onClick={() => switchEquipment(equipment)}
-                      />
+                      >
+                        {equipment.frobot_name && (
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              borderRadius: '0px 0px 6px 6px',
+                              bottom: 0,
+                              background: '#7d7d7dab',
+                              color: '#FFC107',
+                              width: '100%',
+                              height: '15%',
+                              opacity: 1,
+                              textAlign: 'center',
+                              textOverflow: 'ellipsis',
+                              overflow: 'hidden',
+                              whiteSpace: 'nowrap',
+                              fontWeight: 'bold',
+                              fontSize: '0.8rem',
+                            }}
+                          >
+                            {equipment.frobot_name}
+                          </Box>
+                        )}
+
+                        <Box
+                          borderRadius={'6px'}
+                          component={'img'}
+                          src={`${imageBaseUrl}${equipment.image}`}
+                          onClick={() => switchEquipment(equipment)}
+                        />
+                      </Box>
                       {equipment.frobot_id ? (
                         <Box
                           paddingBottom={2}
