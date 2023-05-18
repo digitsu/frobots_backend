@@ -189,13 +189,15 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
         topic = "match:match#{match_id}"
         IO.inspect("SUBSCRIBING TO #{topic}")
         Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
+        match = Api.get_match_details_by_id(match_id)
 
         {:noreply,
          socket
          |> assign(:match_id, match_id)
          |> assign(:frobots_data, frobots_data)
          |> push_event(:simulator_event, %{
-           id: match_id
+           id: match_id,
+           slots: extract_slot_details(match.slots)
          })}
 
       {:error, error} ->
@@ -329,6 +331,34 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
         blockly_code: blockly_code,
         bio: bio,
         avatar: avatar
+      }
+    end)
+  end
+
+  def extract_slot_details(slots) do
+    Enum.map(slots, fn %{
+                         frobot: frobot,
+                         frobot_id: frobot_id,
+                         id: id,
+                         match_id: match_id,
+                         slot_type: slot_type,
+                         status: status
+                       } ->
+      user_id =
+        if frobot do
+          Map.get(frobot, :user_id, nil)
+        else
+          nil
+        end
+
+      %{
+        frobot: frobot,
+        frobot_user_id: user_id,
+        frobot_id: frobot_id,
+        id: id,
+        match_id: match_id,
+        slot_type: slot_type,
+        status: status
       }
     end)
   end

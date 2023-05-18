@@ -45,16 +45,17 @@ export default (props: any) => {
         snapshot?.tank ||
         slots
           .filter((frobot) => frobot.frobot !== null)
-          .map((frobot) => ({
-            name: `${frobot.frobot.name}#${frobot.frobot_id}`,
+          .map((slot) => ({
+            name: `${slot.frobot.name}#${slot.id}`,
             curr_loc: [0, 0],
             max_health: 100,
             health: 100,
             heading: 0,
             speed: 0,
+            display_name: slot.frobot.name
           }))
       const tanks = [...players].map(
-        ({ name, curr_loc, health, max_health, heading, speed }) => {
+        ({ name, curr_loc, health, max_health, heading, speed, display_name }) => {
           var asset = tankHead(`${name}`)
           var tank_sprite = new PIXI.Sprite(
             PIXI.Texture.from('/images/' + asset + '.png')
@@ -68,15 +69,16 @@ export default (props: any) => {
           const damage = max_health - health
           return {
             Tank: new Tank(
-              `${name}`,
+              name,
               loc_x,
               loc_y,
               heading,
               speed,
               tank_sprite,
-              damage
+              damage,
+              display_name
             ),
-            asset: { [`${name}`]: asset },
+            asset: { [name]: asset },
           }
         }
       )
@@ -110,7 +112,6 @@ export default (props: any) => {
     setisGameStarted(true)
     runSimulation()
   }
-
   const MatchWaitingScreen = () => {
     return (
       <Box>
