@@ -139,48 +139,50 @@ export default (props: any) => {
     (option) => !opponents.map(({ id }) => id).includes(option.id)
   )
 
-  useEffect(() => {
-    const opponentFrobots = opponents.map(({ label: name, id }) => ({
-      name,
-      id,
-    }))
-    const tanks = [...opponentFrobots, frobot].map(({ name, id }) => {
-      var asset = tankHead(`${name}#${id}`)
-      var tank_sprite = new PIXI.Sprite(
-        PIXI.Texture.from('/images/' + asset + '.png')
-      )
-      tank_sprite.x = 0
-      tank_sprite.y = 0
-      tank_sprite.width = 15
-      tank_sprite.height = 15
-      return {
-        Tank: new Tank(`${name}#${id}`, 748, 610, 219, 100, tank_sprite),
-        asset: { [`${name}#${id}`]: asset },
-      }
-    })
-
-    if (isSimulationStarted) {
-      const game = new Game(
-        tanks.map(({ Tank }) => Tank),
-        [],
-        {
-          match_id: null,
-          match_details: { type: 'simulation', id: frobot?.id },
-          arena: null,
-          s3_base_url: '',
-          tankIcons: tanks.map(({ asset }) => asset),
-        }
-      )
-      game.header()
-      if (game !== null) {
-        setGameState(game)
-      }
-    }
-  }, [isSimulationStarted])
-
   const handleGameEvent = (e) => {
+    if(e.detail.id){
+      const players = e.detail.slots.map((slot) => ({
+        name : `${slot.frobot.name}#${slot.id}`,
+        displayName : slot.frobot.name
+      }))
+      const tanks = players.map(({ name, displayName }) => {
+        var asset = tankHead(name)
+        var tank_sprite = new PIXI.Sprite(
+          PIXI.Texture.from('/images/' + asset + '.png')
+        )
+        tank_sprite.x = 0
+        tank_sprite.y = 0
+        tank_sprite.width = 15
+        tank_sprite.height = 15
+        return {
+          Tank: new Tank(`${name}`, 748, 610, 219, 100, tank_sprite,0,displayName ),
+          asset: { [`${name}`]: asset },
+        }
+      })
+  
+      if (isSimulationStarted) {
+        const game = new Game(
+          tanks.map(({ Tank }) => Tank),
+          [],
+          {
+            match_id: null,
+            match_details: { type: 'simulation', id: frobot?.id },
+            arena: null,
+            s3_base_url: '',
+            tankIcons: tanks.map(({ asset }) => asset),
+          }
+        )
+        game.header()
+        if (game !== null) {
+          setGameState(game)
+        }
+
+    }
+  }
+  else{
     gameState.event(e.detail)
   }
+}
   window.addEventListener(`phx:simulator_event`, handleGameEvent)
 
   return !isRequestedMatch ? (

@@ -15,7 +15,7 @@ const initialState = {
     id: index,
     type: 'open',
     url: '/images/frobot.svg',
-    name: `#Frobot ${index + 1}`,
+    name: `Frobot ${index + 1}`,
     slotDetails: null,
   })),
   slotOptions: [

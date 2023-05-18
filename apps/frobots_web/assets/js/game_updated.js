@@ -102,7 +102,8 @@ export class Game {
         this.app.stage.addChild(tank.tank_sprite)
       }
       const container = new PIXI.Container()
-      const nameText = new PIXI.Text(tank.name.padEnd(12), { fill: '#ffffff' })
+      const name = tank.display_name || tank.name
+      const nameText = new PIXI.Text(name.padEnd(12), { fill: '#ffffff' })
       const damageText = new PIXI.Text('dm: ' + tank.damage, {
         fontSize: 20,
         fill: '#00b739',
