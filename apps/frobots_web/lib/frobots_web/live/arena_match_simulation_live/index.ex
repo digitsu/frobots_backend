@@ -3,6 +3,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   use FrobotsWeb, :live_view
 
   alias Frobots.Api
+  alias Frobots.Events
 
   @impl Phoenix.LiveView
   def mount(
@@ -22,6 +23,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
 
     snapshot =
       if connected?(socket) do
+        Events.subscribe()
         topic = "match:match#{match_id}"
         IO.inspect("SUBSCRIBING TO #{topic}")
         Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
@@ -148,6 +150,17 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   @impl Phoenix.LiveView
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({Events, [:match, :updated], updated_match}, socket) do
+    match_id = socket.assigns.match_id
+
+    if updated_match.id == match_id and updated_match.status == :running do
+      ## REDIRECT
+    end
+
+    {:noreply, socket}
   end
 
   @impl true
