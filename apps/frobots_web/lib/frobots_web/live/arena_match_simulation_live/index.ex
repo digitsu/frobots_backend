@@ -230,7 +230,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   @impl true
   def handle_info(:time_left, socket) do
     time_left =
-      if socket.assigns.time_left > 0 do
+      if not is_nil(socket.assigns.time_left) and socket.assigns.time_left > 0 do
         socket.assigns.time_left - 1
       end
 
