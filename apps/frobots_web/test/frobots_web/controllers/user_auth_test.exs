@@ -167,4 +167,11 @@ defmodule FrobotsWeb.UserAuthTest do
       refute conn.status
     end
   end
+
+  describe "fetch_s3_base_url/2" do
+    test "get s3 base url", %{conn: conn, user: _user} do
+      conn = conn |> UserAuth.fetch_s3_base_url([])
+      assert !is_nil(conn.assigns.s3_base_url)
+    end
+  end
 end
