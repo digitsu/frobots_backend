@@ -51,6 +51,11 @@ defmodule Frobots.MatchChannel do
   end
 
   @impl true
+  def handle_info(_, state) do
+    {:noreply, state}
+  end
+
+  @impl true
   def terminate(reason, _state) do
     Logger.debug("Match Channel terminate/2 callback")
     IO.inspect(reason, label: "Reason for termiation")
