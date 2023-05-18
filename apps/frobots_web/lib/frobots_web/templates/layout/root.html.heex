@@ -36,7 +36,8 @@
                 <div class="navbar-user-dropdown tracking-wider leading-relaxed text-gray-400">
                   <button onclick='document.getElementById("navbar-user-dropdown").classList.toggle("show");'
                     class="navbar-user-dropdown-btn">
-                    <img src={Routes.static_path(@conn, "/images/user-icon.png" )} alt="logo" class="w-15 h-8 mr-6">
+                    <img src={if @current_user.avatar do "#{@s3_base_url}#{@current_user.avatar}" else
+                      Routes.static_path(@conn, "/images/user-icon.png" ) end } alt="logo" class="w-15 h-8 mr-6">
                   </button>
                   <div id="navbar-user-dropdown" class="navbar-user-dropdown-content">
                     <div class="navbar-user-dropdown-content-item">

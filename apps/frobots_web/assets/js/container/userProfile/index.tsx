@@ -11,11 +11,12 @@ interface UserProfileProps {
   updateUserProfile: any
   updateUserEmail: any
   updateUserPassword: any
+  editEnabled: boolean
 }
 
 export default (props: UserProfileProps) => {
-  const { user, s3_base_url, user_avatars } = props
-  const [isEdit, enableEdit] = useState(false)
+  const { user, s3_base_url, user_avatars, editEnabled } = props
+  const [isEdit, enableEdit] = useState(editEnabled || false)
 
   const updateEditState = () => {
     enableEdit(!isEdit)
