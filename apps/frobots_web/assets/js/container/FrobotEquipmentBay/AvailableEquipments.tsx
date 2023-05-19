@@ -201,13 +201,15 @@ export default (props: AvailableEquipmentPrpos) => {
 
                       <Box
                         position={'relative'}
+                        width={'100%'}
+                        height={'60%'}
                         sx={{
                           cursor: 'pointer',
                           borderRadius: '6px',
                           border:
                             equipment.equipment_key === activeEquipmentKey
                               ? '4px solid #00AB55'
-                              : 'none',
+                              : '4px solid transparent',
                         }}
                       >
                         {equipment.frobot_name && (
@@ -236,6 +238,8 @@ export default (props: AvailableEquipmentPrpos) => {
                         <Box
                           borderRadius={'6px'}
                           component={'img'}
+                          width={'100%'}
+                          height={'100%'}
                           src={`${imageBaseUrl}${equipment.image}`}
                           onClick={() => switchEquipment(equipment)}
                         />

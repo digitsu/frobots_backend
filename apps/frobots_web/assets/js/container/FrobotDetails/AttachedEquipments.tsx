@@ -122,6 +122,7 @@ export default (props: AttachedEquipmentsProps) => {
                         <Box
                           component={'img'}
                           width={'100%'}
+                          height={'80%'}
                           src={`${imageBaseUrl}${equipment.image}`}
                           sx={{
                             cursor: 'pointer',
@@ -129,12 +130,12 @@ export default (props: AttachedEquipmentsProps) => {
                             border:
                               index === currentIndex
                                 ? '4px solid #00AB55'
-                                : 'none',
+                                : '4px solid transparent',
                           }}
                           onClick={() => switchEquipment(index)}
                         />
 
-                        <Box textAlign={'center'} mt={3}>
+                        <Box textAlign={'center'} mt={3} mb={2}>
                           <Typography
                             sx={{
                               fontSize: '0.8rem',

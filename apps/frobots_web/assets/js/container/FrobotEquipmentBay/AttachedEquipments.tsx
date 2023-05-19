@@ -172,6 +172,7 @@ export default (props: AttachedEquipmentsProps) => {
                         <Box
                           component={'img'}
                           width={'100%'}
+                          height={'60%'}
                           src={`${imageBaseUrl}${equipment.image}`}
                           sx={{
                             cursor: 'pointer',
@@ -179,7 +180,7 @@ export default (props: AttachedEquipmentsProps) => {
                             border:
                               equipment.equipment_key === activeEquipmentKey
                                 ? '4px solid #00AB55'
-                                : 'none',
+                                : '4px solid transparent',
                           }}
                           onClick={() => switchEquipment(equipment)}
                         />
