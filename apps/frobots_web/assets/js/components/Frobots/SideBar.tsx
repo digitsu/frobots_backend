@@ -21,16 +21,23 @@ export interface UserFrobot {
   xp: number
 }
 
-interface SlideBarGridProps {
+interface SideBarGridProps {
   userFrobots: UserFrobot[]
   currentFrobot: any
   currentUser: any
   imageBaseUrl: string
+  redirectBaseUrl: string
 }
 
-export default (props: SlideBarGridProps) => {
+export default (props: SideBarGridProps) => {
   const [selectedImage, setSelectedImage] = useState(0)
-  const { userFrobots, currentFrobot, currentUser, imageBaseUrl } = props
+  const {
+    userFrobots,
+    currentFrobot,
+    currentUser,
+    imageBaseUrl,
+    redirectBaseUrl,
+  } = props
 
   useEffect(() => {
     setSelectedImage(currentFrobot.frobot_id)
@@ -38,7 +45,7 @@ export default (props: SlideBarGridProps) => {
 
   const handleImageClick = (frobot: UserFrobot) => {
     setSelectedImage(frobot.id)
-    window.location.href = `/garage/frobot?id=${frobot.id}`
+    window.location.href = `${redirectBaseUrl}?id=${frobot.id}`
   }
 
   const handleAddFrobot = () => {

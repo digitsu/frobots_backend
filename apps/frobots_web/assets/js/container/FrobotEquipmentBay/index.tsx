@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Box } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
-import SlideBarGrid from '../FrobotDetails/SlideBarGrid'
+import SideBarGrid from '../../components/Frobots/SideBar'
 import AttachedEquipments from './AttachedEquipments'
 import AvailableEquipments from './AvailableEquipments'
 import { frobotEquipmentActions } from '../../redux/slices/frobotEquipment'
@@ -62,11 +62,12 @@ export default (props: any) => {
 
   return (
     <Box display={'flex'} width={'100%'} sx={{ pb: 2, pr: 5 }}>
-      <SlideBarGrid
+      <SideBarGrid
         imageBaseUrl={s3_base_url}
         userFrobots={userFrobots}
         currentFrobot={frobotDetails}
         currentUser={currentUser}
+        redirectBaseUrl="/garage/frobot/equipment_bay"
       />
       <Box
         width={'100%'}

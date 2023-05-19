@@ -241,7 +241,7 @@ export default (props: any) => {
             </Typography>
             <Box>
               <Card>
-                <CardContent>
+                <CardContent sx={{ p: 2.2 }}>
                   <MatchListSearch
                     onQueryChange={handleSearchChange}
                     onTabChange={handleTabsChange}

@@ -81,7 +81,6 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
     <Box sx={{ position: 'relative' }} {...other}>
       <TableContainer
         sx={{
-          maxHeight: 320,
           minHeight: 320,
           backgroundColor: '#212B36',
           boxShadow: 'none',
@@ -165,7 +164,7 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
           <TableBody sx={{ color: '#fff' }}>
             {matches?.length === 0 && (
               <TableRow>
-                <TableCell>No Data Found</TableCell>
+                <TableCell>No Matches Found</TableCell>
               </TableRow>
             )}
 
