@@ -106,7 +106,10 @@ export default (props: AttachedEquipmentsProps) => {
   }
 
   const handleOnClickDetach = (equipment: any) => {
-    detachEquipment(equipment)
+    detachEquipment({
+      ...equipment,
+      current_equipment_key: activeEquipmentKey,
+    })
   }
 
   return (

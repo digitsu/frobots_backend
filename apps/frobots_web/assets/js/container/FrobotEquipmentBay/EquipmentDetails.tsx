@@ -19,21 +19,29 @@ export default (props: EquipmentDetailsPrpos) => {
     detachEquipment,
     redeployEquipment,
   } = props
-  const { activeEquipment } = useSelector((store: any) => store.frobotEquipment)
+  const { activeEquipment, activeEquipmentKey } = useSelector(
+    (store: any) => store.frobotEquipment
+  )
 
   const handleOnClickAttach = () =>
     attachEquipment({
       id: activeEquipment.id,
       equipment_class: activeEquipment.equipment_class,
       frobot_id: currentFrobotId,
+      current_equipment_key: activeEquipmentKey,
     })
 
-  const handleOnClickDetach = () => detachEquipment(activeEquipment)
+  const handleOnClickDetach = () =>
+    detachEquipment({
+      ...activeEquipment,
+      current_equipment_key: activeEquipmentKey,
+    })
 
   const handleOnClickRedeploy = () => {
     redeployEquipment({
       ...activeEquipment,
       current_frobot_id: currentFrobotId,
+      current_equipment_key: activeEquipmentKey,
     })
   }
 

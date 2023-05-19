@@ -113,16 +113,21 @@ export default (props: AvailableEquipmentPrpos) => {
     dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
 
-  const handleOnClickAttach = (equipment) => {
+  const handleOnClickAttach = (equipment: any) => {
     attachEquipment({
       id: equipment.id,
       equipment_class: equipment.equipment_class,
       frobot_id: frobotId,
+      current_equipment_key: activeEquipmentKey,
     })
   }
 
   const handleOnClickRedeploy = (equipment: any) => {
-    redeployEquipment({ ...equipment, current_frobot_id: frobotId })
+    redeployEquipment({
+      ...equipment,
+      current_frobot_id: frobotId,
+      current_equipment_key: activeEquipmentKey,
+    })
   }
 
   return (
