@@ -23,15 +23,6 @@ export default (props: AttachedEquipmentsProps) => {
     equipmentLength > columnsPerPage ? columnsPerPage : equipmentLength
   )
 
-  const getcurrentItemNumber = () => {
-    let itemNumber = 0
-    if (equipmentLength) {
-      itemNumber = leftOffset + currentIndex + 1
-    }
-
-    return `(${itemNumber} / ${equipmentLength})`
-  }
-
   const switchEquipment = (index: number) => {
     setCurrentEquipment(equipments[leftOffset + index])
     setCurrentIndex(index)
@@ -98,35 +89,32 @@ export default (props: AttachedEquipmentsProps) => {
                 sx={{
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
-                {leftOffset !== 0 && (
-                  <ChevronLeftIcon
-                    sx={{
-                      color: '#FFFFFF7E',
-                    }}
-                    onClick={handleLeftClick}
-                  />
-                )}
+                <ChevronLeftIcon
+                  sx={{
+                    color: leftOffset !== 0 ? '#FFFFFF' : '#FFFFFF7E',
+                  }}
+                  onClick={handleLeftClick}
+                />
               </Box>
-              <Typography variant={'subtitle1'}>
-                Attached Equipments {getcurrentItemNumber()}
-              </Typography>
+              <Typography variant={'subtitle1'}>Attached Equipments</Typography>
               <Box
                 sx={{
                   mr: 4,
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
-                {rightOffset !== equipmentLength && (
-                  <ChevronRightIcon
-                    sx={{
-                      color: '#FFFFFF',
-                    }}
-                    onClick={handleRightClick}
-                  />
-                )}
+                <ChevronRightIcon
+                  sx={{
+                    color:
+                      rightOffset !== equipmentLength ? '#FFFFFF' : '#FFFFFF7E',
+                  }}
+                  onClick={handleRightClick}
+                />
               </Box>
             </Box>
 

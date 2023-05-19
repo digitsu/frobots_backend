@@ -105,14 +105,16 @@ export default (props: AttachedEquipmentsProps) => {
     dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
 
-  const handleOnClickDetach = (equipment: any) => detachEquipment(equipment)
+  const handleOnClickDetach = (equipment: any) => {
+    detachEquipment(equipment)
+  }
 
   return (
     <>
       <Grid paddingTop={2}>
         <Card>
           <Typography variant={'subtitle1'} pt={2} pb={2} textAlign={'center'}>
-            Attached Equipments ({currentSection}/{totalSections})
+            Attached Equipments
           </Typography>
           {equipments.length ? (
             <Box
@@ -131,6 +133,7 @@ export default (props: AttachedEquipmentsProps) => {
                   m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
                 <ChevronLeftIcon
@@ -211,6 +214,7 @@ export default (props: AttachedEquipmentsProps) => {
                   m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
                 <ChevronRightIcon
