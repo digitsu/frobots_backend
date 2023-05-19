@@ -74,19 +74,28 @@ export default (props: AttachedEquipmentsProps) => {
       <Card>
         <Grid container spacing={2}>
           <Grid item xs={12} lg={8} md={12} sm={12}>
+            <Typography
+              variant={'subtitle1'}
+              pt={2}
+              pb={2}
+              textAlign={'center'}
+            >
+              Attached Equipments
+            </Typography>
             <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                pl: 4,
-                pt: 2,
-                mt: 1,
+                pl: 2,
+                pr: 2,
                 mb: 2,
               }}
             >
               <Box
+                onClick={handleLeftClick}
                 sx={{
+                  m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
                   cursor: 'pointer',
@@ -96,13 +105,57 @@ export default (props: AttachedEquipmentsProps) => {
                   sx={{
                     color: leftOffset !== 0 ? '#FFFFFF' : '#FFFFFF7E',
                   }}
-                  onClick={handleLeftClick}
                 />
               </Box>
-              <Typography variant={'subtitle1'}>Attached Equipments</Typography>
+              <Grid container spacing={2}>
+                {equipments
+                  .slice(leftOffset, rightOffset)
+                  .map((equipment, index) => (
+                    <Grid item xs={6} sm={4} md={3} lg={3} key={index}>
+                      <Box
+                        position={'relative'}
+                        width={'100%'}
+                        height={'100%'}
+                        m={'auto'}
+                        sx={{ cursor: 'pointer', p: 1 }}
+                      >
+                        <Box
+                          component={'img'}
+                          width={'100%'}
+                          src={`${imageBaseUrl}${equipment.image}`}
+                          sx={{
+                            cursor: 'pointer',
+                            borderRadius: '6px',
+                            border:
+                              index === currentIndex
+                                ? '4px solid #00AB55'
+                                : 'none',
+                          }}
+                          onClick={() => switchEquipment(index)}
+                        />
+
+                        <Box textAlign={'center'} mt={3}>
+                          <Typography
+                            sx={{
+                              fontSize: '0.8rem',
+                              overflow: 'visible',
+                              textTransform: 'capitalize',
+                            }}
+                            fontWeight={'bold'}
+                            variant="subtitle1"
+                          >
+                            {equipment.equipment_class}{' '}
+                            {equipment.equipment_type}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Grid>
+                  ))}
+              </Grid>
               <Box
+                onClick={handleRightClick}
                 sx={{
-                  mr: 4,
+                  m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
                   cursor: 'pointer',
@@ -113,62 +166,7 @@ export default (props: AttachedEquipmentsProps) => {
                     color:
                       rightOffset !== equipmentLength ? '#FFFFFF' : '#FFFFFF7E',
                   }}
-                  onClick={handleRightClick}
                 />
-              </Box>
-            </Box>
-
-            <Box
-              sx={{
-                overflowX: 'scroll',
-                '&::-webkit-scrollbar': { display: 'none' },
-              }}
-            >
-              <Box
-                display={'flex'}
-                sx={{
-                  '@media (max-width: 900px)': {
-                    overflowX: 'scroll',
-                  },
-                }}
-              >
-                {equipments
-                  .slice(leftOffset, rightOffset)
-                  .map((equipment: any, index: number) => (
-                    <Grid
-                      item
-                      lg={4}
-                      md={8}
-                      sm={6}
-                      xs={12}
-                      key={index}
-                      onClick={() => switchEquipment(index)}
-                    >
-                      <Box sx={{ px: 4, pb: 2 }} width={250} height={250}>
-                        <Box
-                          component={'img'}
-                          src={`${imageBaseUrl}${equipment.image}`}
-                          sx={{
-                            borderRadius: '20px',
-                            border:
-                              index === currentIndex
-                                ? '4px solid #00AB55'
-                                : 'none',
-                          }}
-                        />
-                        <Box textAlign={'center'} mt={3}>
-                          <Typography
-                            fontWeight={'bold'}
-                            variant="subtitle1"
-                            textTransform={'capitalize'}
-                          >
-                            {equipment.equipment_class}{' '}
-                            {equipment.equipment_type}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Grid>
-                  ))}
               </Box>
             </Box>
           </Grid>
