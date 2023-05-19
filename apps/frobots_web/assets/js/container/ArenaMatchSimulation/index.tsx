@@ -42,7 +42,7 @@ export default (props: any) => {
   useEffect(() => {
     if (showStartMatchButton || isGameStarted) {
       const players =
-        snapshot?.tank ||
+        snapshot?.tank.filter(({ status }) => status !== 'disabled') ||
         slots
           .filter((frobot) => frobot.frobot !== null)
           .map((slot) => ({
@@ -52,10 +52,18 @@ export default (props: any) => {
             health: 100,
             heading: 0,
             speed: 0,
-            display_name: slot.frobot.name
+            display_name: slot.frobot.name,
           }))
       const tanks = [...players].map(
-        ({ name, curr_loc, health, max_health, heading, speed, display_name }) => {
+        ({
+          name,
+          curr_loc,
+          health,
+          max_health,
+          heading,
+          speed,
+          display_name,
+        }) => {
           var asset = tankHead(`${name}`)
           var tank_sprite = new PIXI.Sprite(
             PIXI.Texture.from('/images/' + asset + '.png')
