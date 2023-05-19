@@ -114,18 +114,6 @@ export default (props: any) => {
                       </Typography>
                     </Box>
                   </Box>
-
-                  <Box
-                    display={'flex'}
-                    sx={{
-                      height: '100%',
-                      position: 'absolute',
-                      left: '50%',
-                      borderRight: 1,
-                      borderColor: 'rgba(145, 158, 171, 0.24)',
-                      borderStyle: 'dotted',
-                    }}
-                  />
                   <Box
                     display={'flex'}
                     gap={3}
@@ -185,17 +173,6 @@ export default (props: any) => {
                       </Typography>
                     </Box>
                   </Box>
-                  <Box
-                    display={'flex'}
-                    sx={{
-                      height: '100%',
-                      position: 'absolute',
-                      left: '50%',
-                      borderRight: 1,
-                      borderColor: 'rgba(145, 158, 171, 0.24)',
-                      borderStyle: 'dotted',
-                    }}
-                  />
                   <Box
                     display={'flex'}
                     gap={3}

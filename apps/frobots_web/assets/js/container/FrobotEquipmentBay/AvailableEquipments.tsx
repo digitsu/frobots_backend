@@ -149,7 +149,7 @@ export default (props: AvailableEquipmentPrpos) => {
               pb={2}
               textAlign={'center'}
             >
-              Available Equipments ({currentSection}/{totalSections})
+              Available Equipments
             </Typography>
             <Box
               minHeight={'4vh'}
@@ -167,6 +167,7 @@ export default (props: AvailableEquipmentPrpos) => {
                   m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
                 <ChevronLeftIcon
@@ -291,6 +292,7 @@ export default (props: AvailableEquipmentPrpos) => {
                   m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
                 <ChevronRightIcon
