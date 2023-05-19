@@ -78,7 +78,6 @@ export default (props: FrobotDetailsProps) => {
                   equipments={[
                     ...frobotDetails.cannon_inst,
                     ...frobotDetails.scanner_inst,
-                    ...frobotDetails.missile_inst,
                   ]}
                   isOwnedFrobot={isOwnedFrobot}
                   frobotId={frobotId}

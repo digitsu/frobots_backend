@@ -287,9 +287,7 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
   end
 
   defp _format_equipment_details(equipments) do
-    final_equipments =
-      equipments["xframes"] ++
-        equipments["cannons"] ++ equipments["scanners"] ++ equipments["missiles"]
+    final_equipments = equipments["xframes"] ++ equipments["cannons"] ++ equipments["scanners"]
 
     if Enum.empty?(final_equipments) do
       []
