@@ -11,13 +11,14 @@ export default ({
   isHost,
   setShowOptions,
 }) => {
-  const { updateSlot: updateSlotStore } = arenaLobbyActions
+  const { setCurrentActiveSlot } = arenaLobbyActions
+  const dispatch = useDispatch()
   const { currentActiveSlot, slots, s3Url } = useSelector(
     (store) => store.arenaLobby
   )
   const [currentSlot, setCurrentSlot] = useState(null)
 
-  const deployFrobot = () => {
+  const deployFrobot = (slotDetails) => {
     const slot = slots.find(({ id }) => id === currentActiveSlot?.id)
     setCurrentStep(currentStep + 1)
     updateSlot({
@@ -26,7 +27,7 @@ export default ({
         slot_id: slot?.id,
         status: 'ready',
         slot_type: isHost ? 'host' : 'player',
-        frobot_id: currentSlot.id,
+        frobot_id: slotDetails.id,
       },
     })
   }
@@ -70,7 +71,10 @@ export default ({
                       backgroundColor:
                         currentSlot?.id === slot.id ? `#1C3F3B` : 'transparent',
                     }}
-                    onClick={() => setCurrentSlot(slot)}
+                    onClick={() => {
+                      setCurrentSlot(slot)
+                      deployFrobot(slot)
+                    }}
                   >
                     <Box position={'relative'}>
                       <Box
@@ -112,22 +116,11 @@ export default ({
                 onClick={() => {
                   isHost
                     ? setCurrentStep(currentStep - 1)
-                    : setShowOptions(false)
+                    : dispatch(setCurrentActiveSlot(null))
                 }}
               >
                 Back
               </Button>
-              <Box mt={1}>
-                {' '}
-                <Button
-                  disabled={userFrobots.length === 0 || currentSlot === null}
-                  fullWidth
-                  variant="contained"
-                  onClick={deployFrobot}
-                >
-                  Deploy Frobot
-                </Button>
-              </Box>
             </Box>
           </Box>
         </Box>
