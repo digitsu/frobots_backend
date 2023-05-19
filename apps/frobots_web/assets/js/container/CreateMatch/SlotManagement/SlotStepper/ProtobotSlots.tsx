@@ -15,14 +15,14 @@ export default ({
   const dispatch = useDispatch()
   const [currentSlot, setCurrentSlot] = useState(null)
 
-  const deployProtobot = () => {
+  const deployProtobot = (slot) => {
     dispatch(
       updateSlot({
         ...currentActiveSlot,
         type: 'proto',
-        name: `NPC: ${currentSlot.name}`,
-        url: `${imageBaseUrl}${currentSlot.avatar}`,
-        slotDetails: currentSlot,
+        name: `NPC: ${slot.name}`,
+        url: `${imageBaseUrl}${slot.avatar}`,
+        slotDetails: slot,
       })
     )
     setCurrentStep(currentStep + 1)
@@ -37,7 +37,7 @@ export default ({
               p: 3,
               pb: 1,
               height: '100%',
-              maxHeight: 490,
+              maxHeight: 580,
               overflowY: 'scroll',
             }}
           >
@@ -66,7 +66,10 @@ export default ({
                             ? `#1C3F3B`
                             : 'transparent',
                       }}
-                      onClick={() => setCurrentSlot(slot)}
+                      onClick={() => {
+                        deployProtobot(slot)
+                        setCurrentSlot(slot)
+                      }}
                     >
                       <Box position={'relative'}>
                         <Box
@@ -110,17 +113,6 @@ export default ({
               >
                 Back
               </Button>
-              <Box mt={1}>
-                {' '}
-                <Button
-                  fullWidth
-                  disabled={currentSlot === null || protobots.length === 0}
-                  variant="contained"
-                  onClick={deployProtobot}
-                >
-                  Deploy Protobot
-                </Button>
-              </Box>
             </Box>
           </Box>
         </Box>

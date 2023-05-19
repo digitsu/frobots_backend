@@ -4,7 +4,7 @@ defmodule FrobotsWeb.UserProfileLive.Index do
   alias Frobots.{Accounts, Api, Avatars, ChangesetError, Events}
 
   @impl Phoenix.LiveView
-  def mount(_params, session, socket) do
+  def mount(params, session, socket) do
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     s3_base_url = Api.get_s3_base_url()
 
@@ -12,6 +12,7 @@ defmodule FrobotsWeb.UserProfileLive.Index do
      socket
      |> assign(:user, current_user)
      |> assign(:username, get_user_name(current_user))
+     |> assign(:is_edit_enabled, !is_nil(params["edit"]))
      |> assign(:s3_base_url, s3_base_url)
      |> assign(:avatars, Avatars.list_user_avatars())
      |> assign(
@@ -36,25 +37,18 @@ defmodule FrobotsWeb.UserProfileLive.Index do
      push_event(socket, "react.return_user_profile", %{
        "user" => destruct_user_details(socket.assigns.user),
        "s3_base_url" => socket.assigns.s3_base_url,
-       "user_avatars" => socket.assigns.avatars
+       "user_avatars" => socket.assigns.avatars,
+       "editEnabled" => socket.assigns.is_edit_enabled
      })}
   end
 
   def handle_event("react.update_user_details", params, socket) do
     case Accounts.update_profile(socket.assigns.user, params) do
-      {:ok, updatedUser} ->
+      {:ok, _updatedUser} ->
         {:noreply,
-         push_event(
-           socket
-           |> assign(:username, get_user_name(updatedUser))
-           |> put_flash(:info, "User details updated successfully"),
-           "react.return_user_profile",
-           %{
-             "user" => destruct_user_details(updatedUser),
-             "s3_base_url" => socket.assigns.s3_base_url,
-             "user_avatars" => socket.assigns.avatars
-           }
-         )}
+         socket
+         |> put_flash(:info, "User details updated successfully")
+         |> redirect(to: "/profile?edit")}
 
       {:_error, changeset} ->
         errors = ChangesetError.translate_errors(changeset)
@@ -81,20 +75,12 @@ defmodule FrobotsWeb.UserProfileLive.Index do
         )
 
         {:noreply,
-         push_event(
-           socket
-           |> assign(:username, get_user_name(applied_user))
-           |> put_flash(
-             :info,
-             "A link to confirm your email change has been sent to the new address."
-           ),
-           "react.return_user_profile",
-           %{
-             "user" => destruct_user_details(applied_user),
-             "s3_base_url" => socket.assigns.s3_base_url,
-             "user_avatars" => socket.assigns.avatars
-           }
-         )}
+         socket
+         |> put_flash(
+           :info,
+           "A link to confirm your email change has been sent to the new address."
+         )
+         |> redirect(to: "/profile?edit")}
 
       {:error, changeset} ->
         errors = ChangesetError.translate_errors(changeset)
@@ -113,20 +99,11 @@ defmodule FrobotsWeb.UserProfileLive.Index do
     user = socket.assigns.user
 
     case Accounts.update_user_password(user, password, user_params) do
-      {:ok, user} ->
+      {:ok, _user} ->
         {:noreply,
-         push_event(
-           socket
-           |> assign(:username, get_user_name(user))
-           |> put_flash(:info, "Password updated successfully.")
-           |> push_redirect(to: "/users/log_in"),
-           "react.return_user_profile",
-           %{
-             "user" => destruct_user_details(user),
-             "s3_base_url" => socket.assigns.s3_base_url,
-             "user_avatars" => socket.assigns.avatars
-           }
-         )}
+         socket
+         |> put_flash(:info, "Password updated successfully.")
+         |> redirect(to: "/users/log_in")}
 
       {:error, changeset} ->
         errors = ChangesetError.translate_errors(changeset)

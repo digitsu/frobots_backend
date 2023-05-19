@@ -8,13 +8,13 @@ export default ({ slotOptions, slotDetails, imageBaseUrl }) => {
 
   return (
     <>
-      {showOptions ? (
+      {showOptions ||
+      slotDetails?.slotDetails === null ||
+      slotDetails?.type === 'open' ? (
         <SlotStepper slotDetails={slotDetails} imageBaseUrl={imageBaseUrl} />
       ) : (
         <>
-          {slotDetails?.slotDetails === null ||
-          slotDetails?.type === 'open' ||
-          slotDetails?.type === 'closed' ? (
+          {slotDetails?.type === 'closed' ? (
             <UnoccupiedSlot
               modifyHandler={() => setShowOptions(true)}
               type={slotDetails?.type}

@@ -61,9 +61,14 @@ export default (props: UserProfileEditProps) => {
     setNewImage(avatarUrl)
   }
 
-  const updatePlayer = () => {
+  const updatePlayerAvatar = () => {
     updateUserProfile({
       avatar: newImage,
+    })
+  }
+
+  const updatePlayerName = () => {
+    updateUserProfile({
       name: userName,
     })
   }
@@ -133,7 +138,7 @@ export default (props: UserProfileEditProps) => {
 
           <Box m={2}>
             <Button
-              onClick={updatePlayer}
+              onClick={updatePlayerAvatar}
               variant="contained"
               sx={{
                 px: 5,
@@ -220,7 +225,7 @@ export default (props: UserProfileEditProps) => {
                   <Button
                     variant="outlined"
                     disabled={!userName}
-                    onClick={updatePlayer}
+                    onClick={updatePlayerName}
                   >
                     Save
                   </Button>

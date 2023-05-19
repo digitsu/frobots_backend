@@ -15,23 +15,24 @@ export default ({ slotDetails, imageBaseUrl }) => {
   const [currentStep, setCurrentStep] = useState(0)
   const dispatch = useDispatch()
 
-  const slotSelectionHandler = () => {
-    if (currentSlot?.type === 'host' || currentSlot?.type === 'proto') {
+  const slotSelectionHandler = (slot) => {
+    if (slot?.type === 'host' || slot?.type === 'proto') {
       setCurrentStep(currentStep + 1)
-    } else if (currentSlot?.type === 'open' || currentSlot?.type === 'closed') {
+    } else if (slot?.type === 'open' || slot?.type === 'closed') {
       dispatch(
         updateSlot({
           ...currentActiveSlot,
-          type: currentSlot.type,
-          label: currentSlot.type === 'open' ? 'Open Slot' : 'Closed Slot',
-          name: currentSlot.type === 'open' ? 'Open' : 'Closed',
-          url: currentSlot.url,
-          slotDetails: currentSlot,
+          type: slot.type,
+          label: slot.type === 'open' ? 'Open Slot' : 'Closed Slot',
+          name: slot.type === 'open' ? 'Open' : 'Closed',
+          url: slot.url,
+          slotDetails: slot,
         })
       )
       setCurrentStep(currentStep + 1)
     }
   }
+
   const SlotItemsConfiguration = () => {
     return (
       <Box sx={{ p: 4, pb: 0 }}>
@@ -59,7 +60,10 @@ export default ({ slotDetails, imageBaseUrl }) => {
                       ? `#1C3F3B`
                       : 'transparent',
                 }}
-                onClick={() => setCurrentSlot(slot)}
+                onClick={() => {
+                  slotSelectionHandler(slot)
+                  setCurrentSlot(slot)
+                }}
               >
                 <Box component={'img'} src={slot.url} />
                 <Box>
@@ -70,11 +74,6 @@ export default ({ slotDetails, imageBaseUrl }) => {
             </Grid>
           ))}
         </Grid>
-        <Box textAlign={'center'} mt={4} width={'100%'} display={'flex'}>
-          <Button fullWidth variant="contained" onClick={slotSelectionHandler}>
-            Select And Continue
-          </Button>
-        </Box>
       </Box>
     )
   }

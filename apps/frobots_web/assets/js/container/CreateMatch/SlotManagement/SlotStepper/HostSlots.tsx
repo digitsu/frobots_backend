@@ -17,14 +17,14 @@ export default ({
   const dispatch = useDispatch()
   const [currentSlot, setCurrentSlot] = useState(null)
 
-  const deployFrobot = () => {
+  const deployFrobot = (slot) => {
     dispatch(
       updateSlot({
         ...currentActiveSlot,
         type: 'host',
-        name: `Host: ${currentSlot?.name}`,
-        url: `${imageBaseUrl}${currentSlot.avatar}`,
-        slotDetails: currentSlot,
+        name: `Host: ${slot?.name}`,
+        url: `${imageBaseUrl}${slot.avatar}`,
+        slotDetails: slot,
       })
     )
     setCurrentStep(currentStep + 1)
@@ -41,7 +41,7 @@ export default ({
     <>
       {currentStep === 1 && (
         <Box sx={{ height: 554 }}>
-          <Box sx={{ p: 3, pb: 1, height: 490, overflowY: 'scroll' }}>
+          <Box sx={{ p: 3, pb: 1, height: 530, overflowY: 'scroll' }}>
             <Grid container spacing={3}>
               {filteredFrobots.map((slot) => (
                 <Grid item width={'100%'}>
@@ -64,7 +64,10 @@ export default ({
                       backgroundColor:
                         currentSlot?.id === slot.id ? `#1C3F3B` : 'transparent',
                     }}
-                    onClick={() => setCurrentSlot(slot)}
+                    onClick={() => {
+                      deployFrobot(slot)
+                      setCurrentSlot(slot)
+                    }}
                   >
                     <Box position={'relative'}>
                       <Box
@@ -109,17 +112,6 @@ export default ({
               >
                 Back
               </Button>
-              <Box mt={1}>
-                {' '}
-                <Button
-                  fullWidth
-                  disabled={userFrobots.length === 0 || currentSlot === null}
-                  variant="contained"
-                  onClick={deployFrobot}
-                >
-                  Deploy Frobot
-                </Button>
-              </Box>
             </Box>
           </Box>
         </Box>
