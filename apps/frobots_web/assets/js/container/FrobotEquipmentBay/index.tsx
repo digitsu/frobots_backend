@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box } from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import SideBarGrid from '../../components/Frobots/SideBar'
 import AttachedEquipments from './AttachedEquipments'
 import AvailableEquipments from './AvailableEquipments'
@@ -25,40 +25,50 @@ export default (props: any) => {
   const [attachedEquipments, setAttachedEquipments] = useState(frobotEquipments)
   const [availableEquipments, setAvailableEquipments] =
     useState(equipmentInventory)
-  const { activeEquipmentKey } = useSelector(
-    (store: any) => store.frobotEquipment
-  )
 
   useEffect(() => {
     const currentEquipment = equipmentInventory.length
       ? equipmentInventory[0]
       : frobotEquipments[0]
+
     dispatch(setCurrentEquipment(currentEquipment))
     dispatch(setActiveEquipmentKey(currentEquipment.equipment_key))
     setAttachedEquipments(frobotEquipments)
     setAvailableEquipments(equipmentInventory)
   }, [])
 
-  window.addEventListener(`phx:frobot_equipments_updated`, (e: any) => {
-    setAttachedEquipments(e.detail.frobotEquipments)
-    setAvailableEquipments(e.detail.equipmentInventory)
+  const handleEquipments = useCallback((e: any) => {
+    let currentEquipment: any
 
-    if (activeEquipmentKey) {
-      const currentEquipment = [
+    if (e?.detail?.currentEquipmentKey) {
+      currentEquipment = [
         ...e.detail.equipmentInventory,
         ...e.detail.frobotEquipments,
-      ].find((equipment: any) => equipment.equipment_key === activeEquipmentKey)
-
-      dispatch(setCurrentEquipment(currentEquipment))
-      dispatch(setActiveEquipmentKey(currentEquipment.equipment_key))
+      ].find(
+        (equipment: any) =>
+          equipment.equipment_key === e.detail.currentEquipmentKey
+      )
     } else {
-      const currentEquipment = e.detail.equipmentInventory.length
+      currentEquipment = e.detail.equipmentInventory.length
         ? e.detail.equipmentInventory[0]
         : e.detail.frobotEquipments[0]
-      dispatch(setCurrentEquipment(currentEquipment))
-      dispatch(setActiveEquipmentKey(currentEquipment.equipment_key))
     }
-  })
+
+    dispatch(setCurrentEquipment(currentEquipment))
+    dispatch(setActiveEquipmentKey(currentEquipment.equipment_key))
+    setAttachedEquipments(e.detail.frobotEquipments)
+    setAvailableEquipments(e.detail.equipmentInventory)
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener(`phx:frobot_equipments_updated`, handleEquipments)
+
+    return () =>
+      document.removeEventListener(
+        `phx:frobot_equipments_updated`,
+        handleEquipments
+      )
+  }, [])
 
   return (
     <Box display={'flex'} width={'100%'} sx={{ pb: 2, pr: 5 }}>

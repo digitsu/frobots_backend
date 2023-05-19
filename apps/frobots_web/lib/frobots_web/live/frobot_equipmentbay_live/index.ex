@@ -113,12 +113,21 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
   end
 
   def handle_event("react.detach_frobot_equipments", params, socket) do
-    %{"equipment_class" => equipment_class, "id" => equipment_id, "frobot_id" => frobot_id} =
-      params
+    %{
+      "equipment_class" => equipment_class,
+      "id" => equipment_id,
+      "frobot_id" => frobot_id,
+      "current_equipment_key" => current_equipment_key
+    } = params
 
     case Equipment.dequip_part(equipment_id, equipment_class) do
       {:ok, _equipment_inst} ->
-        get_latest_info(frobot_id, "frobot dequipped part instance", socket)
+        get_latest_info(
+          frobot_id,
+          "frobot dequipped part instance",
+          current_equipment_key,
+          socket
+        )
 
       {:error, reason} ->
         {:noreply, socket |> put_flash(:error, reason)}
@@ -126,11 +135,16 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
   end
 
   def handle_event("react.detach_frobot_xframe", params, socket) do
-    frobot = Assets.get_frobot!(params["frobot_id"])
+    %{
+      "frobot_id" => frobot_id,
+      "current_equipment_key" => current_equipment_key
+    } = params
+
+    frobot = Assets.get_frobot!(frobot_id)
 
     case Equipment.dequip_xframe(frobot) do
       {:ok, _xframe} ->
-        get_latest_info(params["frobot_id"], "xframe detached successfully", socket)
+        get_latest_info(frobot_id, "xframe detached successfully", current_equipment_key, socket)
 
       {:error, reason} ->
         {:noreply, socket |> put_flash(:error, reason)}
@@ -138,12 +152,16 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
   end
 
   def handle_event("react.frobot_equipy_equipment", params, socket) do
-    %{"equipment_class" => equipment_class, "id" => equipment_id, "frobot_id" => frobot_id} =
-      params
+    %{
+      "equipment_class" => equipment_class,
+      "id" => equipment_id,
+      "frobot_id" => frobot_id,
+      "current_equipment_key" => current_equipment_key
+    } = params
 
     case Equipment.equip_part(equipment_id, frobot_id, equipment_class) do
       {:ok, message} ->
-        get_latest_info(frobot_id, message, socket)
+        get_latest_info(frobot_id, message, current_equipment_key, socket)
 
       {:error, reason} ->
         {:noreply, socket |> put_flash(:error, reason)}
@@ -151,11 +169,15 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
   end
 
   def handle_event("react.frobot_equipy_xframe", params, socket) do
-    %{"id" => equipment_id, "frobot_id" => frobot_id} = params
+    %{
+      "id" => equipment_id,
+      "frobot_id" => frobot_id,
+      "current_equipment_key" => current_equipment_key
+    } = params
 
     case Equipment.equip_xframe(equipment_id, frobot_id) do
       {:ok, message} ->
-        get_latest_info(frobot_id, message, socket)
+        get_latest_info(frobot_id, message, current_equipment_key, socket)
 
       {:error, reason} ->
         {:noreply, socket |> put_flash(:error, reason)}
@@ -163,13 +185,22 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
   end
 
   def handle_event("react.frobot_redeploy_xframe", params, socket) do
-    %{"frobot_id" => frobot_id, "current_frobot_id" => current_frobot_id} = params
+    %{
+      "frobot_id" => frobot_id,
+      "current_frobot_id" => current_frobot_id,
+      "current_equipment_key" => current_equipment_key
+    } = params
 
     frobot = Assets.get_frobot!(frobot_id)
 
     case Equipment.dequip_xframe(frobot) do
       {:ok, _xframe} ->
-        get_latest_info(current_frobot_id, "Successfully redeployed xframe", socket)
+        get_latest_info(
+          current_frobot_id,
+          "Successfully redeployed xframe",
+          current_equipment_key,
+          socket
+        )
 
       {:error, reason} ->
         {:noreply, socket |> put_flash(:error, reason)}
@@ -180,44 +211,30 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
     %{
       "equipment_class" => equipment_class,
       "id" => equipment_id,
-      "current_frobot_id" => current_frobot_id
+      "current_frobot_id" => current_frobot_id,
+      "current_equipment_key" => current_equipment_key
     } = params
 
     case Equipment.dequip_part(equipment_id, equipment_class) do
       {:ok, _equipment_inst} ->
-        get_latest_info(current_frobot_id, "Successfully redeployed part instance", socket)
+        get_latest_info(
+          current_frobot_id,
+          "Successfully redeployed part instance",
+          current_equipment_key,
+          socket
+        )
 
       {:error, reason} ->
         {:noreply, socket |> put_flash(:error, reason)}
     end
   end
 
-  def get_latest_info(frobot_id, message, socket) do
-    %{user: current_user, s3_base_url: s3_base_url, user_frobots: user_frobots} = socket.assigns
+  def get_latest_info(frobot_id, message, current_equipment_key, socket) do
+    %{user: current_user} = socket.assigns
 
     frobot = Assets.get_frobot!(frobot_id)
     user_equipment_inventory = Equipment.list_user_equipment_details(current_user.id)
     attached_equipments = Equipment.list_frobot_equipment_details(frobot_id)
-
-    currentUser = %{
-      "id" => current_user.id,
-      "avatar" => current_user.avatar,
-      "email" => current_user.email,
-      "name" => current_user.name,
-      "sparks" => current_user.sparks
-    }
-
-    frobotDetails = %{
-      "frobot_id" => frobot.id,
-      "name" => frobot.name,
-      "bio" => frobot.bio,
-      "pixellated_img" => frobot.pixellated_img,
-      "user_id" => frobot.user_id,
-      "avatar" => frobot.avatar,
-      "class" => frobot.class,
-      "inserted_at" => frobot.inserted_at
-    }
-
     equipment_inventory = _format_equipment_details(user_equipment_inventory)
 
     available_equipments =
@@ -240,12 +257,9 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
        |> put_flash(:info, message),
        :frobot_equipments_updated,
        %{
-         "currentUser" => currentUser,
-         "frobotDetails" => frobotDetails,
-         "s3_base_url" => s3_base_url,
-         "userFrobots" => extract_frobots(user_frobots),
          "frobotEquipments" => frobotEquipments,
-         "equipmentInventory" => available_equipments
+         "equipmentInventory" => available_equipments,
+         "currentEquipmentKey" => current_equipment_key
        }
      )}
   end
