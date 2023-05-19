@@ -441,6 +441,7 @@ export class Game {
 
   destroy() {
     this.app.destroy(true)
+    this.statusView.destroy(true)
   }
 
   get_stat(tank) {

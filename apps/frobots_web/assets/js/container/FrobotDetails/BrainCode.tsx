@@ -37,7 +37,7 @@ export default (props: any) => {
   const [blocklyCode, setBlocklyCode] = useState(
     frobot.blockly_code || BlankBlocklyCode
   )
-  const [gameState, setGameState] = useState({ event: () => {} })
+  const [gameState, setGameState] = useState(null)
   const [blocklyLuaCode, setBlocklyLuaCode] = useState('')
   const [isSelectedProtobot, setIsSelectedProtobot] = useState(false)
   const [isRequestedMatch, setIsRequestedMatch] = useState(false)
@@ -140,10 +140,10 @@ export default (props: any) => {
   )
 
   const handleGameEvent = (e) => {
-    if(e.detail.id){
+    if (e.detail.id && gameState === null) {
       const players = e.detail.slots.map((slot) => ({
-        name : `${slot.frobot.name}#${slot.id}`,
-        displayName : slot.frobot.name
+        name: `${slot.frobot.name}#${slot.id}`,
+        displayName: slot.frobot.name,
       }))
       const tanks = players.map(({ name, displayName }) => {
         var asset = tankHead(name)
@@ -155,11 +155,20 @@ export default (props: any) => {
         tank_sprite.width = 15
         tank_sprite.height = 15
         return {
-          Tank: new Tank(`${name}`, 748, 610, 219, 100, tank_sprite,0,displayName ),
+          Tank: new Tank(
+            `${name}`,
+            748,
+            610,
+            219,
+            100,
+            tank_sprite,
+            0,
+            displayName
+          ),
           asset: { [`${name}`]: asset },
         }
       })
-  
+
       if (isSimulationStarted) {
         const game = new Game(
           tanks.map(({ Tank }) => Tank),
@@ -176,13 +185,11 @@ export default (props: any) => {
         if (game !== null) {
           setGameState(game)
         }
-
+      }
+    } else {
+      gameState.event(e.detail)
     }
   }
-  else{
-    gameState.event(e.detail)
-  }
-}
   window.addEventListener(`phx:simulator_event`, handleGameEvent)
 
   return !isRequestedMatch ? (
