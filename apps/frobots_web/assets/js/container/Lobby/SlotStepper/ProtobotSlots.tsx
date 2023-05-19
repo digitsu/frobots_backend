@@ -16,7 +16,7 @@ export default ({
   )
   const dispatch = useDispatch()
   const [currentSlot, setCurrentSlot] = useState(null)
-  const deployProtobot = () => {
+  const deployProtobot = (slotDetails) => {
     const slot = slots.find(({ id }) => id === currentActiveSlot?.id)
     updateSlot({
       type: 'ready',
@@ -24,7 +24,7 @@ export default ({
         slot_id: slot?.id,
         status: 'ready',
         slot_type: 'protobot',
-        frobot_id: currentSlot.id,
+        frobot_id: slotDetails.id,
       },
     })
     setCurrentStep(currentStep + 1)
@@ -87,7 +87,10 @@ export default ({
                             ? `#1C3F3B`
                             : 'transparent',
                       }}
-                      onClick={() => setCurrentSlot(slot)}
+                      onClick={() => {
+                        deployProtobot(slot)
+                        setCurrentSlot(slot)
+                      }}
                     >
                       <Box position={'relative'}>
                         <Box
@@ -131,17 +134,6 @@ export default ({
               >
                 Back
               </Button>
-              <Box mt={1}>
-                {' '}
-                <Button
-                  disabled={protobots.length === 0 || currentSlot === null}
-                  fullWidth
-                  variant="contained"
-                  onClick={deployProtobot}
-                >
-                  Deploy Protobot
-                </Button>
-              </Box>
             </Box>
           </Box>
         </Box>

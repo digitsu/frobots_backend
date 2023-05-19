@@ -11,7 +11,9 @@ export default ({ slotDetails, updateSlot, isHost }) => {
   const { s3Url, currentActiveSlot } = useSelector((store) => store.arenaLobby)
   return (
     <>
-      {showOptions ? (
+      {showOptions ||
+      slotDetails?.type === 'open' ||
+      (slotDetails?.slotDetails === null && isHost) ? (
         <SlotStepper
           slotDetails={slotDetails}
           updateSlot={updateSlot}
@@ -20,9 +22,7 @@ export default ({ slotDetails, updateSlot, isHost }) => {
         />
       ) : (
         <>
-          {slotDetails?.slotDetails === null ||
-          slotDetails?.type === 'open' ||
-          slotDetails?.type === 'closed' ? (
+          {slotDetails?.type === 'closed' ? (
             <UnoccupiedSlot
               modifyHandler={() => setShowOptions(true)}
               type={slotDetails?.type}
