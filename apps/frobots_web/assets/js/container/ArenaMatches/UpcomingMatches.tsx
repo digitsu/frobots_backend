@@ -3,7 +3,6 @@ import { Box, Typography } from '@mui/material'
 import { GridSlider } from '../../components/Slider'
 
 export default ({ host_matches, joined_matches, watch_matches, imageList }) => {
-  console.log({ host_matches, joined_matches, watch_matches, imageList })
   return (
     <Box>
       {joined_matches.length ? (
