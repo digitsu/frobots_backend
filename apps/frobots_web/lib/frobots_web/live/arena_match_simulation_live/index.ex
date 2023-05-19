@@ -46,7 +46,9 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
                 Fubars.Rig.get_state(tank)
                 |> Map.from_struct()
                 |> Map.take([:curr_loc, :health, :status, :name, :max_health, :heading, :speed])
-              end)
+              end) ++
+                (arena_state.death_map
+                 |> Enum.map(fn {name, _} -> %{status: :disabled, name: name} end))
           }
         end
       end
