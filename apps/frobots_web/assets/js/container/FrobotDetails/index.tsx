@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 import AttachedEquipments from './AttachedEquipments'
 import BattlesTable from './BattlesTable'
 import FrobotDetailsContainer from './FrobotDetailsContainer'
-import SlideBarGrid, { UserFrobot } from './SlideBarGrid'
+import SideBarGrid, { UserFrobot } from '../../components/Frobots/SideBar'
 import DetailsEdit from './DetailsEdit'
 
 interface FrobotDetailsProps {
@@ -43,11 +43,12 @@ export default (props: FrobotDetailsProps) => {
         {!isEdit && (
           <Box display={'flex'} sx={{ pl: isOwnedFrobot ? 0 : 4 }}>
             {isOwnedFrobot && (
-              <SlideBarGrid
+              <SideBarGrid
                 userFrobots={userFrobots}
                 currentFrobot={frobotDetails}
                 currentUser={currentUser}
                 imageBaseUrl={s3_base_url}
+                redirectBaseUrl="/garage/frobot"
               />
             )}
 
