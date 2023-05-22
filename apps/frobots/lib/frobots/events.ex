@@ -223,8 +223,7 @@ defmodule Frobots.Events do
       )
       |> length()
 
-    if(is_nil(host_matches), do: 0, else: host_matches) +
-      if is_nil(participation_matches), do: 0, else: participation_matches
+    if(is_nil(host_matches), do: 0, else: host_matches) + participation_matches
   end
 
   def list_matches_by_status_for_user(status, user_id) when is_atom(status) do
