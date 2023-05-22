@@ -209,7 +209,7 @@ defmodule Frobots.Events do
       )
 
     participation_matches =
-      Repo.one(
+      Repo.all(
         from m in Match,
           where: m.status == ^status and m.type == :real,
           join: s in "slots",
@@ -219,8 +219,9 @@ defmodule Frobots.Events do
           where: f.user_id == ^user_id and m.user_id != ^user_id,
           distinct: m.id,
           group_by: m.id,
-          select: count(m.id)
+          select: %{id: m.id}
       )
+      |> length()
 
     if(is_nil(host_matches), do: 0, else: host_matches) +
       if is_nil(participation_matches), do: 0, else: participation_matches
