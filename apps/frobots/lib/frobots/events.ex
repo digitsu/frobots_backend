@@ -414,26 +414,34 @@ defmodule Frobots.Events do
           "xp_earned" => 0
         }
 
-    q
-    |> Repo.all()
-    |> Enum.map(fn e ->
-      %{
-        "winner" => e["winner"],
-        "status" => get_status(e["status"], e["reason"]),
-        "time" => e["time"],
-        "frobot" => %{
-          "id" => e["frobot"]["id"],
-          "name" => e["frobot"]["name"],
-          "avatar" => e["frobot"]["avatar"],
-          "pixellated_image" => e["frobot"]["pixellated_image"],
-          "xp" => e["frobot"]["xp"]
-        },
-        "user_name" => e["user_name"],
-        "health" => get_health(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
-        "kills" => get_kill(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
-        "xp_earned" => e["xp_earned"]
-      }
-    end)
+    frobots =
+      q
+      |> Repo.all()
+      |> IO.inspect()
+      |> Enum.map(fn e ->
+        %{
+          "winner" => e["winner"],
+          "frobot" => %{
+            "id" => e["frobot"]["id"],
+            "name" => e["frobot"]["name"],
+            "avatar" => e["frobot"]["avatar"],
+            "pixellated_image" => e["frobot"]["pixellated_image"],
+            "xp" => e["frobot"]["xp"]
+          },
+          "user_name" => e["user_name"],
+          "health" => get_health(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
+          "kills" => get_kill(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
+          "xp_earned" => e["xp_earned"]
+        }
+      end)
+
+    m = get_match_by(id: match_id)
+
+    %{
+      "frobots" => frobots,
+      "status" => get_status(m.status, m.reason),
+      "time" => m.match_time
+    }
   end
 
   defp get_status(_status, "timeout"), do: "timeout"
