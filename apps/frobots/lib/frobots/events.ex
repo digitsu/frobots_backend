@@ -400,6 +400,7 @@ defmodule Frobots.Events do
         select: %{
           "winner" => b.winners,
           "status" => m.status,
+          "reason" => m.reason,
           "time" => m.match_time,
           "frobot" => %{
             "id" => f.id,
@@ -418,7 +419,7 @@ defmodule Frobots.Events do
     |> Enum.map(fn e ->
       %{
         "winner" => e["winner"],
-        "status" => e["status"],
+        "status" => get_status(e["status"], e["reason"]),
         "time" => e["time"],
         "frobot" => %{
           "id" => e["frobot"]["id"],
@@ -434,6 +435,9 @@ defmodule Frobots.Events do
       }
     end)
   end
+
+  defp get_status(_status, "timeout"), do: "timeout"
+  defp get_status(status, _), do: status
 
   defp get_health(death_map, frobot_name, frobot_id) do
     key = "#{frobot_name}##{frobot_id}"

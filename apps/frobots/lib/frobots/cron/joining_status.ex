@@ -53,7 +53,7 @@ defmodule Frobots.Cron.JoiningStatus do
     running_status = query |> Repo.all()
 
     if length(running_status) > 0 do
-      query |> Repo.update_all(set: [status: :cancelled])
+      query |> Repo.update_all(set: [status: :aborted])
       match_ids = Enum.map(running_status, fn m -> m.id end)
 
       from(s in Slot, where: s.match_id in ^match_ids)
