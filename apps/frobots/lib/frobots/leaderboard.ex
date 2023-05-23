@@ -275,9 +275,10 @@ defmodule Frobots.Leaderboard do
         )   rank
       from
         leaderboard_stats ls,
+        frobots f,
         users u
       where
-        ls.user_id = u.id;", [])
+        ls.frobot_id = f.id and f.user_id = u.id;", [])
 
     Enum.map(result.rows, fn row ->
       %{
