@@ -226,6 +226,18 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
      })}
   end
 
+  @impl Phoenix.LiveView
+  def handle_info({Events, [:match, :updated], updated_match}, socket) do
+    match = socket.assigns.match
+    match_id = match.id
+
+    if updated_match.id == match_id and updated_match.status == :running do
+      ## REDIRECT
+    end
+
+    {:noreply, socket}
+  end
+
   def handle_info(:time_left, socket) do
     match = socket.assigns.match
     time_left = DateTime.diff(match.match_time, DateTime.utc_now())
