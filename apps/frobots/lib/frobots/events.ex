@@ -417,7 +417,6 @@ defmodule Frobots.Events do
     frobots =
       q
       |> Repo.all()
-      |> IO.inspect()
       |> Enum.map(fn e ->
         %{
           "winner" => e["winner"],
