@@ -4,7 +4,11 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { frobotEquipmentActions } from '../../redux/slices/frobotEquipment'
-
+import Popup from '../../components/Popup'
+import {
+  EquipmentDetachPromptDescription,
+  EquipmentDetachPromptTitle,
+} from '../../mock/texts'
 interface AttachedEquipmentsProps {
   equipments: any[]
   equipmentsCount: number
@@ -19,6 +23,9 @@ const itemsPerPage = 8
 export default (props: AttachedEquipmentsProps) => {
   const dispatch = useDispatch()
   const { setCurrentEquipment, setActiveEquipmentKey } = frobotEquipmentActions
+  const [detachEquipmentState, setDetachEquipmentState] = useState(false)
+  const [currentDetachEquipment, setCurrentDetachEquipment] = useState(null)
+  const [showPopup, setShowPopup] = useState(false)
   const { activeEquipmentKey } = useSelector(
     (store: any) => store.frobotEquipment
   )
@@ -106,11 +113,19 @@ export default (props: AttachedEquipmentsProps) => {
   }
 
   const handleOnClickDetach = (equipment: any) => {
+    setCurrentDetachEquipment(equipment)
+    setShowPopup(true)
+  }
+
+  const handleDetachConfirm = () => {
     detachEquipment({
-      ...equipment,
+      ...currentDetachEquipment,
       current_equipment_key: activeEquipmentKey,
     })
+    setShowPopup(false)
   }
+
+  const equipmentClass = currentDetachEquipment?.equipment_class || 'Item'
 
   return (
     <>
@@ -247,6 +262,15 @@ export default (props: AttachedEquipmentsProps) => {
           )}
         </Card>
       </Grid>
+      <Popup
+        open={showPopup}
+        cancelAction={() => setShowPopup(false)}
+        successAction={handleDetachConfirm}
+        successLabel={'OK'}
+        cancelLabel={'Cancel'}
+        label={EquipmentDetachPromptTitle(equipmentClass)}
+        description={EquipmentDetachPromptDescription(equipmentClass)}
+      />
     </>
   )
 }
