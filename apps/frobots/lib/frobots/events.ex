@@ -108,7 +108,7 @@ defmodule Frobots.Events do
     Map.put(attrs, :winners, winners)
   end
 
-  defp get_frobot_id_from_matchname(name) do
+  def get_frobot_id_from_matchname(name) do
     name
     |> String.split("#")
     |> Enum.at(0)
@@ -116,7 +116,7 @@ defmodule Frobots.Events do
     |> Map.get(:id, nil)
   end
 
-  defp get_frobot_id_from_map(map) do
+  def get_frobot_id_from_map(map) do
     # %{"name" => "rabbit", "type" => "proto"},
     map
     |> Map.get("name")
@@ -411,7 +411,7 @@ defmodule Frobots.Events do
           },
           "user_name" => u.name,
           "death_map" => b.death_map,
-          "xp_earned" => 0
+          "xp_earned" => b.xp
         }
 
     frobots =
@@ -430,7 +430,7 @@ defmodule Frobots.Events do
           "user_name" => e["user_name"],
           "health" => get_health(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
           "kills" => get_kill(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
-          "xp_earned" => e["xp_earned"]
+          "xp_earned" => get_xp(e["xp_earned"], e["frobot"]["id"])
         }
       end)
 
@@ -452,6 +452,10 @@ defmodule Frobots.Events do
     damage = Map.get(damage_map, key, 0)
     health = 100 - damage
     health
+  end
+
+  defp get_xp(xp_earned_map, frobot_id) do
+    Map.get(xp_earned_map, frobot_id |> to_string(), 0)
   end
 
   defp get_kill(death_map, frobot_name, frobot_id) do

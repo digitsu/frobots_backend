@@ -24,7 +24,7 @@ defmodule Frobots.Leaderboard do
 
     # start with 10 points, actual points are reduced based on how many times winning frobot fought
     # with same combination of participants
-    points = compute_points(winning_frobot, participants, 10)
+    points = Frobots.Leaderboard.compute_points(winning_frobot, participants, 10)
 
     stat = %{
       "points" => points,
@@ -121,16 +121,16 @@ defmodule Frobots.Leaderboard do
 
     points =
       case occurences do
-        1 ->
+        0 ->
           10
 
-        2 ->
+        1 ->
           starting_points / 2
 
-        3 ->
+        2 ->
           starting_points / 4
 
-        4 ->
+        2 ->
           1
 
         _ ->

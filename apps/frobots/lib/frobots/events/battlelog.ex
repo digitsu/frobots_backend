@@ -18,13 +18,14 @@ defmodule Frobots.Events.Battlelog do
     many_to_many :frobots, Frobots.Assets.Frobot, join_through: Frobots.Joins.FrobotBattlelog
     belongs_to :match, Frobots.Events.Match
     field :death_map, :map, default: %{}
+    field :xp, :map, default: %{}
     timestamps()
   end
 
   @doc false
   def changeset(battlelog, attrs) do
     battlelog
-    |> cast(attrs, [:winners, :qudos_pool, :payouts, :odds, :commission_paid, :death_map])
+    |> cast(attrs, [:winners, :qudos_pool, :payouts, :odds, :commission_paid, :death_map, :xp])
     |> validate_required([:winners, :qudos_pool, :payouts, :odds, :commission_paid, :death_map])
     |> unique_constraint([:match])
   end
