@@ -222,6 +222,7 @@ defmodule Frobots.Leaderboard do
           distinct
           u.id,
           u.name as username,
+          u.email,
           u.avatar,
           lsv.xp,
           lsv.points,
@@ -243,14 +244,15 @@ defmodule Frobots.Leaderboard do
       %{
         "id" => Enum.at(row, 0),
         "username" => Enum.at(row, 1),
-        "avatar" => Enum.at(row, 2),
-        "xp" => Enum.at(row, 3),
-        "points" => Enum.at(row, 4),
-        "matches_participated" => Enum.at(row, 5),
-        "matches_won" => Enum.at(row, 6),
-        "attempts" => Enum.at(row, 7),
-        "frobot_count" => Enum.at(row, 8),
-        "rank" => Enum.at(row, 9)
+        "useremail" => Enum.at(row, 2),
+        "avatar" => Enum.at(row, 3),
+        "xp" => Enum.at(row, 4),
+        "points" => Enum.at(row, 5),
+        "matches_participated" => Enum.at(row, 6),
+        "matches_won" => Enum.at(row, 7),
+        "attempts" => Enum.at(row, 8),
+        "frobot_count" => Enum.at(row, 9),
+        "rank" => Enum.at(row, 10)
       }
     end)
   end
@@ -260,6 +262,7 @@ defmodule Frobots.Leaderboard do
     result = Ecto.Adapters.SQL.query!(Repo, "select
         ls.frobot_id,
         u.name as username,
+        u.email,
         (select f.name from frobots f where f.id = ls.frobot_id) as frobot,
         (select f.avatar from frobots f where f.id = ls.frobot_id) as avatar,
         ls.xp,
@@ -272,22 +275,24 @@ defmodule Frobots.Leaderboard do
         )   rank
       from
         leaderboard_stats ls,
+        frobots f,
         users u
       where
-        ls.user_id = u.id;", [])
+        ls.frobot_id = f.id and f.user_id = u.id;", [])
 
     Enum.map(result.rows, fn row ->
       %{
         "frobot_id" => Enum.at(row, 0),
         "username" => Enum.at(row, 1),
-        "frobot" => Enum.at(row, 2),
-        "avatar" => Enum.at(row, 3),
-        "xp" => Enum.at(row, 4),
-        "points" => Enum.at(row, 5),
-        "matches_participated" => Enum.at(row, 6),
-        "matches_won" => Enum.at(row, 7),
-        "attempts" => Enum.at(row, 8),
-        "rank" => Enum.at(row, 9)
+        "useremail" => Enum.at(row, 2),
+        "frobot" => Enum.at(row, 3),
+        "avatar" => Enum.at(row, 4),
+        "xp" => Enum.at(row, 5),
+        "points" => Enum.at(row, 6),
+        "matches_participated" => Enum.at(row, 7),
+        "matches_won" => Enum.at(row, 8),
+        "attempts" => Enum.at(row, 9),
+        "rank" => Enum.at(row, 10)
       }
     end)
   end

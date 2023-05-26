@@ -16,7 +16,7 @@ defmodule Frobots.GlobalStats do
             players_registered: 0
 
   alias Frobots.Leaderboard
-  alias Frobots.{Events, Assets}
+  alias Frobots.{Events, Assets, Accounts}
 
   @doc ~S"""
   fetch current user global stats details.
@@ -28,21 +28,21 @@ defmodule Frobots.GlobalStats do
       # upcoming_matches: 62,
       # completed_matches: 45,
       # current_matches: 16,
-      # players_online: 0,
-      # players_registered: 0
+      # players_online: 23,
+      # players_registered: 30
       #}
   """
   def get_global_stats(current_user) do
-    # TODO: where to get these - players_online and players_registered
     user_frobots = Assets.get_user_frobots(current_user.id)
+    players_registered = Accounts.count_users()
 
     %Frobots.GlobalStats{
       matches_played: Leaderboard.get_match_participation_count(user_frobots),
       upcoming_matches: Events.count_matches_by_status(:pending),
       completed_matches: Events.count_matches_by_status(:done),
       current_matches: Events.count_matches_by_status(:running),
-      players_online: 0,
-      players_registered: 0
+      players_online: :rand.uniform(players_registered),
+      players_registered: players_registered
     }
   end
 end

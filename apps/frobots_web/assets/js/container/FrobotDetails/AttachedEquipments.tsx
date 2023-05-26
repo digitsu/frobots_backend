@@ -23,17 +23,8 @@ export default (props: AttachedEquipmentsProps) => {
     equipmentLength > columnsPerPage ? columnsPerPage : equipmentLength
   )
 
-  const getcurrentItemNumber = () => {
-    let itemNumber = 0
-    if (equipmentLength) {
-      itemNumber = leftOffset + currentIndex + 1
-    }
-
-    return `(${itemNumber} / ${equipmentLength})`
-  }
-
   const switchEquipment = (index: number) => {
-    setCurrentEquipment(equipments[index])
+    setCurrentEquipment(equipments[leftOffset + index])
     setCurrentIndex(index)
   }
 
@@ -83,96 +74,76 @@ export default (props: AttachedEquipmentsProps) => {
       <Card>
         <Grid container spacing={2}>
           <Grid item xs={12} lg={8} md={12} sm={12}>
+            <Typography
+              variant={'subtitle1'}
+              pt={2}
+              pb={2}
+              textAlign={'center'}
+            >
+              Attached Equipments
+            </Typography>
             <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                pl: 4,
-                pt: 2,
-                mt: 1,
+                pl: 2,
+                pr: 2,
                 mb: 2,
               }}
             >
               <Box
+                onClick={handleLeftClick}
                 sx={{
+                  m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
-                {leftOffset !== 0 && (
-                  <ChevronLeftIcon
-                    sx={{
-                      color: '#FFFFFF7E',
-                    }}
-                    onClick={handleLeftClick}
-                  />
-                )}
+                <ChevronLeftIcon
+                  sx={{
+                    color: leftOffset !== 0 ? '#FFFFFF' : '#FFFFFF7E',
+                  }}
+                />
               </Box>
-              <Typography variant={'subtitle1'}>
-                Attached Equipments {getcurrentItemNumber()}
-              </Typography>
-              <Box
-                sx={{
-                  mr: 4,
-                  backgroundColor: '#1C4250',
-                  borderRadius: '4px',
-                }}
-              >
-                {rightOffset !== equipmentLength && (
-                  <ChevronRightIcon
-                    sx={{
-                      color: '#FFFFFF',
-                    }}
-                    onClick={handleRightClick}
-                  />
-                )}
-              </Box>
-            </Box>
-
-            <Box
-              sx={{
-                overflowX: 'scroll',
-                '&::-webkit-scrollbar': { display: 'none' },
-              }}
-            >
-              <Box
-                display={'flex'}
-                sx={{
-                  '@media (max-width: 900px)': {
-                    overflowX: 'scroll',
-                  },
-                }}
-              >
+              <Grid container spacing={2}>
                 {equipments
                   .slice(leftOffset, rightOffset)
-                  .map((equipment: any, index: number) => (
-                    <Grid
-                      item
-                      lg={4}
-                      md={8}
-                      sm={6}
-                      xs={12}
-                      key={index}
-                      onClick={() => switchEquipment(index)}
-                    >
-                      <Box sx={{ px: 4, pb: 2 }} width={250} height={250}>
+                  .map((equipment, index) => (
+                    <Grid item xs={6} sm={4} md={3} lg={3} key={index}>
+                      <Box
+                        position={'relative'}
+                        width={'100%'}
+                        height={'100%'}
+                        m={'auto'}
+                        sx={{ cursor: 'pointer', p: 1 }}
+                      >
                         <Box
                           component={'img'}
+                          width={'100%'}
+                          height={'80%'}
                           src={`${imageBaseUrl}${equipment.image}`}
                           sx={{
-                            borderRadius: '20px',
+                            cursor: 'pointer',
+                            borderRadius: '6px',
                             border:
                               index === currentIndex
                                 ? '4px solid #00AB55'
-                                : 'none',
+                                : '4px solid transparent',
                           }}
+                          onClick={() => switchEquipment(index)}
                         />
-                        <Box textAlign={'center'} mt={3}>
+
+                        <Box textAlign={'center'} mt={3} mb={2}>
                           <Typography
+                            sx={{
+                              fontSize: '0.8rem',
+                              overflow: 'visible',
+                              textTransform: 'capitalize',
+                            }}
                             fontWeight={'bold'}
                             variant="subtitle1"
-                            textTransform={'capitalize'}
                           >
                             {equipment.equipment_class}{' '}
                             {equipment.equipment_type}
@@ -181,6 +152,22 @@ export default (props: AttachedEquipmentsProps) => {
                       </Box>
                     </Grid>
                   ))}
+              </Grid>
+              <Box
+                onClick={handleRightClick}
+                sx={{
+                  m: '10px',
+                  backgroundColor: '#1C4250',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+              >
+                <ChevronRightIcon
+                  sx={{
+                    color:
+                      rightOffset !== equipmentLength ? '#FFFFFF' : '#FFFFFF7E',
+                  }}
+                />
               </Box>
             </Box>
           </Grid>
@@ -194,29 +181,38 @@ export default (props: AttachedEquipmentsProps) => {
               backgroundColor: '#00AB5529',
             }}
           >
-            {equipmentLength !== 0 && (
-              <EquipmentDetails equipment={currentEquipment} />
-            )}
-
-            {isOwnedFrobot && (
+            <Box position={'relative'} height={'100%'}>
+              <Box height={'100%'}>
+                {equipmentLength !== 0 && (
+                  <EquipmentDetails equipment={currentEquipment} />
+                )}
+              </Box>
               <Box
                 sx={{
-                  m: 4,
+                  position: 'absolute',
+                  left: '50%',
+                  px: 4,
+                  transform: 'translate(-50%, -50%)',
+                  width: '100%',
+                  bottom: 10,
                 }}
               >
-                <Button
-                  variant="text"
-                  fullWidth
-                  onClick={handleViewEquipmentBay}
-                  sx={{
-                    backgroundColor: '#00AB552F',
-                    color: '#5BE584',
-                  }}
-                >
-                  View Equipment Bay
-                </Button>
+                {isOwnedFrobot && (
+                  <Button
+                    variant="text"
+                    fullWidth
+                    onClick={handleViewEquipmentBay}
+                    sx={{
+                      width: '100%',
+                      backgroundColor: '#00AB552F',
+                      color: '#5BE584',
+                    }}
+                  >
+                    View Equipment Bay
+                  </Button>
+                )}
               </Box>
-            )}
+            </Box>
           </Grid>
         </Grid>
       </Card>

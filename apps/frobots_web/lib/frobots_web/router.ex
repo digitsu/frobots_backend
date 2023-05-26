@@ -10,6 +10,7 @@ defmodule FrobotsWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug :fetch_s3_base_url
   end
 
   pipeline :api do
@@ -120,6 +121,7 @@ defmodule FrobotsWeb.Router do
     live "/docs", DocsLive.Index, :index
     live "/blogs", NewsAndUpdatesLive.Index, :index
     live "/profile", UserProfileLive.Index, :index
+    live "/player", PlayerProfileLive.Index, :index
 
     live "/admin", AdminLive.Index, :index
 
@@ -129,7 +131,7 @@ defmodule FrobotsWeb.Router do
     live "/arena/create", ArenaCreateMatchLive.Index, :index
     live "/arena/:match_id", ArenaLobbyLive.Index, :index
     live "/arena/:match_id/results", MatchResultsLive.Index, :index
-    live "/arena/match/simulation", ArenaMatchSimulationLive.Index, :index
+    live "/arena/:match_id/simulation", ArenaMatchSimulationLive.Index, :index
 
     # manage users
     live "/users", UsersLive.Index, :index

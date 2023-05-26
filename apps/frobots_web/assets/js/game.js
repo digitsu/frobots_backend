@@ -18,34 +18,50 @@ export class Game {
     })
     this.tanks = tanks
     this.missiles = missiles
+    this.match_details = match_details
     if (match_details.type != 'real') {
       this.app.view.classList.add('garage-pixy-simulation')
+      for (var i = 1; i < 1000; i = i + 10) {
+        var vertical = new PIXI.Graphics()
+        vertical.lineStyle(2, 0x00008b)
+        vertical.moveTo(i, 0)
+        vertical.lineTo(i, 1000)
+        this.app.stage.addChild(vertical)
+      }
+
+      for (var i = 1; i < 1000; i = i + 10) {
+        var horizontal = new PIXI.Graphics()
+        horizontal.lineStyle(2, 0x00008b)
+        horizontal.moveTo(0, i)
+        horizontal.lineTo(1000, i)
+        this.app.stage.addChild(horizontal)
+      }
+    } else {
+      // Url for arena image
+      const bgUrl = s3_base_url + arena.image_url
+      //const bgUrl = '/images/arena_default.png'
+
+      // adds static bg
+      const background = PIXI.Sprite.from(bgUrl)
+      background.width = this.app.renderer.width
+      background.height = this.app.renderer.height
+      this.app.stage.addChild(background)
+
+      //ads black overlay
+      // create a new Graphics object
+      const overlay = new PIXI.Graphics()
+
+      // draw a black rectangle that covers the entire stage
+      overlay.beginFill(0x000000)
+      overlay.drawRect(0, 0, this.app.renderer.width, this.app.renderer.height)
+      overlay.endFill()
+
+      // set the alpha of the Graphics object to 0.5 (50% opacity)
+      overlay.alpha = 0.5
+
+      // add the Graphics object to the stage
+      this.app.stage.addChild(overlay)
     }
-
-    // Url for arena image
-    // const bgUrl = s3_base_url + arena.image_url
-    const bgUrl = '/images/arena_default.png'
-
-    // adds static bg
-    const background = PIXI.Sprite.from(bgUrl)
-    background.width = this.app.renderer.width
-    background.height = this.app.renderer.height
-    this.app.stage.addChild(background)
-
-    //ads black overlay
-    // create a new Graphics object
-    const overlay = new PIXI.Graphics()
-
-    // draw a black rectangle that covers the entire stage
-    overlay.beginFill(0x000000)
-    overlay.drawRect(0, 0, this.app.renderer.width, this.app.renderer.height)
-    overlay.endFill()
-
-    // set the alpha of the Graphics object to 0.5 (50% opacity)
-    overlay.alpha = 0.5
-
-    // add the Graphics object to the stage
-    this.app.stage.addChild(overlay)
 
     this.stats = new PIXI.Text('', {
       fontSize: 20,
@@ -58,24 +74,37 @@ export class Game {
   }
 
   header() {
-    document.body.appendChild(this.app.view)
+    if (this.match_details.type != 'real') {
+      document.body.appendChild(this.app.view)
+    } else {
+      const game_arena = document.getElementById('game-arena')
+      game_arena.style.width = '100vw'
+      game_arena.style.height = '100vh'
+      game_arena.appendChild(this.app.view)
+    }
   }
 
   event(payload) {
     var { args, event } = payload
 
     if (event == 'create_tank') {
-      var tank_name = args[0]
-      var [x, y] = args[1]
-      var heading = args[2]
-      var speed = args[3]
-      this.createTank(tank_name, x, y, heading, speed)
+      if (!this.tanks.map(({ name }) => name).includes(args[0])) {
+        var tank_name = args[0]
+        var [x, y] = args[1]
+        var heading = args[2]
+        var speed = args[3]
+        this.createTank(tank_name, x, y, heading, speed)
+      }
     } else if (event == 'move_tank') {
       var tank_name = args[0]
       var [x, y] = args[1]
       var heading = args[2]
       var speed = args[3]
-      this.moveTank(tank_name, x, y, heading, speed)
+      if (this.tanks.map(({ name }) => name).includes(tank_name)) {
+        this.moveTank(tank_name, x, y, heading, speed)
+      } else {
+        this.createTank(tank_name, x, y, heading, speed)
+      }
     } else if (event == 'kill_tank') {
       var tank_name = args[0]
       var tank_index = this.tanks.findIndex((tank) => tank.name == tank_name)
@@ -180,10 +209,15 @@ export class Game {
       setTimeout(() => {
         this.app.destroy(true)
       }, 5000)
+      if (this.match_details.type === 'real') {
+        window.location.href = `/arena/${this.match_details.id}/results`
+      } else {
+        window.location.href = `/garage/frobot/braincode?id=${this.match_details?.id}`
+      }
     } else {
       console.log('Unhandled Payload Received -->', payload)
     }
-    this.stats.text = this.get_stats(this.tanks)
+    this.stats.text = this.get_stats()
   }
 
   createTank(tank_name, x, y, heading, speed) {
@@ -268,12 +302,16 @@ export class Game {
     this.app.stage.addChild(missile_sprite)
   }
 
-  get_stats(tanks) {
+  get_stats() {
     let stats = ''
-    for (let i = 0; i < tanks.length; i++) {
-      stats += get_stat(tanks[i]) + '\n'
+    for (let i = 0; i < this.tanks.length; i++) {
+      stats += get_stat(this.tanks[i]) + '\n'
     }
     return stats
+  }
+
+  destroy() {
+    this.app.destroy(true)
   }
 }
 

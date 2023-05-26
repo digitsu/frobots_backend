@@ -22,13 +22,37 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     if connected?(socket), do: Events.subscribe()
 
+    order_by =
+      cond do
+        is_nil(params["sort_by"]) or is_nil(params["sort_by"]) ->
+          [desc: :inserted_at]
+
+        params["sort_type"] == "desc" and params["sort_by"] == "match_id" ->
+          [desc: :id]
+
+        params["sort_type"] == "asc" and params["sort_by"] == "match_id" ->
+          [asc: :id]
+
+        params["sort_type"] == "desc" and params["sort_by"] == "title" ->
+          [desc: :title]
+
+        params["sort_type"] == "asc" and params["sort_by"] == "title" ->
+          [asc: :title]
+
+        params["sort_type"] == "desc" and params["sort_by"] == "match_time" ->
+          [desc: :match_time]
+
+        params["sort_type"] == "asc" and params["sort_by"] == "match_time" ->
+          [asc: :match_time]
+      end
+
     %{
       entries: matches,
       page_number: page,
       page_size: page_size,
       total_entries: total_entries,
       total_pages: total_pages
-    } = Api.list_paginated_matches([], page_config, [:user], desc: :inserted_at)
+    } = Api.list_paginated_matches([], page_config, [:user], order_by)
 
     {:ok,
      socket
@@ -50,6 +74,10 @@ defmodule FrobotsWeb.ArenaLive.Index do
      |> assign(
        :upcoming_matches_count,
        Api.count_matches_by_status_for_user(:pending, current_user.id)
+     )
+     |> assign(
+       :current_user_ranking_details,
+       Events.get_current_user_ranking_details(current_user)
      )}
   end
 
@@ -133,12 +161,36 @@ defmodule FrobotsWeb.ArenaLive.Index do
         do: Keyword.put(page_config, :page_size, params["page_size"]),
         else: Keyword.put(page_config, :page_size, 5)
 
+    order_by =
+      cond do
+        is_nil(params["sort_by"]) or is_nil(params["sort_by"]) ->
+          [desc: :inserted_at]
+
+        params["sort_type"] == "desc" and params["sort_by"] == "match_id" ->
+          [desc: :id]
+
+        params["sort_type"] == "asc" and params["sort_by"] == "match_id" ->
+          [asc: :id]
+
+        params["sort_type"] == "desc" and params["sort_by"] == "title" ->
+          [desc: :title]
+
+        params["sort_type"] == "asc" and params["sort_by"] == "title" ->
+          [asc: :title]
+
+        params["sort_type"] == "desc" and params["sort_by"] == "match_time" ->
+          [desc: :match_time]
+
+        params["sort_type"] == "asc" and params["sort_by"] == "match_time" ->
+          [asc: :match_time]
+      end
+
     %{
       entries: matches,
       page_number: page,
       page_size: page_size,
       total_entries: total_entries
-    } = Api.list_paginated_matches(filter_params, page_config, [:user], desc: :inserted_at)
+    } = Api.list_paginated_matches(filter_params, page_config, [:user], order_by)
 
     {:noreply,
      push_event(socket, "react.return_arena_home", %{
@@ -181,13 +233,37 @@ defmodule FrobotsWeb.ArenaLive.Index do
         do: Keyword.put(page_config, :page_size, params["page_size"]),
         else: page_config
 
+    order_by =
+      cond do
+        is_nil(params["sort_by"]) or is_nil(params["sort_by"]) ->
+          [desc: :inserted_at]
+
+        params["sort_type"] == "desc" and params["sort_by"] == "match_id" ->
+          [desc: :id]
+
+        params["sort_type"] == "asc" and params["sort_by"] == "match_id" ->
+          [asc: :id]
+
+        params["sort_type"] == "desc" and params["sort_by"] == "title" ->
+          [desc: :title]
+
+        params["sort_type"] == "asc" and params["sort_by"] == "title" ->
+          [asc: :title]
+
+        params["sort_type"] == "desc" and params["sort_by"] == "match_time" ->
+          [desc: :match_time]
+
+        params["sort_type"] == "asc" and params["sort_by"] == "match_time" ->
+          [asc: :match_time]
+      end
+
     %{
       entries: matches,
       page_number: page,
       page_size: page_size,
       total_entries: total_entries,
       total_pages: total_pages
-    } = Api.list_paginated_matches(filter_params, page_config, [:user], desc: :inserted_at)
+    } = Api.list_paginated_matches(filter_params, page_config, [:user], order_by)
 
     socket =
       case params["match_status"] do

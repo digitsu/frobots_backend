@@ -15,14 +15,16 @@ import EmptyTableData from '../../components/generic/EmptyTableData'
 const tableHeads = ['Player', 'Frobots', 'XP', 'Wins', 'Rank']
 
 interface PlayerLeaderBoard {
+  id: number
   attempts: string
   avatar: string
-  frobots_count: number
+  frobot_count: number
   matches_participated: number
   matches_won: string
   points: number
   rank: number
-  username: 'God'
+  username: string
+  useremail: string
   xp: number
 }
 
@@ -33,6 +35,22 @@ interface LeaderBoardProps {
 
 export default (props: LeaderBoardProps) => {
   const { leaderBoardData, imageBaseUrl } = props
+
+  const handleOpenPlayerProfile = (user_id: number) => {
+    window.location.href = `/player?id=${user_id}`
+  }
+
+  const getPlayerName = (data: PlayerLeaderBoard) => {
+    let playerName = '-'
+
+    if (data.username) {
+      playerName = data.username
+    } else if (data.useremail) {
+      playerName = data.useremail.split('@')[0]
+    }
+
+    return playerName
+  }
 
   return (
     <Paper sx={{ backgroundColor: '#212B36', borderRadius: 4 }}>
@@ -84,6 +102,7 @@ export default (props: LeaderBoardProps) => {
                         width={46}
                         height={45}
                         sx={{ cursor: 'pointer' }}
+                        onClick={() => handleOpenPlayerProfile(row?.id)}
                       >
                         <Box
                           component={'img'}
@@ -104,13 +123,13 @@ export default (props: LeaderBoardProps) => {
                         />
                       </Box>
                     )}
-                    {row.username}
+                    {getPlayerName(row)}
                   </TableCell>
                   <TableCell
                     sx={{ color: '#fff', borderColor: '#333D49' }}
                     align="left"
                   >
-                    {row.frobots_count}
+                    {row.frobot_count}
                   </TableCell>
                   <TableCell
                     sx={{ color: '#fff', borderColor: '#333D49' }}

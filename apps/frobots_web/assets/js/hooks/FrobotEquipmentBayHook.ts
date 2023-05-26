@@ -15,6 +15,30 @@ export default {
     )
   },
 
+  detachEquipment(params: any) {
+    if (params.equipment_class === 'xframe') {
+      this.pushEventTo(this.el, 'react.detach_frobot_xframe', params)
+    } else {
+      this.pushEventTo(this.el, 'react.detach_frobot_equipments', params)
+    }
+  },
+
+  attachEquipment(params: any) {
+    if (params.equipment_class === 'xframe') {
+      this.pushEventTo(this.el, 'react.frobot_equipy_xframe', params)
+    } else {
+      this.pushEventTo(this.el, 'react.frobot_equipy_equipment', params)
+    }
+  },
+
+  redeployEquipment(params: any) {
+    if (params.equipment_class === 'xframe') {
+      this.pushEventTo(this.el, 'react.frobot_redeploy_xframe', params)
+    } else {
+      this.pushEventTo(this.el, 'react.frobot_redeploy_equipment', params)
+    }
+  },
+
   destroyed() {
     if (!this.unmountComponent) {
       console.error('Component unmounted')
@@ -28,6 +52,9 @@ export default {
     return {
       name: 'FrobotEquipmentBay',
       ...EquipmentDetails,
+      detachEquipment: this.detachEquipment.bind(this),
+      attachEquipment: this.attachEquipment.bind(this),
+      redeployEquipment: this.redeployEquipment.bind(this),
     }
   },
 }

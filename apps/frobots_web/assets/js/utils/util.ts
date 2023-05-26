@@ -37,6 +37,7 @@ export const slotMapper = (slots, current_user_id, user_id, s3ImageUrl = '') =>
           slotDetails: slot.frobot,
           current_user_id,
           frobot_user_id: slot.frobot_user_id,
+          status: slotType,
         }
       } else if (slotType === 'done' && slot?.frobot === null) {
         return {
@@ -47,6 +48,7 @@ export const slotMapper = (slots, current_user_id, user_id, s3ImageUrl = '') =>
           slotDetails: slot.frobot,
           current_user_id,
           frobot_user_id: slot.frobot_user_id,
+          status: slotType,
         }
       } else {
         const isHostFrobot = slot?.frobot_user_id === user_id
@@ -65,6 +67,7 @@ export const slotMapper = (slots, current_user_id, user_id, s3ImageUrl = '') =>
           slotDetails: slot.frobot,
           current_user_id,
           frobot_user_id: slot.frobot_user_id,
+          status: slotType,
         }
       }
     })

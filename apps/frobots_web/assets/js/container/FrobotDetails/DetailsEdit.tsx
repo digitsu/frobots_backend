@@ -45,6 +45,12 @@ export default (props: FrobotEditProps) => {
     updateFrobotDetails({
       name: frobotName,
       bio: frobotBio,
+      frobot_id: frobot.frobot_id,
+    })
+  }
+
+  const updateFrobotAvatar = () => {
+    updateFrobotDetails({
       avatar: frobotAvatar?.avatar,
       pixellated_img: frobotAvatar?.pixellated_img,
       frobot_id: frobot.frobot_id,
@@ -110,7 +116,7 @@ export default (props: FrobotEditProps) => {
 
           <Box m={2}>
             <Button
-              onClick={updateDetails}
+              onClick={updateFrobotAvatar}
               variant="contained"
               sx={{
                 px: 5,

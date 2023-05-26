@@ -14,6 +14,9 @@ import {
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
+import { Game, tankHead } from '../../game_updated'
+import { Tank } from '../../tank'
+import * as PIXI from 'pixi.js'
 
 const BlankBlocklyCode =
   '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
@@ -23,7 +26,6 @@ export default (props: any) => {
     frobot,
     currentUser,
     updateFrobotCode,
-    requestMatch,
     runSimulation,
     cancelSimulation,
     changeProtobot,
@@ -35,6 +37,7 @@ export default (props: any) => {
   const [blocklyCode, setBlocklyCode] = useState(
     frobot.blockly_code || BlankBlocklyCode
   )
+  const [gameState, setGameState] = useState(null)
   const [blocklyLuaCode, setBlocklyLuaCode] = useState('')
   const [isSelectedProtobot, setIsSelectedProtobot] = useState(false)
   const [isRequestedMatch, setIsRequestedMatch] = useState(false)
@@ -102,21 +105,13 @@ export default (props: any) => {
     updateFrobotCode(requestBody)
   }
 
-  const handleRequestMatch = () => {
-    if (!luaCode || luaCode.trim() === '') {
-      return alert("Match can't be requested with empty lua code")
-    } else {
-      requestMatch()
-      setIsRequestedMatch(true)
-    }
-  }
-
   const handleRunSimulation = () => {
     if (!luaCode || luaCode.trim() === '') {
       return alert("Simulation can't be started with empty lua code")
     } else {
       runSimulation({ frobot_id: frobot.id })
       setIsSimulationStarted(true)
+      setIsRequestedMatch(true)
     }
   }
 
@@ -125,6 +120,8 @@ export default (props: any) => {
     setIsRequestedMatch(false)
     setIsSimulationStarted(false)
     setIsSelectedProtobot(false)
+    setOpponents([])
+    gameState.destroy()
   }
 
   const handleChangeOpponent = (_event, option) => {
@@ -141,6 +138,59 @@ export default (props: any) => {
   const filteredOptions = templateFrobots.filter(
     (option) => !opponents.map(({ id }) => id).includes(option.id)
   )
+
+  const handleGameEvent = (e) => {
+    if (e.detail.id && gameState === null) {
+      const players = e.detail.slots.map((slot) => ({
+        name: `${slot.frobot.name}#${slot.id}`,
+        displayName: slot.frobot.name,
+      }))
+      const tanks = players.map(({ name, displayName }) => {
+        var asset = tankHead(name)
+        var tank_sprite = new PIXI.Sprite(
+          PIXI.Texture.from('/images/' + asset + '.png')
+        )
+        tank_sprite.x = 0
+        tank_sprite.y = 0
+        tank_sprite.width = 15
+        tank_sprite.height = 15
+        return {
+          Tank: new Tank(
+            `${name}`,
+            748,
+            610,
+            219,
+            100,
+            tank_sprite,
+            0,
+            displayName
+          ),
+          asset: { [`${name}`]: asset },
+        }
+      })
+
+      if (isSimulationStarted) {
+        const game = new Game(
+          tanks.map(({ Tank }) => Tank),
+          [],
+          {
+            match_id: null,
+            match_details: { type: 'simulation', id: frobot?.id },
+            arena: null,
+            s3_base_url: '',
+            tankIcons: tanks.map(({ asset }) => asset),
+          }
+        )
+        game.header()
+        if (game !== null) {
+          setGameState(game)
+        }
+      }
+    } else {
+      gameState.event(e.detail)
+    }
+  }
+  window.addEventListener(`phx:simulator_event`, handleGameEvent)
 
   return !isRequestedMatch ? (
     <Box mt={5}>
@@ -235,10 +285,10 @@ export default (props: any) => {
                     variant="outlined"
                     color="inherit"
                     size="small"
-                    onClick={handleRequestMatch}
+                    onClick={handleRunSimulation}
                     sx={{ flex: 1 }}
                   >
-                    Request Simulation
+                    Simulate
                   </Button>
                 )}{' '}
               </Box>
@@ -273,31 +323,30 @@ export default (props: any) => {
     </Box>
   ) : (
     <Box display="flex" justifyContent="flex-end" pb={5}>
-      {isRequestedMatch && !isSimulationStarted ? (
-        <Box pr={1}>
-          <Button
-            variant="outlined"
-            color="inherit"
-            size="small"
-            onClick={handleRunSimulation}
-          >
-            Run Simulation
-          </Button>
-        </Box>
-      ) : (
-        <></>
-      )}
       {isSimulationStarted && (
-        <Box>
-          <Button
-            variant="outlined"
-            color="inherit"
-            size="small"
-            onClick={handleCancelSimulation}
-          >
-            Cancel Simulation
-          </Button>
-        </Box>
+        <>
+          <Grid container spacing={1}>
+            <Grid item md={12}>
+              <Box my={2} display={'flex'} justifyContent={'flex-end'}>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  size="small"
+                  onClick={handleCancelSimulation}
+                >
+                  Cancel Simulation
+                </Button>
+              </Box>
+            </Grid>
+            <Grid item sm={12} md={9} lg={9} xl={9}>
+              {' '}
+              <Box id="garage-simulation" />
+            </Grid>
+            <Grid item sm={12} md={3} lg={3} xl={3}>
+              <Box id="game-stats" />
+            </Grid>
+          </Grid>
+        </>
       )}
     </Box>
   )

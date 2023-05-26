@@ -14,7 +14,7 @@ defmodule FrobotsWeb.Api.TokenController do
         |> halt()
 
       %Frobots.Accounts.User{} = user ->
-        render(conn, "show.json", token: FrobotsWeb.Api.Auth.generate_token(user.id))
+        render(conn, "show.json", user: user)
     end
   end
 end

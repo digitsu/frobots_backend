@@ -48,7 +48,7 @@ export default ({ equipment }: EquipmentDetailProps) => {
                     Reload
                   </Typography>
                   <Typography my={1.2} variant="subtitle2">
-                    RoF
+                    Rate of Fire
                   </Typography>
                 </Box>
               </Grid>
@@ -67,14 +67,14 @@ export default ({ equipment }: EquipmentDetailProps) => {
               </Grid>
               <Grid pr={4} item xs={7}>
                 <Box textAlign="right">
-                  <Typography my={1.2} variant="subtitle2">
+                  <Typography my={1.2} variant="body2">
                     {equipment?.magazine_size}
                   </Typography>
-                  <Typography my={1.2} variant="subtitle2">
-                    {equipment?.reload_time}
+                  <Typography my={1.2} variant="body2">
+                    {equipment?.reload_time} s
                   </Typography>
-                  <Typography my={1.2} variant="subtitle2">
-                    {equipment?.rate_of_fire}
+                  <Typography my={1.2} variant="body2">
+                    {equipment?.rate_of_fire} s
                   </Typography>
                 </Box>
               </Grid>
@@ -106,11 +106,11 @@ export default ({ equipment }: EquipmentDetailProps) => {
               </Grid>
               <Grid pr={4} item xs={7}>
                 <Box textAlign="right">
-                  <Typography my={1.2} variant="subtitle2">
-                    {equipment?.max_range}
+                  <Typography my={1.2} variant="body2">
+                    {equipment?.max_range} m
                   </Typography>
-                  <Typography my={1.2} variant="subtitle2">
-                    {equipment?.resolution}
+                  <Typography my={1.2} variant="body2">
+                    +/- {equipment?.resolution} deg
                   </Typography>
                 </Box>
               </Grid>
@@ -160,19 +160,19 @@ export default ({ equipment }: EquipmentDetailProps) => {
               </Grid>
               <Grid pr={4} item xs={7}>
                 <Box textAlign="right">
-                  <Typography my={1.2} variant="subtitle2">
-                    {equipment?.range}
+                  <Typography my={1.2} variant="body2">
+                    {equipment?.range} m
                   </Typography>
-                  <Typography my={1.2} variant="subtitle2">
-                    {equipment?.speed}
+                  <Typography my={1.2} variant="body2">
+                    {equipment?.speed} m
                   </Typography>
-                  <Typography my={1.2} variant="subtitle2">
-                    {equipment?.damage_direct}
+                  <Typography my={1.2} variant="body2">
+                    {equipment?.damage_direct} [range, damage]
                   </Typography>
-                  <Typography my={1.2} variant="subtitle2">
+                  <Typography my={1.2} variant="body2">
                     {equipment?.damage_far}
                   </Typography>
-                  <Typography my={1.2} variant="subtitle2">
+                  <Typography my={1.2} variant="body2">
                     {equipment?.damage_near}
                   </Typography>
                 </Box>

@@ -3,7 +3,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   use FrobotsWeb, :live_view
   require Logger
 
-  alias Frobots.{Assets, Accounts, Events}
+  alias Frobots.{Assets, Accounts, Events, Api}
   alias FrobotsWeb.Simulator
 
   @impl Phoenix.LiveView
@@ -126,7 +126,16 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     ## Request Match & Join Match ID Channel
     assigns = socket.assigns()
     {:ok, match_id} = Simulator.request_match(assigns.simulator)
-    {:noreply, socket |> assign(:match_id, match_id) |> push_event(:match, %{id: match_id})}
+    s3_base_url = Api.get_s3_base_url()
+
+    {:noreply,
+     socket
+     |> assign(:match_id, match_id)
+     |> push_event(:match, %{
+       id: match_id,
+       s3_base_url: s3_base_url,
+       match_details: %{type: "simulation"}
+     })}
   end
 
   # move to arena_liveview
@@ -176,10 +185,20 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     }
 
     case Simulator.start_match(socket.assigns.simulator, match_data) do
-      {:ok, frobots_data} ->
+      {:ok, frobots_data, match_id} ->
+        topic = "match:match#{match_id}"
+        IO.inspect("SUBSCRIBING TO #{topic}")
+        Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
+        match = Api.get_match_details_by_id(match_id)
+
         {:noreply,
          socket
-         |> assign(:frobots_data, frobots_data)}
+         |> assign(:match_id, match_id)
+         |> assign(:frobots_data, frobots_data)
+         |> push_event(:simulator_event, %{
+           id: match_id,
+           slots: extract_slot_details(match.slots)
+         })}
 
       {:error, error} ->
         Logger.error("Error in starting the match #{error}")
@@ -204,6 +223,94 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_info({:fsm_state, _frobot, _fsm_state} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:fsm_debug, _frobot, _fsm_state} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:scan, _frobot, _deg, _res} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:damage, _frobot, _damage} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:create_tank, _frobot, _loc} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:move_tank, _frobot, _loc, _heading, _speed} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:kill_tank, _frobot} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:create_miss, _m_name, _loc} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:move_miss, _m_name, _loc} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:kill_miss, _m_name} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info({:game_over, _winners} = msg, socket) do
+    {:noreply,
+     socket
+     |> push_event(:simulator_event, encode_event(msg))}
+  end
+
+  @impl true
+  def handle_info(msg, socket) do
+    IO.inspect(msg)
+    {:noreply, socket}
+  end
+
+  def encode_event(evt_tuple) do
+    [evt | args] = Tuple.to_list(evt_tuple)
+    %{event: evt, args: args}
+  end
+
   defp extract_frobot_details(frobots) do
     Enum.map(frobots, fn %{
                            id: id,
@@ -224,6 +331,34 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
         blockly_code: blockly_code,
         bio: bio,
         avatar: avatar
+      }
+    end)
+  end
+
+  def extract_slot_details(slots) do
+    Enum.map(slots, fn %{
+                         frobot: frobot,
+                         frobot_id: frobot_id,
+                         id: id,
+                         match_id: match_id,
+                         slot_type: slot_type,
+                         status: status
+                       } ->
+      user_id =
+        if frobot do
+          Map.get(frobot, :user_id, nil)
+        else
+          nil
+        end
+
+      %{
+        frobot: frobot,
+        frobot_user_id: user_id,
+        frobot_id: frobot_id,
+        id: id,
+        match_id: match_id,
+        slot_type: slot_type,
+        status: status
       }
     end)
   end

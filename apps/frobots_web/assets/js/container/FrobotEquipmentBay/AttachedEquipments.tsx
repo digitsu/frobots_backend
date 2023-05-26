@@ -1,15 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Typography, Box, Grid, Button } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import { useDispatch, useSelector } from 'react-redux'
 import { frobotEquipmentActions } from '../../redux/slices/frobotEquipment'
-
+import Popup from '../../components/Popup'
+import {
+  EquipmentDetachPromptDescription,
+  EquipmentDetachPromptTitle,
+} from '../../mock/texts'
 interface AttachedEquipmentsProps {
   equipments: any[]
+  equipmentsCount: number
   isOwnedFrobot: boolean
   frobotId: string
   imageBaseUrl: string
+  detachEquipment: any
 }
 
 const itemsPerPage = 8
@@ -17,22 +23,59 @@ const itemsPerPage = 8
 export default (props: AttachedEquipmentsProps) => {
   const dispatch = useDispatch()
   const { setCurrentEquipment, setActiveEquipmentKey } = frobotEquipmentActions
+  const [detachEquipmentState, setDetachEquipmentState] = useState(false)
+  const [currentDetachEquipment, setCurrentDetachEquipment] = useState(null)
+  const [showPopup, setShowPopup] = useState(false)
   const { activeEquipmentKey } = useSelector(
     (store: any) => store.frobotEquipment
   )
-  const { equipments, imageBaseUrl, isOwnedFrobot } = props
-  const equipmentLength = equipments.length
+  const {
+    detachEquipment,
+    equipments,
+    equipmentsCount,
+    imageBaseUrl,
+    isOwnedFrobot,
+  } = props
   const [leftOffset, setOffsetLeft] = useState(0)
   const [rightOffset, setOffsetRight] = useState(
-    equipmentLength > itemsPerPage ? itemsPerPage : equipmentLength
+    equipmentsCount > itemsPerPage ? itemsPerPage : equipmentsCount
   )
-
   const [currentSection, setCurrentSection] = useState(1)
-  const totalSections = Math.ceil(equipments?.length / itemsPerPage)
+  const totalSections = Math.ceil(equipmentsCount / itemsPerPage)
+
+  useEffect(() => {
+    let newCurrentSection = currentSection
+    let newLeftOffset = leftOffset
+    let newRightOffset = rightOffset
+
+    if (currentSection > totalSections) {
+      newCurrentSection = currentSection - 1
+      newLeftOffset =
+        leftOffset - itemsPerPage < 0 ? 0 : leftOffset - itemsPerPage
+
+      newRightOffset = leftOffset
+    } else if (currentSection === totalSections) {
+      newRightOffset =
+        rightOffset + itemsPerPage > equipmentsCount
+          ? equipmentsCount
+          : rightOffset + itemsPerPage
+    }
+
+    if (currentSection === 0) {
+      newCurrentSection = 1
+      newLeftOffset = 0
+      newRightOffset =
+        equipmentsCount > itemsPerPage ? itemsPerPage : equipmentsCount
+    }
+
+    setCurrentSection(newCurrentSection)
+    setOffsetLeft(newLeftOffset)
+    setOffsetRight(newRightOffset)
+  }, [equipmentsCount])
 
   const switchEquipment = (equipment: any) => {
     dispatch(setCurrentEquipment(equipment))
-    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+    dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
 
   const handlePreviousButton = () => {
@@ -40,51 +83,58 @@ export default (props: AttachedEquipmentsProps) => {
       return
     }
 
-    setCurrentSection(currentSection - 1)
     const newLeftOffset =
       leftOffset - itemsPerPage < 0 ? 0 : leftOffset - itemsPerPage
-    setOffsetLeft(newLeftOffset)
-    setOffsetRight(
-      rightOffset - itemsPerPage < itemsPerPage
-        ? itemsPerPage
-        : rightOffset - itemsPerPage
-    )
-
     const equipment = equipments[newLeftOffset]
+
+    setCurrentSection(currentSection - 1)
+    setOffsetRight(leftOffset)
+    setOffsetLeft(newLeftOffset)
     dispatch(setCurrentEquipment(equipment))
-    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+    dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
 
   const handleNextButton = () => {
-    if (rightOffset >= equipmentLength) {
+    if (rightOffset >= equipmentsCount) {
       return
     }
 
-    setCurrentSection(currentSection + 1)
-    const newLeftOffset =
-      leftOffset + itemsPerPage > equipmentLength
-        ? leftOffset
-        : leftOffset + itemsPerPage
-    setOffsetLeft(newLeftOffset)
-    setOffsetRight(
-      rightOffset + itemsPerPage > equipmentLength
-        ? equipmentLength
+    const newRightOffset =
+      rightOffset + itemsPerPage > equipmentsCount
+        ? equipmentsCount
         : rightOffset + itemsPerPage
-    )
-
     const equipment = equipments[rightOffset]
+
+    setCurrentSection(currentSection + 1)
+    setOffsetLeft(rightOffset)
+    setOffsetRight(newRightOffset)
     dispatch(setCurrentEquipment(equipment))
-    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+    dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
+
+  const handleOnClickDetach = (equipment: any) => {
+    setCurrentDetachEquipment(equipment)
+    setShowPopup(true)
+  }
+
+  const handleDetachConfirm = () => {
+    detachEquipment({
+      ...currentDetachEquipment,
+      current_equipment_key: activeEquipmentKey,
+    })
+    setShowPopup(false)
+  }
+
+  const equipmentClass = currentDetachEquipment?.equipment_class || 'Item'
 
   return (
     <>
-      <Typography paddingTop={2} variant={'subtitle1'}>
-        Attached Equipments
-      </Typography>
       <Grid paddingTop={2}>
-        {equipments.length ? (
-          <Card>
+        <Card>
+          <Typography variant={'subtitle1'} pt={2} pb={2} textAlign={'center'}>
+            Attached Equipments
+          </Typography>
+          {equipments.length ? (
             <Box
               sx={{
                 display: 'flex',
@@ -101,6 +151,7 @@ export default (props: AttachedEquipmentsProps) => {
                   m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
                 <ChevronLeftIcon
@@ -139,15 +190,15 @@ export default (props: AttachedEquipmentsProps) => {
                         <Box
                           component={'img'}
                           width={'100%'}
+                          height={'60%'}
                           src={`${imageBaseUrl}${equipment.image}`}
                           sx={{
                             cursor: 'pointer',
-                            p: 1,
                             borderRadius: '6px',
                             border:
-                              equipment.equiment_key === activeEquipmentKey
+                              equipment.equipment_key === activeEquipmentKey
                                 ? '4px solid #00AB55'
-                                : 'none',
+                                : '4px solid transparent',
                           }}
                           onClick={() => switchEquipment(equipment)}
                         />
@@ -166,6 +217,7 @@ export default (props: AttachedEquipmentsProps) => {
                                 backgroundColor: '#ff563029',
                                 width: '100px',
                               }}
+                              onClick={() => handleOnClickDetach(equipment)}
                             >
                               Detach
                             </Button>
@@ -181,6 +233,7 @@ export default (props: AttachedEquipmentsProps) => {
                   m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
                 <ChevronRightIcon
@@ -193,9 +246,7 @@ export default (props: AttachedEquipmentsProps) => {
                 />
               </Box>
             </Box>
-          </Card>
-        ) : (
-          <Card>
+          ) : (
             <Box
               display="flex"
               width={'100%'}
@@ -208,9 +259,18 @@ export default (props: AttachedEquipmentsProps) => {
                 {"Bot doesn't have any attached equipment !"}
               </Typography>
             </Box>
-          </Card>
-        )}
+          )}
+        </Card>
       </Grid>
+      <Popup
+        open={showPopup}
+        cancelAction={() => setShowPopup(false)}
+        successAction={handleDetachConfirm}
+        successLabel={'OK'}
+        cancelLabel={'Cancel'}
+        label={EquipmentDetachPromptTitle(equipmentClass)}
+        description={EquipmentDetachPromptDescription(equipmentClass)}
+      />
     </>
   )
 }

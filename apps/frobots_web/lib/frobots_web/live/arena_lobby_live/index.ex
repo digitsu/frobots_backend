@@ -19,7 +19,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
       if connected?(socket), do: Events.subscribe()
 
       time_left =
-        if match.status == :pending or match.status == :running do
+        if match.status == :pending do
           Process.send_after(self(), :time_left, 1_000)
           DateTime.diff(match.match_time, DateTime.utc_now())
         else
@@ -184,6 +184,14 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
      })}
   end
 
+  def handle_event("start_match_redirect", %{}, socket) do
+    {:noreply,
+     socket
+     |> push_event(:redirecttomatch, %{
+       match_id: socket.assigns.match.id
+     })}
+  end
+
   # add additional handle param events as needed to handle button clicks etc
   @impl Phoenix.LiveView
   def handle_params(_, _, socket) do
@@ -216,6 +224,18 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
        match: extract_slot_details(updated_match_from_be.slots),
        frobots: frobots
      })}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({Events, [:match, :updated], updated_match}, socket) do
+    match = socket.assigns.match
+    match_id = match.id
+
+    if updated_match.id == match_id and updated_match.status == :running do
+      ## REDIRECT
+    end
+
+    {:noreply, socket}
   end
 
   def handle_info(:time_left, socket) do

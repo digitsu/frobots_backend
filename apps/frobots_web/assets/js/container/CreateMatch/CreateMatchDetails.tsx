@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Typography, TextField, Button } from '@mui/material'
+import { Box, Typography, TextField, Button, Autocomplete } from '@mui/material'
 import { createMatchActions } from '../../redux/slices/createMatch'
 
 export default (props: any) => {
@@ -16,6 +16,11 @@ export default (props: any) => {
 
   const { matchTitle, matchDescription, matchTime, countDownTimer } =
     useSelector((store: any) => store.createMatch)
+  const timerOptions = [1, 2, 3, 5, 10].map((count, index) => ({
+    id: index,
+    label: count === 1 ? `${count} Minute` : `${count} Minutes`,
+    val: count,
+  }))
   return (
     <Box width={'60%'} m={'auto'} mt={10}>
       <Typography mb={2} variant={'body1'} fontWeight={'bold'}>
@@ -52,18 +57,28 @@ export default (props: any) => {
         />
       </Box>
       <Box my={2}>
-        <TextField
-          fullWidth
-          label="Select Countdown Timer"
-          placeholder="01:00:00"
-          value={countDownTimer}
-          onChange={(evt) => dispatch(setCountdownTimer(evt.target.value))}
+        <Autocomplete
+          id="match-duration"
+          key="brain-code"
+          options={timerOptions}
+          disableClearable
+          onChange={(_item, target) => {
+            dispatch(setCountdownTimer(target.val * 60))
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Select Match Duration"
+              name="match-duration-input"
+            />
+          )}
         />
       </Box>
       <Box mt={6}>
         <Button
           variant="contained"
           fullWidth
+          disabled={countDownTimer === 0}
           sx={{ py: 1.5, mb: 10 }}
           onClick={() => dispatch(incrementStep())}
         >

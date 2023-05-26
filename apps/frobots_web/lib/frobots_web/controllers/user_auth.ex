@@ -3,6 +3,7 @@ defmodule FrobotsWeb.UserAuth do
   import Phoenix.Controller
 
   alias Frobots.Accounts
+  alias Frobots.Api
   alias FrobotsWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.
@@ -107,6 +108,10 @@ defmodule FrobotsWeb.UserAuth do
         {nil, conn}
       end
     end
+  end
+
+  def fetch_s3_base_url(conn, _opts) do
+    assign(conn, :s3_base_url, Api.get_s3_base_url())
   end
 
   @doc """

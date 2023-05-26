@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Grid, Typography, Button, Card } from '@mui/material'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -8,9 +8,13 @@ import { frobotEquipmentActions } from '../../redux/slices/frobotEquipment'
 
 interface AvailableEquipmentPrpos {
   availableEquipments: any[]
+  equipmentsCount: number
   isOwnedFrobot: boolean
   frobotId: string
   imageBaseUrl: string
+  attachEquipment: any
+  detachEquipment: any
+  redeployEquipment: any
 }
 
 const itemsPerPage = 6
@@ -22,60 +26,108 @@ export default (props: AvailableEquipmentPrpos) => {
     (store: any) => store.frobotEquipment
   )
 
-  const { availableEquipments, imageBaseUrl, isOwnedFrobot } = props
-  const equipmentLength = availableEquipments.length
+  const {
+    availableEquipments,
+    equipmentsCount,
+    imageBaseUrl,
+    isOwnedFrobot,
+    attachEquipment,
+    frobotId,
+    detachEquipment,
+    redeployEquipment,
+  } = props
+
   const [leftOffset, setOffsetLeft] = useState(0)
   const [rightOffset, setOffsetRight] = useState(
-    equipmentLength > itemsPerPage ? itemsPerPage : equipmentLength
+    equipmentsCount > itemsPerPage ? itemsPerPage : equipmentsCount
   )
   const [currentSection, setCurrentSection] = useState(1)
-  const totalSections = Math.ceil(availableEquipments?.length / itemsPerPage)
+  const totalSections = Math.ceil(equipmentsCount / itemsPerPage)
 
   const switchEquipment = (equipment: any) => {
     dispatch(setCurrentEquipment(equipment))
-    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+    dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
+
+  useEffect(() => {
+    let newCurrentSection = currentSection
+    let newLeftOffset = leftOffset
+    let newRightOffset = rightOffset
+
+    if (currentSection > totalSections) {
+      newCurrentSection = currentSection - 1
+      newLeftOffset =
+        leftOffset - itemsPerPage < 0 ? 0 : leftOffset - itemsPerPage
+
+      newRightOffset = leftOffset
+    } else if (currentSection === totalSections) {
+      newRightOffset =
+        rightOffset + itemsPerPage > equipmentsCount
+          ? equipmentsCount
+          : rightOffset + itemsPerPage
+    }
+
+    if (currentSection === 0) {
+      newCurrentSection = 1
+      newLeftOffset = 0
+      newRightOffset =
+        equipmentsCount > itemsPerPage ? itemsPerPage : equipmentsCount
+    }
+
+    setCurrentSection(newCurrentSection)
+    setOffsetLeft(newLeftOffset)
+    setOffsetRight(newRightOffset)
+  }, [equipmentsCount])
 
   const handleClickPrevious = () => {
     if (leftOffset <= 0) {
       return
     }
 
-    setCurrentSection(currentSection - 1)
     const newLeftOffset =
       leftOffset - itemsPerPage < 0 ? 0 : leftOffset - itemsPerPage
-    setOffsetLeft(newLeftOffset)
-    setOffsetRight(
-      rightOffset - itemsPerPage < itemsPerPage
-        ? itemsPerPage
-        : rightOffset - itemsPerPage
-    )
-
     const equipment = availableEquipments[newLeftOffset]
+
+    setCurrentSection(currentSection - 1)
+    setOffsetRight(leftOffset)
+    setOffsetLeft(newLeftOffset)
     dispatch(setCurrentEquipment(equipment))
-    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+    dispatch(setActiveEquipmentKey(equipment?.equipment_key))
   }
 
   const handleClickNext = () => {
-    if (rightOffset >= equipmentLength) {
+    if (rightOffset >= equipmentsCount) {
       return
     }
 
-    setCurrentSection(currentSection + 1)
-    const newLeftOffset =
-      leftOffset + itemsPerPage > equipmentLength
-        ? leftOffset
-        : leftOffset + itemsPerPage
-    setOffsetLeft(newLeftOffset)
-    setOffsetRight(
-      rightOffset + itemsPerPage > equipmentLength
-        ? equipmentLength
+    const newRightOffset =
+      rightOffset + itemsPerPage > equipmentsCount
+        ? equipmentsCount
         : rightOffset + itemsPerPage
-    )
-
     const equipment = availableEquipments[rightOffset]
+
+    setCurrentSection(currentSection + 1)
+    setOffsetLeft(rightOffset)
+    setOffsetRight(newRightOffset)
     dispatch(setCurrentEquipment(equipment))
-    dispatch(setActiveEquipmentKey(equipment?.equiment_key))
+    dispatch(setActiveEquipmentKey(equipment?.equipment_key))
+  }
+
+  const handleOnClickAttach = (equipment: any) => {
+    attachEquipment({
+      id: equipment.id,
+      equipment_class: equipment.equipment_class,
+      frobot_id: frobotId,
+      current_equipment_key: activeEquipmentKey,
+    })
+  }
+
+  const handleOnClickRedeploy = (equipment: any) => {
+    redeployEquipment({
+      ...equipment,
+      current_frobot_id: frobotId,
+      current_equipment_key: activeEquipmentKey,
+    })
   }
 
   return (
@@ -86,6 +138,10 @@ export default (props: AvailableEquipmentPrpos) => {
             <EquipmentDetails
               imageBaseUrl={imageBaseUrl}
               isOwnedFrobot={isOwnedFrobot}
+              attachEquipment={attachEquipment}
+              currentFrobotId={frobotId}
+              detachEquipment={detachEquipment}
+              redeployEquipment={redeployEquipment}
             />
           </Card>
         </Grid>
@@ -98,7 +154,7 @@ export default (props: AvailableEquipmentPrpos) => {
               pb={2}
               textAlign={'center'}
             >
-              Available Equipments ({currentSection}/{totalSections})
+              Available Equipments
             </Typography>
             <Box
               minHeight={'4vh'}
@@ -116,6 +172,7 @@ export default (props: AvailableEquipmentPrpos) => {
                   m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
                 <ChevronLeftIcon
@@ -148,19 +205,50 @@ export default (props: AvailableEquipmentPrpos) => {
                       </Box>
 
                       <Box
-                        component={'img'}
-                        src={`${imageBaseUrl}${equipment.image}`}
+                        position={'relative'}
+                        width={'100%'}
+                        height={'60%'}
                         sx={{
                           cursor: 'pointer',
-                          p: 1,
                           borderRadius: '6px',
                           border:
-                            equipment.equiment_key === activeEquipmentKey
+                            equipment.equipment_key === activeEquipmentKey
                               ? '4px solid #00AB55'
-                              : 'none',
+                              : '4px solid transparent',
                         }}
-                        onClick={() => switchEquipment(equipment)}
-                      />
+                      >
+                        {equipment.frobot_name && (
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              borderRadius: '0px 0px 6px 6px',
+                              bottom: 0,
+                              background: '#7d7d7dab',
+                              color: '#FFC107',
+                              width: '100%',
+                              height: '15%',
+                              opacity: 1,
+                              textAlign: 'center',
+                              textOverflow: 'ellipsis',
+                              overflow: 'hidden',
+                              whiteSpace: 'nowrap',
+                              fontWeight: 'bold',
+                              fontSize: '0.8rem',
+                            }}
+                          >
+                            {equipment.frobot_name}
+                          </Box>
+                        )}
+
+                        <Box
+                          borderRadius={'6px'}
+                          component={'img'}
+                          width={'100%'}
+                          height={'100%'}
+                          src={`${imageBaseUrl}${equipment.image}`}
+                          onClick={() => switchEquipment(equipment)}
+                        />
+                      </Box>
                       {equipment.frobot_id ? (
                         <Box
                           paddingBottom={2}
@@ -177,6 +265,7 @@ export default (props: AvailableEquipmentPrpos) => {
                               backgroundColor: '#ffab0029',
                               width: '100',
                             }}
+                            onClick={() => handleOnClickRedeploy(equipment)}
                           >
                             Redeploy
                           </Button>
@@ -197,6 +286,7 @@ export default (props: AvailableEquipmentPrpos) => {
                               backgroundColor: '#ffab0029',
                               width: '100',
                             }}
+                            onClick={() => handleOnClickAttach(equipment)}
                           >
                             Attach
                           </Button>
@@ -211,6 +301,7 @@ export default (props: AvailableEquipmentPrpos) => {
                   m: '10px',
                   backgroundColor: '#1C4250',
                   borderRadius: '4px',
+                  cursor: 'pointer',
                 }}
               >
                 <ChevronRightIcon

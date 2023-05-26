@@ -234,43 +234,98 @@ defmodule Frobots.Equipment do
         join: detail in Cannon,
         as: :cannon,
         on: c.cannon_id == detail.id,
-        where: c.user_id == ^user_id
+        left_join: f in "frobots",
+        on: f.id == c.frobot_id,
+        where: c.user_id == ^user_id,
+        select: %{
+          "id" => c.id,
+          "cannon_id" => c.cannon_id,
+          "equipment_class" => detail.class,
+          "equipment_type" => detail.type,
+          "frobot_id" => c.frobot_id,
+          "frobot_name" => f.name,
+          "image" => detail.image,
+          "magazine_size" => c.magazine_size,
+          "rate_of_fire" => c.rate_of_fire,
+          "reload_time" => c.reload_time
+        }
       )
 
     missile_q =
-      from(c in MissileInst,
+      from(m in MissileInst,
         join: detail in Missile,
         as: :missile,
-        on: c.missile_id == detail.id,
-        where: c.user_id == ^user_id
+        on: m.missile_id == detail.id,
+        left_join: f in "frobots",
+        on: f.id == m.frobot_id,
+        where: m.user_id == ^user_id,
+        select: %{
+          "id" => m.id,
+          "missile_id" => m.missile_id,
+          "equipment_class" => detail.class,
+          "equipment_type" => detail.type,
+          "frobot_id" => m.frobot_id,
+          "frobot_name" => f.name,
+          "image" => detail.image,
+          "damage_direct" => m.damage_direct,
+          "damage_near" => m.damage_near,
+          "damage_far" => m.damage_far,
+          "range" => m.range,
+          "speed" => m.speed
+        }
       )
 
     scanner_q =
-      from(c in ScannerInst,
+      from(s in ScannerInst,
         join: detail in Scanner,
         as: :scanner,
-        on: c.scanner_id == detail.id,
-        where: c.user_id == ^user_id
+        on: s.scanner_id == detail.id,
+        left_join: f in "frobots",
+        on: f.id == s.frobot_id,
+        where: s.user_id == ^user_id,
+        select: %{
+          "id" => s.id,
+          "scanner_id" => s.scanner_id,
+          "equipment_class" => detail.class,
+          "equipment_type" => detail.type,
+          "frobot_id" => s.frobot_id,
+          "frobot_name" => f.name,
+          "image" => detail.image,
+          "max_range" => s.max_range,
+          "resolution" => s.resolution
+        }
       )
 
     xframe_q =
-      from(c in XframeInst,
+      from(x in XframeInst,
         join: detail in Xframe,
         as: :xframe,
-        on: c.xframe_id == detail.id,
-        where: c.user_id == ^user_id
+        on: x.xframe_id == detail.id,
+        left_join: f in "frobots",
+        on: f.id == x.frobot_id,
+        where: x.user_id == ^user_id,
+        select: %{
+          "id" => x.id,
+          "xframe_id" => x.xframe_id,
+          "equipment_class" => detail.class,
+          "equipment_type" => detail.type,
+          "frobot_id" => x.frobot_id,
+          "frobot_name" => f.name,
+          "image" => detail.image,
+          "accel_speed_mss" => x.accel_speed_mss,
+          "health" => x.health,
+          "max_speed_ms" => x.max_speed_ms,
+          "max_health" => x.max_health,
+          "max_throttle" => x.max_throttle,
+          "turn_speed" => x.turn_speed
+        }
       )
 
-    cannons = Repo.all(cannon_q) |> Repo.preload(:cannon)
-    xframes = Repo.all(xframe_q) |> Repo.preload(:xframe)
-    scanners = Repo.all(scanner_q) |> Repo.preload(:scanner)
-    missiles = Repo.all(missile_q) |> Repo.preload(:missile)
-
     %{
-      "xframes" => _get_xframe_inst_details(xframes),
-      "missiles" => _get_missile_inst_details(missiles),
-      "scanners" => _get_scanner_inst_details(scanners),
-      "cannons" => _get_cannon_inst_details(cannons)
+      "xframes" => Repo.all(xframe_q),
+      "missiles" => Repo.all(missile_q),
+      "scanners" => Repo.all(scanner_q),
+      "cannons" => Repo.all(cannon_q)
     }
   end
 
@@ -281,43 +336,98 @@ defmodule Frobots.Equipment do
         join: detail in Cannon,
         as: :cannon,
         on: c.cannon_id == detail.id,
-        where: c.frobot_id == ^frobot_id
+        left_join: f in "frobots",
+        on: f.id == c.frobot_id,
+        where: c.frobot_id == ^frobot_id,
+        select: %{
+          "id" => c.id,
+          "cannon_id" => c.cannon_id,
+          "equipment_class" => detail.class,
+          "equipment_type" => detail.type,
+          "frobot_id" => c.frobot_id,
+          "frobot_name" => f.name,
+          "image" => detail.image,
+          "magazine_size" => c.magazine_size,
+          "rate_of_fire" => c.rate_of_fire,
+          "reload_time" => c.reload_time
+        }
       )
 
     missile_q =
-      from(c in MissileInst,
+      from(m in MissileInst,
         join: detail in Missile,
         as: :missile,
-        on: c.missile_id == detail.id,
-        where: c.frobot_id == ^frobot_id
+        on: m.missile_id == detail.id,
+        left_join: f in "frobots",
+        on: f.id == m.frobot_id,
+        where: m.frobot_id == ^frobot_id,
+        select: %{
+          "id" => m.id,
+          "missile_id" => m.missile_id,
+          "equipment_class" => detail.class,
+          "equipment_type" => detail.type,
+          "frobot_id" => m.frobot_id,
+          "frobot_name" => f.name,
+          "image" => detail.image,
+          "damage_direct" => m.damage_direct,
+          "damage_near" => m.damage_near,
+          "damage_far" => m.damage_far,
+          "range" => m.range,
+          "speed" => m.speed
+        }
       )
 
     scanner_q =
-      from(c in ScannerInst,
+      from(s in ScannerInst,
         join: detail in Scanner,
         as: :scanner,
-        on: c.scanner_id == detail.id,
-        where: c.frobot_id == ^frobot_id
+        on: s.scanner_id == detail.id,
+        left_join: f in "frobots",
+        on: f.id == s.frobot_id,
+        where: s.frobot_id == ^frobot_id,
+        select: %{
+          "id" => s.id,
+          "scanner_id" => s.scanner_id,
+          "equipment_class" => detail.class,
+          "equipment_type" => detail.type,
+          "frobot_id" => s.frobot_id,
+          "frobot_name" => f.name,
+          "image" => detail.image,
+          "max_range" => s.max_range,
+          "resolution" => s.resolution
+        }
       )
 
     xframe_q =
-      from(c in XframeInst,
+      from(x in XframeInst,
         join: detail in Xframe,
         as: :xframe,
-        on: c.xframe_id == detail.id,
-        where: c.frobot_id == ^frobot_id
+        on: x.xframe_id == detail.id,
+        left_join: f in "frobots",
+        on: f.id == x.frobot_id,
+        where: x.frobot_id == ^frobot_id,
+        select: %{
+          "id" => x.id,
+          "xframe_id" => x.xframe_id,
+          "equipment_class" => detail.class,
+          "equipment_type" => detail.type,
+          "frobot_id" => x.frobot_id,
+          "frobot_name" => f.name,
+          "image" => detail.image,
+          "accel_speed_mss" => x.accel_speed_mss,
+          "health" => x.health,
+          "max_speed_ms" => x.max_speed_ms,
+          "max_health" => x.max_health,
+          "max_throttle" => x.max_throttle,
+          "turn_speed" => x.turn_speed
+        }
       )
 
-    cannons = Repo.all(cannon_q) |> Repo.preload(:cannon)
-    xframes = Repo.all(xframe_q) |> Repo.preload(:xframe)
-    scanners = Repo.all(scanner_q) |> Repo.preload(:scanner)
-    missiles = Repo.all(missile_q) |> Repo.preload(:missile)
-
     %{
-      "xframes" => _get_xframe_inst_details(xframes),
-      "missiles" => _get_missile_inst_details(missiles),
-      "scanners" => _get_scanner_inst_details(scanners),
-      "cannons" => _get_cannon_inst_details(cannons)
+      "xframes" => Repo.all(xframe_q),
+      "missiles" => Repo.all(missile_q),
+      "scanners" => Repo.all(scanner_q),
+      "cannons" => Repo.all(cannon_q)
     }
   end
 
@@ -355,16 +465,22 @@ defmodule Frobots.Equipment do
   """
 
   def equip_xframe(xframe_inst_id, frobot_id) do
-    result =
-      equip_xframe_changeset(xframe_inst_id, frobot_id)
-      |> Repo.update()
+    case xframe_equipped?(frobot_id) do
+      true ->
+        {:error, "xframe already equipped"}
 
-    case result do
-      {:ok, _xframe_inst} ->
-        {:ok, "frobot equipped with xframe instance"}
+      false ->
+        result =
+          equip_xframe_changeset(xframe_inst_id, frobot_id)
+          |> Repo.update()
 
-      {:error, %Ecto.Changeset{}} ->
-        {:error, "There was an error in equip_xframe"}
+        case result do
+          {:ok, _xframe_inst} ->
+            {:ok, "frobot equipped with xframe instance"}
+
+          {:error, %Ecto.Changeset{}} ->
+            {:error, "There was an error in equip_xframe"}
+        end
     end
   end
 
@@ -603,87 +719,12 @@ defmodule Frobots.Equipment do
     {weapon_count, sensor_count, ammo_count}
   end
 
-  defp _get_cannon_inst_details(cannon_inst_list) do
-    if Enum.empty?(cannon_inst_list) do
-      []
-    else
-      Enum.map(cannon_inst_list, fn cannon_inst ->
-        %{
-          "id" => Map.get(cannon_inst, :id),
-          "cannon_id" => Map.get(cannon_inst, :cannon_id),
-          "equipment_class" => Map.get(cannon_inst.cannon, :class),
-          "equipment_type" => Map.get(cannon_inst.cannon, :type),
-          "frobot_id" => Map.get(cannon_inst, :frobot_id),
-          "image" => Map.get(cannon_inst.cannon, :image),
-          "magazine_size" => Map.get(cannon_inst, :magazine_size),
-          "rate_of_fire" => Map.get(cannon_inst, :rate_of_fire),
-          "reload_time" => Map.get(cannon_inst, :reload_time)
-        }
-      end)
-    end
-  end
+  defp xframe_equipped?(frobot_id) do
+    xframe = from(xfi in XframeInst, where: xfi.frobot_id == ^frobot_id) |> Repo.all()
 
-  defp _get_scanner_inst_details(scanner_inst_list) do
-    if Enum.empty?(scanner_inst_list) do
-      []
-    else
-      Enum.map(scanner_inst_list, fn scanner_inst ->
-        %{
-          "id" => Map.get(scanner_inst, :id),
-          "scanner_id" => Map.get(scanner_inst, :scanner_id),
-          "equipment_class" => Map.get(scanner_inst.scanner, :class),
-          "equipment_type" => Map.get(scanner_inst.scanner, :type),
-          "frobot_id" => Map.get(scanner_inst, :frobot_id),
-          "image" => Map.get(scanner_inst.scanner, :image),
-          "max_range" => Map.get(scanner_inst, :max_range),
-          "resolution" => Map.get(scanner_inst, :resolution)
-        }
-      end)
-    end
-  end
-
-  defp _get_missile_inst_details(missile_inst_list) do
-    if Enum.empty?(missile_inst_list) do
-      []
-    else
-      Enum.map(missile_inst_list, fn missile_inst ->
-        %{
-          "id" => Map.get(missile_inst, :id),
-          "missile_id" => Map.get(missile_inst, :missile_id),
-          "equipment_class" => Map.get(missile_inst.missile, :class),
-          "equipment_type" => Map.get(missile_inst.missile, :type),
-          "frobot_id" => Map.get(missile_inst, :frobot_id),
-          "image" => Map.get(missile_inst.missile, :image),
-          "damage_direct" => Map.get(missile_inst, :damage_direct),
-          "damage_near" => Map.get(missile_inst, :damage_near),
-          "damage_far" => Map.get(missile_inst, :damage_far),
-          "range" => Map.get(missile_inst, :range),
-          "speed" => Map.get(missile_inst, :speed)
-        }
-      end)
-    end
-  end
-
-  defp _get_xframe_inst_details(xframe_inst_list) do
-    if Enum.empty?(xframe_inst_list) do
-      []
-    else
-      Enum.map(xframe_inst_list, fn xframe_inst ->
-        %{
-          "id" => Map.get(xframe_inst, :id),
-          "xframe_id" => Map.get(xframe_inst, :xframe_id),
-          "equipment_class" => Map.get(xframe_inst.xframe, :class),
-          "equipment_type" => Map.get(xframe_inst.xframe, :type),
-          "frobot_id" => Map.get(xframe_inst, :frobot_id),
-          "image" => Map.get(xframe_inst.xframe, :image),
-          "accel_speed_mss" => Map.get(xframe_inst, :accel_speed_mss),
-          "health" => Map.get(xframe_inst, :health),
-          "max_speed_ms" => Map.get(xframe_inst, :max_speed_ms),
-          "max_health" => Map.get(xframe_inst, :max_health),
-          "max_throttle" => Map.get(xframe_inst, :max_throttle),
-          "turn_speed" => Map.get(xframe_inst, :turn_speed)
-        }
-      end)
+    case xframe do
+      [] -> false
+      _ -> true
     end
   end
 end

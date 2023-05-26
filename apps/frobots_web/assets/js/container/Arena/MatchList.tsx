@@ -81,7 +81,6 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
     <Box sx={{ position: 'relative' }} {...other}>
       <TableContainer
         sx={{
-          maxHeight: 320,
           minHeight: 320,
           backgroundColor: '#212B36',
           boxShadow: 'none',
@@ -165,7 +164,7 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
           <TableBody sx={{ color: '#fff' }}>
             {matches?.length === 0 && (
               <TableRow>
-                <TableCell>No Data Found</TableCell>
+                <TableCell>No Matches Found</TableCell>
               </TableRow>
             )}
 
@@ -198,10 +197,11 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                       justifyContent: 'space-around',
                     }}
                   >
-                    {match.status !== 'completed' ? (
+                    {match.status !== 'done' ? (
                       <>
                         <Button
                           disabled={match.status === 'cancelled'}
+                          href={`/arena/${match.id}`}
                           variant="outlined"
                           size="medium"
                           sx={{
@@ -212,18 +212,24 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                         >
                           Join
                         </Button>
-                        <Button
-                          disabled={match.status === 'cancelled'}
-                          variant="outlined"
-                          size="medium"
-                          sx={{
-                            color: '#00B8D9',
-                            borderColor: '#00B8D9',
-                            padding: '0px 25px',
-                          }}
-                        >
-                          Watch
-                        </Button>
+                        {
+                          <Button
+                            disabled={
+                              match.status === 'cancelled' ||
+                              match.status === 'pending'
+                            }
+                            href={`/arena/${match.id}/simulation`}
+                            variant="outlined"
+                            size="medium"
+                            sx={{
+                              color: '#00B8D9',
+                              borderColor: '#00B8D9',
+                              padding: '0px 25px',
+                            }}
+                          >
+                            Watch
+                          </Button>
+                        }
                       </>
                     ) : (
                       <>
@@ -240,6 +246,8 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                           Replay
                         </Button>
                         <Button
+                          target={'_blank'}
+                          href={`/arena/${match.id}/results`}
                           disabled={match.status === 'cancelled'}
                           variant="outlined"
                           size="medium"

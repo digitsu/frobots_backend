@@ -11,30 +11,39 @@ export default ({
   imageBaseUrl,
 }) => {
   const { updateSlot } = createMatchActions
-  const { currentActiveSlot } = useSelector((store: any) => store.createMatch)
+  const { currentActiveSlot, slots } = useSelector(
+    (store: any) => store.createMatch
+  )
   const dispatch = useDispatch()
   const [currentSlot, setCurrentSlot] = useState(null)
 
-  const deployFrobot = () => {
+  const deployFrobot = (slot) => {
     dispatch(
       updateSlot({
         ...currentActiveSlot,
         type: 'host',
-        name: currentSlot?.name,
-        url: '/images/red_frobot.svg',
-        slotDetails: currentSlot,
+        name: `Host: ${slot?.name}`,
+        url: `${imageBaseUrl}${slot.avatar}`,
+        slotDetails: slot,
       })
     )
     setCurrentStep(currentStep + 1)
   }
 
+  const usedFrobots = slots
+    .filter((item) => item.slotDetails)
+    .map((item) => (item ? item.slotDetails.id : item))
+  const filteredFrobots = userFrobots.filter(
+    ({ id }) => !usedFrobots.includes(id)
+  )
+
   return (
     <>
       {currentStep === 1 && (
         <Box sx={{ height: 554 }}>
-          <Box sx={{ p: 3, pb: 1, height: 490, overflowY: 'scroll' }}>
+          <Box sx={{ p: 3, pb: 1, height: 530, overflowY: 'scroll' }}>
             <Grid container spacing={3}>
-              {userFrobots.map((slot) => (
+              {filteredFrobots.map((slot) => (
                 <Grid item width={'100%'}>
                   <Box
                     display={'flex'}
@@ -55,7 +64,10 @@ export default ({
                       backgroundColor:
                         currentSlot?.id === slot.id ? `#1C3F3B` : 'transparent',
                     }}
-                    onClick={() => setCurrentSlot(slot)}
+                    onClick={() => {
+                      deployFrobot(slot)
+                      setCurrentSlot(slot)
+                    }}
                   >
                     <Box position={'relative'}>
                       <Box
@@ -100,12 +112,6 @@ export default ({
               >
                 Back
               </Button>
-              <Box mt={1}>
-                {' '}
-                <Button fullWidth variant="contained" onClick={deployFrobot}>
-                  Deploy Frobot
-                </Button>
-              </Box>
             </Box>
           </Box>
         </Box>

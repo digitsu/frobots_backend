@@ -23,6 +23,11 @@
           <%= @username %>
         </p>
       </div>
+      <div>
+        <p class="font-bold text-xs text-gray-400">
+          QDOS <%= @current_user_ranking_details[:points] || 0%>
+        </p>
+      </div>
     </div>
   </div>
   <div id="user-profile" phx-hook="UserProfileHook" phx-update="ignore"></div>
