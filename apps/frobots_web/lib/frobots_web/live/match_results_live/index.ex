@@ -6,6 +6,7 @@ defmodule FrobotsWeb.MatchResultsLive.Index do
   @impl Phoenix.LiveView
   def mount(%{"match_id" => match_id} = _params, _session, socket) do
     match_results = Events.get_match_details(String.to_integer(match_id))
+
     match = Api.get_match_details_by_id(match_id)
     {:ok, socket |> assign(:match_results, match_results) |> assign(:match, match)}
   end
