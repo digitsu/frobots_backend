@@ -108,7 +108,7 @@ defmodule Frobots.Events do
     Map.put(attrs, :winners, winners)
   end
 
-  defp get_frobot_id_from_matchname(name) do
+  def get_frobot_id_from_matchname(name) do
     name
     |> String.split("#")
     |> Enum.at(0)
@@ -116,7 +116,7 @@ defmodule Frobots.Events do
     |> Map.get(:id, nil)
   end
 
-  defp get_frobot_id_from_map(map) do
+  def get_frobot_id_from_map(map) do
     # %{"name" => "rabbit", "type" => "proto"},
     map
     |> Map.get("name")
@@ -407,11 +407,12 @@ defmodule Frobots.Events do
             "name" => f.name,
             "avatar" => f.avatar,
             "pixellated_image" => f.pixellated_img,
-            "xp" => f.xp
+            "xp" => f.xp,
+            "slot_id" => s.id
           },
           "user_name" => u.name,
           "death_map" => b.death_map,
-          "xp_earned" => 0
+          "xp_earned" => b.xp
         }
 
     frobots =
@@ -425,12 +426,13 @@ defmodule Frobots.Events do
             "name" => e["frobot"]["name"],
             "avatar" => e["frobot"]["avatar"],
             "pixellated_image" => e["frobot"]["pixellated_image"],
-            "xp" => e["frobot"]["xp"]
+            "xp" => e["frobot"]["xp"],
+            "slot_id" => e["frobot"]["slot_id"]
           },
           "user_name" => e["user_name"],
           "health" => get_health(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
-          "kills" => get_kill(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
-          "xp_earned" => e["xp_earned"]
+          "kills" => get_kill(e["death_map"], e["frobot"]["name"], e["frobot"]["slot_id"]),
+          "xp_earned" => get_xp(e["xp_earned"], e["frobot"]["id"])
         }
       end)
 
@@ -446,32 +448,27 @@ defmodule Frobots.Events do
   defp get_status(_status, "timeout"), do: "timeout"
   defp get_status(status, _), do: status
 
-  defp get_health(death_map, frobot_name, frobot_id) do
-    key = "#{frobot_name}##{frobot_id}"
+  defp get_health(death_map, frobot_name, slot_id) do
+    key = "#{frobot_name}##{slot_id}"
     damage_map = Map.get(death_map, key, %{"damage_map" => %{}})["damage_map"]
     damage = Map.get(damage_map, key, 0)
     health = 100 - damage
     health
   end
 
+  defp get_xp(xp_earned_map, frobot_id) do
+    Map.get(xp_earned_map, frobot_id |> to_string(), 0)
+  end
+
   defp get_kill(death_map, frobot_name, frobot_id) do
     key = "#{frobot_name}##{frobot_id}"
-    damage_map = Map.get(death_map, key, %{"damage_map" => %{}})["damage_map"]
 
-    kills =
-      Enum.reduce(damage_map, 0, fn
-        {_k, 100}, count ->
-          if Map.get(death_map, key, %{"killed_by" => ""})["killed_by"] == key do
-            count + 1
-          else
-            count
-          end
-
-        _, count ->
-          count
+    killers =
+      Enum.reduce(death_map, [], fn {_killed, damage_map}, acc ->
+        [Map.get(damage_map, "killed_by") | acc]
       end)
 
-    kills
+    Enum.count(killers, fn kills -> kills == key end)
   end
 
   def list_paginated(query, page_config) do
