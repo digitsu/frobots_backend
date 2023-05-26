@@ -130,7 +130,7 @@ defmodule Frobots.Leaderboard do
         2 ->
           starting_points / 4
 
-        2 ->
+        3 ->
           1
 
         _ ->
