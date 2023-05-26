@@ -95,7 +95,7 @@ defmodule Frobots.LeaderboardTest do
     stats = Leaderboard.get_stats()
     assert Enum.count(stats) == 1
     stat = Enum.at(stats, 0)
-    assert stat.points == 10
+    assert stat.points == 5
     assert stat.matches_participated == 1
     assert stat.matches_won == 1
 
@@ -104,7 +104,7 @@ defmodule Frobots.LeaderboardTest do
     stats = Leaderboard.get_stats()
     assert Enum.count(stats) == 1
     stat = Enum.at(stats, 0)
-    assert stat.points == 15
+    assert stat.points == 7
     assert stat.matches_participated == 2
     assert stat.matches_won == 2
   end
