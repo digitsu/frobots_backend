@@ -3,7 +3,6 @@ import { luaGenerator } from 'blockly/lua'
 
 export default () => {
   // Create Frobot code
-
   Blockly.Blocks['frobot'] = {
     init: function () {
       this.appendDummyInput().appendField('Create Frobot')
@@ -14,19 +13,16 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['frobot'] = function (block) {
-    var code = 'return function(state, ...)\n end\n'
+  luaGenerator['frobot'] = function (block: any) {
+    let code_new = '';
     var nestedBlock = block.getInputTargetBlock('nested_blocks')
     if (nestedBlock) {
       var code_nested = luaGenerator.blockToCode(nestedBlock)
-      let code_new = Array.isArray(code_nested) ? code_nested[0] : code_nested
-      code_new = luaGenerator.prefixLines(code_new, '\t')
-      code = code
-        .split('\n')
-        .filter((str) => str.length >= 1)
-        .join(`\n${code_new}`)
+      code_new = Array.isArray(code_nested) ? code_nested[0] : code_nested
+      code_new = luaGenerator.prefixLines(code_new, '\n\t')
     }
-    return code
+
+    return `return function(state, ...)\n\tstate = state or {}${code_new ? `${code_new}` : `\n`}\treturn state\nend\n`
   }
 
   // Damage function code
