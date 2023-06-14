@@ -308,6 +308,7 @@ export const MY_TOOLBOX = `
       <block type="scan" name="scan"></block>
       <block type="xlocation" name="xlocation"></block>
       <block type="ylocation" name="ylocation"></block>
+      <block type="custom_return" name="custom_return"></block>
     </category>
     <sep></sep>
     <category name="Variables" id="catVariables" colour="330" custom="VARIABLE"></category>

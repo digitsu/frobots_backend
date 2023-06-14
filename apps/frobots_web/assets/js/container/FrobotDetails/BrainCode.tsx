@@ -187,7 +187,9 @@ export default (props: any) => {
         }
       }
     } else {
-      gameState.event(e.detail)
+      if (gameState) {
+        gameState.event(e.detail)
+      }
     }
   }
   window.addEventListener(`phx:simulator_event`, handleGameEvent)
