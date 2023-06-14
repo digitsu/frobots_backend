@@ -25,6 +25,25 @@ export default () => {
     return `return function(state, ...)\n\tstate = state or {}${code_new ? `${code_new}` : `\n`}\treturn state\nend\n`
   }
 
+  // Custom Return code
+  Blockly.Blocks['custom_return'] = {
+    init: function () {
+      this.appendValueInput('return').setCheck(null).appendField('return')
+      this.setPreviousStatement(true, null)
+      this.setColour(230)
+      this.setTooltip('Return any value')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator['custom_return'] = function (block: any) {
+    var inputBlock = block.getInputTargetBlock('INPUT')
+    const result =
+      luaGenerator.valueToCode(block, 'return', luaGenerator.ORDER_NONE) || 0
+    var code = luaGenerator.blockToCode(inputBlock)
+    code += `return ${result}\n`
+    return code
+  }
+
   // Damage function code
 
   Blockly.Blocks['damage'] = {
