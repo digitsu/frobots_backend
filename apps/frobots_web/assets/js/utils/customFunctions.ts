@@ -277,4 +277,25 @@ export default () => {
     var code = table + '[' + key + '] = nil\n';
     return code;
   };
+
+  Blockly.Blocks['math_atan2'] = {
+    init: function () {
+      this.appendValueInput('Y')
+        .setCheck('Number')
+        .appendField('atan2 of y');
+      this.appendValueInput('X')
+        .setCheck('Number')
+        .appendField('x');
+      this.setOutput(true, 'Number');
+      this.setColour(230);
+      this.setTooltip('Returns the arc tangent of y/x in radians');
+      this.setHelpUrl('https://www.lua.org/manual/5.4/manual.html#pdf-math.atan2');
+    }
+  }
+  luaGenerator['math_atan2'] = function (block: any) {
+    var y = luaGenerator.valueToCode(block, 'Y', luaGenerator.ORDER_ATOMIC) || '0';
+    var x = luaGenerator.valueToCode(block, 'X', luaGenerator.ORDER_ATOMIC) || '0';
+    var code = 'math.atan2(' + y + ', ' + x + ')';
+    return [code, luaGenerator.ORDER_ATOMIC];
+  };
 }
