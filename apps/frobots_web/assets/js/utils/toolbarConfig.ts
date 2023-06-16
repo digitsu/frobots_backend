@@ -133,6 +133,18 @@ export const MY_TOOLBOX = `
         </value>
       </block>
       <block type="math_random_float"></block>
+      <block type="math_atan2">
+        <value name="Y">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+        <value name="X">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+      </block>
     </category>
     <category name="Text" id="catText" colour="160">
       <block type="text"></block>
@@ -298,6 +310,13 @@ export const MY_TOOLBOX = `
           </shadow>
         </value>
       </block>
+    </category>
+    <category name="Table Blocks" colour="260">
+      <block type="table_create"></block>
+      <block type="insert_table_value"></block>
+      <block type="get_table_value"></block>
+      <block type="set_table_value"></block>
+      <block type="remove_table_value"></block>
     </category>
     <category name="Custom Functions" colour="20">
       <block type="frobot" name="frobot"></block>

@@ -45,23 +45,18 @@ export default () => {
   }
 
   // Damage function code
-
   Blockly.Blocks['damage'] = {
     init: function () {
       this.setColour(230)
       this.setTooltip('')
       this.setHelpUrl('')
       this.setOutput(true, null)
-      this.setPreviousStatement(true, null)
-      this.setNextStatement(true, null)
       this.appendDummyInput().appendField('Damage')
     },
   }
-  luaGenerator['damage'] = function (block) {
-    var inputBlock = block.getInputTargetBlock('INPUT')
-    var code = luaGenerator.blockToCode(inputBlock)
-    code += 'damage()\n'
-    return code
+  luaGenerator['damage'] = function () {
+    var code = 'damage()'
+    return [code, luaGenerator.ORDER_ATOMIC]
   }
 
   Blockly.Blocks['speed'] = {
@@ -70,16 +65,12 @@ export default () => {
       this.setTooltip('')
       this.setHelpUrl('')
       this.setOutput(true, null)
-      this.setPreviousStatement(true, null)
-      this.setNextStatement(true, null)
       this.appendDummyInput().appendField('Speed')
     },
   }
-  luaGenerator['speed'] = function (block) {
-    var inputBlock = block.getInputTargetBlock('INPUT')
-    var code = luaGenerator.blockToCode(inputBlock)
-    code += 'speed()\n'
-    return code
+  luaGenerator['speed'] = function () {
+    var code = 'speed()'
+    return [code, luaGenerator.ORDER_ATOMIC]
   }
 
   Blockly.Blocks['drive'] = {
@@ -87,7 +78,6 @@ export default () => {
       this.appendDummyInput().appendField('Drive')
       this.appendValueInput('degree').setCheck(null).appendField('degree')
       this.appendValueInput('speed').setCheck(null).appendField('speed')
-      this.setOutput(true, null)
       this.setPreviousStatement(true, null)
       this.setNextStatement(true, null)
       this.setColour(230)
@@ -95,14 +85,12 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['drive'] = function (block) {
-    var inputBlock = block.getInputTargetBlock('INPUT')
+  luaGenerator['drive'] = function (block: any) {
     const degree =
       luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
     const speed =
       luaGenerator.valueToCode(block, 'speed', luaGenerator.ORDER_NONE) || 0
-    var code = luaGenerator.blockToCode(inputBlock)
-    code += `drive(${degree},${speed})\n`
+    var code = `drive(${degree},${speed})\n`
     return code
   }
 
@@ -113,20 +101,17 @@ export default () => {
       this.appendValueInput('range').setCheck(null).appendField('range')
       this.setPreviousStatement(true, null)
       this.setNextStatement(true, null)
-      this.setOutput(true, null)
       this.setColour(230)
       this.setTooltip('')
       this.setHelpUrl('')
     },
   }
-  luaGenerator['cannon'] = function (block) {
-    var inputBlock = block.getInputTargetBlock('INPUT')
+  luaGenerator['cannon'] = function (block: any) {
     const degree =
       luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
     const range =
       luaGenerator.valueToCode(block, 'range', luaGenerator.ORDER_NONE) || 0
-    var code = luaGenerator.blockToCode(inputBlock)
-    code += `cannon(${degree},${range})\n`
+    var code = `cannon(${degree},${range})\n`
     return code
   }
 
@@ -137,24 +122,19 @@ export default () => {
       this.appendValueInput('resolution')
         .setCheck(null)
         .appendField('resolution')
-      this.setPreviousStatement(true, null)
-      this.setNextStatement(true, null)
       this.setOutput(true, null)
       this.setColour(230)
       this.setTooltip('')
       this.setHelpUrl('')
     },
   }
-  luaGenerator['scan'] = function (block) {
-    var inputBlock = block.getInputTargetBlock('INPUT')
+  luaGenerator['scan'] = function (block: any) {
     const degree =
       luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
     const resolution =
-      luaGenerator.valueToCode(block, 'resolution', luaGenerator.ORDER_NONE) ||
-      0
-    var code = luaGenerator.blockToCode(inputBlock)
-    code += `scan(${degree},${resolution})\n`
-    return code
+      luaGenerator.valueToCode(block, 'resolution', luaGenerator.ORDER_NONE) || 0
+    var code = `scan(${degree},${resolution})`
+    return [code, luaGenerator.ORDER_ATOMIC]
   }
 
   Blockly.Blocks['xlocation'] = {
@@ -163,34 +143,159 @@ export default () => {
       this.setColour(230)
       this.setTooltip('')
       this.setHelpUrl('')
-      this.setPreviousStatement(true, null)
-      this.setNextStatement(true, null)
       this.appendDummyInput().appendField('X Location')
     },
   }
-  luaGenerator['xlocation'] = function (block) {
-    var inputBlock = block.getInputTargetBlock()
-    var code = luaGenerator.blockToCode(inputBlock)
-    code += 'loc_x()'
+  luaGenerator['xlocation'] = function () {
+    var code = 'loc_x()'
     return [code, luaGenerator.ORDER_ATOMIC]
   }
 
   Blockly.Blocks['ylocation'] = {
     init: function () {
-      this.setOutput(true, 'String') // Change output to statement block
+      this.setOutput(true, 'String')
       this.setColour(230)
       this.setColour(230)
       this.setTooltip('')
       this.setHelpUrl('')
-      this.setPreviousStatement(true, null)
-      this.setNextStatement(true, null)
       this.appendDummyInput().appendField('Y Location')
     },
   }
-  luaGenerator['ylocation'] = function (block) {
-    var inputBlock = block.getInputTargetBlock()
-    var code = luaGenerator.blockToCode(inputBlock)
-    code += 'loc_y()\n'
+  luaGenerator['ylocation'] = function () {
+    var code = 'loc_y()'
     return [code, luaGenerator.ORDER_NONE]
   }
+
+  /// multi
+  Blockly.Blocks['table_create'] = {
+    init: function () {
+      this.appendDummyInput()
+        .appendField("Create Table");
+      this.setOutput(true, "Table");
+      this.setColour(260);
+      this.setTooltip("Creates a new table");
+      this.setHelpUrl("");
+    }
+  }
+  luaGenerator['table_create'] = function () {
+    var code = '{}';
+    return [code, luaGenerator.ORDER_ATOMIC];
+  }
+
+  Blockly.Blocks['insert_table_value'] = {
+    init: function () {
+      this.appendValueInput("TABLE")
+        .setCheck("Table")
+        .appendField("insert value into table");
+      this.appendValueInput("KEY")
+        .setCheck(null)
+        .appendField("at key");
+      this.appendValueInput("VALUE")
+        .setCheck(null)
+        .appendField("with value");
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour(260);
+      this.setTooltip("Inserts a value into a table using a key");
+      this.setHelpUrl("");
+    }
+  }
+  luaGenerator['insert_table_value'] = function (block: any) {
+    var table = luaGenerator.valueToCode(block, 'TABLE', luaGenerator.ORDER_ATOMIC) || '{}';
+    var key = luaGenerator.valueToCode(block, 'KEY', luaGenerator.ORDER_ATOMIC) || '""';
+    var value = luaGenerator.valueToCode(block, 'VALUE', luaGenerator.ORDER_ATOMIC) || '""';
+    var code = table + '[' + key + '] = ' + value + '\n';
+    return code;
+  }
+
+  Blockly.Blocks['get_table_value'] = {
+    init: function () {
+      this.appendValueInput("TABLE")
+        .setCheck("Table")
+        .appendField("get value from table");
+      this.appendValueInput("KEY")
+        .setCheck(null)
+        .appendField("by key");
+      this.setOutput(true, null);
+      this.setColour(260);
+      this.setTooltip("Retrieves the value from a table using a key");
+      this.setHelpUrl("");
+    }
+  }
+  luaGenerator['get_table_value'] = function (block: any) {
+    var table = luaGenerator.valueToCode(block, 'TABLE', luaGenerator.ORDER_ATOMIC) || '{}';
+    var key = luaGenerator.valueToCode(block, 'KEY', luaGenerator.ORDER_ATOMIC) || '""';
+    var code = table + '[' + key + ']';
+    return [code, luaGenerator.ORDER_ATOMIC];
+  };
+
+
+  Blockly.Blocks['set_table_value'] = {
+    init: function () {
+      this.appendValueInput("TABLE")
+        .setCheck("Table")
+        .appendField("set value in table");
+      this.appendValueInput("KEY")
+        .setCheck(null)
+        .appendField("at key");
+      this.appendValueInput("VALUE")
+        .setCheck(null)
+        .appendField("to");
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour(260);
+      this.setTooltip("Sets the value of a table at the specified key");
+      this.setHelpUrl("");
+    }
+  }
+  luaGenerator['set_table_value'] = function (block: any) {
+    var table = luaGenerator.valueToCode(block, 'TABLE', luaGenerator.ORDER_ATOMIC) || '{}';
+    var key = luaGenerator.valueToCode(block, 'KEY', luaGenerator.ORDER_ATOMIC) || '""';
+    var value = luaGenerator.valueToCode(block, 'VALUE', luaGenerator.ORDER_ATOMIC) || '""';
+    var code = table + '[' + key + '] = ' + value + '\n';
+    return code;
+  };
+
+  Blockly.Blocks['remove_table_value'] = {
+    init: function () {
+      this.appendValueInput("TABLE")
+        .setCheck("Table")
+        .appendField("remove value from table");
+      this.appendValueInput("KEY")
+        .setCheck(null)
+        .appendField("at key");
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour(260);
+      this.setTooltip("Removes a value from a table at the specified key");
+      this.setHelpUrl("");
+    }
+  }
+  luaGenerator['remove_table_value'] = function (block: any) {
+    var table = luaGenerator.valueToCode(block, 'TABLE', luaGenerator.ORDER_ATOMIC) || '{}';
+    var key = luaGenerator.valueToCode(block, 'KEY', luaGenerator.ORDER_ATOMIC) || '""';
+    var code = table + '[' + key + '] = nil\n';
+    return code;
+  };
+
+  Blockly.Blocks['math_atan2'] = {
+    init: function () {
+      this.appendValueInput('Y')
+        .setCheck('Number')
+        .appendField('atan2 of y');
+      this.appendValueInput('X')
+        .setCheck('Number')
+        .appendField('x');
+      this.setOutput(true, 'Number');
+      this.setColour(230);
+      this.setTooltip('Returns the arc tangent of y/x in radians');
+      this.setHelpUrl('https://www.lua.org/manual/5.4/manual.html#pdf-math.atan2');
+    }
+  }
+  luaGenerator['math_atan2'] = function (block: any) {
+    var y = luaGenerator.valueToCode(block, 'Y', luaGenerator.ORDER_ATOMIC) || '0';
+    var x = luaGenerator.valueToCode(block, 'X', luaGenerator.ORDER_ATOMIC) || '0';
+    var code = 'math.atan2(' + y + ', ' + x + ')';
+    return [code, luaGenerator.ORDER_ATOMIC];
+  };
 }
