@@ -299,6 +299,13 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
+    <category name="Table Blocks" colour="260">
+      <block type="table_create"></block>
+      <block type="insert_table_value"></block>
+      <block type="get_table_value"></block>
+      <block type="set_table_value"></block>
+      <block type="remove_table_value"></block>
+    </category>
     <category name="Custom Functions" colour="20">
       <block type="frobot" name="frobot"></block>
       <block type="speed" name="speed"></block>
