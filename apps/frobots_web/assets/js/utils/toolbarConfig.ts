@@ -318,7 +318,12 @@ export const MY_TOOLBOX = `
       <block type="set_table_value"></block>
       <block type="remove_table_value"></block>
     </category>
-    <category name="Custom Functions" colour="20">
+    <category name="Objects" colour="210">
+      <block type="create_object"></block>
+      <block type="set_object_property"></block>
+      <block type="get_object_property"></block>
+    </category>
+    <category name="Frobot Functions" colour="20">
       <block type="frobot" name="frobot"></block>
       <block type="speed" name="speed"></block>
       <block type="damage" name="damage"></block>
@@ -330,7 +335,12 @@ export const MY_TOOLBOX = `
       <block type="custom_return" name="custom_return"></block>
     </category>
     <sep></sep>
-    <category name="Variables" id="catVariables" colour="330" custom="VARIABLE"></category>
-    <category name="Functions" id="catFunctions" colour="290" custom="PROCEDURE"></category>
-  </xml>
+    <category name="Variables" colour="330">
+    <category name="List Variables" id="catVariables" custom="VARIABLE"></category>
+    <category  name="Set Variable">
+    <block type="set_variable_type"></block>
+    </category>
+    </category>
+    <category name="Functions" id="catFunctions" custom="PROCEDURE" colour="290"></category>
+    </xml>
 `
