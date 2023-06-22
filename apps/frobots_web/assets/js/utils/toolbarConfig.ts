@@ -145,6 +145,13 @@ export const MY_TOOLBOX = `
           </shadow>
         </value>
       </block>
+      <block type="math_randomseed">
+        <value name="SEED">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+      </block>
     </category>
     <category name="Text" id="catText" colour="160">
       <block type="text"></block>
@@ -311,7 +318,7 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
-    <category name="Table Blocks" colour="260">
+    <category name="Table" colour="260">
       <block type="table_create"></block>
       <block type="insert_table_value"></block>
       <block type="get_table_value"></block>
@@ -325,6 +332,7 @@ export const MY_TOOLBOX = `
     </category>
     <category name="Frobot Functions" colour="20">
       <block type="frobot" name="frobot"></block>
+      <block type="custom_return" name="custom_return"></block>
       <block type="speed" name="speed"></block>
       <block type="damage" name="damage"></block>
       <block type="drive" name="drive"></block>
@@ -332,7 +340,21 @@ export const MY_TOOLBOX = `
       <block type="scan" name="scan"></block>
       <block type="xlocation" name="xlocation"></block>
       <block type="ylocation" name="ylocation"></block>
-      <block type="custom_return" name="custom_return"></block>
+      <block type="os_time" name="os_time"></block>
+      <block type="os_execute_sleep" name="os_execute_sleep">
+        <value name="SECONDS">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="repeat_until" namae="repeat_until">
+        <value name="CONDITION">
+        <shadow type="logic_boolean">
+            <field name="BOOL">FALSE</field>
+          </shadow>
+        </value>
+      </block>
     </category>
     <sep></sep>
     <category name="Variables" colour="330">
