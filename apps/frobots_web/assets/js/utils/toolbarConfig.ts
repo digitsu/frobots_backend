@@ -326,7 +326,6 @@ export const MY_TOOLBOX = `
       <block type="remove_table_value"></block>
     </category>
     <category name="Objects" colour="210">
-      <block type="create_object"></block>
       <block type="set_object_property"></block>
       <block type="get_object_property"></block>
     </category>

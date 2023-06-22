@@ -397,26 +397,26 @@ export default () => {
     return code
   }
 
-  Blockly.Blocks['create_object'] = {
-    init: function () {
-      this.appendDummyInput()
-        .appendField('Create Object')
-        .appendField(new Blockly.FieldVariable('object'), 'object')
-      this.setPreviousStatement(true, null)
-      this.setNextStatement(true, null)
-      this.setColour(210)
-      this.setTooltip('')
-      this.setHelpUrl('')
-    },
-  }
+  // Blockly.Blocks['create_object'] = {
+  //   init: function () {
+  //     this.appendDummyInput()
+  //       .appendField('Create Object')
+  //       .appendField(new Blockly.FieldVariable('object'), 'object')
+  //     this.setPreviousStatement(true, null)
+  //     this.setNextStatement(true, null)
+  //     this.setColour(210)
+  //     this.setTooltip('')
+  //     this.setHelpUrl('')
+  //   },
+  // }
 
-  luaGenerator['create_object'] = function (block) {
-    var variable_object = luaGenerator.variableDB_.getName(
-      block.getFieldValue('object'),
-      Blockly.Variables.NAME_TYPE
-    )
-    return variable_object + ' = {};\n'
-  }
+  // luaGenerator['create_object'] = function (block) {
+  //   var variable_object = luaGenerator.variableDB_.getName(
+  //     block.getFieldValue('object'),
+  //     Blockly.Variables.NAME_TYPE
+  //   )
+  //   return variable_object + ' = {};\n'
+  // }
 
   Blockly.Blocks['set_object_property'] = {
     init: function () {
