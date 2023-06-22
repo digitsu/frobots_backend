@@ -23,7 +23,7 @@ export default () => {
     }
 
     return `return function(state, ...)\n\tstate = state or {}${
-      code_new ? `${code_new}` : `\n`
+      code_new ? `\n${code_new}` : `\n`
     }\treturn state\nend\n`
   }
 
@@ -304,26 +304,119 @@ export default () => {
     return [code, luaGenerator.ORDER_ATOMIC]
   }
 
-  Blockly.Blocks['create_object'] = {
+  Blockly.Blocks['math_randomseed'] = {
     init: function () {
-      this.appendDummyInput()
-        .appendField('Create Object')
-        .appendField(new Blockly.FieldVariable('object'), 'object')
+      this.appendValueInput('SEED')
+        .setCheck(null)
+        .appendField('set random seed to')
       this.setPreviousStatement(true, null)
       this.setNextStatement(true, null)
-      this.setColour(210)
-      this.setTooltip('')
+      this.setColour(230)
+      this.setTooltip('Sets the seed for the random number generator')
+      this.setHelpUrl(
+        'https://www.lua.org/manual/5.4/manual.html#pdf-math.randomseed'
+      )
+    },
+  }
+  luaGenerator['math_randomseed'] = function (block: any) {
+    var seed =
+      luaGenerator.valueToCode(block, 'SEED', luaGenerator.ORDER_ATOMIC) || '0'
+    var code = 'math.randomseed(' + seed + ')\n'
+    return code
+  }
+
+  Blockly.Blocks['os_time'] = {
+    init: function () {
+      this.appendDummyInput().appendField('Current os time')
+      this.setOutput(true, null)
+      this.setColour(230)
+      this.setTooltip('Returns the current time')
+      this.setHelpUrl('https://www.lua.org/manual/5.4/manual.html#pdf-os.time')
+    },
+  }
+  luaGenerator['os_time'] = function (block: any) {
+    var code = 'os.time()'
+    return [code, luaGenerator.ORDER_ATOMIC]
+  }
+
+  Blockly.Blocks['os_execute_sleep'] = {
+    init: function () {
+      this.appendValueInput('SECONDS')
+        .setCheck('Number')
+        .appendField('Sleep os for')
+      this.appendDummyInput().appendField('seconds')
+      this.setOutput(true, null)
+      this.setColour(230)
+      this.setTooltip(
+        'Pauses the program execution for the specified number of seconds'
+      )
       this.setHelpUrl('')
     },
   }
+  luaGenerator['os_execute_sleep'] = function (block: any) {
+    var seconds =
+      luaGenerator.valueToCode(block, 'SECONDS', luaGenerator.ORDER_ATOMIC) ||
+      '1'
+    var code = 'os.execute("sleep " .. tonumber(' + seconds + '))\n'
 
-  luaGenerator['create_object'] = function (block) {
-    var variable_object = luaGenerator.variableDB_.getName(
-      block.getFieldValue('object'),
-      Blockly.Variables.NAME_TYPE
-    )
-    return variable_object + ' = {};\n'
+    return [code, luaGenerator.ORDER_ATOMIC]
   }
+
+  Blockly.Blocks['repeat_until'] = {
+    init: function () {
+      this.appendDummyInput()
+        .appendField('repeat')
+        .setAlign(Blockly.ALIGN_CENTRE)
+      this.appendStatementInput('nested_blocks').setCheck(null)
+      this.appendValueInput('CONDITION')
+        .setCheck(null)
+        .setAlign(Blockly.ALIGN_CENTRE)
+        .appendField('until')
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setColour(120)
+      this.setTooltip(
+        'Repeats the enclosed blocks until the specified condition is true'
+      )
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator['repeat_until'] = function (block: any) {
+    var doCode = ''
+    var condition =
+      luaGenerator.valueToCode(block, 'CONDITION', luaGenerator.ORDER_ATOMIC) ||
+      'false'
+    var nestedBlock = block.getInputTargetBlock('nested_blocks')
+    if (nestedBlock) {
+      var code_nested = luaGenerator.blockToCode(nestedBlock)
+      doCode = Array.isArray(code_nested) ? code_nested[0] : code_nested
+      doCode = luaGenerator.prefixLines(doCode, '\t')
+    }
+
+    var code = 'repeat\n' + doCode + 'until ' + condition + '\n'
+    return code
+  }
+
+  // Blockly.Blocks['create_object'] = {
+  //   init: function () {
+  //     this.appendDummyInput()
+  //       .appendField('Create Object')
+  //       .appendField(new Blockly.FieldVariable('object'), 'object')
+  //     this.setPreviousStatement(true, null)
+  //     this.setNextStatement(true, null)
+  //     this.setColour(210)
+  //     this.setTooltip('')
+  //     this.setHelpUrl('')
+  //   },
+  // }
+
+  // luaGenerator['create_object'] = function (block) {
+  //   var variable_object = luaGenerator.variableDB_.getName(
+  //     block.getFieldValue('object'),
+  //     Blockly.Variables.NAME_TYPE
+  //   )
+  //   return variable_object + ' = {};\n'
+  // }
 
   Blockly.Blocks['set_object_property'] = {
     init: function () {
