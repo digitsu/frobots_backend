@@ -531,11 +531,11 @@ defmodule Frobots.Api do
           frobot_details
 
         true ->
-          xframe_inst = _get_xframe_inst_details(frobot) |> IO.inspect(label: "MissileInst")
-          cannon_inst = _get_cannon_inst_details(frobot) |> IO.inspect(label: "MissileInst")
-          scanner_inst = _get_scanner_inst_details(frobot) |> IO.inspect(label: "MissileInst")
-          missile_inst = _get_missile_inst_details(frobot) |> IO.inspect(label: "MissileInst")
-          cpu_inst = _get_cpu_inst_details(frobot) |> IO.inspect(label: "CPUInst")
+          xframe_inst = _get_xframe_inst_details(frobot)
+          cannon_inst = _get_cannon_inst_details(frobot)
+          scanner_inst = _get_scanner_inst_details(frobot)
+          missile_inst = _get_missile_inst_details(frobot)
+          cpu_inst = _get_cpu_inst_details(frobot)
 
           Map.put(frobot_details, "xframe_inst", xframe_inst)
           |> Map.put("cannon_inst", cannon_inst)
