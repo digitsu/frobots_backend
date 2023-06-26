@@ -3,10 +3,9 @@ defmodule Frobots.Repo.Migrations.MigrateExistingCpuInstForFrobots do
 
   def up do
     create_if_not_exists unique_index(:cpu_inst, [:frobot_id])
-    cpu = Frobots.Assets.get_cpu!(:Cpu_Mk1) |> IO.inspect(label: "CPU")
+    cpu = Frobots.Assets.get_cpu!(:Cpu_Mk1)
 
     Frobots.Assets.list_frobots()
-    |> IO.inspect(label: "Frobots")
     |> Enum.each(fn frobot ->
       params = %{
         user_id: frobot.user_id,
