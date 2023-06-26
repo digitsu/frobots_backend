@@ -83,8 +83,10 @@ export default (props: any) => {
   const workspaceDidChange = (workspace: any) => {
     try {
       const code = luaGenerator.workspaceToCode(workspace)
-      if (code != blocklyCode) {
-        setBlocklyCode(code)
+      if (!code) {
+        setBlocklyLuaCode('')
+      } else if (code != blocklyCode) {
+        setBlocklyLuaCode(code)
       }
     } catch (err) {
       console.log(err)
