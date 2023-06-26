@@ -34,7 +34,5 @@ defmodule Frobots.Assets.CpuInst do
   def changeset(cpu, attrs) do
     cpu
     |> cast(attrs, @fields ++ [:cpu_id, :user_id, :frobot_id])
-
-    # |> validate_required([:cpu_id])
   end
 end
