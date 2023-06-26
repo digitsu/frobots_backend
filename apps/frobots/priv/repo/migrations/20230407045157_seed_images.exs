@@ -12,10 +12,15 @@ defmodule Frobots.Repo.Migrations.SeedImages do
   }
 
   @tables %{
+    xframes: &Assets.list_xframes/0,
     cannons: &Assets.list_cannons/0,
     scanners: &Assets.list_scanners/0,
     missiles: &Assets.list_missiles/0
   }
+
+  defp get_name(struct) when struct.class == :xframe do
+    ~s"images/equipment/#{String.downcase(Atom.to_string(struct.type))}.png"
+  end
 
   defp get_name(struct) do
     ~s"images/equipment/#{Atom.to_string(Map.get(@class_name_map, struct.class))}_#{String.downcase(Atom.to_string(struct.type))}.png"
@@ -28,8 +33,6 @@ defmodule Frobots.Repo.Migrations.SeedImages do
   end
 
   def up do
-    execute ~s"update xframes set image = 'images/equipment/' || LOWER(type) || '.png'"
-
     for {_table_name, get_fn} <- @tables do
       for table <- get_fn.() do
         table
@@ -41,7 +44,6 @@ defmodule Frobots.Repo.Migrations.SeedImages do
 
   def down do
     IO.inspect("Rolling back image data")
-    execute ~s"update xframes set image = ''"
 
     for table <- Map.keys(@tables) do
       execute ~s"update #{table} set image = ''"

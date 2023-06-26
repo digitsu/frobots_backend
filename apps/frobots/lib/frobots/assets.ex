@@ -5,7 +5,7 @@ defmodule Frobots.Assets do
 
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
+  alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon, Cpu}
   alias Frobots.Accounts
 
   @prototype_class "P"
@@ -399,5 +399,43 @@ defmodule Frobots.Assets do
 
   def list_scanners() do
     Repo.all(Scanner)
+  end
+
+  @doc ~S"""
+  Creates a Cpu.
+
+  ## Examples
+
+      #iex> create_cpu(%{field: value})
+      #{:ok, %Cpu{}}
+
+      #iex> create_cpu(%{field: bad_value})
+      #{:error, %Ecto.Changeset{}}
+      #doctest barfs if i dont comment above code
+  """
+  def create_cpu(attrs \\ %{}) do
+    %Cpu{}
+    |> Cpu.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_cpu!(attrs \\ %{}) do
+    %Cpu{}
+    |> Cpu.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  def get_cpu(type) do
+    from(c in Cpu, where: c.type == ^type)
+    |> Repo.one()
+  end
+
+  def get_cpu!(type) do
+    from(c in Cpu, where: c.type == ^type)
+    |> Repo.one!()
+  end
+
+  def list_cpu() do
+    Repo.all(Cpu)
   end
 end

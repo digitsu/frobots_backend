@@ -271,6 +271,7 @@ defmodule Frobots.Api do
     |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
     |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
     |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
+    |> Multi.insert(:cpu_inst, Equipment.create_equipment_changeset(user, "Cpu", :Cpu_Mk1))
     |> Multi.update(:equip_xframe, fn %{frobot: frobot, xframe_inst: xframe_inst} ->
       Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
     end)
@@ -279,6 +280,9 @@ defmodule Frobots.Api do
     end)
     |> Multi.update(:equip_scanner, fn %{frobot: frobot, scanner_inst: scanner_inst} ->
       Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
+    end)
+    |> Multi.update(:equip_cpu, fn %{frobot: frobot, cpu_inst: cpu_inst} ->
+      Equipment.equip_cpu_changeset(cpu_inst.id, frobot.id)
     end)
     # |> Multi.update(:equip_missile, fn %{frobot: frobot, missile_inst: missile_inst} ->
     #   Equipment.equip_part_changeset(missile_inst.id, frobot.id, "Missile")
@@ -297,6 +301,7 @@ defmodule Frobots.Api do
     |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
     |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
     |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
+    |> Multi.insert(:cpu_inst, Equipment.create_equipment_changeset(user, "Cpu", :Cpu_Mk1))
     |> Multi.update(:equip_xframe, fn %{xframe_inst: xframe_inst} ->
       Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
     end)
@@ -305,6 +310,9 @@ defmodule Frobots.Api do
     end)
     |> Multi.update(:equip_scanner, fn %{scanner_inst: scanner_inst} ->
       Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
+    end)
+    |> Multi.update(:equip_cpu, fn %{frobot: frobot, cpu_inst: cpu_inst} ->
+      Equipment.equip_cpu_changeset(cpu_inst.id, frobot.id)
     end)
 
     #  |> Multi.update(:equip_missile, fn %{missile_inst: missile_inst} ->
@@ -344,6 +352,10 @@ defmodule Frobots.Api do
         IO.inspect(changes)
         return_errors(cs)
 
+      {:error, :cpu_inst, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
+        return_errors(cs)
+
       {:error, :equip_xframe, %Ecto.Changeset{} = cs, changes} ->
         IO.inspect(changes)
         return_errors(cs)
@@ -353,6 +365,10 @@ defmodule Frobots.Api do
         return_errors(cs)
 
       {:error, :equip_scanner, %Ecto.Changeset{} = cs, changes} ->
+        IO.inspect(changes)
+        return_errors(cs)
+
+      {:error, :equip_cpu, %Ecto.Changeset{} = cs, changes} ->
         IO.inspect(changes)
         return_errors(cs)
 
@@ -492,6 +508,7 @@ defmodule Frobots.Api do
     |> Repo.preload(cannon_inst: [:cannon])
     |> Repo.preload(scanner_inst: [:scanner])
     |> Repo.preload(missile_inst: [:missile])
+    |> Repo.preload(cpu_inst: [:cpu])
     |> _parse_frobot_details()
   end
 
@@ -514,15 +531,17 @@ defmodule Frobots.Api do
           frobot_details
 
         true ->
-          xframe_inst = _get_xframe_inst_details(frobot)
-          cannon_inst = _get_cannon_inst_details(frobot)
-          scanner_inst = _get_scanner_inst_details(frobot)
-          missile_inst = _get_missile_inst_details(frobot)
+          xframe_inst = _get_xframe_inst_details(frobot) |> IO.inspect(label: "MissileInst")
+          cannon_inst = _get_cannon_inst_details(frobot) |> IO.inspect(label: "MissileInst")
+          scanner_inst = _get_scanner_inst_details(frobot) |> IO.inspect(label: "MissileInst")
+          missile_inst = _get_missile_inst_details(frobot) |> IO.inspect(label: "MissileInst")
+          cpu_inst = _get_cpu_inst_details(frobot) |> IO.inspect(label: "CPUInst")
 
           Map.put(frobot_details, "xframe_inst", xframe_inst)
           |> Map.put("cannon_inst", cannon_inst)
           |> Map.put("scanner_inst", scanner_inst)
           |> Map.put("missile_inst", missile_inst)
+          |> Map.put("cpu_inst", cpu_inst)
       end
 
     {:ok, frobot_details}
@@ -626,6 +645,28 @@ defmodule Frobots.Api do
             "equipment_type" => missile_inst.missile.type
           }
         end)
+      end
+    else
+      []
+    end
+  end
+
+  defp _get_cpu_inst_details(frobot) do
+    if Map.has_key?(frobot, :cpu_inst) do
+      cpu_inst = Map.get(frobot, :cpu_inst)
+
+      if !is_nil(cpu_inst) do
+        [
+          %{
+            "id" => cpu_inst.id,
+            "type" => cpu_inst.cpu.type,
+            "cycletime" => cpu_inst.cycletime,
+            "cpu_cycle_buffer" => cpu_inst.cpu_cycle_buffer,
+            "overload_penalty" => cpu_inst.overload_penalty
+          }
+        ]
+      else
+        []
       end
     else
       []

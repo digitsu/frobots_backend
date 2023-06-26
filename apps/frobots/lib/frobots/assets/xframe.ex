@@ -33,9 +33,6 @@ defmodule Frobots.Assets.Xframe do
     has_many(:xframe_inst, Frobots.Assets.XframeInst)
     field(:class, Ecto.Enum, values: ~w(xframe)a)
 
-    field(:cycletime, :integer)
-    field(:cpu_cycle_buffer, :integer)
-    field(:overload_penalty, :integer)
     timestamps()
   end
 
@@ -48,10 +45,7 @@ defmodule Frobots.Assets.Xframe do
     :movement_type,
     :max_health,
     :max_throttle,
-    :accel_speed_mss,
-    :cycletime,
-    :cpu_cycle_buffer,
-    :overload_penalty
+    :accel_speed_mss
   ]
 
   @doc false
