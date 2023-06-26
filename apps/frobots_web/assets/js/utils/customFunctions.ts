@@ -92,7 +92,7 @@ export default () => {
       luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
     const speed =
       luaGenerator.valueToCode(block, 'speed', luaGenerator.ORDER_NONE) || 0
-    var code = `drive(${degree},${speed})\n`
+    var code = `drive(${degree}, ${speed})\n`
     return code
   }
 
@@ -113,8 +113,28 @@ export default () => {
       luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
     const range =
       luaGenerator.valueToCode(block, 'range', luaGenerator.ORDER_NONE) || 0
-    var code = `cannon(${degree},${range})\n`
+    var code = `cannon(${degree}, ${range})\n`
     return code
+  }
+
+  Blockly.Blocks['cannon_2'] = {
+    init: function () {
+      this.appendDummyInput().appendField('Cannon 2')
+      this.appendValueInput('degree').setCheck(null).appendField('degree')
+      this.appendValueInput('range').setCheck(null).appendField('range')
+      this.setOutput(true, null)
+      this.setColour(230)
+      this.setTooltip('')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator['cannon_2'] = function (block: any) {
+    const degree =
+      luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
+    const range =
+      luaGenerator.valueToCode(block, 'range', luaGenerator.ORDER_NONE) || 0
+    var code = `cannon(${degree}, ${range})`
+    return [code, luaGenerator.ORDER_ATOMIC]
   }
 
   Blockly.Blocks['scan'] = {
@@ -136,7 +156,7 @@ export default () => {
     const resolution =
       luaGenerator.valueToCode(block, 'resolution', luaGenerator.ORDER_NONE) ||
       0
-    var code = `scan(${degree},${resolution})`
+    var code = `scan(${degree}, ${resolution})`
     return [code, luaGenerator.ORDER_ATOMIC]
   }
 
@@ -166,7 +186,7 @@ export default () => {
   }
   luaGenerator['ylocation'] = function () {
     var code = 'loc_y()'
-    return [code, luaGenerator.ORDER_NONE]
+    return [code, luaGenerator.ORDER_ATOMIC]
   }
 
   /// multi

@@ -336,6 +336,7 @@ export const MY_TOOLBOX = `
       <block type="damage" name="damage"></block>
       <block type="drive" name="drive"></block>
       <block type="cannon" name="cannon"></block>
+      <block type="cannon_2" name="cannon_2"></block>
       <block type="scan" name="scan"></block>
       <block type="xlocation" name="xlocation"></block>
       <block type="ylocation" name="ylocation"></block>
