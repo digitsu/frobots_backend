@@ -42,12 +42,6 @@ export default {
 
   changeProtobot(params) {
     this.pushEventTo(this.el, 'react.change-protobot', params)
-    this.handleEvent('react.change-protobot', (changeProtobotDetails) => {
-      this.unmountComponent = mount(FrobotBrainCode)(
-        this.el.id,
-        this.opts({ ...changeProtobotDetails })
-      )
-    })
   },
 
   destroyed() {
