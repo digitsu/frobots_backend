@@ -271,7 +271,7 @@ defmodule Frobots.Api do
     |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
     |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
     |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
-    |> Multi.insert(:cpu_inst, Equipment.create_equipment_changeset(user, "Cpu", :Cpu_Mk1))
+    |> Multi.insert(:cpu_inst, Equipment.create_equipment_changeset(user, "Cpu", :Mk1))
     |> Multi.update(:equip_xframe, fn %{frobot: frobot, xframe_inst: xframe_inst} ->
       Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
     end)
@@ -301,7 +301,7 @@ defmodule Frobots.Api do
     |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
     |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
     |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
-    |> Multi.insert(:cpu_inst, Equipment.create_equipment_changeset(user, "Cpu", :Cpu_Mk1))
+    |> Multi.insert(:cpu_inst, Equipment.create_equipment_changeset(user, "Cpu", :Mk1))
     |> Multi.update(:equip_xframe, fn %{xframe_inst: xframe_inst} ->
       Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
     end)
@@ -740,4 +740,7 @@ defmodule Frobots.Api do
       }
     ]
   end
+
+  def get_default_xframe!(), do: Assets.get_xframe!(:Chassis_Mk1)
+  def get_default_cpu!(), do: Assets.get_cpu!(:Mk1)
 end

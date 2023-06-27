@@ -13,7 +13,7 @@ defmodule Frobots.Repo.Migrations.CreateCpuTable do
 
     execute("
       INSERT INTO cpus(type, cycletime, cpu_cycle_buffer, overload_penalty, inserted_at, updated_at)
-      VALUES ('Cpu_Mk1', 60, 250, 2000, NOW(), NOW());
+      VALUES ('Mk1', 60, 250, 2000, NOW(), NOW());
     ")
   end
 

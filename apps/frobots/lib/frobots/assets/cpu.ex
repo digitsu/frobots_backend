@@ -12,7 +12,7 @@ defmodule Frobots.Assets.Cpu do
            ]}
 
   schema "cpus" do
-    field(:type, Ecto.Enum, values: ~w(Cpu_Mk1 Cpu_Mk2 Cpu_Mk3)a)
+    field(:type, Ecto.Enum, values: ~w(Mk1 Mk2 Mk3)a)
     field(:cycletime, :integer)
     field(:cpu_cycle_buffer, :integer)
     field(:overload_penalty, :integer)
