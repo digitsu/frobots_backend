@@ -32,6 +32,7 @@ defmodule Frobots.Assets.Xframe do
     field(:image, :string, default: "https://via.placeholder.com/50.png")
     has_many(:xframe_inst, Frobots.Assets.XframeInst)
     field(:class, Ecto.Enum, values: ~w(xframe)a)
+
     timestamps()
   end
 
