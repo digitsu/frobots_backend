@@ -11,9 +11,6 @@ xframes = [
     accel_speed_mss: 5,
     movement_type: "bipedal",
     max_throttle: 100,
-    cycletime: 250,
-    cpu_cycle_buffer: 60,
-    overload_penalty: 2_000,
     image: "images/equipment/chassis_mk1.png"},
 
     %{type: "Chassis_Mk2",
@@ -26,9 +23,6 @@ xframes = [
     accel_speed_mss: 4,
     movement_type: "bipedal",
     max_throttle: 100,
-    cycletime: 250,
-    cpu_cycle_buffer: 60,
-    overload_penalty: 2_000,
     image: "images/equipment/chassis_mk2.png"},
 
     %{type: "Chassis_Mk3",
@@ -41,9 +35,6 @@ xframes = [
     accel_speed_mss: 7,
     movement_type: "bipedal",
     max_throttle: 100,
-    cycletime: 250,
-    cpu_cycle_buffer: 60,
-    overload_penalty: 2_000,
     image: "images/equipment/chassis_mk3.png"}
 ]
 

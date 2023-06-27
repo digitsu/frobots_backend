@@ -51,9 +51,6 @@ defmodule Frobots.AssetsTest do
       max_health: 100,
       max_throttle: 100,
       accel_speed_mss: 5,
-      cycletime: 60,
-      cpu_cycle_buffer: 250,
-      overload_penalty: 2_000,
       image_path: "https://via.placeholder.com/50.png"
     }
 
