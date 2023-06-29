@@ -128,7 +128,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
     s3_base_url = assigns.s3_base_url
 
     # Logger.info(match)
-    matchDetails = %{
+    match_details = %{
       "arena_id" => match.arena_id,
       "match_time" => match.match_time,
       "slots" => match.slots,
@@ -142,7 +142,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
      socket
      |> push_event(:arena_event, %{
        id: assigns.match_id,
-       match_details: matchDetails,
+       match_details: match_details,
        s3_base_url: s3_base_url,
        arena: arena
      })}

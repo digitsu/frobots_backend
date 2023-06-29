@@ -5,23 +5,23 @@ defmodule FrobotsWeb.DocsLive.Index do
 
   @impl Phoenix.LiveView
   def mount(params, _session, socket) do
-    fileName = params["slug"] || "getting_started"
+    file_name = params["slug"] || "getting_started"
 
-    filePath = Path.join([@priv_dir, "static/docs/#{fileName}.md"])
+    file_path = Path.join([@priv_dir, "static/docs/#{file_name}.md"])
 
-    case File.read(filePath) do
+    case File.read(file_path) do
       {:ok, body} ->
         {:ok,
          socket
          |> assign(:page_title, "Docs")
          |> assign(:page_sub_title, " · Frobots Programming Guide")
-         |> assign(:slug, fileName)
+         |> assign(:slug, file_name)
          |> assign(:document, body)}
 
       {:error, message} ->
         {:ok,
          socket
-         |> put_flash(:error, "Document not found filepath : #{filePath} , error : #{message}")
+         |> put_flash(:error, "Document not found filepath : #{file_path} , error : #{message}")
          |> push_redirect(to: "/home")}
     end
   end

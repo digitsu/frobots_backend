@@ -39,10 +39,10 @@ defmodule FrobotsWeb.Release do
     Seed seeds file for repo.
     """
     @spec seed(Ecto.Repo.t(), String.t()) :: :ok | {:error, any()}
-    def seed(repo, filename) do
+    def seed(repo, file_name) do
       load_app()
 
-      case Ecto.Migrator.with_repo(repo, &eval_seed(&1, filename)) do
+      case Ecto.Migrator.with_repo(repo, &eval_seed(&1, file_name)) do
         {:ok, {:ok, _fun_return}, _apps} ->
           :ok
 
@@ -57,8 +57,8 @@ defmodule FrobotsWeb.Release do
     end
 
     @spec eval_seed(Ecto.Repo.t(), String.t()) :: any()
-    defp eval_seed(repo, filename) do
-      seeds_file = get_path(repo, "seeds", filename)
+    defp eval_seed(repo, file_name) do
+      seeds_file = get_path(repo, "seeds", file_name)
 
       if File.regular?(seeds_file) do
         {:ok, Code.eval_file(seeds_file)}
@@ -68,7 +68,7 @@ defmodule FrobotsWeb.Release do
     end
 
     @spec get_path(Ecto.Repo.t(), String.t(), String.t()) :: String.t()
-    defp get_path(repo, directory, filename) do
+    defp get_path(repo, directory, file_name) do
       priv_dir = "#{:code.priv_dir(@app)}"
 
       repo_underscore =
@@ -77,7 +77,7 @@ defmodule FrobotsWeb.Release do
         |> List.last()
         |> Macro.underscore()
 
-      Path.join([priv_dir, repo_underscore, directory, filename])
+      Path.join([priv_dir, repo_underscore, directory, file_name])
     end
 
     @spec load_app() :: :ok | {:error, term()}

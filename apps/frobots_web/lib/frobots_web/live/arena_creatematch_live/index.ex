@@ -57,9 +57,9 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
 
   @impl true
   def handle_event("react.fetch_create_match_details", _params, socket) do
-    templateFrobots = extract_frobot_details(Assets.list_template_frobots())
+    template_frobots = extract_frobot_details(Assets.list_template_frobots())
 
-    userFrobots =
+    user_frobots =
       extract_frobot_details(Assets.get_available_user_frobots(socket.assigns.current_user.id))
 
     arenas = Api.list_arena()
@@ -67,8 +67,8 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
     {:noreply,
      push_event(socket, "react.return_create_match_details", %{
        "s3_base_url" => socket.assigns.s3_base_url,
-       "templates" => templateFrobots,
-       "userFrobots" => userFrobots,
+       "templates" => template_frobots,
+       "userFrobots" => user_frobots,
        "arenas" => arenas
      })}
   end

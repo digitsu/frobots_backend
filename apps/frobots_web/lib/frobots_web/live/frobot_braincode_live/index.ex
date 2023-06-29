@@ -55,7 +55,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     frobot = socket.assigns.frobot
     user = socket.assigns.user
 
-    frobotDetails = %{
+    frobot_details = %{
       "id" => frobot.id,
       "name" => frobot.name,
       "avatar" => frobot.avatar,
@@ -66,7 +66,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       "user_id" => frobot.user_id
     }
 
-    currentUser = %{
+    current_user = %{
       "active" => user.active,
       "admin" => user.admin,
       "avatar" => user.avatar,
@@ -78,8 +78,8 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
 
     {:noreply,
      push_event(socket, "react.return_bot_braincode", %{
-       "frobot" => frobotDetails,
-       "currentUser" => currentUser,
+       "frobot" => frobot_details,
+       "currentUser" => current_user,
        "templates" => socket.assigns.templates
      })}
   end
@@ -94,24 +94,24 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
       frobot = Assets.get_frobot!(frobot_id)
 
       case Assets.update_frobot(frobot, params) do
-        {:ok, updatedFrobot} ->
-          frobotDetails = %{
-            "id" => updatedFrobot.id,
-            "name" => updatedFrobot.name,
-            "avatar" => updatedFrobot.avatar,
-            "blockly_code" => updatedFrobot.blockly_code,
-            "brain_code" => updatedFrobot.brain_code,
-            "class" => updatedFrobot.class,
-            "xp" => updatedFrobot.xp
+        {:ok, updated_frobot} ->
+          frobot_details = %{
+            "id" => updated_frobot.id,
+            "name" => updated_frobot.name,
+            "avatar" => updated_frobot.avatar,
+            "blockly_code" => updated_frobot.blockly_code,
+            "brain_code" => updated_frobot.brain_code,
+            "class" => updated_frobot.class,
+            "xp" => updated_frobot.xp
           }
 
           {:noreply,
            push_event(
              socket
-             |> assign(:frobot, updatedFrobot)
+             |> assign(:frobot, updated_frobot)
              |> put_flash(:info, "frobot updated successfully"),
              "react.update_bot_braincode",
-             %{"frobot" => frobotDetails}
+             %{"frobot" => frobot_details}
            )}
 
         {:_error, changeset} ->
