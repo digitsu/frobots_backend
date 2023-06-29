@@ -2,6 +2,7 @@ defmodule FrobotsWeb.HomeLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.{UserStats, GlobalStats, Api}
   alias Frobots.{Accounts, Assets, Events}
+  require Logger
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -47,15 +48,15 @@ defmodule FrobotsWeb.HomeLive.Index do
       data["posts"]
     else
       {:ok, _} ->
-        IO.puts("Something other than HTTP 200 returned")
+        Logger.info("Something other than HTTP 200 returned")
         []
 
       {:error, err} ->
-        IO.puts("GhostBlog: no data posts! Err: " <> IO.inspect(err))
+        Logger.error("GhostBlog: no data posts! Err: " <> err.reason)
         []
 
       :error ->
-        IO.puts("GhostBlog: No Ghost URL!")
+        Logger.error("GhostBlog: No Ghost URL!")
         []
     end
   end

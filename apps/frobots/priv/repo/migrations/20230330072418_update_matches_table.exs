@@ -8,6 +8,6 @@ defmodule Frobots.Repo.Migrations.UpdateMatchesTable do
   end
 
   def down do
-    IO.inspect("Nothing to Rollback;")
+    IO.puts("Nothing to Rollback;")
   end
 end

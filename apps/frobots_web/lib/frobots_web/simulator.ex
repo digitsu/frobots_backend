@@ -1,6 +1,7 @@
 defmodule FrobotsWeb.Simulator do
   @moduledoc false
   use GenServer
+  @vsn 1
   alias PhoenixClient.{Socket, Channel, Message}
 
   def start_link(opts) do

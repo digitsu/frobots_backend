@@ -1,7 +1,7 @@
 defmodule Frobots.DatabaseListener do
   use GenServer
   alias Frobots.Leaderboard
-
+  require Logger
   @channel "match_status_updated"
 
   def start_link(init_args) do
@@ -19,7 +19,7 @@ defmodule Frobots.DatabaseListener do
 
   def handle_info({:notification, _pid, _ref, @channel, payload}, state) do
     payload = Jason.decode!(payload)
-    IO.inspect("Received a notification for match #{payload["id"]}")
+    Logger.info("Received a notification for match #{payload["id"]}")
     Leaderboard.create_or_update_entry(payload["id"])
 
     {:noreply, state}

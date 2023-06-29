@@ -55,10 +55,14 @@ defmodule Frobots.Repo.Migrations.RandomizeFrobotAvatars do
   defp save_me(struct, type) do
     case Map.has_key?(struct, :pixellated_img) do
       true ->
-        execute ~s"update #{String.downcase(Atom.to_string(type))} set pixellated_img = '#{struct.pixellated_img}', avatar = '#{struct.avatar}' where id = '#{struct.id}' and avatar = '' returning id"
+        execute(
+          ~s"update #{String.downcase(Atom.to_string(type))} set pixellated_img = '#{struct.pixellated_img}', avatar = '#{struct.avatar}' where id = '#{struct.id}' and avatar = '' returning id"
+        )
 
       _ ->
-        execute ~s"update #{String.downcase(Atom.to_string(type))} set avatar = '#{struct.avatar}' where id = '#{struct.id}' and avatar = '' returning id"
+        execute(
+          ~s"update #{String.downcase(Atom.to_string(type))} set avatar = '#{struct.avatar}' where id = '#{struct.id}' and avatar = '' returning id"
+        )
     end
   end
 
@@ -83,13 +87,13 @@ defmodule Frobots.Repo.Migrations.RandomizeFrobotAvatars do
   end
 
   def down do
-    IO.inspect("Rolling back image data")
+    IO.puts("Rolling back image data")
 
     for table <- Map.keys(@tables) do
-      execute ~s"update #{table} set avatar = '' returning id"
+      execute(~s"update #{table} set avatar = '' returning id")
 
       case table do
-        :frobots -> execute ~s"update #{table} set pixellated_img = '' returning id"
+        :frobots -> execute(~s"update #{table} set pixellated_img = '' returning id")
         _ -> nil
       end
     end

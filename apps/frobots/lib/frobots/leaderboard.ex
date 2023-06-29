@@ -41,13 +41,13 @@ defmodule Frobots.Leaderboard do
     case get_entry(winning_frobot) do
       nil ->
         # new entry
-        IO.inspect("Adding new leaderboard entry")
+        Logger.info("Adding new leaderboard entry")
         create_entry(stat)
         update_frobot_xp(winning_frobot, points)
 
       entry ->
         # update entry
-        IO.inspect("Updating leaderboard entry")
+        Logger.info("Updating leaderboard entry")
 
         stat =
           Map.delete(stat, "frobot_id")
@@ -72,21 +72,21 @@ defmodule Frobots.Leaderboard do
     Match
     |> where([p], p.status == :done)
     |> Repo.all()
-    |> Enum.filter(fn x ->
+    |> Enum.count(fn x ->
       # check if x.frobots is a subsetof  frobot_id_list, if yes we get an empty array
       Enum.empty?(frobot_id_list -- x.frobots)
     end)
-    |> Enum.count()
   end
 
   def get_matches_won_count(frobot_id) do
     q =
-      from m in "matches",
+      from(m in "matches",
         join: b in "battlelogs",
         on: b.match_id == m.id,
         where: m.status == "done" and ^frobot_id in b.winners,
         distinct: m.id,
         select: m.id
+      )
 
     Repo.all(q)
     |> Enum.count()
@@ -94,12 +94,13 @@ defmodule Frobots.Leaderboard do
 
   def get_match_attempts_count(frobot_id) do
     q =
-      from m in "matches",
+      from(m in "matches",
         join: b in "battlelogs",
         on: b.match_id == m.id,
         where: m.status in ["timeout", "cancelled"] and ^frobot_id in m.frobots,
         distinct: m.id,
         select: m.id
+      )
 
     Repo.all(q)
     |> Enum.count()
@@ -108,7 +109,7 @@ defmodule Frobots.Leaderboard do
   def compute_points(winner_frobot_id, participants, starting_points) do
     # we have winning frobot and participants
     q =
-      from m in "matches",
+      from(m in "matches",
         join: b in "battlelogs",
         on: b.match_id == m.id,
         where:
@@ -116,6 +117,7 @@ defmodule Frobots.Leaderboard do
             ^winner_frobot_id in b.winners and
             m.frobots == ^participants,
         select: m.id
+      )
 
     occurences = Repo.all(q) |> Enum.count()
 

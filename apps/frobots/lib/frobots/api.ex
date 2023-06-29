@@ -206,7 +206,7 @@ defmodule Frobots.Api do
 
   def create_frobot(_user, name, brain_code, _extra_params)
       when name == "" or brain_code == "" do
-    # IO.inspect("Name and Braincode required to create frobot")
+    # Logger.debug("Name and Braincode required to create frobot")
     {:error, "Frobot name and braincode are required."}
   end
 
@@ -333,47 +333,47 @@ defmodule Frobots.Api do
         {:ok, res}
 
       {:error, :frobot, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :xframe_inst, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :cannon_inst, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :scanner_inst, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :missile_inst, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :cpu_inst, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :equip_xframe, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :equip_cannon, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :equip_scanner, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :equip_cpu, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :update_user, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
     end
   end

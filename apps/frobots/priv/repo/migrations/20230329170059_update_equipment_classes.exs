@@ -12,6 +12,6 @@ defmodule Frobots.Repo.Migrations.UpdateEquipmentClasses do
   end
 
   def down do
-    IO.inspect("no rollback")
+    IO.puts("no rollback")
   end
 end

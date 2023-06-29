@@ -27,9 +27,11 @@ defmodule Frobots.Repo.Migrations.SeedImages do
   end
 
   defp save_me(struct) do
-    IO.inspect(struct)
+    IO.puts(struct)
 
-    execute ~s"update #{String.downcase(Atom.to_string(struct.class))}s set image = '#{struct.image}' where id = '#{struct.id}' returning id"
+    execute(
+      ~s"update #{String.downcase(Atom.to_string(struct.class))}s set image = '#{struct.image}' where id = '#{struct.id}' returning id"
+    )
   end
 
   def up do
@@ -43,10 +45,10 @@ defmodule Frobots.Repo.Migrations.SeedImages do
   end
 
   def down do
-    IO.inspect("Rolling back image data")
+    IO.puts("Rolling back image data")
 
     for table <- Map.keys(@tables) do
-      execute ~s"update #{table} set image = ''"
+      execute(~s"update #{table} set image = ''")
     end
   end
 end

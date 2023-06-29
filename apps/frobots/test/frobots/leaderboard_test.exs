@@ -3,6 +3,7 @@ defmodule Frobots.LeaderboardTest do
   use ExUnit.Case, async: false
   alias Frobots.{Events, Assets, Leaderboard}
   alias Fubars.Match
+  require Logger
 
   setup do
     # Explicitly get a connection before each test
@@ -67,7 +68,7 @@ defmodule Frobots.LeaderboardTest do
     }
 
     on_exit(fn ->
-      IO.inspect("Resetting sandbox mode back to :shared")
+      Logger.info("Resetting sandbox mode back to :shared")
       Ecto.Adapters.SQL.Sandbox.mode(Frobots.Repo, {:shared, self()})
     end)
 

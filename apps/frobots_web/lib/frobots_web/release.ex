@@ -51,7 +51,7 @@ defmodule FrobotsWeb.Release do
           {:error, reason}
 
         {:error, term} ->
-          IO.warn(term, [])
+          Logger.error(term, [])
           {:error, term}
       end
     end

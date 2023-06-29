@@ -1,5 +1,6 @@
 defmodule Frobots.Cron.ScheduledMatch do
   use GenServer
+  @vsn 1
 
   alias Frobots.Api
   alias Frobots.MatchChannel

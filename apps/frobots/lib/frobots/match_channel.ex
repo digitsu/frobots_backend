@@ -1,5 +1,6 @@
 defmodule Frobots.MatchChannel do
   use GenServer
+  @vsn 1
 
   @name __MODULE__
 
@@ -7,13 +8,13 @@ defmodule Frobots.MatchChannel do
   require Logger
 
   def start_link(_opts) do
-    IO.inspect("Start Link Match Channel")
+    Logger.info("Start Link Match Channel")
     GenServer.start_link(@name, [], name: @name)
   end
 
   @impl true
   def init(_args) do
-    IO.inspect("Started Match Channel")
+    Logger.info("Started Match Channel")
     {:ok, %{}}
   end
 
@@ -58,7 +59,7 @@ defmodule Frobots.MatchChannel do
   @impl true
   def terminate(reason, _state) do
     Logger.debug("Match Channel terminate/2 callback")
-    IO.inspect(reason, label: "Reason for termiation")
+    Logger.info(reason)
 
     reason
   end

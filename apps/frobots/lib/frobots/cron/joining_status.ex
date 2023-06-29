@@ -1,5 +1,6 @@
 defmodule Frobots.Cron.JoiningStatus do
   use GenServer
+  @vsn 1
 
   @name __MODULE__
   alias Frobots.Repo

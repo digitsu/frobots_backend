@@ -32,9 +32,7 @@ if config_env() == :prod || config_env() == :staging do
     host: s3_store_url,
     region: "US",
     bucket: s3_store_bucket
-end
 
-if config_env() == :prod || config_env() == :staging do
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
   # want to use a different value for prod and you most likely don't want
@@ -46,6 +44,11 @@ if config_env() == :prod || config_env() == :staging do
       environment variable SECRET_KEY_BASE is missing.
       You can generate one by calling: mix phx.gen.secret
       """
+
+  config :frobots, FrobotsWeb.Guardian,
+  issuer: "frobots",
+  secret_key: System.get_env("GUARDIAN_SECRET_KEY"),
+  ttl: {3, :days}
 
   config :frobots_web, FrobotsWeb.Endpoint,
     http: [

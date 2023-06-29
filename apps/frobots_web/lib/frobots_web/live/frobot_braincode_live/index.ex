@@ -187,7 +187,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     case Simulator.start_match(socket.assigns.simulator, match_data) do
       {:ok, frobots_data, match_id} ->
         topic = "match:match#{match_id}"
-        IO.inspect("SUBSCRIBING TO #{topic}")
+        Logger.info("SUBSCRIBING TO #{topic}")
         Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
         match = Api.get_match_details_by_id(match_id)
 
@@ -201,7 +201,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
          })}
 
       {:error, error} ->
-        Logger.error("Error in starting the match #{error}")
+        Logger.warn("Error in starting the match #{error}")
         {:noreply, socket |> put_flash(:error, error)}
     end
   end
@@ -302,7 +302,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
 
   @impl true
   def handle_info(msg, socket) do
-    IO.inspect(msg)
+    Logger.info(msg)
     {:noreply, socket}
   end
 
