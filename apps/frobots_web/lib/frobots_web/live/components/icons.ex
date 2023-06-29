@@ -1,4 +1,8 @@
 defmodule FrobotsWeb.Components.Icons do
+  @moduledoc """
+  This module contains all the icons used in the app.
+
+  """
   use Phoenix.Component
 
   def maki_bicycle_15(assigns) do

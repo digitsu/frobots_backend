@@ -1,4 +1,7 @@
 defmodule Frobots.UserStats do
+  @moduledoc """
+  The UserStats context.
+  """
   defstruct frobots_count: 0, total_xp: 0, matches_participated: 0, upcoming_matches: 0
 
   alias Jason.Encoder.Frobots.Leaderboard

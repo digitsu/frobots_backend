@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.Xframe do
+  @moduledoc """
+  The Xframe context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor

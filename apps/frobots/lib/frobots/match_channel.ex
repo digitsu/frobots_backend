@@ -1,4 +1,7 @@
 defmodule Frobots.MatchChannel do
+  @moduledoc """
+  The MatchChannel context.
+  """
   use GenServer
   @vsn 1
 

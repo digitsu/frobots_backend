@@ -1,4 +1,7 @@
 defmodule Frobots.Events.Match do
+  @moduledoc """
+  The Match context.
+  """
   # this defines a match
   use Ecto.Schema
   import Ecto.Changeset

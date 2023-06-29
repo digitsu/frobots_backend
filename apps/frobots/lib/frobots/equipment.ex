@@ -1,4 +1,7 @@
 defmodule Frobots.Equipment do
+  @moduledoc """
+  The Equipment context.
+  """
   import Ecto.Query, warn: false
   alias Frobots.Repo
 

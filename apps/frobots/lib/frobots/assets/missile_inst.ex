@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.MissileInst do
+  @moduledoc """
+  The MissileInst context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor

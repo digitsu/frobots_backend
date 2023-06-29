@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.Frobot do
+  @moduledoc """
+  The Frobot context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

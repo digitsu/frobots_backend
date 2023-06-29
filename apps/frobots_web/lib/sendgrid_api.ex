@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.SendgridApi do
+  @moduledoc """
+  Sendgrid API
+  """
   require HTTPoison
 
   @spec get_contacts(binary) :: {:error, {:status, integer} | HTTPoison.Error.t()} | {:ok, list}

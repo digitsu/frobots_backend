@@ -1,4 +1,8 @@
 defmodule FrobotsWeb.MailTemplates do
+  @moduledoc """
+  This module is responsible for handling mail templates
+
+  """
   def beta_mail_template() do
     """
     <!DOCTYPE html>

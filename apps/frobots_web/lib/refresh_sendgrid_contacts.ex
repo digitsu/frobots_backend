@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.RefreshSendgridContacts do
+  @moduledoc """
+  RefreshSendgridContacts
+  """
   use GenServer
   alias FrobotsWeb.SendInvites
   # TODO this should be re-written as a Task! Do not patch this... just re-write it.

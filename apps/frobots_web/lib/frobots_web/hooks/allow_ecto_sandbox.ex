@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.Hooks.AllowEctoSandbox do
+  @moduledoc """
+  Allow Ecto Sandbox
+  """
   import Phoenix.LiveView
   import Phoenix.Component
 

@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.Guardian do
+  @moduledoc """
+  This module is responsible for handling authentication and authorization
+  """
   use Guardian, otp_app: :frobots
 
   alias Frobots.Accounts

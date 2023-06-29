@@ -1,4 +1,7 @@
 defmodule Frobots.Cron.JoiningStatus do
+  @moduledoc """
+  The JoiningStatus context.
+  """
   use GenServer
   @vsn 1
 

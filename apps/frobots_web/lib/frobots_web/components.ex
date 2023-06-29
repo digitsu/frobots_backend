@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.Components do
+  @moduledoc """
+  A collection of components used in the FrobotsWeb application.
+  """
   use FrobotsWeb, :component
 
   use Phoenix.HTML

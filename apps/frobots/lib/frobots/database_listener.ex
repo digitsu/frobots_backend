@@ -1,4 +1,7 @@
 defmodule Frobots.DatabaseListener do
+  @moduledoc """
+  The DatabaseListener context.
+  """
   use GenServer
   alias Frobots.Leaderboard
   require Logger

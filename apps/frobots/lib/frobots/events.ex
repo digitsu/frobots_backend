@@ -19,6 +19,9 @@ defmodule Frobots.Events do
   end
 
   defmodule FrobotLeaderboardStats do
+    @moduledoc """
+    The FrobotLeaderboardStats context.
+    """
     @derive {Jason.Encoder,
              only: [
                :frobot_id,

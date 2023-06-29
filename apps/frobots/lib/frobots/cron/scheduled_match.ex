@@ -1,4 +1,7 @@
 defmodule Frobots.Cron.ScheduledMatch do
+  @moduledoc """
+  The ScheduledMatch context.
+  """
   use GenServer
   @vsn 1
 

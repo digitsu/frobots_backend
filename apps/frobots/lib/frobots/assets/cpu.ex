@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.Cpu do
+  @moduledoc """
+  The Cpu context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor

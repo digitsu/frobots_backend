@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.Scanner do
+  @moduledoc """
+  The Scanner context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor

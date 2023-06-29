@@ -1,4 +1,8 @@
 defmodule Frobots.Accounts.UserNotifier do
+  @moduledoc """
+  The UserNotifier context.
+  This notifies the user of account changes, via email
+  """
   import Swoosh.Email
 
   alias Frobots.Mailer

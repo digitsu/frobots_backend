@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.AuthErrorHandler do
+  @moduledoc """
+  Auth Error Handler
+  """
   import Plug.Conn
 
   @behaviour Guardian.Plug.ErrorHandler

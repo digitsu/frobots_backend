@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.SendInvites do
+  @moduledoc """
+  SendInvites
+  """
   alias FrobotsWeb.{BetaMailer, MailTemplates}
   alias Frobots.{Accounts, Mailer}
   alias FrobotsWeb.SendgridApi

@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.CannonInst do
+  @moduledoc """
+  The CannonInst context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor

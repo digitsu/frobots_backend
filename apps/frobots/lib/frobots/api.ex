@@ -1,4 +1,7 @@
 defmodule Frobots.Api do
+  @moduledoc """
+  The Api context.
+  """
   alias Frobots.Events
   alias Frobots.Events.{Match, Slot}
   alias Frobots.Accounts.User

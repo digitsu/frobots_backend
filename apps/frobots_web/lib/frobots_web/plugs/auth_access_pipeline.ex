@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.AuthAccessPipeline do
+  @moduledoc """
+  Auth Access Pipeline
+  """
   use Guardian.Plug.Pipeline, otp_app: :frobots
 
   plug Guardian.Plug.VerifyHeader, claims: %{"typ" => "access"}

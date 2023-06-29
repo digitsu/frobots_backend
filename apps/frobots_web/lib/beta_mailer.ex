@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.BetaMailer do
+  @moduledoc """
+  The BetaMailer context.
+  """
   import Swoosh.Email
 
   def welcome(user, template) do

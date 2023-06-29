@@ -1,4 +1,8 @@
 defmodule FrobotsWeb.Components.UI do
+  @moduledoc """
+  UI components for the FrobotsWeb application.
+
+  """
   use Phoenix.Component
   use Phoenix.HTML
   alias Phoenix.LiveView.JS
