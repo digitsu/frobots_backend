@@ -526,22 +526,20 @@ defmodule Frobots.Api do
     }
 
     frobot_details =
-      cond do
-        frobot.class in [Assets.prototype_class(), Assets.target_class()] ->
-          frobot_details
+      if frobot.class in [Assets.prototype_class(), Assets.target_class()] do
+        frobot_details
+      else
+        xframe_inst = _get_xframe_inst_details(frobot)
+        cannon_inst = _get_cannon_inst_details(frobot)
+        scanner_inst = _get_scanner_inst_details(frobot)
+        missile_inst = _get_missile_inst_details(frobot)
+        cpu_inst = _get_cpu_inst_details(frobot)
 
-        true ->
-          xframe_inst = _get_xframe_inst_details(frobot)
-          cannon_inst = _get_cannon_inst_details(frobot)
-          scanner_inst = _get_scanner_inst_details(frobot)
-          missile_inst = _get_missile_inst_details(frobot)
-          cpu_inst = _get_cpu_inst_details(frobot)
-
-          Map.put(frobot_details, "xframe_inst", xframe_inst)
-          |> Map.put("cannon_inst", cannon_inst)
-          |> Map.put("scanner_inst", scanner_inst)
-          |> Map.put("missile_inst", missile_inst)
-          |> Map.put("cpu_inst", cpu_inst)
+        Map.put(frobot_details, "xframe_inst", xframe_inst)
+        |> Map.put("cannon_inst", cannon_inst)
+        |> Map.put("scanner_inst", scanner_inst)
+        |> Map.put("missile_inst", missile_inst)
+        |> Map.put("cpu_inst", cpu_inst)
       end
 
     {:ok, frobot_details}
@@ -551,7 +549,9 @@ defmodule Frobots.Api do
     if Map.has_key?(frobot, :xframe_inst) do
       xframe_inst = Map.get(frobot, :xframe_inst)
 
-      if !is_nil(xframe_inst) do
+      if is_nil(xframe_inst) do
+        []
+      else
         [
           %{
             "id" => Map.get(xframe_inst, :id),
@@ -567,8 +567,6 @@ defmodule Frobots.Api do
             "equipment_type" => frobot.xframe_inst.xframe.type
           }
         ]
-      else
-        []
       end
     else
       []
@@ -655,7 +653,9 @@ defmodule Frobots.Api do
     if Map.has_key?(frobot, :cpu_inst) do
       cpu_inst = Map.get(frobot, :cpu_inst)
 
-      if !is_nil(cpu_inst) do
+      if is_nil(cpu_inst) do
+        []
+      else
         [
           %{
             "id" => cpu_inst.id,
@@ -665,8 +665,6 @@ defmodule Frobots.Api do
             "overload_penalty" => cpu_inst.overload_penalty
           }
         ]
-      else
-        []
       end
     else
       []

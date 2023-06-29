@@ -1,7 +1,7 @@
 defmodule FrobotsWeb.RefreshSendgridContacts do
   use GenServer
   alias FrobotsWeb.SendInvites
-  #TODO this should be re-written as a Task! Do not patch this... just re-write it.
+  # TODO this should be re-written as a Task! Do not patch this... just re-write it.
 
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, %{})

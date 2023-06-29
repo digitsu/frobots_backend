@@ -63,7 +63,7 @@ defmodule FrobotsWeb.HomeLive.Index do
 
   @impl true
   def handle_event("react.fetch_dashboard_details", _params, socket) do
-    currentUserStatus = socket.assigns.current_user_stats
+    current_user_status = socket.assigns.current_user_stats
     current_user = socket.assigns.current_user
 
     {:noreply,
@@ -77,10 +77,10 @@ defmodule FrobotsWeb.HomeLive.Index do
        "globalStats" => socket.assigns.global_stats,
        "featuredFrobots" => extract_frobots(socket.assigns.featured_frobots),
        "playerStats" => %{
-         "frobots_count" => currentUserStatus.frobots_count,
-         "matches_participated" => currentUserStatus.matches_participated,
-         "total_xp" => currentUserStatus.total_xp,
-         "upcoming_matches" => currentUserStatus.upcoming_matches
+         "frobots_count" => current_user_status.frobots_count,
+         "matches_participated" => current_user_status.matches_participated,
+         "total_xp" => current_user_status.total_xp,
+         "upcoming_matches" => current_user_status.upcoming_matches
        },
        "s3_base_url" => socket.assigns.s3_base_url,
        "latestBlogPost" => List.first(socket.assigns.blog_posts)

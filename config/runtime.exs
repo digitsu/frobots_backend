@@ -46,9 +46,9 @@ if config_env() == :prod || config_env() == :staging do
       """
 
   config :frobots, FrobotsWeb.Guardian,
-  issuer: "frobots",
-  secret_key: System.get_env("GUARDIAN_SECRET_KEY"),
-  ttl: {3, :days}
+    issuer: "frobots",
+    secret_key: System.get_env("GUARDIAN_SECRET_KEY"),
+    ttl: {3, :days}
 
   config :frobots_web, FrobotsWeb.Endpoint,
     http: [

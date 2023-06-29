@@ -704,7 +704,9 @@ defmodule Frobots.Equipment do
     xframe_class =
       from(xf in Frobots.Assets.Xframe, where: xf.id == ^xframe.xframe_id) |> Repo.one()
 
-    if !is_nil(xframe_class) do
+    if is_nil(xframe_class) do
+      {:error, "Xframe needs to be installed first"}
+    else
       # now check how many scanner and weapon endpoints are on xframe
       max_sensor_hardpoints = xframe_class.sensor_hardpoints
       max_weapon_endpoints = xframe_class.weapon_hardpoints
@@ -729,8 +731,6 @@ defmodule Frobots.Equipment do
           inst_module
         )
       end
-    else
-      {:error, "Xframe needs to be installed first"}
     end
   end
 

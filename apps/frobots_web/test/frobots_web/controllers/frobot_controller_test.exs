@@ -1,6 +1,6 @@
 defmodule FrobotsWeb.FrobotControllerTest do
   use FrobotsWeb.ConnCase, async: true
-#  alias FrobotsWeb.UserAuth
+  #  alias FrobotsWeb.UserAuth
 
   @create_attrs %{brain_code: "some brain_code", class: "some class", name: "some name", xp: 42}
   @update_attrs %{
