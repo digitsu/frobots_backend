@@ -5,3 +5,9 @@ export const EquipmentDetachPromptTitle = (equipmentClass: string) =>
   `Attention: You are about to detach a ${equipmentClass}`
 export const EquipmentDetachPromptDescription = (equipmentClass: string) =>
   `Once detached, the currently chosen ${equipmentClass} slot will become vacant. To enable the frobot’s battle functionality, kindly connect an alternative ${equipmentClass} to the slot. Would you like to proceed?`
+export const BrainCodeCopyPromptDescription =
+  'By clicking confirm you will overwrite the current brain code in lua. However this will be saved only after clicking the save button on the brain code editor tab'
+export const SaveBrainCodePromptDescription =
+  'Please note that the your existing brain code as displayed on the brain code tab will be saved. Any modification done on the brain code tab without using blockly will cause blockly editor and brain code editor to be out of sync. Do you wish to proceed ?'
+export const CreateFrobotBrainCodeCopyPromptDescription =
+  'By clicking confirm you will overwrite the current brain code in lua. Are you sure you want to continue?'

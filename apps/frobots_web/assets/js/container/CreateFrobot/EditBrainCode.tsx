@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Tab, Tabs, Button, Grid } from '@mui/material'
+import { Box, Tab, Tabs, Button, Grid, Tooltip } from '@mui/material'
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
 import LuaEditor from '../Garage/LuaEditor'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
+import Popup from '../../components/Popup'
+import { CreateFrobotBrainCodeCopyPromptDescription } from '../../mock/texts'
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 
 export default () => {
   const { brainCode, blocklyCode: blocklyCodeStore } = useSelector(
@@ -15,6 +18,10 @@ export default () => {
   const [luaCode, setLuaCode] = useState('')
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState('')
+  const [showCopyPrompt, setShowCopyPrompt] = useState(false)
+  const [blocklyLuaCode, setBlocklyLuaCode] = useState(
+    brainCode?.brain_code || ''
+  )
   const { setBlocklyCode: setBlocklyCodeHandler, setBrainCode } =
     createFrobotActions
   const dispatch = useDispatch()
@@ -60,24 +67,14 @@ export default () => {
     }
   }
 
-  const downloadConfig = () => {
-    const isBlockly = tabIndex === 0
-    const fileType = isBlockly ? 'text/xml' : 'text/lua'
-    const fileContent = isBlockly ? xmlText : luaCode
-    const xmlBlob = new Blob([fileContent], { type: fileType })
-    const xmlUrl = URL.createObjectURL(xmlBlob)
-    const a = document.createElement('a')
-    a.href = xmlUrl
-    a.download = isBlockly ? 'blockly-config.xml' : 'lua-code.lua'
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-  }
-
   useEffect(() => {
     dispatch(setBlocklyCodeHandler(xmlText))
   }, [xmlText])
 
+  const handleCopyConfirm = () => {
+    setBlocklyLuaCode(blocklyCode)
+    setShowCopyPrompt(false)
+  }
   return (
     <Box mt={5}>
       <>
@@ -118,15 +115,34 @@ export default () => {
                   />
                   <Tab
                     sx={{ color: '#fff' }}
-                    label="Lua Code"
+                    label="Brain Code"
                     {...a11yProps(1)}
                   />
                 </Tabs>
               </Box>
               <Box>
-                <Button variant="outlined" onClick={downloadConfig}>
-                  Download
-                </Button>
+                {tabIndex === 0 && (
+                  <>
+                    <Tooltip title={'Transfer Brain Code'}>
+                      <Button
+                        onClick={() => setShowCopyPrompt(true)}
+                        variant="contained"
+                        color="inherit"
+                      >
+                        <CompareArrowsIcon />
+                      </Button>
+                    </Tooltip>
+                    <Popup
+                      open={showCopyPrompt}
+                      cancelAction={() => setShowCopyPrompt(false)}
+                      successAction={handleCopyConfirm}
+                      successLabel={'Confirm'}
+                      cancelLabel={'Cancel'}
+                      label={''}
+                      description={CreateFrobotBrainCodeCopyPromptDescription}
+                    />
+                  </>
+                )}
               </Box>
             </Box>
           </Box>
@@ -149,7 +165,7 @@ export default () => {
           {
             <Box sx={{ p: 3 }} display={tabIndex === 1 ? 'block' : 'none'}>
               <LuaEditor
-                luaCode={brainCode?.brain_code || ''}
+                luaCode={blocklyLuaCode}
                 onEditorChange={onEditorChange}
               />
             </Box>
