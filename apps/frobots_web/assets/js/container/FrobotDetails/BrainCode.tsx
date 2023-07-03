@@ -10,6 +10,7 @@ import {
   Autocomplete,
   TextField,
   Chip,
+  Tooltip,
 } from '@mui/material'
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
@@ -17,6 +18,14 @@ import { BlocklyEditor } from '../Garage/BlocklyEditor'
 import { Game, tankHead } from '../../game_updated'
 import { Tank } from '../../tank'
 import * as PIXI from 'pixi.js'
+import Popup from '../../components/Popup'
+import {
+  BrainCodeCopyPromptDescription,
+  SaveBrainCodePromptDescription,
+} from '../../mock/texts'
+import SaveIcon from '@mui/icons-material/Save'
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 
 const BlankBlocklyCode =
   '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
@@ -33,6 +42,8 @@ export default (props: any) => {
   } = props
   const isOwnFrobot = frobot.user_id === currentUser.id
   const [luaCode, setLuaCode] = useState(frobot.brain_code || '')
+  const [showCopyPrompt, setShowCopyPrompt] = useState(false)
+  const [showSaveCodePrompt, setShowSaveCodePrompt] = useState(false)
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState(
     frobot.blockly_code || BlankBlocklyCode
@@ -105,6 +116,11 @@ export default (props: any) => {
     }
 
     updateFrobotCode(requestBody)
+    setShowSaveCodePrompt(false)
+  }
+  const handleCopyConfirm = () => {
+    setLuaCode(blocklyLuaCode)
+    setShowCopyPrompt(false)
   }
 
   const handleRunSimulation = () => {
@@ -235,22 +251,35 @@ export default (props: any) => {
                   />
                   <Tab
                     sx={{ color: '#fff' }}
-                    label="Lua Code"
+                    label="Brain Code"
                     {...a11yProps(1)}
                   />
                 </Tabs>
               </Box>
               <Box display={'flex'} flex={6} mb={1} alignItems={'center'}>
                 {isOwnFrobot && (
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    size="small"
-                    onClick={saveConfig}
-                    sx={{ flex: 1 }}
-                  >
-                    Save
-                  </Button>
+                  <>
+                    <Tooltip title={'Save Frobot'}>
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        size="small"
+                        onClick={() => setShowSaveCodePrompt(true)}
+                        sx={{ p: 1 }}
+                      >
+                        <SaveIcon />
+                      </Button>
+                    </Tooltip>
+                    <Popup
+                      open={showSaveCodePrompt}
+                      cancelAction={() => setShowSaveCodePrompt(false)}
+                      successAction={saveConfig}
+                      successLabel={'Confirm'}
+                      cancelLabel={'Cancel'}
+                      label={'Warning'}
+                      description={SaveBrainCodePromptDescription}
+                    />
+                  </>
                 )}{' '}
                 <Autocomplete
                   sx={{
@@ -284,17 +313,41 @@ export default (props: any) => {
                   )}
                 />
                 {''}
-                {isSelectedProtobot && (
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    size="small"
-                    onClick={handleRunSimulation}
-                    sx={{ flex: 1 }}
-                  >
-                    Simulate
-                  </Button>
-                )}{' '}
+                <Box display={'flex'} gap={1}>
+                  {isSelectedProtobot && (
+                    <Tooltip title={'Run Simulation'}>
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        size="small"
+                        onClick={handleRunSimulation}
+                        sx={{ flex: 1 }}
+                      >
+                        <PlayArrowIcon />
+                      </Button>
+                    </Tooltip>
+                  )}{' '}
+                  {tabIndex === 0 && (
+                    <Tooltip title={'Transfer Brain Code'}>
+                      <Button
+                        onClick={() => setShowCopyPrompt(true)}
+                        variant="contained"
+                        color="inherit"
+                      >
+                        <CompareArrowsIcon />
+                      </Button>
+                    </Tooltip>
+                  )}
+                </Box>
+                <Popup
+                  open={showCopyPrompt}
+                  cancelAction={() => setShowCopyPrompt(false)}
+                  successAction={handleCopyConfirm}
+                  successLabel={'Confirm'}
+                  cancelLabel={'Cancel'}
+                  label={''}
+                  description={BrainCodeCopyPromptDescription}
+                />
               </Box>
             </Box>
           </Box>
