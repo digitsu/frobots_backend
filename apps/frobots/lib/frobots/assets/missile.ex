@@ -36,7 +36,8 @@ defmodule Frobots.Assets.Missile do
     :damage_near,
     :damage_far,
     :speed,
-    :range
+    :range,
+    :class
   ]
 
   @doc false
