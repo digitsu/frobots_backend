@@ -10,4 +10,4 @@ export const BrainCodeCopyPromptDescription =
 export const SaveBrainCodePromptDescription =
   'Please note that the your existing brain code as displayed on the brain code tab will be saved. Any modification done on the brain code tab without using blockly will cause blockly editor and brain code editor to be out of sync. Do you wish to proceed ?'
 export const CreateFrobotBrainCodeCopyPromptDescription =
-  'By clicking confirm you will overwrite the current brain code in lua. Are you sure you want to continue?'
+  'By clicking confirm you will overwrite the current brain code in lua.Would you like to proceed?'
