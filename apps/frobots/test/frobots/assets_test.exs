@@ -20,6 +20,7 @@ defmodule Frobots.AssetsTest do
       type: "Mk1",
       max_range: 700,
       resolution: 10,
+      class: :scanner,
       image_path: "https://via.placeholder.com/50.png"
     }
 
@@ -30,6 +31,7 @@ defmodule Frobots.AssetsTest do
       damage_far: [40, 3],
       speed: 400,
       range: 900,
+      class: :missile,
       image_path: "https://via.placeholder.com/50.png"
     }
 
@@ -38,6 +40,7 @@ defmodule Frobots.AssetsTest do
       reload_time: 5,
       rate_of_fire: 1,
       magazine_size: 2,
+      class: :cannon,
       image_path: "https://via.placeholder.com/50.png"
     }
 
@@ -47,10 +50,12 @@ defmodule Frobots.AssetsTest do
       turn_speed: 50,
       sensor_hardpoints: 1,
       weapon_hardpoints: 1,
-      movement_type: "bipedal",
+      cpu_hardpoints: 1,
+      movement_type: "tracks",
       max_health: 100,
       max_throttle: 100,
       accel_speed_mss: 5,
+      class: :xframe,
       image_path: "https://via.placeholder.com/50.png"
     }
 
@@ -160,7 +165,7 @@ defmodule Frobots.AssetsTest do
 
       item = Enum.at(xframes, 0)
       assert item.type == :Chassis_Mk1
-      assert item.movement_type == :bipedal
+      assert item.movement_type == :tracks
     end
   end
 end
