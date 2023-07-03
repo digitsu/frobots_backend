@@ -84,7 +84,7 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
     {:noreply,
      push_event(socket, "react.return_frobot_details", %{
        "frobotDetails" => frobot,
-       "current_user" => current_user,
+       "currentUser" => current_user,
        "userFrobots" => user_frobots,
        "battles" => socket.assigns.battles,
        "total_entries" => socket.assigns.total_entries,
@@ -142,7 +142,7 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
     {:noreply,
      push_event(socket, "react.return_frobot_details", %{
        "frobotDetails" => frobot,
-       "current_user" => current_user,
+       "currentUser" => current_user,
        "userFrobots" => user_frobots,
        "battles" => battles,
        "total_entries" => total_entries,
@@ -178,7 +178,7 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
            "react.return_frobot_details",
            %{
              "frobotDetails" => frobot,
-             "current_user" => current_user,
+             "currentUser" => current_user,
              "userFrobots" => user_frobots,
              "battles" => socket.assigns.battles,
              "total_entries" => socket.assigns.total_entries,
