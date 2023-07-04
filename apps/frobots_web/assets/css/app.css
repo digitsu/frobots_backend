@@ -332,3 +332,7 @@ header section {
   background-color: #1E1E1E !important;
   resize: both;
 }
+
+.blocklyHtmlInput {
+  color: #1E1E1E;
+}
