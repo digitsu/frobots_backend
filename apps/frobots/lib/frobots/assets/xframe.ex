@@ -45,10 +45,12 @@ defmodule Frobots.Assets.Xframe do
     :turn_speed,
     :sensor_hardpoints,
     :weapon_hardpoints,
+    :cpu_hardpoints,
     :movement_type,
     :max_health,
     :max_throttle,
-    :accel_speed_mss
+    :accel_speed_mss,
+    :class
   ]
 
   @doc false
