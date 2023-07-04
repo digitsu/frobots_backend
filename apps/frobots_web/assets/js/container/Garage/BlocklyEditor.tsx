@@ -13,7 +13,7 @@ export const BlocklyEditor: React.FC<any> = ({
     <Box display={'flex'} minHeight={'100vh'}>
       <BlocklyWorkspace
         onXmlChange={(xml) => setXmlText(xml)}
-        className="blockly-editorview "
+        className="blockly-editorview"
         toolboxConfiguration={MY_TOOLBOX as any}
         onWorkspaceChange={workspaceDidChange}
         workspaceConfiguration={{
@@ -22,6 +22,13 @@ export const BlocklyEditor: React.FC<any> = ({
             spacing: 30,
             length: 3,
             colour: '#ccc',
+          },
+          zoom: {
+            controls: true,
+            startScale: 0.9,
+            maxScale: 3,
+            minScale: 0.3,
+            scaleSpeed: 1.2
           },
         }}
         initialXml={defaultXml}
