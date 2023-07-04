@@ -88,7 +88,7 @@ export default (props: frobotDetailsProps) => {
                 left: 0,
                 right: 0,
                 p: 4,
-                height: '90%'
+                height: '90%',
               }}
             >
               {isOwnedFrobot && (

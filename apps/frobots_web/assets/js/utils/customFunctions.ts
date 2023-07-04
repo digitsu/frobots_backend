@@ -422,5 +422,5 @@ export default () => {
     return code
   }
 
-  Blockly.Msg.LOGIC_NULL = "nil";
+  Blockly.Msg.LOGIC_NULL = 'nil'
 }

@@ -28,7 +28,7 @@ export const BlocklyEditor: React.FC<any> = ({
             startScale: 0.9,
             maxScale: 3,
             minScale: 0.3,
-            scaleSpeed: 1.2
+            scaleSpeed: 1.2,
           },
         }}
         initialXml={defaultXml}
