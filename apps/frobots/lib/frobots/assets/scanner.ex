@@ -11,11 +11,13 @@ defmodule Frobots.Assets.Scanner do
              :type,
              :max_range,
              :resolution,
-             :image
+             :image,
+             :special
            ]}
 
   schema "scanners" do
     field :type, Ecto.Enum, values: ~w(Mk1 Mk2 Mk3)a
+    field :special, Ecto.Enum, values: ~w(active passive)a
     field :max_range, :integer
     field :resolution, :integer
     has_many :scanner_inst, Frobots.Assets.ScannerInst
@@ -28,13 +30,14 @@ defmodule Frobots.Assets.Scanner do
     :type,
     :max_range,
     :resolution,
-    :class
+    :class,
+    :special
   ]
 
   @doc false
   def changeset(scanner, attrs) do
     scanner
-    |> cast(attrs, @fields ++ [:image])
+    |> cast(attrs, @fields ++ [:image, :special])
     |> validate_required(@fields)
     |> unique_constraint([:type])
   end
