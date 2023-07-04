@@ -4,7 +4,6 @@ import {
   Card,
   Box,
   Typography,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -18,11 +17,7 @@ interface AdvancedDetailsProps {
 }
 
 export default (props: AdvancedDetailsProps) => {
-  const { frobotDetails, isOwnedFrobot, xFrameDetails } = props
-
-  const handleOpenBrainCode = () => {
-    window.location.href = `/garage/frobot/braincode?id=${frobotDetails.frobot_id}`
-  }
+  const { frobotDetails, xFrameDetails } = props
 
   return (
     <Grid item lg={4} md={6} sm={6} xs={12}>
@@ -111,26 +106,6 @@ export default (props: AdvancedDetailsProps) => {
                 </TableBody>
               </Table>
             </Box>
-          </Box>
-          <Box
-            sx={{
-              position: 'absolute',
-              left: '50%',
-              px: 4,
-              transform: 'translate(-50%, -50%)',
-              width: '100%',
-              bottom: 10,
-            }}
-          >
-            {isOwnedFrobot && (
-              <Button
-                variant={'outlined'}
-                fullWidth
-                onClick={handleOpenBrainCode}
-              >
-                View Brain Code
-              </Button>
-            )}
           </Box>
         </Box>
       </Card>

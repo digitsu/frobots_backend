@@ -22,6 +22,10 @@ export default (props: frobotDetailsProps) => {
     handleEditState,
   } = props
 
+  const handleOpenBrainCode = () => {
+    window.location.href = `/garage/frobot/braincode?id=${frobotDetails.frobot_id}`
+  }
+
   return (
     <Grid container mb={2} spacing={2}>
       <Grid item lg={4} md={12} sm={12} xs={12}>
@@ -75,77 +79,100 @@ export default (props: frobotDetailsProps) => {
             },
           }}
         >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              p: 4,
-            }}
-          >
-            {isOwnedFrobot && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  px: '13px',
-                  flexDirection: 'row-reverse',
-                }}
-              >
-                <EditOutlined
-                  fontSize="small"
-                  sx={{
-                    color: '#FFFFFF7E',
-                  }}
-                  onClick={() => handleEditState()}
-                />
-              </Box>
-            )}
-
-            <Typography variant="h6" component="h2" gutterBottom>
-              Name
-            </Typography>
-            <Typography variant="body1" gutterBottom mt={1}>
-              {frobotDetails.name}
-            </Typography>
-            <Typography variant="h6" gutterBottom mt={2}>
-              Hash
-            </Typography>
-            <Typography variant="body2" gutterBottom>
-              #{generateRandomString(31)}
-            </Typography>
-            <Typography variant="h6" gutterBottom mt={2}>
-              Xframe
-            </Typography>
-            <Box display={'flex'} alignItems={'baseline'}>
-              <Typography pr={2} variant="body2" gutterBottom>
-                {xFrameDetails?.equipment_type || '-'}
-              </Typography>
-              {frobotDetails.isBoost && (
-                <Button
-                  color="warning"
-                  size="small"
-                  style={{ fontSize: '12px', padding: '4px 8px' }}
-                >
-                  Boost
-                </Button>
-              )}
-            </Box>
-
-            <Typography variant="h6" gutterBottom>
-              Bio
-            </Typography>
+          <Box position={'unset'} height={'100%'}>
             <Box
               sx={{
-                height: 100,
-                overflowY: 'scroll',
-                '&::-webkit-scrollbar': { display: 'none' },
+                position: 'absolute',
+                top: 0,
+                bottom: 10,
+                left: 0,
+                right: 0,
+                p: 4,
+                height: '90%',
               }}
             >
-              <Typography variant="body2" gutterBottom>
-                {frobotDetails.bio || '-'}
+              {isOwnedFrobot && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    px: '13px',
+                    flexDirection: 'row-reverse',
+                  }}
+                >
+                  <EditOutlined
+                    fontSize="small"
+                    sx={{
+                      color: '#FFFFFF7E',
+                    }}
+                    onClick={() => handleEditState()}
+                  />
+                </Box>
+              )}
+
+              <Typography variant="h6" component="h2" gutterBottom>
+                Name
               </Typography>
+              <Typography variant="body1" gutterBottom mt={1}>
+                {frobotDetails.name}
+              </Typography>
+              <Typography variant="h6" gutterBottom mt={2}>
+                Hash
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                #{generateRandomString(31)}
+              </Typography>
+              <Typography variant="h6" gutterBottom mt={2}>
+                Xframe
+              </Typography>
+              <Box display={'flex'} alignItems={'baseline'}>
+                <Typography pr={2} variant="body2" gutterBottom>
+                  {xFrameDetails?.equipment_type || '-'}
+                </Typography>
+                {frobotDetails.isBoost && (
+                  <Button
+                    color="warning"
+                    size="small"
+                    style={{ fontSize: '12px', padding: '4px 8px' }}
+                  >
+                    Boost
+                  </Button>
+                )}
+              </Box>
+
+              <Typography variant="h6" gutterBottom>
+                Bio
+              </Typography>
+              <Box
+                sx={{
+                  height: 150,
+                  overflowY: 'scroll',
+                  '&::-webkit-scrollbar': { display: 'none' },
+                }}
+              >
+                <Typography variant="body2" gutterBottom>
+                  {frobotDetails.bio || '-'}
+                </Typography>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                position: 'absolute',
+                left: '50%',
+                px: 4,
+                transform: 'translate(-50%, -50%)',
+                width: '100%',
+                bottom: 10,
+              }}
+            >
+              {isOwnedFrobot && (
+                <Button
+                  variant={'outlined'}
+                  fullWidth
+                  onClick={handleOpenBrainCode}
+                >
+                  HACK BRAINCODE!
+                </Button>
+              )}
             </Box>
           </Box>
         </Card>
