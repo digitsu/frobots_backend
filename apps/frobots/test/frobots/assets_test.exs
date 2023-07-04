@@ -21,6 +21,7 @@ defmodule Frobots.AssetsTest do
       max_range: 700,
       resolution: 10,
       class: :scanner,
+      special: :active,
       image_path: "https://via.placeholder.com/50.png"
     }
 

@@ -37,7 +37,7 @@ defmodule Frobots.Assets.Scanner do
   @doc false
   def changeset(scanner, attrs) do
     scanner
-    |> cast(attrs, @fields ++ [:image, :special])
+    |> cast(attrs, @fields ++ [:image])
     |> validate_required(@fields)
     |> unique_constraint([:type])
   end
