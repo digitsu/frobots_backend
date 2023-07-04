@@ -119,7 +119,7 @@ export default () => {
 
   Blockly.Blocks['cannon_2'] = {
     init: function () {
-      this.appendDummyInput().appendField('Cannon 2')
+      this.appendDummyInput().appendField('Cannon')
       this.appendValueInput('degree').setCheck(null).appendField('degree')
       this.appendValueInput('range').setCheck(null).appendField('range')
       this.setOutput(true, null)
@@ -187,120 +187,6 @@ export default () => {
   luaGenerator['ylocation'] = function () {
     var code = 'loc_y()'
     return [code, luaGenerator.ORDER_ATOMIC]
-  }
-
-  /// multi
-  Blockly.Blocks['table_create'] = {
-    init: function () {
-      this.appendDummyInput().appendField('Create Table')
-      this.setOutput(true, 'Table')
-      this.setColour(260)
-      this.setTooltip('Creates a new table')
-      this.setHelpUrl('')
-    },
-  }
-  luaGenerator['table_create'] = function () {
-    var code = '{}'
-    return [code, luaGenerator.ORDER_ATOMIC]
-  }
-
-  Blockly.Blocks['insert_table_value'] = {
-    init: function () {
-      this.appendValueInput('TABLE')
-        .setCheck('Table')
-        .appendField('insert value into table')
-      this.appendValueInput('KEY').setCheck(null).appendField('at key')
-      this.appendValueInput('VALUE').setCheck(null).appendField('with value')
-      this.setPreviousStatement(true, null)
-      this.setNextStatement(true, null)
-      this.setColour(260)
-      this.setTooltip('Inserts a value into a table using a key')
-      this.setHelpUrl('')
-    },
-  }
-  luaGenerator['insert_table_value'] = function (block: any) {
-    var table =
-      luaGenerator.valueToCode(block, 'TABLE', luaGenerator.ORDER_ATOMIC) ||
-      '{}'
-    var key =
-      luaGenerator.valueToCode(block, 'KEY', luaGenerator.ORDER_ATOMIC) || '""'
-    var value =
-      luaGenerator.valueToCode(block, 'VALUE', luaGenerator.ORDER_ATOMIC) ||
-      '""'
-    var code = table + '[' + key + '] = ' + value + '\n'
-    return code
-  }
-
-  Blockly.Blocks['get_table_value'] = {
-    init: function () {
-      this.appendValueInput('TABLE')
-        .setCheck('Table')
-        .appendField('get value from table')
-      this.appendValueInput('KEY').setCheck(null).appendField('by key')
-      this.setOutput(true, null)
-      this.setColour(260)
-      this.setTooltip('Retrieves the value from a table using a key')
-      this.setHelpUrl('')
-    },
-  }
-  luaGenerator['get_table_value'] = function (block: any) {
-    var table =
-      luaGenerator.valueToCode(block, 'TABLE', luaGenerator.ORDER_ATOMIC) ||
-      '{}'
-    var key =
-      luaGenerator.valueToCode(block, 'KEY', luaGenerator.ORDER_ATOMIC) || '""'
-    var code = table + '[' + key + ']'
-    return [code, luaGenerator.ORDER_ATOMIC]
-  }
-
-  Blockly.Blocks['set_table_value'] = {
-    init: function () {
-      this.appendValueInput('TABLE')
-        .setCheck('Table')
-        .appendField('set value in table')
-      this.appendValueInput('KEY').setCheck(null).appendField('at key')
-      this.appendValueInput('VALUE').setCheck(null).appendField('to')
-      this.setPreviousStatement(true, null)
-      this.setNextStatement(true, null)
-      this.setColour(260)
-      this.setTooltip('Sets the value of a table at the specified key')
-      this.setHelpUrl('')
-    },
-  }
-  luaGenerator['set_table_value'] = function (block: any) {
-    var table =
-      luaGenerator.valueToCode(block, 'TABLE', luaGenerator.ORDER_ATOMIC) ||
-      '{}'
-    var key =
-      luaGenerator.valueToCode(block, 'KEY', luaGenerator.ORDER_ATOMIC) || '""'
-    var value =
-      luaGenerator.valueToCode(block, 'VALUE', luaGenerator.ORDER_ATOMIC) ||
-      '""'
-    var code = table + '[' + key + '] = ' + value + '\n'
-    return code
-  }
-
-  Blockly.Blocks['remove_table_value'] = {
-    init: function () {
-      this.appendValueInput('TABLE')
-        .setCheck('Table')
-        .appendField('remove value from table')
-      this.appendValueInput('KEY').setCheck(null).appendField('at key')
-      this.setPreviousStatement(true, null)
-      this.setNextStatement(true, null)
-      this.setColour(260)
-      this.setTooltip('Removes a value from a table at the specified key')
-      this.setHelpUrl('')
-    },
-  }
-  luaGenerator['remove_table_value'] = function (block: any) {
-    var table =
-      luaGenerator.valueToCode(block, 'TABLE', luaGenerator.ORDER_ATOMIC) ||
-      '{}'
-    var key =
-      luaGenerator.valueToCode(block, 'KEY', luaGenerator.ORDER_ATOMIC) || '""'
-    var code = table + '[' + key + '] = nil\n'
-    return code
   }
 
   Blockly.Blocks['math_atan2'] = {
@@ -535,4 +421,6 @@ export default () => {
 
     return code
   }
+
+  Blockly.Msg.LOGIC_NULL = "nil";
 }

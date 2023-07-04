@@ -19,6 +19,13 @@ export const MY_TOOLBOX = `
         </value>
       </block>
       <block type="controls_whileUntil"></block>
+      <block type="repeat_until" namae="repeat_until">
+        <value name="CONDITION">
+        <shadow type="logic_boolean">
+            <field name="BOOL">FALSE</field>
+          </shadow>
+        </value>
+      </block>
       <block type="controls_for">
         <value name="FROM">
           <shadow type="math_number">
@@ -318,13 +325,6 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
-    <category name="Table" colour="260">
-      <block type="table_create"></block>
-      <block type="insert_table_value"></block>
-      <block type="get_table_value"></block>
-      <block type="set_table_value"></block>
-      <block type="remove_table_value"></block>
-    </category>
     <category name="Objects" colour="210">
       <block type="set_object_property"></block>
       <block type="get_object_property"></block>
@@ -336,7 +336,7 @@ export const MY_TOOLBOX = `
       <block type="damage" name="damage"></block>
       <block type="drive" name="drive"></block>
       <block type="cannon" name="cannon"></block>
-      <block type="cannon_2" name="cannon_2"></block>
+      <block type="cannon_2" name="cannon"></block>
       <block type="scan" name="scan"></block>
       <block type="xlocation" name="xlocation"></block>
       <block type="ylocation" name="ylocation"></block>
@@ -345,13 +345,6 @@ export const MY_TOOLBOX = `
         <value name="SECONDS">
           <shadow type="math_number">
             <field name="NUM">1</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="repeat_until" namae="repeat_until">
-        <value name="CONDITION">
-        <shadow type="logic_boolean">
-            <field name="BOOL">FALSE</field>
           </shadow>
         </value>
       </block>
