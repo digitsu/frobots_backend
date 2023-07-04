@@ -12,7 +12,7 @@ xframes = [
     movement_type: :bipedal,
     max_throttle: 100,
     class: :xframe,
-    image: Api.get_s3_base_url() <> "images/equipment/chassis_mk1.png"},
+    image: "images/equipment/chassis_mk1.png"},
 
     %{type: :Chassis_Mk2,
     weapon_hardpoints: 2,
@@ -25,7 +25,7 @@ xframes = [
     movement_type: :bipedal,
     max_throttle: 100,
     class: :xframe,
-    image: Api.get_s3_base_url() <> "images/equipment/chassis_mk2.png"},
+    image: "images/equipment/chassis_mk2.png"},
 
     %{type: :Chassis_Mk3,
     weapon_hardpoints: 1,
@@ -38,7 +38,7 @@ xframes = [
     movement_type: :bipedal,
     max_throttle: 100,
     class: :xframe,
-    image: Api.get_s3_base_url() <> "images/equipment/chassis_mk3.png"}
+    image: "images/equipment/chassis_mk3.png"}
 ]
 
 for xframe <- xframes do
@@ -54,21 +54,21 @@ cannons = [
     rate_of_fire: 1,
     magazine_size: 2,
     class: :cannon,
-    image: Api.get_s3_base_url() <> "images/equipment/cannon_mk1.png"},
+    image: "images/equipment/cannon_mk1.png"},
 
   %{type: :Mk2,
     reload_time: 10,
     rate_of_fire: 2,
     magazine_size: 4,
     class: :cannon,
-    image: Api.get_s3_base_url() <> "images/equipment/cannon_mk2.png"},
+    image: "images/equipment/cannon_mk2.png"},
 
   %{type: :Mk3,
     reload_time: 15,
     rate_of_fire: 3,
     magazine_size: 9,
     class: :cannon,
-    image: Api.get_s3_base_url() <> "images/equipment/cannon_mk3.png"}
+    image: "images/equipment/cannon_mk3.png"}
 ]
 
 for cannon <- cannons do
@@ -87,7 +87,7 @@ missiles = [
     speed: 400,
     range: 900,
     class: :missile,
-    image: Api.get_s3_base_url() <> "images/equipment/missile_mk1.png"
+    image: "images/equipment/missile_mk1.png"
   },
   %{
     type: :Mk2,
@@ -97,7 +97,7 @@ missiles = [
     speed: 400,
     range: 300,
     class: :missile,
-    image: Api.get_s3_base_url() <> "images/equipment/missile_mk2.png"
+    image: "images/equipment/missile_mk2.png"
   }
 ]
 
@@ -114,19 +114,19 @@ scanners = [
     resolution: 10,
     special: :active,
     class: :scanner,
-    image: Api.get_s3_base_url() <> "images/equipment/scanner_mk1.png"},
+    image: "images/equipment/scanner_mk1.png"},
   %{type: :Mk2,
     max_range: 300,
     resolution: 15,
     special: :passive,
     class: :scanner,
-    image: Api.get_s3_base_url() <> "images/equipment/scanner_mk2.png"},
+    image: "images/equipment/scanner_mk2.png"},
   %{type: :Mk3,
     max_range: 500,
     resolution: 12,
     special: :passive,
     class: :scanner,
-    image: Api.get_s3_base_url() <> "images/equipment/scanner_mk3.png"}
+    image: "images/equipment/scanner_mk3.png"}
 ]
 
 for scanner <- scanners do
