@@ -51,7 +51,7 @@ defmodule Frobots.AssetsTest do
       sensor_hardpoints: 1,
       weapon_hardpoints: 1,
       cpu_hardpoints: 1,
-      movement_type: "tracks",
+      movement_type: :bipedal,
       max_health: 100,
       max_throttle: 100,
       accel_speed_mss: 5,
@@ -165,7 +165,7 @@ defmodule Frobots.AssetsTest do
 
       item = Enum.at(xframes, 0)
       assert item.type == :Chassis_Mk1
-      assert item.movement_type == :tracks
+      assert item.movement_type == :bipedal
     end
   end
 end

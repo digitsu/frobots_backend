@@ -21,7 +21,7 @@ defmodule Frobots.Assets.CannonInst do
     belongs_to :cannon, Frobots.Assets.Cannon
     belongs_to :frobot, Frobots.Assets.Frobot
     field :reload_time, :integer
-    field :rate_of_fire, :float
+    field :rate_of_fire, :integer
     field :magazine_size, :integer
     timestamps()
   end
