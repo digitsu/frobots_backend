@@ -381,6 +381,50 @@ export default () => {
     return [value_object + '.' + text_property, luaGenerator.ORDER_ATOMIC]
   }
 
+  Blockly.Blocks['change_object_property'] = {
+    init: function () {
+      this.appendDummyInput()
+        .appendField('change')
+        .appendField(new Blockly.FieldVariable('state'), 'object')
+        .appendField('.')
+        .appendField(new Blockly.FieldTextInput('property'), 'property')
+        .appendField('using')
+      this.appendDummyInput()
+        .appendField(
+          new Blockly.FieldDropdown([
+            ['+', '+'],
+            ['-', '-'],
+            ['*', '*'],
+            ['/', '/'],
+            ['%', '%'],
+          ]),
+          'operator'
+        )
+        .appendField('by')
+      this.appendValueInput('value').setCheck('Number')
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setColour(210)
+      this.setTooltip('Arithmetic operation on an object property')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator['change_object_property'] = function (block: any) {
+    var objectName = luaGenerator.nameDB_.getName(
+      block.getFieldValue('object'),
+      Blockly.VARIABLE_CATEGORY_NAME
+    )
+    var objectProperty = block.getFieldValue('property')
+    var operator = block.getFieldValue('operator')
+    var changeValue = luaGenerator.valueToCode(
+      block,
+      'value',
+      luaGenerator.ORDER_ATOMIC
+    )
+
+    return `${objectName}.${objectProperty} = ${objectName}.${objectProperty} ${operator} ${changeValue}\n`
+  }
+
   Blockly.Blocks['set_variable_type'] = {
     init: function () {
       this.appendDummyInput()

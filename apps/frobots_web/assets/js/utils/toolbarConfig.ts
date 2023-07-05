@@ -328,6 +328,13 @@ export const MY_TOOLBOX = `
     <category name="Objects" colour="210">
       <block type="set_object_property"></block>
       <block type="get_object_property"></block>
+      <block type="change_object_property">
+        <value name="value">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
     </category>
     <category name="Frobot Functions" colour="20">
       <block type="frobot" name="frobot"></block>
