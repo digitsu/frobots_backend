@@ -246,7 +246,7 @@ export default (props: any) => {
                 >
                   <Tab
                     sx={{ color: '#fff' }}
-                    label="Blockly Editor"
+                    label="Block Editor"
                     {...a11yProps(0)}
                   />
                   <Tab
