@@ -79,8 +79,7 @@ defmodule FrobotsWeb.Simulator do
          state
          |> Map.put(:frobots_map, frobots_map)
          |> Map.put(:match_id, match_id)
-         |> Map.put(:match_channel, match_channel)
-        }
+         |> Map.put(:match_channel, match_channel)}
 
       {:error, error} ->
         {:reply, {:error, error}, state}
