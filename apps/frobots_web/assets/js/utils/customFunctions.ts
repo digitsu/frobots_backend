@@ -317,11 +317,11 @@ export default () => {
   // }
 
   // luaGenerator['create_object'] = function (block) {
-  //   var variable_object = luaGenerator.variableDB_.getName(
+  //   var variable_object = luaGenerator.nameDB_.getName(
   //     block.getFieldValue('object'),
   //     Blockly.Variables.NAME_TYPE
   //   )
-  //   return variable_object + ' = {};\n'
+  //   return variable_object + ' = {}\n'
   // }
 
   Blockly.Blocks['set_object_property'] = {
@@ -341,7 +341,7 @@ export default () => {
     },
   }
 
-  luaGenerator['set_object_property'] = function (block) {
+  luaGenerator['set_object_property'] = function (block: any) {
     var value_object = luaGenerator.valueToCode(
       block,
       'object',
@@ -354,7 +354,7 @@ export default () => {
       luaGenerator.ORDER_ATOMIC
     )
 
-    return value_object + '.' + text_property + ' = ' + value_value + ';\n'
+    return value_object + '.' + text_property + ' = ' + value_value + '\n'
   }
 
   Blockly.Blocks['get_object_property'] = {
@@ -370,7 +370,7 @@ export default () => {
     },
   }
 
-  luaGenerator['get_object_property'] = function (block) {
+  luaGenerator['get_object_property'] = function (block: any) {
     var value_object = luaGenerator.valueToCode(
       block,
       'object',
@@ -379,6 +379,50 @@ export default () => {
     var text_property = block.getFieldValue('property')
 
     return [value_object + '.' + text_property, luaGenerator.ORDER_ATOMIC]
+  }
+
+  Blockly.Blocks['change_object_property'] = {
+    init: function () {
+      this.appendDummyInput()
+        .appendField('change')
+        .appendField(new Blockly.FieldVariable('state'), 'object')
+        .appendField('.')
+        .appendField(new Blockly.FieldTextInput('property'), 'property')
+        .appendField('using')
+      this.appendDummyInput()
+        .appendField(
+          new Blockly.FieldDropdown([
+            ['+', '+'],
+            ['-', '-'],
+            ['*', '*'],
+            ['/', '/'],
+            ['%', '%'],
+          ]),
+          'operator'
+        )
+        .appendField('by')
+      this.appendValueInput('value').setCheck('Number')
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setColour(210)
+      this.setTooltip('Arithmetic operation on an object property')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator['change_object_property'] = function (block: any) {
+    var objectName = luaGenerator.nameDB_.getName(
+      block.getFieldValue('object'),
+      Blockly.VARIABLE_CATEGORY_NAME
+    )
+    var objectProperty = block.getFieldValue('property')
+    var operator = block.getFieldValue('operator')
+    var changeValue = luaGenerator.valueToCode(
+      block,
+      'value',
+      luaGenerator.ORDER_ATOMIC
+    )
+
+    return `${objectName}.${objectProperty} = ${objectName}.${objectProperty} ${operator} ${changeValue}\n`
   }
 
   Blockly.Blocks['set_variable_type'] = {
@@ -402,8 +446,8 @@ export default () => {
     },
   }
 
-  luaGenerator['set_variable_type'] = function (block) {
-    var variable = luaGenerator.variableDB_.getName(
+  luaGenerator['set_variable_type'] = function (block: any) {
+    var variable = luaGenerator.nameDB_.getName(
       block.getFieldValue('VAR'),
       Blockly.VARIABLE_CATEGORY_NAME
     )
@@ -414,9 +458,9 @@ export default () => {
 
     var code = ''
     if (type === 'local') {
-      code += 'local ' + variable + ' = ' + value + ';\n'
+      code += 'local ' + variable + ' = ' + value + '\n'
     } else if (type === 'global') {
-      code += variable + ' = ' + value + ';\n'
+      code += variable + ' = ' + value + '\n'
     }
 
     return code
