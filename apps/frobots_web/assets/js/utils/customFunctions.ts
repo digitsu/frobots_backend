@@ -303,6 +303,45 @@ export default () => {
     return code
   }
 
+  Blockly.Blocks['set_cannon'] = {
+    init: function () {
+      this.appendValueInput('cannon_id')
+        .setCheck('Number')
+        .appendField('Set cannon')
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setColour(230)
+      this.setTooltip('')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator['set_cannon'] = function (block: any) {
+    const cannon_id =
+      luaGenerator.valueToCode(block, 'cannon_id', luaGenerator.ORDER_NONE) || 0
+    var code = `set_cannon(${cannon_id})\n`
+    return code
+  }
+
+  Blockly.Blocks['set_scanner'] = {
+    init: function () {
+      this.appendValueInput('scanner_id')
+        .setCheck('Number')
+        .appendField('Set scanner')
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setColour(230)
+      this.setTooltip('')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator['set_scanner'] = function (block: any) {
+    const scanner_id =
+      luaGenerator.valueToCode(block, 'scanner_id', luaGenerator.ORDER_NONE) ||
+      0
+    var code = `set_scanner(${scanner_id})\n`
+    return code
+  }
+
   // Blockly.Blocks['create_object'] = {
   //   init: function () {
   //     this.appendDummyInput()

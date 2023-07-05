@@ -345,6 +345,20 @@ export const MY_TOOLBOX = `
       <block type="cannon" name="cannon"></block>
       <block type="cannon_2" name="cannon"></block>
       <block type="scan" name="scan"></block>
+      <block type="set_cannon" name="set_cannon">
+        <value name="cannon_id">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="set_scanner" name="set_scanner">
+        <value name="scanner_id">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
       <block type="xlocation" name="xlocation"></block>
       <block type="ylocation" name="ylocation"></block>
       <block type="os_time" name="os_time"></block>
