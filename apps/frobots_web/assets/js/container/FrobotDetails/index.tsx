@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box } from '@mui/material'
+import { Box, Container } from '@mui/material'
 import AttachedEquipments from './AttachedEquipments'
 import BattlesTable from './BattlesTable'
 import FrobotDetailsContainer from './FrobotDetailsContainer'
@@ -61,32 +61,34 @@ export default (props: FrobotDetailsProps) => {
                 paddingLeft: isOwnedFrobot ? 1.5 : 0,
               }}
             >
-              <FrobotDetailsContainer
-                frobotDetails={frobotDetails}
-                currentUser={currentUser}
-                isOwnedFrobot={isOwnedFrobot}
-                imageBaseUrl={s3_base_url}
-                xFrameDetails={
-                  frobotDetails?.xframe_inst
-                    ? frobotDetails?.xframe_inst[0]
-                    : undefined
-                }
-                handleEditState={updateEditState}
-              />
-
-              {frobotDetails.class === 'U' && (
-                <AttachedEquipments
-                  equipments={[
-                    ...frobotDetails.cannon_inst,
-                    ...frobotDetails.scanner_inst,
-                  ]}
+              <Container sx={{ maxWidth: 1440 }}>
+                <FrobotDetailsContainer
+                  frobotDetails={frobotDetails}
+                  currentUser={currentUser}
                   isOwnedFrobot={isOwnedFrobot}
-                  frobotId={frobotId}
                   imageBaseUrl={s3_base_url}
+                  xFrameDetails={
+                    frobotDetails?.xframe_inst
+                      ? frobotDetails?.xframe_inst[0]
+                      : undefined
+                  }
+                  handleEditState={updateEditState}
                 />
-              )}
 
-              <BattlesTable {...props} />
+                {frobotDetails.class === 'U' && (
+                  <AttachedEquipments
+                    equipments={[
+                      ...frobotDetails.cannon_inst,
+                      ...frobotDetails.scanner_inst,
+                    ]}
+                    isOwnedFrobot={isOwnedFrobot}
+                    frobotId={frobotId}
+                    imageBaseUrl={s3_base_url}
+                  />
+                )}
+
+                <BattlesTable {...props} />
+              </Container>
             </Box>
           </Box>
         )}
