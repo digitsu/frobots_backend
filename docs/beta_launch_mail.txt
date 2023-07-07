@@ -1,0 +1,33 @@
+Welcome Beta Testers!
+
+It has been a long road, pocked with many obstacles, but we are finally ready to begin beta testing. We are looking for a few good testers to help us work out the kinks and make sure that the game is ready for beta release.  You are early adopters, interested coders, gamers, or just love the idea of battling robots in virtual arenas.  But you stuck with us.  And for that myself and the team are eternally grateful.
+
+With the beta release, the following features are now supported
+
+1) Block Editor programming.  You can now program your own blocks and use them in your robots.  We have a few examples in the game, but we are looking forward to seeing what you come up with.  This is great for people who don't really wish to learn how to program by typing out long form text.
+2) Multiplayer.  You can now battle your friends in the arena.  We have a few arenas to choose from, and we are looking forward to adding more.  We have a few game modes, but we are looking forward to adding more.
+3) Single Player.  You can now battle the AI in the arena.  We have a few arenas to choose from, and we are looking forward to adding more.
+4) Equipment.  Your FROBOT now has access to and is able to equippe different xframes (bodies), weapons, and sensors.  This allows for different varieties in strategies.
+
+Future Features
+
+5) Tokenization. We want to allow your FROBOTS to be freely tradable on the marketplace, along with equipment.
+6) More Arenas.  We want to add more arenas to the game, and we want to allow you to create your own arenas.
+7) More Game Modes.  We want to add more game modes to the game, such as team battles
+8) More Equipment.  We want to add more equipment to the game, such as different types of weapons and sensors.
+9) Arena walls.  We want to add walls to the arena, so that you can use them to your advantage.
+10) Arena editor.  We want to allow you to create your own arenas.
+11) Badges and achievements.  We want to add badges and achievements to the game, so that you can show off your accomplishments and those of your FROBOTs.
+
+
+Also, we want to eventually move the rendering engine to Unity, where we can explore different visualization options, such as 3D.
+
+THE FINE PRINT:
+
+As part of this initial beta release, there will likely be bugs.  There will likely be UIs which don't work well.  We are looking for your feedback.  We are looking for your suggestions.  We are looking for your bug reports.  We are looking for your help in making this game the best it can be.  For your trouble, we will be awarding beta users and FROBOTs some special swag, so that your FROBOT will be unique and special, and known to all as one of the original batch of FROBOTS.  More details to come.
+
+We are also looking for your help in spreading the word.  We want to get as many people as possible to play the game, so that we can get as much feedback as possible.  We want to make this game the best it can be, and we need your help to do it.
+
+Thank you for your support.  We look forward to seeing you in the arena.
+
+DIGITSU 
