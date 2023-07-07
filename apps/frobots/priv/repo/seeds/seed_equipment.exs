@@ -1,4 +1,4 @@
-alias Frobots.{Assets, Api}
+alias Frobots.Assets
 
 xframes = [
   %{type: :Chassis_Mk1,
