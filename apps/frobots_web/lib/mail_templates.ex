@@ -48,7 +48,7 @@ defmodule FrobotsWeb.MailTemplates do
                       <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
                         <tr>
                           <td style="padding:0;color:#70ff00;">
-                            <h1 style="font-size:24px;margin:0 0 20px 0;">Greetings Beta Test coder recruits!</h1>
+                            <h1 style="font-size:24px;margin:0 0 20px 0;">Greetings Beta recruits!</h1>
 
                             <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;">Thank you for your interest in FROBOTs! (Fighting-ROBOTS)</p><br/>
 
