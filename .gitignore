@@ -38,7 +38,7 @@ apps/frobots_web/priv/static/
 
 # any csv
 *.csv
-*.txt
+#*.txt
 
 # do not keep the env secrets in repo
 .env
