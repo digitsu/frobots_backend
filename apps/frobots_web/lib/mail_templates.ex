@@ -124,8 +124,8 @@ defmodule FrobotsWeb.MailTemplates do
 
   def beta_launch_mail_template() do
     """
-     <!DOCTYPE html>
-        <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+      <!DOCTYPE html>
+      <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -133,10 +133,19 @@ defmodule FrobotsWeb.MailTemplates do
           <title></title>
           <style>
             table, td, div, h1, p {font-family: Arial, sans-serif;}
+            .ghost-button {
+              display: inline-block;
+              width: 250px;
+              padding: 8px;
+              color: #70ff00;
+              border: 2px solid #70ff00;
+              text-align: center;
+              outline: none;
+              text-decoration: none;
+            }
           </style>
         </head>
         <body style="background:#000;color:#70ff00;margin:0;padding:0;font-family: 'Courier', 'Courier New’, monospace">
-
           <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#000;">
             <tr>
               <td align="center" style="padding:0;">
@@ -147,7 +156,7 @@ defmodule FrobotsWeb.MailTemplates do
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding:10px 30px 0 30px;">
+                    <td style="padding:10px 20px 0 20px;">
                       <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;">
                         <tr>
                           <td style="padding:0;color:#70ff00;">
@@ -158,22 +167,11 @@ defmodule FrobotsWeb.MailTemplates do
                             <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;">With the beta release, the following features are now supported</p>
                             <p style="margin:0;font-size:16px;line-height:24px;">
                               <ol dir="ltr">
-                                <li>&nbsp;Block Editor programming.&nbsp; You can now program your own blocks and use them in your
-                                  robots.&nbsp; We
-                                  have a few examples in the game, but we are looking forward to seeing what you come up with.&nbsp; This is
-                                  great for
-                                  people who don't really wish to learn how to program by typing out long form text.<br></li>
-                                <li>Multiplayer.&nbsp; You can now battle your friends in the arena.&nbsp; We have a few arenas to choose
-                                  from, and we
-                                  are looking forward to adding more.&nbsp; We have a few game modes, but we are looking forward to adding
-                                  more.<br>
+                                <li>&nbsp;Block Editor programming.&nbsp; You can now program your own blocks and use them in your robots.&nbsp; We have a few examples in the game, but we are looking forward to seeing what you come up with.&nbsp; This is great for people who don't really wish to learn how to program by typing out long form text.<br></li>
+                                <li>Multiplayer.&nbsp; You can now battle your friends in the arena.&nbsp; We have a few arenas to choose from, and we are looking forward to adding more.&nbsp; We have a few game modes, but we are looking forward to adding more.<br>
                                 </li>
-                                <li>Single Player.&nbsp; You can now battle the AI in the arena.&nbsp; We have a few arenas to choose from,
-                                  and we are
-                                  looking forward to adding more.<br></li>
-                                <li>Equipment.&nbsp; Your FROBOT now has access to and is able to equippe&nbsp;different xframes (bodies),
-                                  weapons,
-                                  and sensors.&nbsp; This allows for different varieties in strategies.<br></li>
+                                <li>Single Player.&nbsp; You can now battle the AI in the arena.&nbsp; We have a few arenas to choose from, and we are looking forward to adding more.<br></li>
+                                <li>Equipment.&nbsp; Your FROBOT now has access to and is able to equippe&nbsp;different xframes (bodies), weapons, and sensors.&nbsp; This allows for different varieties in strategies.<br></li>
                               </ol>
                             </p><br />
 
@@ -181,47 +179,26 @@ defmodule FrobotsWeb.MailTemplates do
 
                             <p style="margin:0;font-size:16px;line-height:24px;">
                               <ol dir="ltr">
-                                <li>Tokenization. We want to allow your FROBOTS to be freely tradable on the marketplace, along with
-                                  equipment.<br>
-                                </li>
-                                <li>More Arenas.&nbsp; We want to add more arenas to the game, and we want to allow you to create your own
-                                  arenas.<br>
-                                </li>
-                                <li>More Game Modes.&nbsp; We want to
-                                  add more game modes to the game, such as team battles<br></li>
-                                <li>More Equipment.&nbsp; We want to add more equipment to the game, such as different types of weapons and
-                                  sensors.<br></li>
-                                <li>Arena walls.&nbsp; We want to add
-                                  walls to the arena, so that you can use them to your advantage.<br></li>
+                                <li>Tokenization. We want to allow your FROBOTS to be freely tradable on the marketplace, along with equipment.<br> </li>
+                                <li>More Arenas.&nbsp; We want to add more arenas to the game, and we want to allow you to create your own arenas.<br></li>
+                                <li>More Game Modes.&nbsp; We want to add more game modes to the game, such as team battles<br></li>
+                                <li>More Equipment.&nbsp; We want to add more equipment to the game, such as different types of weapons and sensors.<br></li>
+                                <li>Arena walls.&nbsp; We want to add walls to the arena, so that you can use them to your advantage.<br></li>
                                 <li>Arena editor.&nbsp; We want to allow you to create your own arenas.<br></li>
-                                <li>Badges and achievements.&nbsp; We want to add badges and achievements to the game, so that you can show
-                                  off your
-                                  accomplishments and those of your FROBOTs.<br></li>
+                                <li>Badges and achievements.&nbsp; We want to add badges and achievements to the game, so that you can show off your accomplishments and those of your FROBOTs.<br></li>
                               </ol>
                             </p><br />
-                            <p style="margin:0;font-size:16px;line-height:24px;">Also, we want to eventually move the rendering engine to Unity, where we can explore different
-                            visualization
-                            options, such as 3D.</p><br />
+                            <p style="margin:0;font-size:16px;line-height:24px;">
+                              Also, we want to eventually move the rendering engine to Unity, where we can explore different visualization options, such as 3D.
+                            </p><br />
 
                             <p style="margin:0;font-size:16px;line-height:24px;">THE FINE PRINT:</p><br />
                             <p style="margin:0;font-size:16px;line-height:24px;">
-                            As part of this initial beta release, there will likely be bugs.&nbsp; There will likely be UIs which
-                            don't work
-                            well.&nbsp; We are looking for your feedback.&nbsp; We are looking for your suggestions.&nbsp; We are
-                            looking for your
-                            bug reports.&nbsp; We are looking for your help in making this game the best it can be.&nbsp; For your
-                            trouble, we
-                            will be awarding beta users and FROBOTs some special swag, so that your FROBOT will be unique and special,
-                            and known
-                            to all as one of the original batch of FROBOTS.&nbsp; More details to come.<br>
+                              As part of this initial beta release, there will likely be bugs.&nbsp; There will likely be UIs which don't work well.&nbsp; We are looking for your feedback.&nbsp; We are looking for your suggestions.&nbsp; We are looking for your bug reports.&nbsp; We are looking for your help in making this game the best it can be.&nbsp; For your trouble, we will be awarding beta users and FROBOTs some special swag, so that your FROBOT will be unique and special, and known to all as one of the original batch of FROBOTS.&nbsp; More details to come.<br>
                             </p><br />
 
                             <p style="margin:0;font-size:16px;line-height:24px;">
-                            We are also looking for your help in spreading the word.&nbsp; We want to get as many people as possible
-                            to play
-                            the game, so that we can get as much feedback as possible.&nbsp; We want to make this game the best it can
-                            be, and we
-                            need your help to do it.
+                              We are also looking for your help in spreading the word.&nbsp; We want to get as many people as possible to play the game, so that we can get as much feedback as possible.&nbsp; We want to make this game the best it can be, and we need your help to do it.
                             </p><br />
 
                             <p style="margin:0;font-size:16px;line-height:24px;">Thank you for your support.&nbsp; We look forward to seeing you in the arena.</p><br />
@@ -237,11 +214,11 @@ defmodule FrobotsWeb.MailTemplates do
                   <tr>
                     <td style="padding:20px;background:#000;">
                       <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;font-size:9px;">
-                        <tr>
                           <td style="padding:0;width:100%;" align="center">
-                            <p style="margin:0;font-size:20px;line-height:16px;color:#000;">
-                                <a href="https://discord.gg/dSn3JzFExu" style="display: inline-block;width:150px !important;padding:8px;color:#000 !important;background-color:#70ff00 !important;border-width:1px !important;border-style:solid !important;border-color:#70ff00 !important;text-align:center;outline:none;text-decoration:none !important;}">Join on Discord</a> |
-                            </p>
+                              <p style="margin:0;font-size:20px;line-height:16px;color:#000;">
+                                <a href="https://discord.gg/dSn3JzFExu" class="ghost-button">Join us on Discord</a>
+                                <a href="https://internal.frobots.io/users/log_in" class="ghost-button">Login to Beta program</a>
+                              </p>
                           </td>
                         </tr>
                       </table>
