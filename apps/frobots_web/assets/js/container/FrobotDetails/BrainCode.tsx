@@ -21,10 +21,10 @@ import * as PIXI from 'pixi.js'
 import Popup from '../../components/Popup'
 import {
   BrainCodeCopyPromptDescription,
+  SaveBlockCodePromptDescription,
   SaveBrainCodePromptDescription,
 } from '../../mock/texts'
 import SaveIcon from '@mui/icons-material/Save'
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 
 const BlankBlocklyCode =
@@ -121,6 +121,14 @@ export default (props: any) => {
   const handleCopyConfirm = () => {
     setLuaCode(blocklyLuaCode)
     setShowCopyPrompt(false)
+  }
+
+  const handleSaveCode = () => {
+    if (blocklyLuaCode === luaCode) {
+      saveConfig()
+    } else {
+      setShowSaveCodePrompt(true)
+    }
   }
 
   const handleRunSimulation = () => {
@@ -259,12 +267,12 @@ export default (props: any) => {
               <Box display={'flex'} flex={6} mb={1} alignItems={'center'}>
                 {isOwnFrobot && (
                   <>
-                    <Tooltip title={'Save Frobot'}>
+                    <Tooltip title={'Save Brain code'}>
                       <Button
                         variant="outlined"
                         color="inherit"
                         size="small"
-                        onClick={() => setShowSaveCodePrompt(true)}
+                        onClick={handleSaveCode}
                         sx={{ p: 1 }}
                       >
                         <SaveIcon />
@@ -277,7 +285,11 @@ export default (props: any) => {
                       successLabel={'Confirm'}
                       cancelLabel={'Cancel'}
                       label={'Warning'}
-                      description={SaveBrainCodePromptDescription}
+                      description={
+                        tabIndex === 0
+                          ? SaveBlockCodePromptDescription
+                          : SaveBrainCodePromptDescription
+                      }
                     />
                   </>
                 )}{' '}
@@ -328,13 +340,13 @@ export default (props: any) => {
                     </Tooltip>
                   )}{' '}
                   {tabIndex === 0 && (
-                    <Tooltip title={'Transfer Brain Code'}>
+                    <Tooltip title={'Sync Brain Code'}>
                       <Button
                         onClick={() => setShowCopyPrompt(true)}
                         variant="contained"
                         color="inherit"
                       >
-                        <CompareArrowsIcon />
+                        Sync
                       </Button>
                     </Tooltip>
                   )}
@@ -345,7 +357,7 @@ export default (props: any) => {
                   successAction={handleCopyConfirm}
                   successLabel={'Confirm'}
                   cancelLabel={'Cancel'}
-                  label={''}
+                  label={'Warning'}
                   description={BrainCodeCopyPromptDescription}
                 />
               </Box>
@@ -354,14 +366,14 @@ export default (props: any) => {
           {
             <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
               <Grid container>
-                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
                   <BlocklyEditor
                     defaultXml={blocklyCode}
                     setXmlText={setXmlText}
                     workspaceDidChange={workspaceDidChange}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
                   <LuaEditor
                     luaCode={blocklyLuaCode}
                     onEditorChange={() => {}}
