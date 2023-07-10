@@ -9,7 +9,6 @@ import LuaEditor from '../Garage/LuaEditor'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
 import Popup from '../../components/Popup'
 import { CreateFrobotBrainCodeCopyPromptDescription } from '../../mock/texts'
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 
 export default () => {
   const { brainCode, blocklyCode: blocklyCodeStore } = useSelector(
@@ -123,13 +122,13 @@ export default () => {
               <Box>
                 {tabIndex === 0 && (
                   <>
-                    <Tooltip title={'Transfer Brain Code'}>
+                    <Tooltip title={'Sync Brain Code'}>
                       <Button
                         onClick={() => setShowCopyPrompt(true)}
                         variant="contained"
                         color="inherit"
                       >
-                        <CompareArrowsIcon />
+                        Sync
                       </Button>
                     </Tooltip>
                     <Popup
@@ -138,7 +137,7 @@ export default () => {
                       successAction={handleCopyConfirm}
                       successLabel={'Confirm'}
                       cancelLabel={'Cancel'}
-                      label={''}
+                      label={'Warning'}
                       description={CreateFrobotBrainCodeCopyPromptDescription}
                     />
                   </>
@@ -149,14 +148,14 @@ export default () => {
           {
             <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
               <Grid container>
-                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
                   <BlocklyEditor
                     defaultXml={blocklyCodeStore}
                     setXmlText={setXmlText}
                     workspaceDidChange={workspaceDidChange}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
                   <LuaEditor luaCode={luaCode} onEditorChange={() => {}} />
                 </Grid>
               </Grid>
