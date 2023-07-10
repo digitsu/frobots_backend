@@ -41,7 +41,7 @@ defmodule Frobots.Assets.MissileInst do
   @doc false
   def changeset(missile, attrs) do
     missile
-    |> cast(attrs, @fields ++ [:frobot_id])
+    |> cast(attrs, @fields ++ [:user_id, :missile_id, :frobot_id])
     |> validate_required(@fields)
   end
 end

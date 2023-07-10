@@ -32,7 +32,7 @@ defmodule Frobots.Assets.ScannerInst do
   @doc false
   def changeset(scanner, attrs) do
     scanner
-    |> cast(attrs, @fields ++ [:frobot_id])
+    |> cast(attrs, @fields ++ [:user_id, :scanner_id, :frobot_id])
     |> validate_required(@fields)
   end
 end
