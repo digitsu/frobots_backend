@@ -1,4 +1,7 @@
 defmodule Frobots.GlobalStats do
+  @moduledoc """
+  The GlobalStats context.
+  """
   @derive {Jason.Encoder,
            only: [
              :matches_played,

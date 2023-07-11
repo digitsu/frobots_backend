@@ -1,4 +1,7 @@
 defmodule Frobots.Events.Slot do
+  @moduledoc """
+  The Slot context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

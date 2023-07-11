@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.Missile do
+  @moduledoc """
+  The Missile context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor
@@ -33,7 +36,8 @@ defmodule Frobots.Assets.Missile do
     :damage_near,
     :damage_far,
     :speed,
-    :range
+    :range,
+    :class
   ]
 
   @doc false

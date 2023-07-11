@@ -30,7 +30,7 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
   def handle_event("react.fetch_user_frobots", _params, socket) do
     current_user = socket.assigns.current_user
 
-    currentUser = %{
+    current_user = %{
       "id" => current_user.id,
       "avatar" => current_user.avatar,
       "email" => current_user.email,
@@ -40,7 +40,7 @@ defmodule FrobotsWeb.GarageFrobotsListLive.Index do
 
     {:noreply,
      push_event(socket, "react.return_user_frobots", %{
-       "currentUser" => currentUser,
+       "currentUser" => current_user,
        "s3_base_url" => socket.assigns.s3_base_url,
        "frobotList" => extract_frobots(socket.assigns.user_frobots)
      })}

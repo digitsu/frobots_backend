@@ -1,4 +1,7 @@
 defmodule Frobots.Equipment do
+  @moduledoc """
+  The Equipment context.
+  """
   import Ecto.Query, warn: false
   alias Frobots.Repo
 
@@ -7,10 +10,12 @@ defmodule Frobots.Equipment do
     MissileInst,
     ScannerInst,
     CannonInst,
+    CpuInst,
     Xframe,
     Cannon,
     Scanner,
-    Missile
+    Missile,
+    Cpu
   }
 
   alias Frobots.Accounts
@@ -50,6 +55,10 @@ defmodule Frobots.Equipment do
     _get_inst_module("xframe")
   end
 
+  defp _get_inst_module(%CpuInst{}) do
+    _get_inst_module("Cpu")
+  end
+
   defp _get_inst_module(equipment_class) do
     String.to_existing_atom(
       "Elixir.Frobots.Assets." <> String.capitalize(equipment_class) <> "Inst"
@@ -72,6 +81,10 @@ defmodule Frobots.Equipment do
     _get_inst_schema("xframe")
   end
 
+  defp _get_inst_schema(%CpuInst{}) do
+    _get_inst_schema("Cpu")
+  end
+
   defp _get_inst_schema(equipment_class) do
     String.to_existing_atom(String.downcase(equipment_class) <> "_inst")
   end
@@ -91,6 +104,8 @@ defmodule Frobots.Equipment do
   def list_scanners(), do: Repo.all(Scanner)
 
   def list_missiles(), do: Repo.all(Missile)
+
+  def list_cpus(), do: Repo.all(Cpu)
 
   @doc ~S"""
   EQUIPMENT INTERFACE APIs
@@ -321,11 +336,31 @@ defmodule Frobots.Equipment do
         }
       )
 
+    cpu_q =
+      from(c in CpuInst,
+        join: detail in Cpu,
+        as: :cpu,
+        on: c.cpu_id == detail.id,
+        left_join: f in "frobots",
+        on: f.id == c.frobot_id,
+        where: c.user_id == ^user_id,
+        select: %{
+          "id" => c.id,
+          "cpu_id" => c.cpu_id,
+          "frobot_id" => c.frobot_id,
+          "frobot_name" => f.name,
+          "cycletime" => detail.cycletime,
+          "cpu_cycle_buffer" => detail.cpu_cycle_buffer,
+          "overload_penalty" => detail.overload_penalty
+        }
+      )
+
     %{
       "xframes" => Repo.all(xframe_q),
       "missiles" => Repo.all(missile_q),
       "scanners" => Repo.all(scanner_q),
-      "cannons" => Repo.all(cannon_q)
+      "cannons" => Repo.all(cannon_q),
+      "cpus" => Repo.all(cpu_q)
     }
   end
 
@@ -651,6 +686,17 @@ defmodule Frobots.Equipment do
     |> Ecto.Changeset.put_assoc(:frobot, current_frobot)
   end
 
+  def equip_cpu_changeset(cpu_inst_id, frobot_id) do
+    inst_module = _get_inst_module("Cpu")
+
+    # get xframeInst
+    current_frobot = Assets.get_frobot(frobot_id)
+    cpu = get_equipment("Cpu", cpu_inst_id) |> Repo.preload(:frobot)
+
+    inst_module.changeset(cpu, %{})
+    |> Ecto.Changeset.put_assoc(:frobot, current_frobot)
+  end
+
   # equip part changeset - called by equip_part
   def equip_part_changeset(equipment_instance_id, frobot_id, equipment_class) do
     inst_module = _get_inst_module(equipment_class)
@@ -661,7 +707,9 @@ defmodule Frobots.Equipment do
     xframe_class =
       from(xf in Frobots.Assets.Xframe, where: xf.id == ^xframe.xframe_id) |> Repo.one()
 
-    if !is_nil(xframe_class) do
+    if is_nil(xframe_class) do
+      {:error, "Xframe needs to be installed first"}
+    else
       # now check how many scanner and weapon endpoints are on xframe
       max_sensor_hardpoints = xframe_class.sensor_hardpoints
       max_weapon_endpoints = xframe_class.weapon_hardpoints
@@ -686,8 +734,6 @@ defmodule Frobots.Equipment do
           inst_module
         )
       end
-    else
-      {:error, "Xframe needs to be installed first"}
     end
   end
 

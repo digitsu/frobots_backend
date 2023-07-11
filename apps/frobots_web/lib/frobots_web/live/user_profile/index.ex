@@ -44,7 +44,7 @@ defmodule FrobotsWeb.UserProfileLive.Index do
 
   def handle_event("react.update_user_details", params, socket) do
     case Accounts.update_profile(socket.assigns.user, params) do
-      {:ok, _updatedUser} ->
+      {:ok, _updated_user} ->
         {:noreply,
          socket
          |> put_flash(:info, "User details updated successfully")

@@ -98,8 +98,9 @@ config :logger,
 # format: {Fubars.LogFormatter, :format}
 # metadata: [:request_id]
 
-config :logger, :ui_event,
+config :logger, :ui_events,
   level: :info,
+  format: "$time $metadata[$level] $message\n",
   metadata: :evt_type
 
 config :logger, :file_log,
@@ -111,7 +112,7 @@ config :logger, :file_log,
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id],
+  metadata: [:request_id, :evt_type],
   level: :info
 
 # Use Jason for JSON parsing in Phoenix

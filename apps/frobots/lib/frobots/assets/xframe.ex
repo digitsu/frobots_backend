@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.Xframe do
+  @moduledoc """
+  The Xframe context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor
@@ -32,6 +35,7 @@ defmodule Frobots.Assets.Xframe do
     field(:image, :string, default: "https://via.placeholder.com/50.png")
     has_many(:xframe_inst, Frobots.Assets.XframeInst)
     field(:class, Ecto.Enum, values: ~w(xframe)a)
+
     timestamps()
   end
 
@@ -41,10 +45,12 @@ defmodule Frobots.Assets.Xframe do
     :turn_speed,
     :sensor_hardpoints,
     :weapon_hardpoints,
+    :cpu_hardpoints,
     :movement_type,
     :max_health,
     :max_throttle,
-    :accel_speed_mss
+    :accel_speed_mss,
+    :class
   ]
 
   @doc false

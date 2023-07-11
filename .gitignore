@@ -33,11 +33,12 @@ erl_crash.dump
 crash_logs/
 
 # Web static build artifacts
-/apps/frobots_web/priv/static/
+apps/frobots_web/priv/static/
+!apps/frobots_web/priv/static/docs
 
 # any csv
 *.csv
-*.txt
+#*.txt
 
 # do not keep the env secrets in repo
 .env

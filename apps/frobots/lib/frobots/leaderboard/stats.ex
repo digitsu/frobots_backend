@@ -1,4 +1,7 @@
 defmodule Frobots.Leaderboard.Stats do
+  @moduledoc """
+  The Leaderboard.Stats context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

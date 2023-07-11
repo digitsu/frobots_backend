@@ -22,6 +22,10 @@ export default (props: frobotDetailsProps) => {
     handleEditState,
   } = props
 
+  const handleOpenBrainCode = () => {
+    window.location.href = `/garage/frobot/braincode?id=${frobotDetails.frobot_id}`
+  }
+
   return (
     <Grid container mb={2} spacing={2}>
       <Grid item lg={4} md={12} sm={12} xs={12}>
@@ -29,8 +33,8 @@ export default (props: frobotDetailsProps) => {
           sx={{
             bgcolor: '#212B36',
             borderRadius: 4,
-            paddingTop: '100%',
             position: 'relative',
+            height: '100%',
           }}
         >
           <Box
@@ -66,25 +70,12 @@ export default (props: frobotDetailsProps) => {
           sx={{
             bgcolor: '#212B36',
             borderRadius: 4,
-            paddingTop: '100%',
-            overflowY: 'scroll',
-            '&::-webkit-scrollbar': { display: 'none' },
             position: 'relative',
-            '@media (max-width: 600px)': {
-              paddingTop: '50%',
-            },
+            p: 3,
+            minHeight: 420,
           }}
         >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              p: 4,
-            }}
-          >
+          <Box height={'100%'}>
             {isOwnedFrobot && (
               <Box
                 sx={{
@@ -103,19 +94,19 @@ export default (props: frobotDetailsProps) => {
               </Box>
             )}
 
-            <Typography variant="h6" component="h2" gutterBottom>
+            <Typography variant="subtitle2" component="h2" gutterBottom>
               Name
             </Typography>
-            <Typography variant="body1" gutterBottom mt={1}>
+            <Typography variant="body2" gutterBottom mt={1}>
               {frobotDetails.name}
             </Typography>
-            <Typography variant="h6" gutterBottom mt={2}>
+            <Typography variant="subtitle2" gutterBottom mt={2}>
               Hash
             </Typography>
             <Typography variant="body2" gutterBottom>
               #{generateRandomString(31)}
             </Typography>
-            <Typography variant="h6" gutterBottom mt={2}>
+            <Typography variant="subtitle2" gutterBottom mt={2}>
               Xframe
             </Typography>
             <Box display={'flex'} alignItems={'baseline'}>
@@ -133,20 +124,40 @@ export default (props: frobotDetailsProps) => {
               )}
             </Box>
 
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="subtitle2" gutterBottom>
               Bio
             </Typography>
             <Box
               sx={{
-                height: 100,
+                maxHeight: 70,
                 overflowY: 'scroll',
                 '&::-webkit-scrollbar': { display: 'none' },
               }}
             >
-              <Typography variant="body2" gutterBottom>
+              <Typography variant="caption" gutterBottom>
                 {frobotDetails.bio || '-'}
               </Typography>
             </Box>
+          </Box>
+          <Box
+            sx={{
+              position: 'absolute',
+              left: '50%',
+              px: 4,
+              transform: 'translate(-50%, -50%)',
+              width: '100%',
+              bottom: 10,
+            }}
+          >
+            {isOwnedFrobot && (
+              <Button
+                variant={'outlined'}
+                fullWidth
+                onClick={handleOpenBrainCode}
+              >
+                HACK BRAINCODE!
+              </Button>
+            )}
           </Box>
         </Card>
       </Grid>

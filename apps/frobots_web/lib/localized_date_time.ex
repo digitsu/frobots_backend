@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.LocalizedDateTime do
+  @moduledoc """
+  LocalizedDateTime
+  """
   @timezone "Asia/Tokyo"
 
   def localize(%DateTime{} = datetime) do

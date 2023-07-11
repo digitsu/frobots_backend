@@ -1,4 +1,7 @@
 defmodule Frobots.Joins.FrobotBattlelog do
+  @moduledoc """
+  The FrobotBattlelog context.
+  """
   use Ecto.Schema
 
   @primary_key false

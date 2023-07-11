@@ -1,4 +1,7 @@
 defmodule Frobots.Events.Battlelog do
+  @moduledoc """
+  The Battlelog context.
+  """
   # this defines what is saved when a match is completed.
   use Ecto.Schema
   import Ecto.Changeset

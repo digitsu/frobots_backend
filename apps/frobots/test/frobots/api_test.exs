@@ -30,7 +30,7 @@ defmodule Frobots.ApiTest do
     assert %{entries: matches, page_number: 1} =
              Api.list_paginated_matches(status: :pending, search_pattern: "bb")
 
-    assert length(matches) == 0
+    assert Enum.empty?(matches)
   end
 
   test "get match details", context do

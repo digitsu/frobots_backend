@@ -16,7 +16,10 @@ defmodule Frobots.PopulateLeaderboard do
     # 1. get battle logs
     battlelogs = get_battlelogs() |> filter_valid()
 
-    if !Enum.empty?(battlelogs) do
+    if Enum.empty?(battlelogs) do
+      # must return something to the caller. should be in {:ok, _ } or {:error, _} form.
+      []
+    else
       for battlelog <- battlelogs do
         # get battlelog winner..we get the user from this
         winning_frobot = battlelog.winners
@@ -38,9 +41,6 @@ defmodule Frobots.PopulateLeaderboard do
           end
         end
       end
-    else
-      # must return something to the caller. should be in {:ok, _ } or {:error, _} form.
-      []
     end
   end
 
@@ -59,7 +59,7 @@ defmodule Frobots.PopulateLeaderboard do
     )
     |> Enum.map(fn entry ->
       # insert each entry into leaderboard_stats
-      IO.inspect(entry)
+      Logger.info(entry)
       Leaderboard.create_entry(entry)
     end)
   end
@@ -136,11 +136,10 @@ defmodule Frobots.PopulateLeaderboard do
     Match
     |> where([p], p.status == :done)
     |> Repo.all()
-    |> Enum.filter(fn x ->
+    |> Enum.count(fn x ->
       # check if x.frobots is a subsetof  frobot_id_lists, if yes we get an empty array
       Enum.empty?(frobot_id_list -- x.frobots)
     end)
-    |> Enum.count()
   end
 
   def get_matches_won_count(frobot_id) do

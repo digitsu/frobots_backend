@@ -2,6 +2,7 @@ defmodule FrobotsWeb.HomeLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.{UserStats, GlobalStats, Api}
   alias Frobots.{Accounts, Assets, Events}
+  require Logger
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -47,22 +48,22 @@ defmodule FrobotsWeb.HomeLive.Index do
       data["posts"]
     else
       {:ok, _} ->
-        IO.puts("Something other than HTTP 200 returned")
+        Logger.info("Something other than HTTP 200 returned")
         []
 
       {:error, err} ->
-        IO.puts("GhostBlog: no data posts! Err: " <> IO.inspect(err))
+        Logger.error("GhostBlog: no data posts! Err: " <> err.reason)
         []
 
       :error ->
-        IO.puts("GhostBlog: No Ghost URL!")
+        Logger.error("GhostBlog: No Ghost URL!")
         []
     end
   end
 
   @impl true
   def handle_event("react.fetch_dashboard_details", _params, socket) do
-    currentUserStatus = socket.assigns.current_user_stats
+    current_user_status = socket.assigns.current_user_stats
     current_user = socket.assigns.current_user
 
     {:noreply,
@@ -76,10 +77,10 @@ defmodule FrobotsWeb.HomeLive.Index do
        "globalStats" => socket.assigns.global_stats,
        "featuredFrobots" => extract_frobots(socket.assigns.featured_frobots),
        "playerStats" => %{
-         "frobots_count" => currentUserStatus.frobots_count,
-         "matches_participated" => currentUserStatus.matches_participated,
-         "total_xp" => currentUserStatus.total_xp,
-         "upcoming_matches" => currentUserStatus.upcoming_matches
+         "frobots_count" => current_user_status.frobots_count,
+         "matches_participated" => current_user_status.matches_participated,
+         "total_xp" => current_user_status.total_xp,
+         "upcoming_matches" => current_user_status.upcoming_matches
        },
        "s3_base_url" => socket.assigns.s3_base_url,
        "latestBlogPost" => List.first(socket.assigns.blog_posts)

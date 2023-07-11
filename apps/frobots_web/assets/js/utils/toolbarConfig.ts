@@ -19,6 +19,13 @@ export const MY_TOOLBOX = `
         </value>
       </block>
       <block type="controls_whileUntil"></block>
+      <block type="repeat_until" namae="repeat_until">
+        <value name="CONDITION">
+        <shadow type="logic_boolean">
+            <field name="BOOL">FALSE</field>
+          </shadow>
+        </value>
+      </block>
       <block type="controls_for">
         <value name="FROM">
           <shadow type="math_number">
@@ -133,6 +140,25 @@ export const MY_TOOLBOX = `
         </value>
       </block>
       <block type="math_random_float"></block>
+      <block type="math_atan2">
+        <value name="Y">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+        <value name="X">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_randomseed">
+        <value name="SEED">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+      </block>
     </category>
     <category name="Text" id="catText" colour="160">
       <block type="text"></block>
@@ -299,18 +325,58 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
-    <category name="Custom Functions" colour="20">
+    <category name="Objects" colour="210">
+      <block type="set_object_property"></block>
+      <block type="get_object_property"></block>
+      <block type="change_object_property">
+        <value name="value">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+    </category>
+    <category name="Frobot Functions" colour="20">
       <block type="frobot" name="frobot"></block>
+      <block type="custom_return" name="custom_return"></block>
       <block type="speed" name="speed"></block>
       <block type="damage" name="damage"></block>
       <block type="drive" name="drive"></block>
       <block type="cannon" name="cannon"></block>
+      <block type="cannon_2" name="cannon"></block>
       <block type="scan" name="scan"></block>
+      <block type="set_cannon" name="set_cannon">
+        <value name="cannon_id">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="set_scanner" name="set_scanner">
+        <value name="scanner_id">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
       <block type="xlocation" name="xlocation"></block>
       <block type="ylocation" name="ylocation"></block>
+      <block type="os_time" name="os_time"></block>
+      <block type="os_execute_sleep" name="os_execute_sleep">
+        <value name="SECONDS">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
     </category>
     <sep></sep>
-    <category name="Variables" id="catVariables" colour="330" custom="VARIABLE"></category>
-    <category name="Functions" id="catFunctions" colour="290" custom="PROCEDURE"></category>
-  </xml>
+    <category name="Variables" colour="330">
+    <category name="List Variables" id="catVariables" custom="VARIABLE"></category>
+    <category  name="Set Variable">
+    <block type="set_variable_type"></block>
+    </category>
+    </category>
+    <category name="Functions" id="catFunctions" custom="PROCEDURE" colour="290"></category>
+    </xml>
 `

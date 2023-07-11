@@ -18,14 +18,7 @@ defmodule FrobotsWeb.PlayerProfileLive.Index do
 
     user = Accounts.get_user!(user_id)
 
-    if !user do
-      {
-        {:ok,
-         socket
-         |> put_flash(:error, "User not found")
-         |> push_redirect(to: "/home")}
-      }
-    else
+    if user do
       {:ok,
        socket
        |> assign(:user, user)
@@ -33,6 +26,13 @@ defmodule FrobotsWeb.PlayerProfileLive.Index do
        |> assign(:player_status, Leaderboard.get_current_user_stats(user))
        |> assign(:user_frobots, Assets.list_user_frobots(user))
        |> assign(:s3_base_url, Api.get_s3_base_url())}
+    else
+      {
+        {:ok,
+         socket
+         |> put_flash(:error, "User not found")
+         |> push_redirect(to: "/home")}
+      }
     end
   end
 

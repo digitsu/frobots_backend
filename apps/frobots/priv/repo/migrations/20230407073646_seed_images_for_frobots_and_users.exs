@@ -11,7 +11,7 @@ defmodule Frobots.Repo.Migrations.SeedImagesForFrobotsAndUsers do
   @tables %{users: &Accounts.list_users/0, frobots: &Assets.list_frobots/0}
 
   @prototype Assets.prototype_class()
-  @target Assets.target_class()
+  # @target Assets.target_class()
   @user_class Assets.default_user_class()
 
   defp user_image_pool() do
@@ -108,7 +108,7 @@ defmodule Frobots.Repo.Migrations.SeedImagesForFrobotsAndUsers do
   end
 
   def down do
-    IO.inspect("Rolling back image data")
+    IO.puts("Rolling back image data")
 
     for table <- Map.keys(@tables) do
       execute ~s"update #{table} set avatar = '' returning id"

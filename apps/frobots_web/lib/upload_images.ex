@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.UploadImages do
+  @moduledoc """
+  Uploads images from a local folder to S3.
+  """
   @doc ~S"""
     Uploads images from a local folder to S3.
 

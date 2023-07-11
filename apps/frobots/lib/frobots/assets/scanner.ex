@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.Scanner do
+  @moduledoc """
+  The Scanner context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor
@@ -8,11 +11,13 @@ defmodule Frobots.Assets.Scanner do
              :type,
              :max_range,
              :resolution,
-             :image
+             :image,
+             :special
            ]}
 
   schema "scanners" do
-    field :type, Ecto.Enum, values: ~w(Mk1 Mk2)a
+    field :type, Ecto.Enum, values: ~w(Mk1 Mk2 Mk3)a
+    field :special, Ecto.Enum, values: ~w(active passive)a
     field :max_range, :integer
     field :resolution, :integer
     has_many :scanner_inst, Frobots.Assets.ScannerInst
@@ -24,7 +29,9 @@ defmodule Frobots.Assets.Scanner do
   @fields [
     :type,
     :max_range,
-    :resolution
+    :resolution,
+    :class,
+    :special
   ]
 
   @doc false

@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.UserAuth do
+  @moduledoc """
+  This module provides helpers for user authentication.
+  """
   import Plug.Conn
   import Phoenix.Controller
 

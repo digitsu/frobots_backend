@@ -13,6 +13,7 @@ if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     S3_ACCESS_KEY=$S3_ACCESS_KEY_PROD
     S3_SECRET_KEY=$S3_SECRET_KEY_PROD
     S3_BUCKET=$S3_BUCKET_PROD
+    GUARDIAN_SECRET_KEY=$GUARDIAN_SECRET_KEY_PROD
     dockerfile=./Dockerfile.prod
 elif [[ $CI_COMMIT_BRANCH == "main2" ]]; then
     ip=$FROBOTSBACKEND_PROD2
@@ -21,6 +22,7 @@ elif [[ $CI_COMMIT_BRANCH == "main2" ]]; then
     S3_ACCESS_KEY=$S3_ACCESS_KEY_PROD
     S3_SECRET_KEY=$S3_SECRET_KEY_PROD
     S3_BUCKET=$S3_BUCKET_PROD
+    GUARDIAN_SECRET_KEY=$GUARDIAN_SECRET_KEY_PROD
     dockerfile=./Dockerfile.prod
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     ip=$FROBOTSBACKEND_STAGING
@@ -31,6 +33,7 @@ elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     S3_ACCESS_KEY=$S3_ACCESS_KEY_STAGING
     S3_SECRET_KEY=$S3_SECRET_KEY_STAGING
     S3_BUCKET=$S3_BUCKET_STAGING
+    GUARDIAN_SECRET_KEY=$GUARDIAN_SECRET_KEY_STAGING
     dockerfile=./Dockerfile.staging
 else
     ip='not a valid branch'
@@ -94,8 +97,8 @@ docker container prune --force || true
 echo "running postgres"
 docker run --detach --rm --network $FROBOTS_NETWORK --network-alias postgres-server -e POSTGRES_PASSWORD=$POSTGRES_PASS -e POSTGRES_USER=$POSTGRES_USER -v postgres_home:/home/${POSTGRES_USER} -v postgres_data:/var/lib/postgresql/data --name postgres postgres:12-bullseye
 echo "running the backend on: "$DATABASE_URL_NEW${dbname}
-docker run --rm -dp $PORT:$PORT -e S3_URL -e S3_BUCKET -e S3_ACCESS_KEY -e S3_SECRET_KEY -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW${dbname} -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
-#docker run --rm -p $PORT:$PORT -e S3_URL -e S3_BUCKET -e S3_ACCESS_KEY -e S3_SECRET_KEY -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW${dbname} -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
+docker run --rm -dp $PORT:$PORT -e GUARDIAN_SECRET_KEY -e S3_URL -e S3_BUCKET -e S3_ACCESS_KEY -e S3_SECRET_KEY -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW${dbname} -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
+#docker run --rm -p $PORT:$PORT -e GUARDIAN_SECRET_KEY -e S3_URL -e S3_BUCKET -e S3_ACCESS_KEY -e S3_SECRET_KEY -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW${dbname} -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
 
 echo "running seeds"
 docker exec frobots_backend bin/frobots_backend eval 'FrobotsWeb.Release.Seeder.seed(Elixir.Frobots.Repo, "seeds.exs")'

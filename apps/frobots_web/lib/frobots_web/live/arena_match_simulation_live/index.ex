@@ -1,7 +1,7 @@
 defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
-
+  require Logger
   alias Frobots.Api
   alias Frobots.Events
 
@@ -25,7 +25,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
       if connected?(socket) do
         Events.subscribe()
         topic = "match:match#{match_id}"
-        IO.inspect("SUBSCRIBING TO #{topic}")
+        Logger.info("SUBSCRIBING TO #{topic}")
         Phoenix.PubSub.subscribe(Frobots.PubSub, topic)
 
         ## GET SNAPSHOT EVENT
@@ -127,8 +127,8 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
     arena = assigns.arena
     s3_base_url = assigns.s3_base_url
 
-    # IO.inspect(match)
-    matchDetails = %{
+    # Logger.info(match)
+    match_details = %{
       "arena_id" => match.arena_id,
       "match_time" => match.match_time,
       "slots" => match.slots,
@@ -142,7 +142,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
      socket
      |> push_event(:arena_event, %{
        id: assigns.match_id,
-       match_details: matchDetails,
+       match_details: match_details,
        s3_base_url: s3_base_url,
        arena: arena
      })}

@@ -1,4 +1,7 @@
 defmodule Frobots.Api do
+  @moduledoc """
+  The Api context.
+  """
   alias Frobots.Events
   alias Frobots.Events.{Match, Slot}
   alias Frobots.Accounts.User
@@ -206,7 +209,7 @@ defmodule Frobots.Api do
 
   def create_frobot(_user, name, brain_code, _extra_params)
       when name == "" or brain_code == "" do
-    # IO.inspect("Name and Braincode required to create frobot")
+    # Logger.debug("Name and Braincode required to create frobot")
     {:error, "Frobot name and braincode are required."}
   end
 
@@ -271,6 +274,29 @@ defmodule Frobots.Api do
     |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
     |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
     |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
+    |> Multi.insert(:cpu_inst, Equipment.create_equipment_changeset(user, "Cpu", :Mk1))
+    |> Multi.insert(
+      :xframe_inst_mk2,
+      Equipment.create_equipment_changeset(user, "Xframe", :Chassis_Mk2)
+    )
+    |> Multi.insert(:cannon_inst_mk2, Equipment.create_equipment_changeset(user, "Cannon", :Mk2))
+    |> Multi.insert(
+      :scanner_inst_mk2,
+      Equipment.create_equipment_changeset(user, "Scanner", :Mk2)
+    )
+    |> Multi.insert(
+      :missile_inst_mk2,
+      Equipment.create_equipment_changeset(user, "Missile", :Mk2)
+    )
+    |> Multi.insert(
+      :xframe_inst_mk3,
+      Equipment.create_equipment_changeset(user, "Xframe", :Chassis_Mk3)
+    )
+    |> Multi.insert(:cannon_inst_mk3, Equipment.create_equipment_changeset(user, "Cannon", :Mk3))
+    |> Multi.insert(
+      :scanner_inst_mk3,
+      Equipment.create_equipment_changeset(user, "Scanner", :Mk3)
+    )
     |> Multi.update(:equip_xframe, fn %{frobot: frobot, xframe_inst: xframe_inst} ->
       Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
     end)
@@ -279,6 +305,9 @@ defmodule Frobots.Api do
     end)
     |> Multi.update(:equip_scanner, fn %{frobot: frobot, scanner_inst: scanner_inst} ->
       Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
+    end)
+    |> Multi.update(:equip_cpu, fn %{frobot: frobot, cpu_inst: cpu_inst} ->
+      Equipment.equip_cpu_changeset(cpu_inst.id, frobot.id)
     end)
     # |> Multi.update(:equip_missile, fn %{frobot: frobot, missile_inst: missile_inst} ->
     #   Equipment.equip_part_changeset(missile_inst.id, frobot.id, "Missile")
@@ -297,6 +326,7 @@ defmodule Frobots.Api do
     |> Multi.insert(:cannon_inst, Equipment.create_equipment_changeset(user, "Cannon", :Mk1))
     |> Multi.insert(:scanner_inst, Equipment.create_equipment_changeset(user, "Scanner", :Mk1))
     |> Multi.insert(:missile_inst, Equipment.create_equipment_changeset(user, "Missile", :Mk1))
+    |> Multi.insert(:cpu_inst, Equipment.create_equipment_changeset(user, "Cpu", :Mk1))
     |> Multi.update(:equip_xframe, fn %{xframe_inst: xframe_inst} ->
       Equipment.equip_xframe_changeset(xframe_inst.id, frobot.id)
     end)
@@ -305,6 +335,9 @@ defmodule Frobots.Api do
     end)
     |> Multi.update(:equip_scanner, fn %{scanner_inst: scanner_inst} ->
       Equipment.equip_part_changeset(scanner_inst.id, frobot.id, "Scanner")
+    end)
+    |> Multi.update(:equip_cpu, fn %{frobot: frobot, cpu_inst: cpu_inst} ->
+      Equipment.equip_cpu_changeset(cpu_inst.id, frobot.id)
     end)
 
     #  |> Multi.update(:equip_missile, fn %{missile_inst: missile_inst} ->
@@ -325,39 +358,47 @@ defmodule Frobots.Api do
         {:ok, res}
 
       {:error, :frobot, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :xframe_inst, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :cannon_inst, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :scanner_inst, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :missile_inst, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
+        return_errors(cs)
+
+      {:error, :cpu_inst, %Ecto.Changeset{} = cs, changes} ->
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :equip_xframe, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :equip_cannon, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :equip_scanner, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
+        return_errors(cs)
+
+      {:error, :equip_cpu, %Ecto.Changeset{} = cs, changes} ->
+        Logger.info(changes)
         return_errors(cs)
 
       {:error, :update_user, %Ecto.Changeset{} = cs, changes} ->
-        IO.inspect(changes)
+        Logger.info(changes)
         return_errors(cs)
     end
   end
@@ -492,6 +533,7 @@ defmodule Frobots.Api do
     |> Repo.preload(cannon_inst: [:cannon])
     |> Repo.preload(scanner_inst: [:scanner])
     |> Repo.preload(missile_inst: [:missile])
+    |> Repo.preload(cpu_inst: [:cpu])
     |> _parse_frobot_details()
   end
 
@@ -509,20 +551,20 @@ defmodule Frobots.Api do
     }
 
     frobot_details =
-      cond do
-        frobot.class in [Assets.prototype_class(), Assets.target_class()] ->
-          frobot_details
+      if frobot.class in [Assets.prototype_class(), Assets.target_class()] do
+        frobot_details
+      else
+        xframe_inst = _get_xframe_inst_details(frobot)
+        cannon_inst = _get_cannon_inst_details(frobot)
+        scanner_inst = _get_scanner_inst_details(frobot)
+        missile_inst = _get_missile_inst_details(frobot)
+        cpu_inst = _get_cpu_inst_details(frobot)
 
-        true ->
-          xframe_inst = _get_xframe_inst_details(frobot)
-          cannon_inst = _get_cannon_inst_details(frobot)
-          scanner_inst = _get_scanner_inst_details(frobot)
-          missile_inst = _get_missile_inst_details(frobot)
-
-          Map.put(frobot_details, "xframe_inst", xframe_inst)
-          |> Map.put("cannon_inst", cannon_inst)
-          |> Map.put("scanner_inst", scanner_inst)
-          |> Map.put("missile_inst", missile_inst)
+        Map.put(frobot_details, "xframe_inst", xframe_inst)
+        |> Map.put("cannon_inst", cannon_inst)
+        |> Map.put("scanner_inst", scanner_inst)
+        |> Map.put("missile_inst", missile_inst)
+        |> Map.put("cpu_inst", cpu_inst)
       end
 
     {:ok, frobot_details}
@@ -532,7 +574,9 @@ defmodule Frobots.Api do
     if Map.has_key?(frobot, :xframe_inst) do
       xframe_inst = Map.get(frobot, :xframe_inst)
 
-      if !is_nil(xframe_inst) do
+      if is_nil(xframe_inst) do
+        []
+      else
         [
           %{
             "id" => Map.get(xframe_inst, :id),
@@ -548,8 +592,6 @@ defmodule Frobots.Api do
             "equipment_type" => frobot.xframe_inst.xframe.type
           }
         ]
-      else
-        []
       end
     else
       []
@@ -632,6 +674,28 @@ defmodule Frobots.Api do
     end
   end
 
+  defp _get_cpu_inst_details(frobot) do
+    if Map.has_key?(frobot, :cpu_inst) do
+      cpu_inst = Map.get(frobot, :cpu_inst)
+
+      if is_nil(cpu_inst) do
+        []
+      else
+        [
+          %{
+            "id" => cpu_inst.id,
+            "type" => cpu_inst.cpu.type,
+            "cycletime" => cpu_inst.cycletime,
+            "cpu_cycle_buffer" => cpu_inst.cpu_cycle_buffer,
+            "overload_penalty" => cpu_inst.overload_penalty
+          }
+        ]
+      end
+    else
+      []
+    end
+  end
+
   # todo this is wrong to always decrement the sparks.
   defp decr_sparks_changeset(user_id) do
     user = Accounts.get_user_by(id: user_id)
@@ -699,4 +763,7 @@ defmodule Frobots.Api do
       }
     ]
   end
+
+  def get_default_xframe!(), do: Assets.get_xframe!(:Chassis_Mk1)
+  def get_default_cpu!(), do: Assets.get_cpu!(:Mk1)
 end

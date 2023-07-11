@@ -7,6 +7,6 @@ defmodule Frobots.Repo.Migrations.FixProtoFrobotClass do
   end
 
   def down do
-    IO.inspect("No rollback needed")
+    IO.puts("No rollback needed")
   end
 end

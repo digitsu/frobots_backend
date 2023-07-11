@@ -1,4 +1,7 @@
 defmodule Frobots.Events.MatchTemplate do
+  @moduledoc """
+  The MatchTemplate context.
+  """
   # this defines what is saved when a match is completed.
   use Ecto.Schema
   import Ecto.Changeset

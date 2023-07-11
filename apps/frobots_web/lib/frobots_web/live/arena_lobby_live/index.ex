@@ -113,12 +113,12 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   # def handle_event("load_simulater", _value, socket) do
   #   ## push event to simulater
   #   assigns = socket.assigns()
-  #   IO.inspect("MATCH FROM LOAD")
+  #   Logger.info("MATCH FROM LOAD")
   #   # match = Api.get_match_details_by_id(assigns.match_id)
   #   match_id = assigns.match_id
 
-  #   # # IO.inspect(match)
-  #   #     matchDetails = %{
+  #   # # Logger.info(match)
+  #   #     match_details = %{
   #   #   "arena_id" => match.arena_id,
   #   #   "match_time" => match.match_time,
   #   #   "slots" => match.slots,
@@ -127,7 +127,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   #   #   "status" => match.status,
   #   #   "frobots" =>match.frobots
   #   # }
-  #   # IO.inspect(matchDetails)
+  #   # Logger.info(match_details)
   #   # assigns = socket.assigns()
   #   # {:ok} = Simulator.request_match(assigns.simulator)
   #   # {:ok, match_id} = Simulator.request_match(assigns.simulator)
@@ -144,9 +144,9 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
     %{match: match, user_id: user_id, s3_base_url: s3_base_url, time_left: time_left} =
       socket.assigns
 
-    templateFrobots = extract_frobot_details(Assets.list_template_frobots())
+    template_frobots = extract_frobot_details(Assets.list_template_frobots())
 
-    userFrobots =
+    user_frobots =
       extract_frobot_details(Assets.get_available_user_frobots(socket.assigns.user_id))
 
     {:noreply,
@@ -168,8 +168,8 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
        },
        "user_id" => match.user_id,
        "current_user_id" => user_id,
-       "templates" => templateFrobots,
-       "frobots" => userFrobots,
+       "templates" => template_frobots,
+       "frobots" => user_frobots,
        "s3_base_url" => s3_base_url,
        "time_left" => time_left
      })}

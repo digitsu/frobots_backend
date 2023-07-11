@@ -10,6 +10,7 @@ import {
   Autocomplete,
   TextField,
   Chip,
+  Tooltip,
 } from '@mui/material'
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
@@ -17,6 +18,14 @@ import { BlocklyEditor } from '../Garage/BlocklyEditor'
 import { Game, tankHead } from '../../game_updated'
 import { Tank } from '../../tank'
 import * as PIXI from 'pixi.js'
+import Popup from '../../components/Popup'
+import {
+  BrainCodeCopyPromptDescription,
+  SaveBlockCodePromptDescription,
+  SaveBrainCodePromptDescription,
+} from '../../mock/texts'
+import SaveIcon from '@mui/icons-material/Save'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 
 const BlankBlocklyCode =
   '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
@@ -33,6 +42,8 @@ export default (props: any) => {
   } = props
   const isOwnFrobot = frobot.user_id === currentUser.id
   const [luaCode, setLuaCode] = useState(frobot.brain_code || '')
+  const [showCopyPrompt, setShowCopyPrompt] = useState(false)
+  const [showSaveCodePrompt, setShowSaveCodePrompt] = useState(false)
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState(
     frobot.blockly_code || BlankBlocklyCode
@@ -83,8 +94,10 @@ export default (props: any) => {
   const workspaceDidChange = (workspace: any) => {
     try {
       const code = luaGenerator.workspaceToCode(workspace)
-      if (code != blocklyCode) {
-        setBlocklyCode(code)
+      if (!code) {
+        setBlocklyLuaCode('')
+      } else if (code != blocklyCode) {
+        setBlocklyLuaCode(code)
       }
     } catch (err) {
       console.log(err)
@@ -103,6 +116,33 @@ export default (props: any) => {
     }
 
     updateFrobotCode(requestBody)
+    setShowSaveCodePrompt(false)
+  }
+  const handleCopyConfirm = () => {
+    setLuaCode(blocklyLuaCode)
+    setShowCopyPrompt(false)
+  }
+
+  const handleSaveCode = () => {
+    if (blocklyLuaCode === luaCode) {
+      saveConfig()
+    } else {
+      setShowSaveCodePrompt(true)
+    }
+  }
+
+  const downloadConfig = () => {
+    const isBlockly = tabIndex === 0
+    const fileType = isBlockly ? 'text/xml' : 'text/lua'
+    const fileContent = isBlockly ? xmlText : luaCode
+    const xmlBlob = new Blob([fileContent], { type: fileType })
+    const xmlUrl = URL.createObjectURL(xmlBlob)
+    const a = document.createElement('a')
+    a.href = xmlUrl
+    a.download = isBlockly ? 'blockly-config.xml' : 'lua-code.lua'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   const handleRunSimulation = () => {
@@ -187,7 +227,9 @@ export default (props: any) => {
         }
       }
     } else {
-      gameState.event(e.detail)
+      if (gameState) {
+        gameState.event(e.detail)
+      }
     }
   }
   window.addEventListener(`phx:simulator_event`, handleGameEvent)
@@ -226,32 +268,66 @@ export default (props: any) => {
                 >
                   <Tab
                     sx={{ color: '#fff' }}
-                    label="Blockly Editor"
+                    label="Block Editor"
                     {...a11yProps(0)}
                   />
                   <Tab
                     sx={{ color: '#fff' }}
-                    label="Lua Code"
+                    label="Brain Code"
                     {...a11yProps(1)}
                   />
                 </Tabs>
               </Box>
-              <Box display={'flex'} flex={6} mb={1} alignItems={'center'}>
+              <Box
+                display={'flex'}
+                flex={6}
+                mb={1}
+                gap={1}
+                alignItems={'center'}
+              >
+                {currentUser.admin && (
+                  <Tooltip title={'Download Brain Code'}>
+                    <Button
+                      color="inherit"
+                      variant="outlined"
+                      size="small"
+                      sx={{ p: 1 }}
+                      onClick={downloadConfig}
+                    >
+                      Download
+                    </Button>
+                  </Tooltip>
+                )}
                 {isOwnFrobot && (
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    size="small"
-                    onClick={saveConfig}
-                    sx={{ flex: 1 }}
-                  >
-                    Save
-                  </Button>
-                )}{' '}
+                  <>
+                    <Tooltip title={'Save Brain Code'}>
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        size="small"
+                        onClick={handleSaveCode}
+                        sx={{ p: 1 }}
+                      >
+                        <SaveIcon />
+                      </Button>
+                    </Tooltip>
+                    <Popup
+                      open={showSaveCodePrompt}
+                      cancelAction={() => setShowSaveCodePrompt(false)}
+                      successAction={saveConfig}
+                      successLabel={'Confirm'}
+                      cancelLabel={'Cancel'}
+                      label={'Warning'}
+                      description={
+                        tabIndex === 0
+                          ? SaveBlockCodePromptDescription
+                          : SaveBrainCodePromptDescription
+                      }
+                    />
+                  </>
+                )}
                 <Autocomplete
                   sx={{
-                    pl: 1,
-                    pr: 1,
                     width: 200,
                     flex: isSelectedProtobot ? 3 : 5,
                   }}
@@ -279,32 +355,55 @@ export default (props: any) => {
                     />
                   )}
                 />
-                {''}
-                {isSelectedProtobot && (
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    size="small"
-                    onClick={handleRunSimulation}
-                    sx={{ flex: 1 }}
-                  >
-                    Simulate
-                  </Button>
-                )}{' '}
+                <Box display={'flex'} gap={1}>
+                  {isSelectedProtobot && (
+                    <Tooltip title={'Run Simulation'}>
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        size="small"
+                        onClick={handleRunSimulation}
+                        sx={{ flex: 1 }}
+                      >
+                        <PlayArrowIcon />
+                      </Button>
+                    </Tooltip>
+                  )}
+                  {tabIndex === 0 && (
+                    <Tooltip title={'Sync Brain Code'}>
+                      <Button
+                        onClick={() => setShowCopyPrompt(true)}
+                        variant="contained"
+                        color="inherit"
+                      >
+                        Sync
+                      </Button>
+                    </Tooltip>
+                  )}
+                </Box>
+                <Popup
+                  open={showCopyPrompt}
+                  cancelAction={() => setShowCopyPrompt(false)}
+                  successAction={handleCopyConfirm}
+                  successLabel={'Confirm'}
+                  cancelLabel={'Cancel'}
+                  label={'Warning'}
+                  description={BrainCodeCopyPromptDescription}
+                />
               </Box>
             </Box>
           </Box>
           {
             <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
               <Grid container>
-                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
                   <BlocklyEditor
                     defaultXml={blocklyCode}
                     setXmlText={setXmlText}
                     workspaceDidChange={workspaceDidChange}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
                   <LuaEditor
                     luaCode={blocklyLuaCode}
                     onEditorChange={() => {}}

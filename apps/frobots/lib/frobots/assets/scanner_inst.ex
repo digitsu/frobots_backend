@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.ScannerInst do
+  @moduledoc """
+  The ScannerInst context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor
@@ -29,7 +32,7 @@ defmodule Frobots.Assets.ScannerInst do
   @doc false
   def changeset(scanner, attrs) do
     scanner
-    |> cast(attrs, @fields ++ [:frobot_id])
+    |> cast(attrs, @fields ++ [:user_id, :scanner_id, :frobot_id])
     |> validate_required(@fields)
   end
 end

@@ -1,4 +1,7 @@
 defmodule Frobots.Agents.WinnersBucket do
+  @moduledoc """
+  The WinnersBucket context.
+  """
   use Agent
 
   def start_link([]) do

@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.XframeInst do
+  @moduledoc """
+  The XframeInst context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor
@@ -42,7 +45,7 @@ defmodule Frobots.Assets.XframeInst do
   @doc false
   def changeset(xframe, attrs) do
     xframe
-    |> cast(attrs, @fields ++ [:health, :frobot_id])
+    |> cast(attrs, @fields ++ [:xframe_id, :user_id, :health, :frobot_id])
     |> validate_required(@fields)
   end
 end

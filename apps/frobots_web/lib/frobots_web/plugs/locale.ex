@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.Plugs.Locale do
+  @moduledoc """
+  Locale Plug
+  """
   import Plug.Conn
 
   @locales ["en", "fr", "de"]

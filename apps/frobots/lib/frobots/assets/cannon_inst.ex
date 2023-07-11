@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.CannonInst do
+  @moduledoc """
+  The CannonInst context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   use ExConstructor
@@ -31,7 +34,7 @@ defmodule Frobots.Assets.CannonInst do
   @doc false
   def changeset(cannon, attrs) do
     cannon
-    |> cast(attrs, @fields ++ [:frobot_id])
+    |> cast(attrs, @fields ++ [:user_id, :cannon_id, :frobot_id])
     |> validate_required(@fields)
   end
 end

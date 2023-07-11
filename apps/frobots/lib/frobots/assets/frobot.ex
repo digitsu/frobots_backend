@@ -1,4 +1,7 @@
 defmodule Frobots.Assets.Frobot do
+  @moduledoc """
+  The Frobot context.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -19,6 +22,7 @@ defmodule Frobots.Assets.Frobot do
       join_through: Frobots.Joins.FrobotBattlelog
 
     has_one :xframe_inst, Frobots.Assets.XframeInst
+    has_one :cpu_inst, Frobots.Assets.CpuInst
     has_many :cannon_inst, Frobots.Assets.CannonInst
     has_many :scanner_inst, Frobots.Assets.ScannerInst
     has_many :missile_inst, Frobots.Assets.MissileInst

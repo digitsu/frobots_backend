@@ -1,4 +1,7 @@
 defmodule FrobotsWeb.MatchChannel do
+  @moduledoc """
+  This module is used to handle the match channel
+  """
   use FrobotsWeb, :channel
 
   alias Frobots.Api
@@ -13,6 +16,9 @@ defmodule FrobotsWeb.MatchChannel do
   defp via_tuple(name), do: {:via, Registry, {Fubars.match_registry(), name}}
 
   defmodule TupleEncoder do
+    @moduledoc """
+    This module is used to encode tuples as lists
+    """
     alias Jason.Encoder
 
     defimpl Encoder, for: Tuple do

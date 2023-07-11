@@ -6,6 +6,6 @@ defmodule Frobots.Repo.Migrations.SetSparks do
   end
 
   def down do
-    IO.inspect("No rollback")
+    IO.puts("No rollback")
   end
 end

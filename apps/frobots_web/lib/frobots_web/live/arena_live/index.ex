@@ -24,7 +24,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     order_by =
       cond do
-        is_nil(params["sort_by"]) or is_nil(params["sort_by"]) ->
+        is_nil(params["sort_by"]) ->
           [desc: :inserted_at]
 
         params["sort_type"] == "desc" and params["sort_by"] == "match_id" ->
@@ -163,7 +163,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     order_by =
       cond do
-        is_nil(params["sort_by"]) or is_nil(params["sort_by"]) ->
+        is_nil(params["sort_by"]) ->
           [desc: :inserted_at]
 
         params["sort_type"] == "desc" and params["sort_by"] == "match_id" ->
@@ -235,7 +235,7 @@ defmodule FrobotsWeb.ArenaLive.Index do
 
     order_by =
       cond do
-        is_nil(params["sort_by"]) or is_nil(params["sort_by"]) ->
+        is_nil(params["sort_by"]) ->
           [desc: :inserted_at]
 
         params["sort_type"] == "desc" and params["sort_by"] == "match_id" ->

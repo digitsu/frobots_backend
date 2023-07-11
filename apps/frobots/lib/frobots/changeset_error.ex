@@ -1,4 +1,7 @@
 defmodule Frobots.ChangesetError do
+  @moduledoc """
+  The ChangesetError context.
+  """
   @doc """
   Traverses and translates changeset errors.
 

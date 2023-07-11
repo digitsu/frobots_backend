@@ -69,7 +69,7 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
       user_equipment_inventory: user_equipment_inventory
     } = socket.assigns
 
-    currentUser = %{
+    current_user = %{
       "id" => current_user.id,
       "avatar" => current_user.avatar,
       "email" => current_user.email,
@@ -77,7 +77,7 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
       "sparks" => current_user.sparks
     }
 
-    frobotDetails = %{
+    frobot_details = %{
       "frobot_id" => frobot.id,
       "name" => frobot.name,
       "bio" => frobot.bio,
@@ -95,19 +95,19 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
         []
       else
         Enum.filter(equipment_inventory, fn equipment ->
-          equipment["frobot_id"] !== frobot.id
+          is_nil(equipment["frobot_id"])
         end)
       end
 
-    frobotEquipments = _format_equipment_details(attached_equipments)
+    frobot_equipments = _format_equipment_details(attached_equipments)
 
     {:noreply,
      push_event(socket, "react.return_frobot_equipment_bay_details", %{
-       "currentUser" => currentUser,
-       "frobotDetails" => frobotDetails,
+       "currentUser" => current_user,
+       "frobotDetails" => frobot_details,
        "s3_base_url" => s3_base_url,
        "userFrobots" => extract_frobots(user_frobots),
-       "frobotEquipments" => frobotEquipments,
+       "frobotEquipments" => frobot_equipments,
        "equipmentInventory" => available_equipments
      })}
   end
@@ -242,11 +242,11 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
         []
       else
         Enum.filter(equipment_inventory, fn equipment ->
-          equipment["frobot_id"] !== frobot.id
+          is_nil(equipment["frobot_id"])
         end)
       end
 
-    frobotEquipments = _format_equipment_details(attached_equipments)
+    frobot_equipments = _format_equipment_details(attached_equipments)
 
     {:noreply,
      push_event(
@@ -257,7 +257,7 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
        |> put_flash(:info, message),
        :frobot_equipments_updated,
        %{
-         "frobotEquipments" => frobotEquipments,
+         "frobotEquipments" => frobot_equipments,
          "equipmentInventory" => available_equipments,
          "currentEquipmentKey" => current_equipment_key
        }

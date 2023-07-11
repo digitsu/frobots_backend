@@ -5,7 +5,7 @@ defmodule Frobots.Assets do
 
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
+  alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon, Cpu}
   alias Frobots.Accounts
 
   @prototype_class "P"
@@ -262,6 +262,15 @@ defmodule Frobots.Assets do
     Repo.all(Xframe)
   end
 
+  def update_xframe(xframe, attrs) do
+    xframe_cs = Xframe.changeset(xframe, attrs)
+
+    case Repo.update(xframe_cs) do
+      {:ok, _struct} -> :ok
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
   # fetch frobots by user
   def get_user_frobots(user_id) do
     q =
@@ -319,6 +328,15 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
+  def update_cannon(cannon, attrs) do
+    cannon_cs = Cannon.changeset(cannon, attrs)
+
+    case Repo.update(cannon_cs) do
+      {:ok, _struct} -> :ok
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
   def list_cannons() do
     Repo.all(Cannon)
   end
@@ -356,6 +374,15 @@ defmodule Frobots.Assets do
   def get_missile!(type) do
     from(m in Missile, where: m.type == ^type)
     |> Repo.one!()
+  end
+
+  def update_missile(missile, attrs) do
+    missile_cs = Missile.changeset(missile, attrs)
+
+    case Repo.update(missile_cs) do
+      {:ok, _struct} -> :ok
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   def list_missiles() do
@@ -397,7 +424,63 @@ defmodule Frobots.Assets do
     |> Repo.one!()
   end
 
+  def update_scanner(scanner, attrs) do
+    scanner_cs = Scanner.changeset(scanner, attrs)
+
+    case Repo.update(scanner_cs) do
+      {:ok, _struct} -> :ok
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
   def list_scanners() do
     Repo.all(Scanner)
+  end
+
+  @doc ~S"""
+  Creates a Cpu.
+
+  ## Examples
+
+      #iex> create_cpu(%{field: value})
+      #{:ok, %Cpu{}}
+
+      #iex> create_cpu(%{field: bad_value})
+      #{:error, %Ecto.Changeset{}}
+      #doctest barfs if i dont comment above code
+  """
+  def create_cpu(attrs \\ %{}) do
+    %Cpu{}
+    |> Cpu.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_cpu!(attrs \\ %{}) do
+    %Cpu{}
+    |> Cpu.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  def get_cpu(type) do
+    from(c in Cpu, where: c.type == ^type)
+    |> Repo.one()
+  end
+
+  def get_cpu!(type) do
+    from(c in Cpu, where: c.type == ^type)
+    |> Repo.one!()
+  end
+
+  def update_cpu(cpu, attrs) do
+    cpu_cs = Cpu.changeset(cpu, attrs)
+
+    case Repo.update(cpu_cs) do
+      {:ok, _struct} -> :ok
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
+  def list_cpu() do
+    Repo.all(Cpu)
   end
 end

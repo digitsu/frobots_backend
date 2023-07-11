@@ -1,0 +1,22 @@
+Short names for Classes
+P - Protobot
+T - Target
+U - User
+
+Protobot Shortnames
+RB - rabbit
+RN - random
+RK - rook
+SN - sniper
+TR - tracker
+
+Issuance numbers
+start at 01-99
+
+Collection naming template
+<slot>_<class><type>-<collectionNo>
+ie
+frobots_URN-01
+frobot, user class, random type, 1st collection
+frobots_PRK-02
+frobot, protobot class, rook type, 2nd collection

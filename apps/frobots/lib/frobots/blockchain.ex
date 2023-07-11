@@ -1,4 +1,8 @@
 defmodule Frobots.Blockchain do
+  @moduledoc """
+  The Blockchain context.
+  """
+
   @priv_dir :code.priv_dir(:frobots)
   def run() do
     BSV.Contract.P2PKH

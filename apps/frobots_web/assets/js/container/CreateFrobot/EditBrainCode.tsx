@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Tab, Tabs, Button, Grid } from '@mui/material'
+import { Box, Tab, Tabs, Button, Grid, Tooltip } from '@mui/material'
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
 import LuaEditor from '../Garage/LuaEditor'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
+import Popup from '../../components/Popup'
+import { CreateFrobotBrainCodeCopyPromptDescription } from '../../mock/texts'
 
 export default () => {
   const { brainCode, blocklyCode: blocklyCodeStore } = useSelector(
@@ -15,6 +17,10 @@ export default () => {
   const [luaCode, setLuaCode] = useState('')
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState('')
+  const [showCopyPrompt, setShowCopyPrompt] = useState(false)
+  const [blocklyLuaCode, setBlocklyLuaCode] = useState(
+    brainCode?.brain_code || ''
+  )
   const { setBlocklyCode: setBlocklyCodeHandler, setBrainCode } =
     createFrobotActions
   const dispatch = useDispatch()
@@ -60,24 +66,14 @@ export default () => {
     }
   }
 
-  const downloadConfig = () => {
-    const isBlockly = tabIndex === 0
-    const fileType = isBlockly ? 'text/xml' : 'text/lua'
-    const fileContent = isBlockly ? xmlText : luaCode
-    const xmlBlob = new Blob([fileContent], { type: fileType })
-    const xmlUrl = URL.createObjectURL(xmlBlob)
-    const a = document.createElement('a')
-    a.href = xmlUrl
-    a.download = isBlockly ? 'blockly-config.xml' : 'lua-code.lua'
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-  }
-
   useEffect(() => {
     dispatch(setBlocklyCodeHandler(xmlText))
   }, [xmlText])
 
+  const handleCopyConfirm = () => {
+    setBlocklyLuaCode(blocklyCode)
+    setShowCopyPrompt(false)
+  }
   return (
     <Box mt={5}>
       <>
@@ -113,34 +109,53 @@ export default () => {
                 >
                   <Tab
                     sx={{ color: '#fff' }}
-                    label="Blockly Editor"
+                    label="Block Editor"
                     {...a11yProps(0)}
                   />
                   <Tab
                     sx={{ color: '#fff' }}
-                    label="Lua Code"
+                    label="Brain Code"
                     {...a11yProps(1)}
                   />
                 </Tabs>
               </Box>
               <Box>
-                <Button variant="outlined" onClick={downloadConfig}>
-                  Download
-                </Button>
+                {tabIndex === 0 && (
+                  <>
+                    <Tooltip title={'Sync Brain Code'}>
+                      <Button
+                        onClick={() => setShowCopyPrompt(true)}
+                        variant="contained"
+                        color="inherit"
+                      >
+                        Sync
+                      </Button>
+                    </Tooltip>
+                    <Popup
+                      open={showCopyPrompt}
+                      cancelAction={() => setShowCopyPrompt(false)}
+                      successAction={handleCopyConfirm}
+                      successLabel={'Confirm'}
+                      cancelLabel={'Cancel'}
+                      label={'Warning'}
+                      description={CreateFrobotBrainCodeCopyPromptDescription}
+                    />
+                  </>
+                )}
               </Box>
             </Box>
           </Box>
           {
             <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
               <Grid container>
-                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
                   <BlocklyEditor
                     defaultXml={blocklyCodeStore}
                     setXmlText={setXmlText}
                     workspaceDidChange={workspaceDidChange}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
                   <LuaEditor luaCode={luaCode} onEditorChange={() => {}} />
                 </Grid>
               </Grid>
@@ -149,7 +164,7 @@ export default () => {
           {
             <Box sx={{ p: 3 }} display={tabIndex === 1 ? 'block' : 'none'}>
               <LuaEditor
-                luaCode={brainCode?.brain_code || ''}
+                luaCode={blocklyLuaCode}
                 onEditorChange={onEditorChange}
               />
             </Box>

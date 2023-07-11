@@ -31,7 +31,7 @@ export const sections: Section[] = [
         path: 'controlling_tank',
       },
       {
-        title: 'CPU Rig Cycles',
+        title: 'Cpu Rig Cycles',
         path: 'cpu_rig_cycle',
       },
     ],

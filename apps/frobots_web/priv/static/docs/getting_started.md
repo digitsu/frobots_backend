@@ -1,109 +1,43 @@
 # Getting Started
 
-The frobots_client repository contains the client app and simulator GUI that you need to run the FUBARs arena to develop your own Frobots locally.
+Welcome to FROBOTs!
 
-FROBOTS are functions. They are essentially recursive functions.
+FROBOTs are functions. They are essentially recursive functions. 
+The FROBOTs are edited in Lua, or through the Block Editor in the Garage page of the platform.  To start, head over to http://frobots.io and setup an account.  Once you have logged onto the account you will be brought to the Dashboard where you can see the high level details of your statistics, latest news, matches, blogs and the number of other players online.
 
-## Login to Beta Server
+Head on over to the Garage, where we can get started with writing your first FROBOT!
 
-Website is at [http://beta.frobots.io](http://beta.frobots.io)
+## The Garage
 
- But you need to login with the invite link you recieved in your email. The first time you login, you will be asked to change your password.
+Here is where you can build, upgrade, and gear up your FROBOTs that you own.  Each can be seen as an icon to the side.  When you create a new FROBOT, you will be asked if you want to start the frobot modelled after an existing PROTObot.  These PROTOBOTs are prototypes of basic strategies which you can modify and customize, and represent just some very basic tactics that you can employ in your FROBOT.  We encourage you to experient with other ones, combinations of them, or invent your own!  Your FROBOTs success in the arena will reflect upon YOUR coding skills and ingenuity, so don't hesitate to experiment! 
 
-## Running the Client
+FROBOTs comprised of BRAINCODE, BLOCKCODE, and installed equipment.  We will go over each in turn:
 
-### Dependencies
+BRAINCODE is the Lua code that your represents your FROBOT's brain.  It is actually the code that runs on the simulator, and it is structured as one function that takes a STATE object and returns a STATE object.  Objects are represented as Lua tables.  The STATE object is the one place where your braincode can store information that is retrievable at the next iteration of the function call.  It is essential to store state variable in the STATE object without which your FROBOTs brain would have no way to store information between cycles.
 
-The client uses the Scenic library for Elixir, which is a thin gui library for IoT interfaces, but works well enough for our purposes.
+BLOCKCODE is the block representation of code that helps you create your BRAINCODE.  Blocks can be dragged and dropped in the editor which makes it easy to assemble BRAINCODE.  While you create blocks, the Lua code that is representative of the blocks is shown to the right.  After you are done, you can click SYNC button, to copy over the Lua code from the blocks into your BRAINCODE.  Also, when you click SAVE, BRAINCODE and the BLOCKCODE is saved.  Keep in mind that only the BRAINCODE is used when your FROBOT is run.
 
-Install OpenGL dependencies [https://hexdocs.pm/scenic/install_dependencies.html#content](https://hexdocs.pm/scenic/install_dependencies.html#content)
+When you create a new FROBOT you will be given a full set of MK1, and MK2 equipments with the FROBOT.  These include:
+1) Cannon Mk1, Mk2
+2) Scanner Mk1, Mk2
+3) Missile Mk1, Mk2
+4) Chassis Mk1, Mk2
 
-Running the pre-built install or binary
+### Equipping your FROBOT
 
-1. Download the latest release [here](https://github.com/Bittoku/frobots_client/).
+In the Garage, you can click the Equipment Bay, which will take you to the equipping screen.  This is where you can setup your FROBOT.
 
-2. Unzip the files and start a new terminal session in that directory.
+A FROBOT must start with a basic XFrame.  An XFrame provides the general Hitpoints and mobility options of your robot.  It also determines how many weapon and sensor slots that your FROBOT can equippe.  
 
-3. Run the client:
+Weapons include cannons, which fire projectiles. What ammunition is loaded for each cannon determines what it will fire.
+Sensors help your FROBOT detect where its enemies are, so that you can blow them up!
 
-    If you downloaded the tar file
+Cannons is your primary weapon.  They fire a certain distance, a magazine size and a rate of fire, which is the number of shots that can be made in 1 second.  After emptying the magazine, you must wait the reload time to get a new full magazine.
 
-    ```lua
-    <tardir>/bin/frobots_client start
-    ```
+Scanners are your primary sensor.  They send a directed radar ping in a given direction.  If an enemy is detected, then the distance at which they were detected is returned.  You should then fire your gun at that bearing and distance!
 
-    or if you downloaded the prebuilt single binary
+#### Slots
 
-    ```lua
-    ./frobots_client
-    ```
+Slots is the number of weapons or sensors that you can equippe.  The number of slots is determined by the Xframe that you are using.
 
-4. Login by entering your beta access username and password on the
-            client landing page. You only need to do this once.
 
-5. If you have not created a frobot before, you should create a new
-            frobot, create a bots dir in your $HOME dir, and create a .lua file.
-            The name of the file will be your FROBOT name
-
-    ```lua
-    $HOME/bots/[myfrobot].lua
-    ```  
-
-6. You can use any editor or IDE to create and edit the .lua file, and  you may find it easiest to keep the file open. Save it.
-
-7. On the client, upload your FROBOT to the beta server with the Upload
-            button. The client looks for all *.lua files in your $HOME/bots dir.
-
-8. If you previously updoaded FROBOTS but have deleted the local copies
-            of their brain files, you can press the Download button to get saved
-            Frobots. These FROBOTs will overwrite any in your /bots directory.
-
-9. Once uploaded, you should be able to see you FROBOT in the dropdown
-            list, to choose to battle.
-
-10. Click FIGHT to start the match.
-
-11. After the match, the results will be recorded. You can check the
-            results on the beta console&apos;s Leaderboard page.
-
-12. You should upload your FROBOTs code often, as it is only the copy
-            that is on the server which is used in matches, not your local
-            editable copy.
-
-13. Instructions on how to program your FROBOT can be found on the beta
-            console page, but you can experiment!
-
-14. You can only play your FROBOT against proto-bots for the beta. After
-            the game is released you will be able to pit your FROBOT against
-            other users FROBOTs in FUBARs.
-
-15. You can create as many FROBOTS as you like. But only a maximum of 3
-            will be preserved post-beta. The rest will go into the parts bin!
-
-### OPTIONAL Building locally
-
-1. Clone the game client repository
-
-   ```lua
-   git clone git@github.com:Bittoku/frobots_client.git
-   --recurse-submodules
-   ```
-
-2. Ensure you have Elixir 1.13 installed and Erlang 24, as there are
-        some incompatibilities with Erlang 25 with some of the dependencies.
-
-3. If you need to switch versions, install a version manager like [asdf](https://asdf-vm.com/guide/getting-started.html)
-
-4. Update your needed deps and build a release binary for the client using the following command:
-
-   ```lua
-   frobots_client$ mix deps.get
-
-   frobots_client$ MIX_ENV=prod mix release frobots_client
-   ```
-
-5. Run the binary
-
-   ```lua
-   frobots_client<rel version>/bin/frobots_client start
-   ```

@@ -6,6 +6,6 @@ defmodule Frobots.Repo.Migrations.FixNullXPFrobots do
   end
 
   def down do
-    IO.inspect("Nothing to Rollback;")
+    IO.puts("Nothing to Rollback;")
   end
 end

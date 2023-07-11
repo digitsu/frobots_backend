@@ -1,8 +1,6 @@
 defmodule Frobots.FrobotsApiTest do
   use Frobots.DataCase, async: true
   alias Frobots.Api
-  #  alias Frobots.Assets.Frobot
-  #  alias Ecto.Multi
   alias Frobots.Accounts
 
   @valid_frobot_attrs %{
@@ -25,9 +23,18 @@ defmodule Frobots.FrobotsApiTest do
              {:cannon_inst, {:insert, _cannon_inst_cs, []}},
              {:scanner_inst, {:insert, _scanner_inst_cs, []}},
              {:missile_inst, {:insert, _missile_inst_cs, []}},
+             {:cpu_inst, {:insert, _cpu_inst_cs, []}},
+             {:xframe_inst_mk2, {:insert, _xframe_inst_mk2_cs, []}},
+             {:cannon_inst_mk2, {:insert, _cannon_inst_mk2_cs, []}},
+             {:scanner_inst_mk2, {:insert, _scanner_inst_mk2_cs, []}},
+             {:missile_inst_mk2, {:insert, _missile_inst_mk2_cs, []}},
+             {:xframe_inst_mk3, {:insert, _xframe_inst_mk3_cs, []}},
+             {:cannon_inst_mk3, {:insert, _cannon_inst_mk3_cs, []}},
+             {:scanner_inst_mk3, {:insert, _scanner_inst_mk3_cs, []}},
              {:equip_xframe, {:run, _equip_xframe_cs}},
              {:equip_cannon, {:run, _equip_cannon_cs}},
              {:equip_scanner, {:run, _equip_scanner_cs}},
+             {:equip_cpu, {:run, _equip_cpu_cs}},
              # {:equip_missile, {:run, _equip_missile_cs}},
              {:update_user, {:run, _update_user_cs}}
            ] = Ecto.Multi.to_list(multi)
@@ -51,9 +58,18 @@ defmodule Frobots.FrobotsApiTest do
              {:cannon_inst, {:insert, _cannon_inst_cs, []}},
              {:scanner_inst, {:insert, _scanner_inst_cs, []}},
              {:missile_inst, {:insert, _missile_inst_cs, []}},
+             {:cpu_inst, {:insert, _cpu_inst_cs, []}},
+             {:xframe_inst_mk2, {:insert, _xframe_inst_mk2_cs, []}},
+             {:cannon_inst_mk2, {:insert, _cannon_inst_mk2_cs, []}},
+             {:scanner_inst_mk2, {:insert, _scanner_inst_mk2_cs, []}},
+             {:missile_inst_mk2, {:insert, _missile_inst_mk2_cs, []}},
+             {:xframe_inst_mk3, {:insert, _xframe_inst_mk3_cs, []}},
+             {:cannon_inst_mk3, {:insert, _cannon_inst_mk3_cs, []}},
+             {:scanner_inst_mk3, {:insert, _scanner_inst_mk3_cs, []}},
              {:equip_xframe, {:run, _equip_xframe_cs}},
              {:equip_cannon, {:run, _equip_cannon_cs}},
              {:equip_scanner, {:run, _equip_scanner_cs}},
+             {:equip_cpu, {:run, _equip_cpu_cs}},
              {:update_user, {:run, _update_user_cs}}
            ] = Ecto.Multi.to_list(multi)
 
