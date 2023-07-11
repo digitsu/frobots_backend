@@ -95,7 +95,7 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
         []
       else
         Enum.filter(equipment_inventory, fn equipment ->
-          equipment["frobot_id"] !== frobot.id
+          is_nil(equipment["frobot_id"])
         end)
       end
 
@@ -242,7 +242,7 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
         []
       else
         Enum.filter(equipment_inventory, fn equipment ->
-          equipment["frobot_id"] !== frobot.id
+          is_nil(equipment["frobot_id"])
         end)
       end
 
