@@ -31,13 +31,13 @@ defmodule FrobotsWeb.SendInvites do
 
   def send_email(emails) do
     for email <- emails do
-      if existing_user?(email) == nil do
-        new_user = %{"username" => email, "password" => "Secret!@#", "name" => email}
+      if is_nil(existing_user?(email)) do
+        new_user = %{"email" => email, "password" => "Secret!@#", "name" => email}
         {:ok, user} = Accounts.register_user(new_user)
         # get token
         token = generate_token(user.id)
 
-        build_mail(user.name, user.username, user.id, token)
+        build_mail(user.name, user.email, user.id, token)
         |> Mailer.deliver()
       end
     end
