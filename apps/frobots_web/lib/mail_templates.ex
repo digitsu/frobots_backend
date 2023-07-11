@@ -217,7 +217,7 @@ defmodule FrobotsWeb.MailTemplates do
                           <td style="padding:0;width:100%;" align="center">
                               <p style="margin:0;font-size:20px;line-height:16px;color:#000;">
                                 <a href="https://discord.gg/dSn3JzFExu" class="ghost-button">Join us on Discord</a>
-                                <a href="https://internal.frobots.io/users/log_in" class="ghost-button">Login to the beta platform</a>
+                                <a href="https://app.frobots.io/users/log_in" class="ghost-button">Login to the beta platform</a>
                               </p>
                           </td>
                         </tr>
