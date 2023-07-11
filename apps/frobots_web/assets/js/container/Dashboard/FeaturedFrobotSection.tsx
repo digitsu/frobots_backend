@@ -59,6 +59,7 @@ export default (props: FeaturedFrobotsProps) => {
                       objectFit: 'cover',
                       borderRadius: '20px 20px 10px 10px',
                     }}
+                    width={'100%'}
                     top={'50%'}
                     left={'50%'}
                     zIndex={1}

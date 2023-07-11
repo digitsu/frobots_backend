@@ -256,7 +256,7 @@ export default (props: AttachedEquipmentsProps) => {
               justifyContent="center"
             >
               <Typography variant={'subtitle1'}>
-                {"Bot doesn't have any attached equipment !"}
+                {"Frobot doesn't have any attached equipment !"}
               </Typography>
             </Box>
           )}

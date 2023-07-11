@@ -27,12 +27,12 @@ export default (props: any) => {
     useState(equipmentInventory)
 
   useEffect(() => {
-    const currentEquipment = equipmentInventory.length
-      ? equipmentInventory[0]
-      : frobotEquipments[0]
+    const currentEquipment = frobotEquipments.length
+      ? frobotEquipments[0]
+      : null
 
     dispatch(setCurrentEquipment(currentEquipment))
-    dispatch(setActiveEquipmentKey(currentEquipment.equipment_key))
+    dispatch(setActiveEquipmentKey(currentEquipment?.equipment_key))
     setAttachedEquipments(frobotEquipments)
     setAvailableEquipments(equipmentInventory)
   }, [])
@@ -49,13 +49,13 @@ export default (props: any) => {
           equipment.equipment_key === e.detail.currentEquipmentKey
       )
     } else {
-      currentEquipment = e.detail.equipmentInventory.length
-        ? e.detail.equipmentInventory[0]
-        : e.detail.frobotEquipments[0]
+      currentEquipment = e.detail.frobotEquipments.length
+        ? e.detail.frobotEquipments[0]
+        : null
     }
 
     dispatch(setCurrentEquipment(currentEquipment))
-    dispatch(setActiveEquipmentKey(currentEquipment.equipment_key))
+    dispatch(setActiveEquipmentKey(currentEquipment?.equipment_key))
     setAttachedEquipments(e.detail.frobotEquipments)
     setAvailableEquipments(e.detail.equipmentInventory)
   }, [])

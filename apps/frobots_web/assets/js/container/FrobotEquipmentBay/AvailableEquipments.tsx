@@ -166,153 +166,171 @@ export default (props: AvailableEquipmentPrpos) => {
                 pr: 2,
               }}
             >
-              <Box
-                onClick={handleClickPrevious}
-                sx={{
-                  m: '10px',
-                  backgroundColor: '#1C4250',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-              >
-                <ChevronLeftIcon
-                  sx={{
-                    color: currentSection === 1 ? '#FFFFFF7E' : '#FFFFFF',
-                  }}
-                />
-              </Box>
-              <Grid container spacing={2}>
-                {availableEquipments
-                  .slice(leftOffset, rightOffset)
-                  .map((equipment, index) => (
-                    <Grid item xs={6} sm={4} md={4} lg={4} key={index}>
-                      <Box textAlign={'center'}>
-                        <Typography
-                          sx={{
-                            fontSize: '0.8rem',
-                            overflow: 'visible',
-                          }}
-                          gutterBottom
-                          color={'#919EAB'}
-                          fontWeight={'bold'}
-                          variant={'subtitle1'}
-                          textTransform={'capitalize'}
-                          textOverflow={'ellipsis'}
-                          whiteSpace={'nowrap'}
-                        >
-                          {equipment.equipment_class} {equipment.equipment_type}
-                        </Typography>
-                      </Box>
-
-                      <Box
-                        position={'relative'}
-                        width={'100%'}
-                        height={'60%'}
-                        sx={{
-                          cursor: 'pointer',
-                          borderRadius: '6px',
-                          border:
-                            equipment.equipment_key === activeEquipmentKey
-                              ? '4px solid #00AB55'
-                              : '4px solid transparent',
-                        }}
-                      >
-                        {equipment.frobot_name && (
-                          <Box
-                            sx={{
-                              position: 'absolute',
-                              borderRadius: '0px 0px 6px 6px',
-                              bottom: 0,
-                              background: '#7d7d7dab',
-                              color: '#FFC107',
-                              width: '100%',
-                              height: '15%',
-                              opacity: 1,
-                              textAlign: 'center',
-                              textOverflow: 'ellipsis',
-                              overflow: 'hidden',
-                              whiteSpace: 'nowrap',
-                              fontWeight: 'bold',
-                              fontSize: '0.8rem',
-                            }}
-                          >
-                            {equipment.frobot_name}
+              {availableEquipments.length ? (
+                <>
+                  <Box
+                    onClick={handleClickPrevious}
+                    sx={{
+                      m: '10px',
+                      backgroundColor: '#1C4250',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <ChevronLeftIcon
+                      sx={{
+                        color: currentSection === 1 ? '#FFFFFF7E' : '#FFFFFF',
+                      }}
+                    />
+                  </Box>
+                  <Grid container spacing={2}>
+                    {availableEquipments
+                      .slice(leftOffset, rightOffset)
+                      .map((equipment, index) => (
+                        <Grid item xs={6} sm={4} md={4} lg={4} key={index}>
+                          <Box textAlign={'center'}>
+                            <Typography
+                              sx={{
+                                fontSize: '0.8rem',
+                                overflow: 'visible',
+                              }}
+                              gutterBottom
+                              color={'#919EAB'}
+                              fontWeight={'bold'}
+                              variant={'subtitle1'}
+                              textTransform={'capitalize'}
+                              textOverflow={'ellipsis'}
+                              whiteSpace={'nowrap'}
+                            >
+                              {equipment.equipment_class}{' '}
+                              {equipment.equipment_type}
+                            </Typography>
                           </Box>
-                        )}
 
-                        <Box
-                          borderRadius={'6px'}
-                          component={'img'}
-                          width={'100%'}
-                          height={'100%'}
-                          src={`${imageBaseUrl}${equipment.image}`}
-                          onClick={() => switchEquipment(equipment)}
-                        />
-                      </Box>
-                      {equipment.frobot_id ? (
-                        <Box
-                          paddingBottom={2}
-                          display="flex"
-                          alignItems={'center'}
-                          justifyContent={'center'}
-                        >
-                          <Button
-                            variant="text"
-                            size="small"
-                            color="warning"
+                          <Box
+                            position={'relative'}
+                            width={'100%'}
+                            height={'60%'}
                             sx={{
-                              mt: 2,
-                              backgroundColor: '#ffab0029',
-                              width: '100',
+                              cursor: 'pointer',
+                              borderRadius: '6px',
+                              border:
+                                equipment.equipment_key === activeEquipmentKey
+                                  ? '4px solid #00AB55'
+                                  : '4px solid transparent',
                             }}
-                            onClick={() => handleOnClickRedeploy(equipment)}
                           >
-                            Redeploy
-                          </Button>
-                        </Box>
-                      ) : (
-                        <Box
-                          paddingBottom={2}
-                          display="flex"
-                          alignItems={'center'}
-                          justifyContent={'center'}
-                        >
-                          <Button
-                            variant="text"
-                            size="small"
-                            color="warning"
-                            sx={{
-                              mt: 2,
-                              backgroundColor: '#ffab0029',
-                              width: '100',
-                            }}
-                            onClick={() => handleOnClickAttach(equipment)}
-                          >
-                            Attach
-                          </Button>
-                        </Box>
-                      )}
-                    </Grid>
-                  ))}
-              </Grid>
-              <Box
-                onClick={handleClickNext}
-                sx={{
-                  m: '10px',
-                  backgroundColor: '#1C4250',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-              >
-                <ChevronRightIcon
-                  sx={{
-                    color:
-                      totalSections === currentSection
-                        ? '#FFFFFF7E'
-                        : '#FFFFFF',
-                  }}
-                />
-              </Box>
+                            {equipment.frobot_name && (
+                              <Box
+                                sx={{
+                                  position: 'absolute',
+                                  borderRadius: '0px 0px 6px 6px',
+                                  bottom: 0,
+                                  background: '#7d7d7dab',
+                                  color: '#FFC107',
+                                  width: '100%',
+                                  height: '15%',
+                                  opacity: 1,
+                                  textAlign: 'center',
+                                  textOverflow: 'ellipsis',
+                                  overflow: 'hidden',
+                                  whiteSpace: 'nowrap',
+                                  fontWeight: 'bold',
+                                  fontSize: '0.8rem',
+                                }}
+                              >
+                                {equipment.frobot_name}
+                              </Box>
+                            )}
+
+                            <Box
+                              borderRadius={'6px'}
+                              component={'img'}
+                              width={'100%'}
+                              height={'100%'}
+                              src={`${imageBaseUrl}${equipment.image}`}
+                              onClick={() => switchEquipment(equipment)}
+                            />
+                          </Box>
+                          {equipment.frobot_id ? (
+                            <Box
+                              paddingBottom={2}
+                              display="flex"
+                              alignItems={'center'}
+                              justifyContent={'center'}
+                            >
+                              <Button
+                                variant="text"
+                                size="small"
+                                color="warning"
+                                sx={{
+                                  mt: 2,
+                                  backgroundColor: '#ffab0029',
+                                  width: '100',
+                                }}
+                                onClick={() => handleOnClickRedeploy(equipment)}
+                              >
+                                Redeploy
+                              </Button>
+                            </Box>
+                          ) : (
+                            <Box
+                              paddingBottom={2}
+                              display="flex"
+                              alignItems={'center'}
+                              justifyContent={'center'}
+                            >
+                              <Button
+                                variant="text"
+                                size="small"
+                                color="warning"
+                                sx={{
+                                  mt: 2,
+                                  backgroundColor: '#ffab0029',
+                                  width: '100',
+                                }}
+                                onClick={() => handleOnClickAttach(equipment)}
+                              >
+                                Attach
+                              </Button>
+                            </Box>
+                          )}
+                        </Grid>
+                      ))}
+                  </Grid>
+                  <Box
+                    onClick={handleClickNext}
+                    sx={{
+                      m: '10px',
+                      backgroundColor: '#1C4250',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <ChevronRightIcon
+                      sx={{
+                        color:
+                          totalSections === currentSection
+                            ? '#FFFFFF7E'
+                            : '#FFFFFF',
+                      }}
+                    />
+                  </Box>
+                </>
+              ) : (
+                <Box
+                  display="flex"
+                  width={'100%'}
+                  minHeight={'250px'}
+                  maxHeight={'250px'}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Typography variant={'subtitle1'}>
+                    {"No more equipment's available for attachment !"}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Card>
         </Grid>
