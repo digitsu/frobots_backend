@@ -131,6 +131,20 @@ export default (props: any) => {
     }
   }
 
+  const downloadConfig = () => {
+    const isBlockly = tabIndex === 0
+    const fileType = isBlockly ? 'text/xml' : 'text/lua'
+    const fileContent = isBlockly ? xmlText : luaCode
+    const xmlBlob = new Blob([fileContent], { type: fileType })
+    const xmlUrl = URL.createObjectURL(xmlBlob)
+    const a = document.createElement('a')
+    a.href = xmlUrl
+    a.download = isBlockly ? 'blockly-config.xml' : 'lua-code.lua'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }
+
   const handleRunSimulation = () => {
     if (!luaCode || luaCode.trim() === '') {
       return alert("Simulation can't be started with empty lua code")
@@ -264,10 +278,29 @@ export default (props: any) => {
                   />
                 </Tabs>
               </Box>
-              <Box display={'flex'} flex={6} mb={1} alignItems={'center'}>
+              <Box
+                display={'flex'}
+                flex={6}
+                mb={1}
+                gap={1}
+                alignItems={'center'}
+              >
+                {currentUser.admin && (
+                  <Tooltip title={'Download Brain Code'}>
+                    <Button
+                      color="inherit"
+                      variant="outlined"
+                      size="small"
+                      sx={{ p: 1 }}
+                      onClick={downloadConfig}
+                    >
+                      Download
+                    </Button>
+                  </Tooltip>
+                )}
                 {isOwnFrobot && (
                   <>
-                    <Tooltip title={'Save Brain code'}>
+                    <Tooltip title={'Save Brain Code'}>
                       <Button
                         variant="outlined"
                         color="inherit"
@@ -292,11 +325,9 @@ export default (props: any) => {
                       }
                     />
                   </>
-                )}{' '}
+                )}
                 <Autocomplete
                   sx={{
-                    pl: 1,
-                    pr: 1,
                     width: 200,
                     flex: isSelectedProtobot ? 3 : 5,
                   }}
@@ -324,7 +355,6 @@ export default (props: any) => {
                     />
                   )}
                 />
-                {''}
                 <Box display={'flex'} gap={1}>
                   {isSelectedProtobot && (
                     <Tooltip title={'Run Simulation'}>
@@ -338,7 +368,7 @@ export default (props: any) => {
                         <PlayArrowIcon />
                       </Button>
                     </Tooltip>
-                  )}{' '}
+                  )}
                   {tabIndex === 0 && (
                     <Tooltip title={'Sync Brain Code'}>
                       <Button
