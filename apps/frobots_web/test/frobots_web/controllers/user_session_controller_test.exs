@@ -14,7 +14,7 @@ defmodule FrobotsWeb.UserSessionControllerTest do
       response = html_response(conn, 200)
 
       assert response =~ "<h2 class=\"text-3xl leading-9 font-bold text-white\">Login </h2>"
-      assert response =~ "New\n            user ?"
+      assert response =~ "New user ?"
       assert response =~ "Create an Account"
       assert response =~ "Enter your email"
       assert response =~ "Enter your password"
@@ -82,7 +82,7 @@ defmodule FrobotsWeb.UserSessionControllerTest do
       response = html_response(conn, 200)
 
       assert response =~ "Login"
-      assert response =~ "New\n            user ?"
+      assert response =~ "New user ?"
       assert response =~ "Create an Account"
       assert response =~ "Enter your email"
       assert response =~ "Enter your password"
