@@ -4,7 +4,7 @@ defmodule FrobotsUmbrella.MixProject do
   def project do
     [
       apps_path: "apps",
-      version: "0.2.2",
+      version: "0.3.0-beta",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       elixir: "~> 1.13",
