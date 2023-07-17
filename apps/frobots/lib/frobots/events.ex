@@ -411,31 +411,43 @@ defmodule Frobots.Events do
             "avatar" => f.avatar,
             "pixellated_image" => f.pixellated_img,
             "xp" => f.xp,
-            "slot_id" => s.id
+            "slot_id" => s.id,
+            "class" => f.class
           },
           "user_name" => u.name,
           "death_map" => b.death_map,
           "xp_earned" => b.xp
         }
 
+    frobots = q |> Repo.all()
+
+    winners =
+      Enum.reduce(frobots, [], fn f, winner ->
+        if f["frobot"]["class"] == "U" and f["frobot"]["id"] in f["winner"] do
+          [f["frobot"]["id"] | winner]
+        else
+          winner
+        end
+      end)
+
     frobots =
-      q
-      |> Repo.all()
+      frobots
       |> Enum.map(fn e ->
         %{
-          "winner" => e["winner"],
+          "winner" => winners,
           "frobot" => %{
             "id" => e["frobot"]["id"],
             "name" => e["frobot"]["name"],
             "avatar" => e["frobot"]["avatar"],
             "pixellated_image" => e["frobot"]["pixellated_image"],
             "xp" => e["frobot"]["xp"],
-            "slot_id" => e["frobot"]["slot_id"]
+            "slot_id" => e["frobot"]["slot_id"],
+            "class" => e["frobot"]["class"]
           },
           "user_name" => e["user_name"],
-          "health" => get_health(e["death_map"], e["frobot"]["name"], e["frobot"]["id"]),
+          "health" => get_health(e["death_map"], e["frobot"]["name"], e["frobot"]["slot_id"]),
           "kills" => get_kill(e["death_map"], e["frobot"]["name"], e["frobot"]["slot_id"]),
-          "xp_earned" => get_xp(e["xp_earned"], e["frobot"]["id"])
+          "xp_earned" => get_xp(e["xp_earned"], e["frobot"]["id"], e["frobot"]["class"])
         }
       end)
 
@@ -453,14 +465,26 @@ defmodule Frobots.Events do
 
   defp get_health(death_map, frobot_name, slot_id) do
     key = "#{frobot_name}##{slot_id}"
-    damage_map = Map.get(death_map, key, %{"damage_map" => %{}})["damage_map"]
-    damage = Map.get(damage_map, key, 0)
-    health = 100 - damage
-    health
+    damage_map = Map.get(death_map, key)
+
+    damage =
+      case damage_map do
+        nil ->
+          0
+
+        %{"damage_map" => damage_map} ->
+          Enum.reduce(damage_map, 0, fn {_k, v}, damage -> damage + v end)
+      end
+
+    if damage > 100, do: 0, else: 100 - damage
   end
 
-  defp get_xp(xp_earned_map, frobot_id) do
+  defp get_xp(xp_earned_map, frobot_id, "U") do
     Map.get(xp_earned_map, frobot_id |> to_string(), 0)
+  end
+
+  defp get_xp(_xp_earned_map, _frobot_id, _) do
+    0
   end
 
   defp get_kill(death_map, frobot_name, frobot_id) do
