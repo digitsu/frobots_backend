@@ -5,7 +5,7 @@ const initialState = {
   activeStep: 0,
   matchTitle: '',
   matchDescription: '',
-  matchTime: moment(new Date()).format('YYYY-MM-DDTHH:mm'),
+  matchTime: moment().add(10, 'minutes').format('YYYY-MM-DDTHH:mm'),
   countDownTimer: 0,
   mapSelected: null,
   minFrobots: 1,
