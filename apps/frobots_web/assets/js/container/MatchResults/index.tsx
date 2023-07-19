@@ -58,22 +58,24 @@ export default (props) => {
           </Grid>
         ) : (
           <Grid container spacing={2}>
-            {match_results.frobots?.map(
-              ({ frobot, health, kills, xp_earned, user_name, winner }) => (
-                <Grid item xs={12}>
-                  <ResultItem
-                    key={frobot.id}
-                    frobot={frobot}
-                    health={health}
-                    kills={kills}
-                    xp_earned={xp_earned}
-                    user_name={user_name}
-                    winner={winner}
-                    s3_base_Url={s3_base_Url}
-                  />
-                </Grid>
-              )
-            )}
+            {match_results.frobots
+              ?.filter(({ frobot }) => frobot !== null)
+              ?.map(
+                ({ frobot, health, kills, xp_earned, user_name, winner }) => (
+                  <Grid item xs={12}>
+                    <ResultItem
+                      key={frobot.id}
+                      frobot={frobot}
+                      health={health}
+                      kills={kills}
+                      xp_earned={xp_earned}
+                      user_name={user_name}
+                      winner={winner}
+                      s3_base_Url={s3_base_Url}
+                    />
+                  </Grid>
+                )
+              )}
           </Grid>
         )}
       </Box>
