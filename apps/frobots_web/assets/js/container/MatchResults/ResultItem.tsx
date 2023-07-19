@@ -9,6 +9,7 @@ export default ({
   kills,
   winner,
 }) => {
+  const isProtobot = frobot.class !== null && frobot.class.toUpperCase() === 'P'
   return (
     <Card sx={{ py: 2, px: 4 }}>
       <Box
@@ -37,9 +38,15 @@ export default ({
         <Box flex={1}>
           <Typography
             variant="caption"
-            color={winner.includes(frobot.id) ? '#00AB55' : '#FF0000'}
+            color={
+              isProtobot
+                ? '#fff'
+                : winner.includes(frobot.id)
+                ? '#00AB55'
+                : '#FF0000'
+            }
           >
-            {winner.includes(frobot.id) ? 'Winner' : 'Lost'}
+            {isProtobot ? '-' : winner.includes(frobot.id) ? 'Winner' : 'Lost'}
           </Typography>
         </Box>
       </Box>
