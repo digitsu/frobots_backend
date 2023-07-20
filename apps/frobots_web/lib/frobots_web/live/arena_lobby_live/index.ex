@@ -64,26 +64,30 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
           %{status: "open", slot_type: nil, frobot_id: nil}
       end
 
-    case Api.update_slot(match, current_user_id, slot_id, attrs) do
-      {:ok, updated_slot} ->
-        updated_slots =
-          Enum.reduce(match.slots |> Enum.reverse(), [], fn slot, acc ->
-            if slot.id == updated_slot.id do
-              [Map.put(slot, :status, updated_slot.status) | acc]
-            else
-              [slot | acc]
-            end
-          end)
-          |> Enum.sort_by(& &1.id)
+    if match.status == :pending do
+      case Api.update_slot(match, current_user_id, slot_id, attrs) do
+        {:ok, updated_slot} ->
+          updated_slots =
+            Enum.reduce(match.slots |> Enum.reverse(), [], fn slot, acc ->
+              if slot.id == updated_slot.id do
+                [Map.put(slot, :status, updated_slot.status) | acc]
+              else
+                [slot | acc]
+              end
+            end)
+            |> Enum.sort_by(& &1.id)
 
-        updated_match = Map.put(match, :slots, updated_slots)
-        {:noreply, socket |> assign(:match, updated_match)}
+          updated_match = Map.put(match, :slots, updated_slots)
+          {:noreply, socket |> assign(:match, updated_match)}
 
-      {:error, :slot_not_found} ->
-        {:noreply, put_flash(socket, :error, "invalid slot id")}
+        {:error, :slot_not_found} ->
+          {:noreply, put_flash(socket, :error, "invalid slot id")}
 
-      {:error, changeset} ->
-        {:noreply, assign(socket, match_changeset: changeset)}
+        {:error, changeset} ->
+          {:noreply, assign(socket, match_changeset: changeset)}
+      end
+    else
+      {:noreply, put_flash(socket, :error, "cannot update as match already started")}
     end
   end
 

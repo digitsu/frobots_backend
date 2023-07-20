@@ -766,4 +766,8 @@ defmodule Frobots.Api do
 
   def get_default_xframe!(), do: Assets.get_xframe!(:Chassis_Mk1)
   def get_default_cpu!(), do: Assets.get_cpu!(:Mk1)
+
+  def get_default_cannon!(), do: Assets.get_cannon!(:Mk1)
+  def get_default_missile!(), do: Assets.get_missile!(:Mk1)
+  def get_default_scanner!(), do: Assets.get_scanner!(:Mk1)
 end

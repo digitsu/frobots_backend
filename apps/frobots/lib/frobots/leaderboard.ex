@@ -280,7 +280,7 @@ defmodule Frobots.Leaderboard do
         frobots f,
         users u
       where
-        ls.frobot_id = f.id and f.user_id = u.id;", [])
+        ls.frobot_id = f.id and f.user_id = u.id and f.class = 'U';", [])
 
     Enum.map(result.rows, fn row ->
       %{
