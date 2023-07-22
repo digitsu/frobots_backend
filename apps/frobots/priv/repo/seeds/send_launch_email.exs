@@ -2,8 +2,18 @@ alias FrobotsWeb.{BetaMailer, MailTemplates}
 alias Frobots.{Accounts, Mailer}
 alias FrobotsWeb.SendgridApi
 
-base_url = Application.get_env(:sendgrid, :base_url)
-{:ok, emails} = SendgridApi.get_contacts(base_url)
+filename = Application.get_env(:frobots_web, :beta_email_list)
+file_path = Path.join([:code.priv_dir(:frobots_web), "csv", filename ])
+emails = File.read!(file_path)
+  |> String.split(",", trim: true)
+  |> Enum.filter(fn x -> String.contains?(x, "@") end)
+  |> Enum.map( fn x -> Regex.split(~r{\n}, x) end)
+  |> Enum.into( [], fn [_, email] -> email end)
+  |> Enum.map( fn x -> String.replace(x, "\"", "") end)
+IO.puts "Going to send mails to this list\n"
+IO.inspect emails
+# base_url = Application.get_env(:sendgrid, :base_url)
+# {:ok, emails} = SendgridApi.get_contacts(base_url)
 
 for email <- emails do
   user = Accounts.get_user_by_email(email)

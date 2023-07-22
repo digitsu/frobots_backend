@@ -14,6 +14,7 @@ if [[ $CI_COMMIT_BRANCH == "main" ]]; then
     S3_SECRET_KEY=$S3_SECRET_KEY_PROD
     S3_BUCKET=$S3_BUCKET_PROD
     GUARDIAN_SECRET_KEY=$GUARDIAN_SECRET_KEY_PROD
+    BETA_EMAIL_LIST=$BETA_EMAIL_LIST_PROD
     dockerfile=./Dockerfile.prod
 elif [[ $CI_COMMIT_BRANCH == "main2" ]]; then
     ip=$FROBOTSBACKEND_PROD2
@@ -23,6 +24,7 @@ elif [[ $CI_COMMIT_BRANCH == "main2" ]]; then
     S3_SECRET_KEY=$S3_SECRET_KEY_PROD
     S3_BUCKET=$S3_BUCKET_PROD
     GUARDIAN_SECRET_KEY=$GUARDIAN_SECRET_KEY_PROD
+    BETA_EMAIL_LIST=$BETA_EMAIL_LIST_PROD
     dockerfile=./Dockerfile.prod
 elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     ip=$FROBOTSBACKEND_STAGING
@@ -34,6 +36,7 @@ elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
     S3_SECRET_KEY=$S3_SECRET_KEY_STAGING
     S3_BUCKET=$S3_BUCKET_STAGING
     GUARDIAN_SECRET_KEY=$GUARDIAN_SECRET_KEY_STAGING
+    BETA_EMAIL_LIST=$BETA_EMAIL_LIST_STAGING
     dockerfile=./Dockerfile.staging
 else
     ip='not a valid branch'
