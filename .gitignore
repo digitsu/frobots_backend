@@ -36,9 +36,9 @@ crash_logs/
 apps/frobots_web/priv/static/
 !apps/frobots_web/priv/static/docs
 
-# any csv
-*.csv
-#*.txt
+
+# scratch texts
+*.txt
 
 # do not keep the env secrets in repo
 .env
