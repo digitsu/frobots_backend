@@ -24,7 +24,7 @@ for email <- emails do
     else
       {:ok, user}
     end
-
+  IO.puts "Sending mail to #{user.email}"
   template = MailTemplates.beta_launch_mail_template()
   BetaMailer.welcome(%{name: user.name, email: user.email}, template)
   |> Mailer.deliver()
