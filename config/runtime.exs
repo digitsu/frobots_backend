@@ -154,4 +154,6 @@ if config_env() == :prod || config_env() == :staging do
     url: database_url,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
     socket_options: maybe_ipv6
+
+  config :frobots_web, :beta_email_list, System.get_env("BETA_EMAIL_LIST")
 end
