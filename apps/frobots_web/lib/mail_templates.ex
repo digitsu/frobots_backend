@@ -162,12 +162,12 @@ defmodule FrobotsWeb.MailTemplates do
                           <td style="padding:0;color:#70ff00;">
                             <h1 style="font-size:24px;margin:0 0 20px 0;">Welcome Beta Testers!</h1>
 
-                            <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;">It has been a long road, pocked with many obstacles, but we are finally ready to begin beta testing. We are looking for a few goo d testers to help us work out the kinks and make sure that the game is ready for beta release.&nbsp; You are early adopters, interested coders, gamers , or just love the idea of battling robots in virtual arenas.&nbsp; But you stuck with us.&nbsp; And for that myself and the team are eternally grateful.</p><br/>
+                            <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;">It has been a long road, pocked with many obstacles, but we are finally ready to begin beta testing. We are looking for a few good testers to help us work out the kinks and make sure that the game is ready for beta release.&nbsp; You are early adopters, interested coders, gamers, or just love the idea of battling robots in virtual arenas.&nbsp; But you stuck with us.&nbsp; And for that myself and the team are eternally grateful.</p><br/>
 
                             <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;">With the beta release, the following features are now supported</p>
                             <p style="margin:0;font-size:16px;line-height:24px;">
                               <ol dir="ltr">
-                                <li>&nbsp;Block Editor programming.&nbsp; You can now program your own blocks and use them in your robots.&nbsp; We have a few examples in the game, but we are looking forward to seeing what you come up with.&nbsp; This is great for people who don't really wish to learn how to program by typing out long form text.<br></li>
+                                <li>Block Editor programming.&nbsp; You can now program your own blocks and use them in your robots.&nbsp; We have a few examples in the game, but we are looking forward to seeing what you come up with.&nbsp; This is great for people who don't really wish to learn how to program by typing out long form text.<br></li>
                                 <li>Multiplayer.&nbsp; You can now battle your friends in the arena.&nbsp; We have a few arenas to choose from, and we are looking forward to adding more.&nbsp; We have a few game modes, but we are looking forward to adding more.<br>
                                 </li>
                                 <li>Single Player.&nbsp; You can now battle the AI in the arena.&nbsp; We have a few arenas to choose from, and we are looking forward to adding more.<br></li>
@@ -203,7 +203,7 @@ defmodule FrobotsWeb.MailTemplates do
 
                             <p style="margin:0;font-size:16px;line-height:24px;">Thank you for your support.&nbsp; We look forward to seeing you in the arena.</p><br />
 
-                            <p style="margin:0;font-size:16px;line-height:24px;">DIGITSU</p><br />
+                            <p style="margin:0;font-size:16px;line-height:24px;">FROBOTs TEAM</p><br />
 
                           </td>
                         </tr>
