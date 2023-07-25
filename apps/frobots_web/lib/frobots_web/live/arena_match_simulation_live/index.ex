@@ -301,4 +301,28 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
     # |> assign_new(:rider_search, fn -> rider_search end)
     socket
   end
+
+  @spec seconds_to_hh_mm_ss(integer | nil | float) :: String.t()
+  def seconds_to_hh_mm_ss(value) when is_integer(value) or is_nil(value) do
+    case value do
+      nil ->
+        "00:00:00"
+
+      integer_value when is_integer(integer_value) ->
+        hours = div(integer_value, 3600)
+        remaining_seconds = rem(integer_value, 3600)
+        minutes = div(remaining_seconds, 60)
+        seconds = rem(remaining_seconds, 60)
+
+        formatted_hours = Integer.to_string(hours)
+        formatted_minutes = Integer.to_string(minutes)
+        formatted_seconds = Integer.to_string(seconds)
+
+        formatted_hours = String.pad_leading(formatted_hours, 2, "0")
+        formatted_minutes = String.pad_leading(formatted_minutes, 2, "0")
+        formatted_seconds = String.pad_leading(formatted_seconds, 2, "0")
+
+        "#{formatted_hours}:#{formatted_minutes}:#{formatted_seconds}"
+    end
+  end
 end
