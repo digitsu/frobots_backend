@@ -130,7 +130,7 @@ export default (props: any) => {
     )
   }
   return (
-    <Box width={'90%'} m={'auto'}>
+    <Box width={'90%'} m={'auto'} pb={4}>
       {isGameStarted ? (
         <Grid container mt={4}>
           <Grid item sm={12} md={9} lg={9} xl={9}>

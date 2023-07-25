@@ -94,7 +94,7 @@ export default (props) => {
   }
 
   return (
-    <Box width={'90%'} m={'auto'}>
+    <Box width={'90%'} m={'auto'} pb={4}>
       <Grid container spacing={2}>
         <Grid md={12} width={'100%'}>
           <Box
@@ -120,8 +120,8 @@ export default (props) => {
           <LobbyDetails
             title={title}
             description={description}
-            min_player_frobot={min_player_frobot}
-            max_player_frobot={max_player_frobot}
+            // min_player_frobot={min_player_frobot}
+            // max_player_frobot={max_player_frobot}
             arena={arena}
             matchTime={match?.match_time}
           />
