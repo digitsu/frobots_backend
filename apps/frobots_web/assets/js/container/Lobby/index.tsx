@@ -111,7 +111,7 @@ export default (props) => {
               {status !== 'done'
                 ? isHost && status === 'pending'
                   ? 'Start Match'
-                  : 'Join'
+                  : 'Join Match'
                 : 'View Results'}
             </Button>
           </Box>
