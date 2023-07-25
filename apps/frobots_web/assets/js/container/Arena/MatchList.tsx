@@ -234,7 +234,7 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                     ) : (
                       <>
                         <Button
-                          disabled={match.status === 'cancelled'}
+                          disabled
                           variant="outlined"
                           size="medium"
                           sx={{
