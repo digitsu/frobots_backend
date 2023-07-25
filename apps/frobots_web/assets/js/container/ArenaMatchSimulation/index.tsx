@@ -28,7 +28,7 @@ export default (props: any) => {
 
   const showStartMatchButton = isHost
   useEffect(() => {
-    if (showStartMatchButton) {
+    if (isHost && match.status === 'pending') {
       startMatchHandler()
     }
   }, [])
