@@ -5,6 +5,7 @@ defmodule FrobotsWeb.MatchResultsLive.Index do
 
   @impl Phoenix.LiveView
   def mount(%{"match_id" => match_id} = _params, _session, socket) do
+    FrobotsWeb.Presence.track(socket)
     match_results = Events.get_match_details(String.to_integer(match_id))
 
     match = Api.get_match_details_by_id(match_id)

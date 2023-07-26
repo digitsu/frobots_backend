@@ -5,6 +5,7 @@ defmodule FrobotsWeb.PlayerProfileLive.Index do
 
   @impl Phoenix.LiveView
   def mount(params, _session, socket) do
+    FrobotsWeb.Presence.track(socket)
     user_id = params["id"]
 
     if !user_id do

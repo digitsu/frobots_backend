@@ -35,7 +35,7 @@ defmodule Frobots.GlobalStats do
       # players_registered: 30
       #}
   """
-  def get_global_stats(current_user) do
+  def get_global_stats(current_user, players_online) do
     user_frobots = Assets.get_user_frobots(current_user.id)
     players_registered = Accounts.count_users()
 
@@ -44,7 +44,7 @@ defmodule Frobots.GlobalStats do
       upcoming_matches: Events.count_matches_by_status(:pending),
       completed_matches: Events.count_matches_by_status(:done),
       current_matches: Events.count_matches_by_status(:running),
-      players_online: :rand.uniform(players_registered),
+      players_online: players_online,
       players_registered: players_registered
     }
   end

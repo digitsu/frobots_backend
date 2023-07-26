@@ -11,6 +11,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
         %{"user_id" => id, "user_token" => _user_token},
         socket
       ) do
+    FrobotsWeb.Presence.track(socket)
     match = Api.get_match_details_by_id(match_id)
     arenas = Api.list_arena()
     s3_base_url = Api.get_s3_base_url()
