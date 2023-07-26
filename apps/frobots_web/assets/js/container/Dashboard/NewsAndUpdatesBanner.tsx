@@ -15,7 +15,7 @@ interface NewsAndUpdatesProps {
 
 export default ({ post }: NewsAndUpdatesProps) => {
   return (
-    <Card>
+    <Card sx={{ mt: 1 }}>
       <Box
         position={'relative'}
         width={'100%'}
