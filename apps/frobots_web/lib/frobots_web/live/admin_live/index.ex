@@ -5,6 +5,7 @@ defmodule FrobotsWeb.AdminLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
+    FrobotsWeb.Presence.track(socket)
     current_user = Accounts.get_user_by_session_token(session["user_token"])
 
     if Accounts.user_is_admin?(current_user) do

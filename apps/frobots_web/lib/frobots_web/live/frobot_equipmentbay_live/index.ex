@@ -5,6 +5,7 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
 
   @impl Phoenix.LiveView
   def mount(%{"id" => frobot_id} = _params, session, socket) do
+    FrobotsWeb.Presence.track(socket)
     current_user = Accounts.get_user_by_session_token(session["user_token"])
 
     # If frobot_id is missing in the url redirect user to garage

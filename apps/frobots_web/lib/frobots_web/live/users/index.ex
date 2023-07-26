@@ -6,6 +6,7 @@ defmodule FrobotsWeb.UsersLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
+    FrobotsWeb.Presence.track(socket)
     users = Accounts.list_users()
     {:ok, socket |> assign(:users, users)}
   end
@@ -17,13 +18,6 @@ defmodule FrobotsWeb.UsersLive.Index do
   end
 
   defp apply_action(socket, :index, _params) do
-    # entries = Frobots.LeaderBoard.get()
-    # {:ok,socket
-    # |> assign(:entries, entries)
-    # }
-
-    #  socket
-    # |> assign_new(:rider_search, fn -> rider_search end)
     socket
   end
 

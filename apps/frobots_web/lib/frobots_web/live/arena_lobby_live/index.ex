@@ -2,6 +2,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
   alias Frobots.{Api, Events, Assets, Accounts}
+  alias FrobotsWeb.Presence
 
   @impl Phoenix.LiveView
   def mount(
@@ -9,6 +10,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
         %{"user_id" => id, "user_token" => user_token},
         socket
       ) do
+    Presence.track(socket)
     match = Api.get_match_details_by_id(match_id)
     s3_base_url = Api.get_s3_base_url()
     current_user = Accounts.get_user_by_session_token(user_token)

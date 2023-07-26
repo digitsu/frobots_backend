@@ -8,6 +8,7 @@ defmodule FrobotsWeb.ArenaCreateMatchLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
+    FrobotsWeb.Presence.track(socket)
     current_user = Accounts.get_user!(id)
     s3_base_url = Api.get_s3_base_url()
 
