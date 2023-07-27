@@ -55,6 +55,11 @@ defmodule FrobotsWeb.HomeLive.Index do
     {:noreply, assign(socket, :global_stats, updated_global_stats)}
   end
 
+  @impl Phoenix.LiveView
+  def handle_info(_msg, socket) do
+    {:noreply, socket}
+  end
+
   defp apply_action(socket, :index, _params) do
     socket
   end
