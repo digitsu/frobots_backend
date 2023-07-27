@@ -22,7 +22,7 @@ defmodule FrobotsWeb.DocsLive.Index do
       {:error, message} ->
         {:ok,
          socket
-         |> put_flash(:error, "Document not found filepath : #{file_path} , error : #{message}")
+         |> put_flash(:error, "Document '#{file_name}' not found error : #{message}")
          |> push_redirect(to: "/home")}
     end
   end
