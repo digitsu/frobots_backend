@@ -79,7 +79,7 @@ export const SideNavItem: FC<SideNavItemProps> = (props) => {
               fontSize: depth > 0 ? 13 : 14,
               fontWeight: 600,
               lineHeight: '24px',
-              whiteSpace: 'nowrap',
+              whiteSpace: 'break-spaces',
               ...(active && {
                 color: 'primary.main',
                 fontWeight: 700,
@@ -160,7 +160,7 @@ export const SideNavItem: FC<SideNavItemProps> = (props) => {
             fontSize: depth > 0 ? 13 : 14,
             fontWeight: 600,
             lineHeight: '24px',
-            whiteSpace: 'nowrap',
+            whiteSpace: 'break-spaces',
             ...(active && {
               color: 'primary.main',
               fontWeight: 700,
