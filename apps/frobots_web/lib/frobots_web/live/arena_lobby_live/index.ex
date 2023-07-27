@@ -251,6 +251,8 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
     {:noreply, socket |> assign(:time_left, time_left)}
   end
 
+  def handle_info(_, socket), do: {:noreply, socket}
+
   defp to_atom(value) when is_binary(value), do: String.to_atom(value)
   defp to_atom(value), do: value
 
