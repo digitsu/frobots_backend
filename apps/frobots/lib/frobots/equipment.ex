@@ -611,11 +611,11 @@ defmodule Frobots.Equipment do
   #############################################################################
   ## loadout API
   ##
-  ## API needed for a frobot to create its 'tank' for FUBARs.
+  ## API needed for a frobot to create its 'rig' for FUBARs.
   #############################################################################
 
   @doc """
-  getting the stats of weapons, this is used by the frobot when it is creating its 'tank'
+  getting the stats of weapons, this is used by the frobot when it is creating its 'rig'
   """
   def get_weapon_loadout(_frobot) do
     # return a list of the weapons equipped, in the form

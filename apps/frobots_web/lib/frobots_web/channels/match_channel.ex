@@ -246,28 +246,28 @@ defmodule FrobotsWeb.MatchChannel do
   end
 
   @impl true
-  @spec handle_info({:create_tank, String.t(), location}, Phoenix.Socket.t()) ::
+  @spec handle_info({:create_rig, String.t(), location}, Phoenix.Socket.t()) ::
           {:noreply, Phoenix.Socket.t()}
-  def handle_info({:create_tank, _frobot, _loc} = msg, socket) do
+  def handle_info({:create_rig, _frobot, _loc} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
-    # nop because tanks are created by the init, and we can ignore this message
-    # may use this if in future init does not place the tank at loc, and only gives it a name and id.
+    # nop because rigs are created by the init, and we can ignore this message
+    # may use this if in future init does not place the rig at loc, and only gives it a name and id.
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({:move_tank, String.t(), location, degree, speed}, Phoenix.Socket.t()) ::
+  @spec handle_info({:move_rig, String.t(), location, degree, speed}, Phoenix.Socket.t()) ::
           {:noreply, Phoenix.Socket.t()}
-  def handle_info({:move_tank, frobot, loc, heading, speed} = msg, socket) do
-    inspect([:move_tank, frobot, loc, heading, speed])
+  def handle_info({:move_rig, frobot, loc, heading, speed} = msg, socket) do
+    inspect([:move_rig, frobot, loc, heading, speed])
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
 
   @impl true
-  @spec handle_info({:kill_tank, String.t()}, Phoenix.Socket.t()) ::
+  @spec handle_info({:kill_rig, String.t()}, Phoenix.Socket.t()) ::
           {:noreply, Phoenix.Socket.t()}
-  def handle_info({:kill_tank, _frobot} = msg, socket) do
+  def handle_info({:kill_rig, _frobot} = msg, socket) do
     broadcast(socket, "arena_event", encode_event(msg))
     {:noreply, socket}
   end
