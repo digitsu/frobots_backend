@@ -37,16 +37,16 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
 
           _snapshot = %{
             missile: arena_state.missile,
-            tank:
-              Enum.map(arena_state.tank, fn {tank_name, _} ->
-                {:ok, tank} =
+            rig:
+              Enum.map(arena_state.rig, fn {rig_name, _} ->
+                {:ok, rig} =
                   Fubars.Registry.lookup(
                     Fubars.via_tuple(arena_state.rig_registry_name),
-                    tank_name,
-                    :tank
+                    rig_name,
+                    :rig
                   )
 
-                Fubars.Rig.get_state(tank)
+                Fubars.Rigs.get_state(rig)
                 |> Map.from_struct()
                 |> Map.take([:curr_loc, :health, :status, :name, :max_health, :heading, :speed])
               end) ++
@@ -195,21 +195,21 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
   end
 
   @impl true
-  def handle_info({:create_tank, _frobot, _loc} = msg, socket) do
+  def handle_info({:create_rig, _frobot, _loc} = msg, socket) do
     {:noreply,
      socket
      |> push_event(:arena_event, encode_event(msg))}
   end
 
   @impl true
-  def handle_info({:move_tank, _frobot, _loc, _heading, _speed} = msg, socket) do
+  def handle_info({:move_rig, _frobot, _loc, _heading, _speed} = msg, socket) do
     {:noreply,
      socket
      |> push_event(:arena_event, encode_event(msg))}
   end
 
   @impl true
-  def handle_info({:kill_tank, _frobot} = msg, socket) do
+  def handle_info({:kill_rig, _frobot} = msg, socket) do
     {:noreply,
      socket
      |> push_event(:arena_event, encode_event(msg))}
