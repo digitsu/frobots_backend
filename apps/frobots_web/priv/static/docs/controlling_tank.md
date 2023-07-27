@@ -1,7 +1,7 @@
 
 # Controlling your Tank
 
-Frobots wouldn&rsquo;t be very interesting if they were just disembodied AIs floating around in virtual space. So in order for them to actually DO anything they are uploaded into a FROBOT CPU RIG, which is a Virtual Machine where they can execute their commands. Think of the CPU RIG as a &rsquo cockpit&rsquo; for your FROBOT brain.
+Frobots wouldn&rsquo;t be very interesting if they were just disembodied AIs floating around in virtual space. So in order for them to actually DO anything they are uploaded into a FROBOT CPU RIG, which is a Virtual Machine where they can execute their commands. Think of the CPU RIG as a &rsquo;cockpit&rsquo; for your FROBOT brain.
 
 These RIGs are installed into a TANK, which is a physical object in the virtual world of the FROBOTS game grid. The tank can interact with its environment, like move, turn, and blow up other tanks!
 

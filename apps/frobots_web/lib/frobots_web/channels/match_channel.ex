@@ -66,22 +66,34 @@ defmodule FrobotsWeb.MatchChannel do
   end
 
   def start_cluster(match_id) when is_binary(match_id) do
-    case Fubars.Match.Supervisor.init_match(
-           match_id,
-           self()
-         ) do
-      {:ok, match_name} -> {:ok, match_id, match_name}
-      {:error, err} -> {:error, "Could not start the services: " <> err}
+    with match when not is_nil(match) <- Frobots.Api.get_match_details_by_id(match_id),
+         ## validate hosts frobot
+         :ok <- validate_host_frobot(match.slots),
+         :ok <- validate_min_frobot(match.slots),
+         {:ok, match_name} <-
+           Fubars.Match.Supervisor.init_match(
+             match_id,
+             self()
+           ) do
+      {:ok, String.to_integer(match_id), match_name}
+    else
+      {:error, err} -> {:error, err}
     end
   end
 
   def start_cluster(match_id) when is_integer(match_id) do
-    case Fubars.Match.Supervisor.init_match(
-           Integer.to_string(match_id),
-           self()
-         ) do
-      {:ok, match_name} -> {:ok, match_id, match_name}
-      {:error, err} -> {:error, "Could not start the services: " <> err}
+    with match when not is_nil(match) <- Frobots.Api.get_match_details_by_id(match_id),
+         ## Logics
+         :ok <- validate_host_frobot(match.slots),
+         :ok <- validate_min_frobot(match.slots),
+         {:ok, match_name} <-
+           Fubars.Match.Supervisor.init_match(
+             Integer.to_string(match_id),
+             self()
+           ) do
+      {:ok, match_id, match_name}
+    else
+      {:error, err} -> {:error, err}
     end
   end
 
@@ -161,6 +173,24 @@ defmodule FrobotsWeb.MatchChannel do
       nil -> false
       _ -> true
     end
+  end
+
+  defp validate_host_frobot(slots) do
+    host =
+      slots
+      |> Enum.count(fn s -> s.slot_type == :host end)
+
+    if host > 0, do: :ok, else: {:error, "host frobot is required to start the match"}
+  end
+
+  defp validate_min_frobot(slots) do
+    fro_pro_bot =
+      slots
+      |> Enum.count(fn s -> not is_nil(s.slot_type) end)
+
+    if fro_pro_bot > 1,
+      do: :ok,
+      else: {:error, "minimum 2 frobots are required to start the match"}
   end
 
   # -----------------------------------------------------------

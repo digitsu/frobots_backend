@@ -9,6 +9,7 @@ defmodule FrobotsWeb.ArenaMatchesLive.Index do
   # Try live render from parent to not have new analytics data....
   @impl Phoenix.LiveView
   def mount(params, session, socket) do
+    FrobotsWeb.Presence.track(socket)
     ## running, done, pending
     match_status = params["match_status"]
     current_user = Accounts.get_user_by_session_token(session["user_token"])

@@ -18,6 +18,8 @@ export class Game {
       transparent: false,
       resolution: 1,
     })
+    this.app.ticker.minFPS = 60
+    this.app.ticker.maxFPS = 120
     this.statusView = new PIXI.Application({
       width: 500,
       height: 1500,
@@ -98,12 +100,14 @@ export class Game {
       var tank_sprite = new PIXI.Sprite(
         PIXI.Texture.from('/images/' + asset + '.png')
       )
-      if (this.app.stage) {
+      if (this.app.stage && tank?.status !== 'disabled') {
         this.app.stage.addChild(tank.tank_sprite)
       }
       const container = new PIXI.Container()
       const name = tank.display_name || tank.name
-      const nameText = new PIXI.Text(name.padEnd(12), { fill: '#ffffff' })
+      const nameText = new PIXI.Text(name?.split('#')[0]?.padEnd(12), {
+        fill: '#ffffff',
+      })
       const damageText = new PIXI.Text('dm: ' + tank.damage, {
         fontSize: 20,
         fill: '#00b739',

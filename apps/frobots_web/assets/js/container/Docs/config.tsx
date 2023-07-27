@@ -23,7 +23,11 @@ export const sections: Section[] = [
         path: 'getting_started',
       },
       {
-        title: 'Introduction',
+        title: 'Protobots',
+        path: 'protobots',
+      },
+      {
+        title: 'Introduction to FROBOTs programming',
         path: 'introduction',
       },
       {

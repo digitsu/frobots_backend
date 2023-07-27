@@ -40,7 +40,7 @@ export default (props) => {
           {statusObj[match_results?.status]?.label || 'No Results'}
         </Typography>
       </Card>
-      <Box width={'90%'} m={'auto'} mt={4}>
+      <Box width={'90%'} m={'auto'} mt={4} pb={4}>
         {match_results.length === 0 ? (
           <Grid
             container

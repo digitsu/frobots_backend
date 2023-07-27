@@ -3,7 +3,7 @@ import moment from 'moment'
 import React from 'react'
 import { useSelector } from 'react-redux'
 export default ({ title, description, arena, matchTime }) => {
-  const { s3Url } = useSelector((store) => store.arenaLobby)
+  const { s3Url } = useSelector((store: any) => store.arenaLobby)
   return (
     <Card sx={{ p: 2, px: 4, width: '100%', boxShadow: 'none' }}>
       <Grid container justifyContent={'space-between'} alignItems={'center'}>

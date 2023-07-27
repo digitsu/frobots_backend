@@ -5,6 +5,7 @@ defmodule FrobotsWeb.DocsLive.Index do
 
   @impl Phoenix.LiveView
   def mount(params, _session, socket) do
+    FrobotsWeb.Presence.track(socket)
     file_name = params["slug"] || "getting_started"
 
     file_path = Path.join([@priv_dir, "static/docs/#{file_name}.md"])
@@ -21,7 +22,7 @@ defmodule FrobotsWeb.DocsLive.Index do
       {:error, message} ->
         {:ok,
          socket
-         |> put_flash(:error, "Document not found filepath : #{file_path} , error : #{message}")
+         |> put_flash(:error, "Document '#{file_name}' not found error : #{message}")
          |> push_redirect(to: "/home")}
     end
   end

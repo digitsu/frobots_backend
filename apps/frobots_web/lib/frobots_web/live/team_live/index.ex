@@ -4,6 +4,7 @@ defmodule FrobotsWeb.TeamLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
+    FrobotsWeb.Presence.track(socket)
     # set required data via assigns
     # for example..fetch leaderboard entries and pass to liveview as follow
     {:ok, socket}

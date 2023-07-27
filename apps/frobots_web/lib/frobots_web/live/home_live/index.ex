@@ -3,11 +3,15 @@ defmodule FrobotsWeb.HomeLive.Index do
   alias Frobots.{UserStats, GlobalStats, Api}
   alias Frobots.{Accounts, Assets, Events}
   require Logger
+  alias FrobotsWeb.Presence
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
+    FrobotsWeb.Presence.track(socket)
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     s3_base_url = Api.get_s3_base_url()
+
+    Presence.track(socket)
 
     # gets battlelogs info and stores in agent for further processing for player and leaderboard entries
     # this data should really come from db
@@ -25,7 +29,10 @@ defmodule FrobotsWeb.HomeLive.Index do
        Events.get_current_user_ranking_details(current_user)
      )
      |> assign(:blog_posts, get_blog_posts())
-     |> assign(:global_stats, GlobalStats.get_global_stats(current_user))
+     |> assign(
+       :global_stats,
+       GlobalStats.get_global_stats(current_user, Presence.list(Presence.topic()) |> map_size)
+     )
      |> assign(:frobot_leaderboard_stats, Events.send_leaderboard_entries())
      |> assign(:player_leaderboard_stats, Events.send_player_leaderboard_entries())
      |> assign(:s3_base_url, s3_base_url)}
@@ -35,6 +42,22 @@ defmodule FrobotsWeb.HomeLive.Index do
   @impl Phoenix.LiveView
   def handle_params(params, _url, socket) do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info(
+        %{event: "presence_diff", payload: %{joins: joins, leaves: leaves}},
+        %{assigns: %{global_stats: global_stats}} = socket
+      ) do
+    players_online = global_stats.players_online
+    players_online = players_online + map_size(joins) - map_size(leaves)
+    updated_global_stats = Map.put(global_stats, :players_online, players_online)
+    {:noreply, assign(socket, :global_stats, updated_global_stats)}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info(_msg, socket) do
+    {:noreply, socket}
   end
 
   defp apply_action(socket, :index, _params) do

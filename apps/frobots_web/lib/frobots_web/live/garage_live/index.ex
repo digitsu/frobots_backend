@@ -10,6 +10,7 @@ defmodule FrobotsWeb.GarageLive.Index do
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
+    FrobotsWeb.Presence.track(socket)
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     ## Join the Match Lobby Channel
     simulator =
@@ -35,6 +36,8 @@ defmodule FrobotsWeb.GarageLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl Phoenix.LiveView
+  def handle_info(_, socket), do: {:noreply, socket}
   # Broadcast To Client Socket
   # def handle_info(%Message{event: "arena_event", payload: payload}, state) do
   #   maybe_send_to_gui(decode_event(payload))

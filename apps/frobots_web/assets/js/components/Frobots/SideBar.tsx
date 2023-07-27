@@ -99,7 +99,7 @@ export default (props: SideBarGridProps) => {
             </Card>
           </Grid>
         ))}
-        {currentUser.sparks && (
+        {currentUser.sparks !== 0 ? (
           <Box
             sx={{
               display: 'flex',
@@ -114,6 +114,17 @@ export default (props: SideBarGridProps) => {
           >
             <PlusIcon />
           </Box>
+        ) : (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: '10px',
+              width: 50,
+              height: 50,
+            }}
+          />
         )}
       </Grid>
     </>

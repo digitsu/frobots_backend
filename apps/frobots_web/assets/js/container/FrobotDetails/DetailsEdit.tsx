@@ -59,7 +59,7 @@ export default (props: FrobotEditProps) => {
 
   return (
     <>
-      <Box width={'60%'} m={'auto'} mt={5}>
+      <Box width={'60%'} m={'auto'} mt={5} pb={4}>
         <Card sx={{ p: 6 }}>
           <Box
             sx={{

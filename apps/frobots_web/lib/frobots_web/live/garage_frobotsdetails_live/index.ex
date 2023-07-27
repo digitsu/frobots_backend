@@ -5,6 +5,7 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
 
   @impl Phoenix.LiveView
   def mount(params, session, socket) do
+    FrobotsWeb.Presence.track(socket)
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     s3_base_url = Api.get_s3_base_url()
 
@@ -156,7 +157,6 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
 
   def handle_event("react.update_frobot_details", params, socket) do
     current_user = socket.assigns.user
-    user_frobots = extract_frobots(socket.assigns.user_frobots)
 
     case Assets.update_frobot(Assets.get_frobot!(params["frobot_id"]), params) do
       {:ok, _} ->
@@ -169,17 +169,19 @@ defmodule FrobotsWeb.GarageFrobotsDetailsLive.Index do
         }
 
         {:ok, frobot} = Api.get_frobot_details(params["frobot_id"])
+        user_frobots = Assets.list_user_frobots(socket.assigns.user)
 
         {:noreply,
          push_event(
            socket
            |> assign(:frobot, frobot)
+           |> assign(:user_frobots, user_frobots)
            |> put_flash(:info, "frobot updated successfully"),
            "react.return_frobot_details",
            %{
              "frobotDetails" => frobot,
              "currentUser" => current_user,
-             "userFrobots" => user_frobots,
+             "userFrobots" => extract_frobots(user_frobots),
              "battles" => socket.assigns.battles,
              "total_entries" => socket.assigns.total_entries,
              "page" => socket.assigns.page,

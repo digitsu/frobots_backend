@@ -416,6 +416,7 @@ defmodule Frobots.Events do
           },
           "user_name" => u.name,
           "death_map" => b.death_map,
+          "damage_map" => b.damage_map,
           "xp_earned" => b.xp
         }
 
@@ -445,7 +446,7 @@ defmodule Frobots.Events do
             "class" => e["frobot"]["class"]
           },
           "user_name" => e["user_name"],
-          "health" => get_health(e["death_map"], e["frobot"]["name"], e["frobot"]["slot_id"]),
+          "health" => get_health(e["damage_map"], e["frobot"]["name"], e["frobot"]["slot_id"]),
           "kills" => get_kill(e["death_map"], e["frobot"]["name"], e["frobot"]["slot_id"]),
           "xp_earned" => get_xp(e["xp_earned"], e["frobot"]["id"], e["frobot"]["class"])
         }
@@ -463,17 +464,14 @@ defmodule Frobots.Events do
   defp get_status(_status, "timeout"), do: "timeout"
   defp get_status(status, _), do: status
 
-  defp get_health(death_map, frobot_name, slot_id) do
+  defp get_health(damage_map, frobot_name, slot_id) do
     key = "#{frobot_name}##{slot_id}"
-    damage_map = Map.get(death_map, key)
 
     damage =
-      case damage_map do
-        nil ->
-          0
-
-        %{"damage_map" => damage_map} ->
-          Enum.reduce(damage_map, 0, fn {_k, v}, damage -> damage + v end)
+      if is_nil(damage_map) do
+        0
+      else
+        Map.get(damage_map, key, 100)
       end
 
     if damage > 100, do: 0, else: 100 - damage

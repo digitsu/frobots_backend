@@ -250,4 +250,7 @@ export const articleStyle = (theme) => ({
       color: theme.palette.primary.main,
     },
   },
+  '& ol, & ul': {
+    listStyle: 'block',
+  },
 })

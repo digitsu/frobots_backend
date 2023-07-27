@@ -4,9 +4,11 @@ defmodule FrobotsWeb.ArenaLive.Index do
   alias FrobotsWeb.Router.Helpers, as: Routes
   alias Frobots.{Api, Events}
   alias Frobots.Accounts
+  alias FrobotsWeb.Presence
 
   @impl Phoenix.LiveView
   def mount(params, session, socket) do
+    Presence.track(socket)
     current_user = Accounts.get_user_by_session_token(session["user_token"])
     page_config = Keyword.new()
 

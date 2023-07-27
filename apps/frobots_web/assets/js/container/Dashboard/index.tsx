@@ -1,5 +1,5 @@
 import React, { useCallback, type MouseEvent } from 'react'
-import { Grid, Box, Typography, Card } from '@mui/material'
+import { Grid, Box, Typography, Card, Tooltip } from '@mui/material'
 import FrobotsLeaderBoard from './FrobotsLeaderBoard'
 import PlayerLeaderBoard from './PlayerLeaderBoard'
 import GlobalStats from './GlobalStats'
@@ -61,16 +61,6 @@ export default (props: any) => {
 
   return (
     <>
-      {latestBlogPost && (
-        <Box width={'90%'} m={'auto'}>
-          <Grid container spacing={2} my={2}>
-            <Grid item lg={12} md={12} sm={12} xs={12}>
-              <NewsAndUpdatesBanner post={latestBlogPost} />
-            </Grid>
-          </Grid>
-        </Box>
-      )}
-
       <Box width={'90%'} m={'auto'}>
         <Grid container spacing={2}>
           <Grid item lg={6} md={12} sm={12} xs={12}>
@@ -89,55 +79,61 @@ export default (props: any) => {
                   justifyContent={'space-between'}
                   position={'relative'}
                 >
-                  <Box
-                    display={'flex'}
-                    gap={3}
-                    onClick={handleOpenArena}
-                    sx={{ cursor: 'pointer' }}
+                  <Tooltip
+                    title={'You earn XP by playing matches with your FROBOT.'}
                   >
                     <Box
-                      component={'img'}
-                      src={'/images/ranking.svg'}
-                      width={75}
-                    />
+                      display={'flex'}
+                      gap={3}
+                      onClick={handleOpenArena}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      <Box
+                        component={'img'}
+                        src={'/images/ranking.svg'}
+                        width={75}
+                      />
 
+                      <Box
+                        display={'flex'}
+                        justifyContent={'center'}
+                        flexDirection={'column'}
+                      >
+                        <Typography variant="h6">
+                          {current_user_ranking_details?.rank || 0}
+                        </Typography>
+                        <Typography variant="caption">
+                          Total XP : {playerStats.total_xp}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Tooltip>
+                  <Tooltip title={'Spark is needed to create new FROBOTs.'}>
                     <Box
                       display={'flex'}
-                      justifyContent={'center'}
-                      flexDirection={'column'}
+                      gap={3}
+                      onClick={handleOpenGarage}
+                      sx={{ cursor: 'pointer' }}
                     >
-                      <Typography variant="h6">
-                        {current_user_ranking_details?.rank || 0}
-                      </Typography>
-                      <Typography variant="caption">
-                        Total XP : {playerStats.total_xp}
-                      </Typography>
+                      <Box
+                        component={'img'}
+                        src={'/images/frobot.svg'}
+                        width={75}
+                      />
+                      <Box
+                        display={'flex'}
+                        justifyContent={'center'}
+                        flexDirection={'column'}
+                      >
+                        <Typography variant="h6">
+                          {current_user_sparks || 0}
+                        </Typography>
+                        <Typography variant="caption">
+                          Sparks Available
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                  <Box
-                    display={'flex'}
-                    gap={3}
-                    onClick={handleOpenGarage}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <Box
-                      component={'img'}
-                      src={'/images/frobot.svg'}
-                      width={75}
-                    />
-                    <Box
-                      display={'flex'}
-                      justifyContent={'center'}
-                      flexDirection={'column'}
-                    >
-                      <Typography variant="h6">
-                        {current_user_sparks || 0}
-                      </Typography>
-                      <Typography variant="caption">
-                        Sparks Available
-                      </Typography>
-                    </Box>
-                  </Box>
+                  </Tooltip>
                 </Box>
               </Card>
               <Card>
@@ -232,9 +228,14 @@ export default (props: any) => {
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <Notifications />
           </Grid>
+          {latestBlogPost && (
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <NewsAndUpdatesBanner post={latestBlogPost} />
+            </Grid>
+          )}
         </Grid>
       </Box>
-      <Box width={'90%'} m={'auto'}>
+      <Box width={'90%'} m={'auto'} pb={4}>
         <Grid container spacing={2} my={2}>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <FeaturedFrobotSection

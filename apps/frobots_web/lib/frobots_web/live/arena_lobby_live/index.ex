@@ -2,6 +2,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
   alias Frobots.{Api, Events, Assets, Accounts}
+  alias FrobotsWeb.Presence
 
   @impl Phoenix.LiveView
   def mount(
@@ -9,6 +10,7 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
         %{"user_id" => id, "user_token" => user_token},
         socket
       ) do
+    Presence.track(socket)
     match = Api.get_match_details_by_id(match_id)
     s3_base_url = Api.get_s3_base_url()
     current_user = Accounts.get_user_by_session_token(user_token)
@@ -248,6 +250,8 @@ defmodule FrobotsWeb.ArenaLobbyLive.Index do
     Process.send_after(self(), :time_left, 1_000)
     {:noreply, socket |> assign(:time_left, time_left)}
   end
+
+  def handle_info(_, socket), do: {:noreply, socket}
 
   defp to_atom(value) when is_binary(value), do: String.to_atom(value)
   defp to_atom(value), do: value
