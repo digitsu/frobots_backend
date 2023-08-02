@@ -3,8 +3,8 @@ import { Box, Button, Grid, Typography, Card } from '@mui/material'
 
 import { useDispatch } from 'react-redux'
 import { matchSimulationActions } from '../../redux/slices/matchSimulationSlice'
-import { Game, tankHead } from '../../game_updated'
-import { Tank } from '../../tank'
+import { Game, rigHead } from '../../game_updated'
+import { Rig } from '../../rig'
 import * as PIXI from 'pixi.js'
 
 export default (props: any) => {
@@ -42,7 +42,7 @@ export default (props: any) => {
   useEffect(() => {
     if (showStartMatchButton || isGameStarted) {
       const players =
-        snapshot?.tank.filter(({ status }) => status !== 'disabled') ||
+        snapshot?.rig.filter(({ status }) => status !== 'disabled') ||
         slots
           .filter((frobot) => frobot.frobot !== null)
           .map((slot) => ({
@@ -54,7 +54,7 @@ export default (props: any) => {
             speed: 0,
             display_name: slot.frobot.name,
           }))
-      const tanks = [...players].map(
+      const rigs = [...players].map(
         ({
           name,
           curr_loc,
@@ -64,25 +64,25 @@ export default (props: any) => {
           speed,
           display_name,
         }) => {
-          var asset = tankHead(`${name}`)
-          var tank_sprite = new PIXI.Sprite(
+          var asset = rigHead(`${name}`)
+          var rig_sprite = new PIXI.Sprite(
             PIXI.Texture.from('/images/' + asset + '.png')
           )
           const loc_x = curr_loc[0]
           const loc_y = curr_loc[1]
-          tank_sprite.x = 0
-          tank_sprite.y = 0
-          tank_sprite.width = 15
-          tank_sprite.height = 15
+          rig_sprite.x = 0
+          rig_sprite.y = 0
+          rig_sprite.width = 15
+          rig_sprite.height = 15
           const damage = max_health - health
           return {
-            Tank: new Tank(
+            Rig: new Rig(
               name,
               loc_x,
               loc_y,
               heading,
               speed,
-              tank_sprite,
+              rig_sprite,
               damage,
               display_name
             ),
@@ -91,14 +91,14 @@ export default (props: any) => {
         }
       )
       const game = new Game(
-        tanks.map(({ Tank }) => Tank),
+        rigs.map(({ Rig }) => Rig),
         [],
         {
           match_id: match.id,
           match_details: match,
           arena,
           s3_base_url,
-          tankIcons: tanks.map(({ asset }) => asset),
+          rigIcons: rigs.map(({ asset }) => asset),
         }
       )
       game.header()
