@@ -31,8 +31,8 @@ export const sections: Section[] = [
         path: 'introduction',
       },
       {
-        title: 'Controlling your Tank',
-        path: 'controlling_tank',
+        title: 'Controlling your Rig',
+        path: 'controlling_rig',
       },
       {
         title: 'Cpu Rig Cycles',
