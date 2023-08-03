@@ -1,5 +1,14 @@
 export class Rig {
-  constructor(rig_name, x, y, heading, speed, rig_sprite, damage = 0,display_name="") {
+  constructor(
+    rig_name,
+    x,
+    y,
+    heading,
+    speed,
+    rig_sprite,
+    damage = 0,
+    display_name = ''
+  ) {
     this.scan = undefined
     this.damage = damage
     this.speed = speed
