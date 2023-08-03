@@ -261,9 +261,7 @@ export class Game {
       var deg = args[1]
       var res = args[2]
 
-      var rig_index = this.rigs.findIndex(
-        (rig) => rig && rig.name == rig_name
-      )
+      var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
       var rig = this.rigs[rig_index]
 
       if (rig.scan_line != undefined) {
@@ -294,9 +292,7 @@ export class Game {
       var rig_name = args[0]
       var damage = args[1]
 
-      var rig_index = this.rigs.findIndex(
-        (rig) => rig && rig.name == rig_name
-      )
+      var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
       var old_rig = this.rigs[rig_index]
       var new_rig = old_rig.update_damage(damage)
       this.rigs[rig_index] = new_rig
@@ -304,18 +300,14 @@ export class Game {
       var rig_name = args[0]
       var rig_status = args[1]
 
-      var rig_index = this.rigs.findIndex(
-        (rig) => rig && rig.name == rig_name
-      )
+      var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
       var old_rig = this.rigs[rig_index]
       var new_rig = old_rig.update_status(rig_status)
       this.rigs[rig_index] = new_rig
     } else if (event == 'fsm_debug') {
       var rig_name = args[0]
       var fsm_debug = args[1]
-      var rig_index = this.rigs.findIndex(
-        (rig) => rig && rig.name == rig_name
-      )
+      var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
       var old_rig = this.rigs[rig_index]
       var new_rig = old_rig.update_fsm_debug(fsm_debug)
       this.rigs[rig_index] = new_rig
@@ -370,9 +362,7 @@ export class Game {
   }
 
   moveRig(rig_name, x, y, heading, speed) {
-    var rig_index = this.rigs.findIndex(
-      (rig) => rig && rig.name == rig_name
-    )
+    var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
     var old_rig = this.rigs[rig_index]
     if (old_rig.scan_line != undefined) {
       old_rig.scan_line[0].clear()

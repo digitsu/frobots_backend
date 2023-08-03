@@ -1,5 +1,14 @@
 export class Tank {
-  constructor(tank_name, x, y, heading, speed, tank_sprite, damage = 0,display_name="") {
+  constructor(
+    tank_name,
+    x,
+    y,
+    heading,
+    speed,
+    tank_sprite,
+    damage = 0,
+    display_name = ''
+  ) {
     this.scan = undefined
     this.damage = damage
     this.speed = speed
