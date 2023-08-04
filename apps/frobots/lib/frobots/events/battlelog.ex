@@ -23,6 +23,7 @@ defmodule Frobots.Events.Battlelog do
     field :death_map, :map, default: %{}
     field :xp, :map, default: %{}
     field :damage_map, :map, default: %{}
+    field :events, :map, default: %{}
     timestamps()
   end
 
@@ -37,7 +38,8 @@ defmodule Frobots.Events.Battlelog do
       :commission_paid,
       :damage_map,
       :death_map,
-      :xp
+      :xp,
+      :events
     ])
     |> validate_required([:winners, :qudos_pool, :payouts, :odds, :commission_paid, :death_map])
     |> unique_constraint([:match])
