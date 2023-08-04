@@ -132,7 +132,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:fsm_state, _frobot, _fsm_state] = msg, socket) do
+  def handle_info(["fsm_state", _frobot, _fsm_state] = msg, socket) do
     IO.inspect("Recieved FSM")
 
     {:noreply,
@@ -141,7 +141,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:fsm_debug, _frobot, _fsm_state] = msg, socket) do
+  def handle_info(["fsm_debug", _frobot, _fsm_state] = msg, socket) do
     IO.inspect("Recieved FSM")
 
     {:noreply,
@@ -150,7 +150,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:scan, _frobot, _deg, _res] = msg, socket) do
+  def handle_info(["scan", _frobot, _deg, _res] = msg, socket) do
     IO.inspect("Recieved SCAN")
 
     {:noreply,
@@ -159,7 +159,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:damage, _frobot, _damage] = msg, socket) do
+  def handle_info(["damage", _frobot, _damage] = msg, socket) do
     IO.inspect("Recieved DAMAGE")
 
     {:noreply,
@@ -168,7 +168,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:create_rig, _frobot, _loc] = msg, socket) do
+  def handle_info(["create_rig", _frobot, _loc] = msg, socket) do
     IO.inspect("Recieved create_rig")
 
     {:noreply,
@@ -177,7 +177,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:move_rig, _frobot, _loc, _heading, _speed] = msg, socket) do
+  def handle_info(["move_rig", _frobot, _loc, _heading, _speed] = msg, socket) do
     IO.inspect("Recieved move_rig")
 
     {:noreply,
@@ -186,7 +186,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:kill_rig, _frobot] = msg, socket) do
+  def handle_info(["kill_rig", _frobot] = msg, socket) do
     IO.inspect("Recieved kill_rig")
 
     {:noreply,
@@ -195,7 +195,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:create_miss, _m_name, _loc] = msg, socket) do
+  def handle_info(["create_miss", _m_name, _loc] = msg, socket) do
     IO.inspect("Recieved create_miss")
 
     {:noreply,
@@ -204,7 +204,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:move_miss, _m_name, _loc] = msg, socket) do
+  def handle_info(["move_miss", _m_name, _loc] = msg, socket) do
     IO.inspect("Recieved move_miss")
 
     {:noreply,
@@ -213,7 +213,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:kill_miss, _m_name] = msg, socket) do
+  def handle_info(["kill_miss", _m_name] = msg, socket) do
     IO.inspect("Recieved kill_miss")
 
     {:noreply,
@@ -222,9 +222,8 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info([:game_over, _winners] = msg, socket) do
+  def handle_info(["game_over", _winners] = msg, socket) do
     IO.inspect("Recieved game_over")
-
     {:noreply,
      socket
      |> push_event(:arena_event, encode_event(msg))}

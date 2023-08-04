@@ -33,11 +33,11 @@ export default (props: any) => {
     }
   }, [])
 
-  useEffect(() => {
-    if (match.status === 'done') {
-      window.location.href = `/arena/${match.id}/results`
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (match.status === 'done') {
+  //     window.location.href = `/arena/${match.id}/results`
+  //   }
+  // }, [])
 
   useEffect(() => {
     if (showStartMatchButton || isGameStarted) {
