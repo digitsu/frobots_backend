@@ -108,7 +108,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
         spawn(fn ->
           Enum.each(events, fn event ->
             Process.send(parent, event, [])
-            Process.sleep(20)
+            Process.sleep(15)
           end)
         end)
 
