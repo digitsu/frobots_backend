@@ -80,3 +80,18 @@ export const formatCounterTime = (time) => {
     .format('HH:mm:ss')
   return formattedDuration
 }
+
+const blogPostImages = [
+  '/images/blog-post/bg-1.png',
+  '/images/blog-post/bg-2.png',
+  '/images/blog-post/bg-3.png',
+  '/images/blog-post/bg-4.png',
+  '/images/blog-post/bg-5.png',
+  '/images/blog-post/bg-6.png',
+  '/images/blog-post/bg-7.png',
+  '/images/blog-post/bg-8.png',
+]
+
+export const getBlogPostImage = () => {
+  return blogPostImages[Math.floor(Math.random() * blogPostImages.length)]
+}

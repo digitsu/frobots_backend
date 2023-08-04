@@ -15,8 +15,8 @@ import {
 import LuaEditor from '../Garage/LuaEditor'
 import customFunctions from '../../utils/customFunctions'
 import { BlocklyEditor } from '../Garage/BlocklyEditor'
-import { Game, tankHead } from '../../game_updated'
-import { Tank } from '../../tank'
+import { Game, rigHead } from '../../game_updated'
+import { Rig } from '../../rig'
 import * as PIXI from 'pixi.js'
 import Popup from '../../components/Popup'
 import {
@@ -185,23 +185,23 @@ export default (props: any) => {
         name: `${slot.frobot.name}#${slot.id}`,
         displayName: slot.frobot.name,
       }))
-      const tanks = players.map(({ name, displayName }) => {
-        var asset = tankHead(name)
-        var tank_sprite = new PIXI.Sprite(
+      const rigs = players.map(({ name, displayName }) => {
+        var asset = rigHead(name)
+        var rig_sprite = new PIXI.Sprite(
           PIXI.Texture.from('/images/' + asset + '.png')
         )
-        tank_sprite.x = 0
-        tank_sprite.y = 0
-        tank_sprite.width = 15
-        tank_sprite.height = 15
+        rig_sprite.x = 0
+        rig_sprite.y = 0
+        rig_sprite.width = 15
+        rig_sprite.height = 15
         return {
-          Tank: new Tank(
+          Rig: new Rig(
             `${name}`,
             748,
             610,
             219,
             100,
-            tank_sprite,
+            rig_sprite,
             0,
             displayName
           ),
@@ -211,14 +211,14 @@ export default (props: any) => {
 
       if (isSimulationStarted) {
         const game = new Game(
-          tanks.map(({ Tank }) => Tank),
+          rigs.map(({ Rig }) => Rig),
           [],
           {
             match_id: null,
             match_details: { type: 'simulation', id: frobot?.id },
             arena: null,
             s3_base_url: '',
-            tankIcons: tanks.map(({ asset }) => asset),
+            rigIcons: rigs.map(({ asset }) => asset),
           }
         )
         game.header()

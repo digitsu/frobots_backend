@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Grid, Typography } from '@mui/material'
 import ViewMore from '../../components/generic/Button/ViewMore'
+import { getBlogPostImage } from '../../utils/util'
 
 type BlogPost = {
   id: string
@@ -31,7 +32,7 @@ export default (props: NewsAndUpdatesProps) => {
                     component={'img'}
                     width={'100%'}
                     height={'350px'}
-                    src={post.feature_image || '/images/blog-post-bg.png'}
+                    src={post.feature_image || getBlogPostImage()}
                   />
                   <Box
                     position={'absolute'}

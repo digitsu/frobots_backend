@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { Tank } from './tank.js'
+import { Rig } from './rig.js'
 import { Missile } from './missile.js'
 
 // const trophyTexture = PIXI.Texture.from('images/trophy.png');
@@ -7,9 +7,9 @@ import { Missile } from './missile.js'
 
 export class Game {
   constructor(
-    tanks,
+    rigs,
     missiles,
-    { match_id, match_details, arena, s3_base_url, tankIcons }
+    { match_id, match_details, arena, s3_base_url, rigIcons }
   ) {
     this.app = new PIXI.Application({
       width: 1000,
@@ -27,10 +27,10 @@ export class Game {
       antialias: true,
       resolution: window.devicePixelRatio || 1,
     })
-    this.tanks = tanks
+    this.rigs = rigs
     this.missiles = missiles
     this.match_details = match_details
-    this.tankInstances = {}
+    this.rigInstances = {}
     if (match_details.type != 'real') {
       this.app.view.classList.add('garage-pixy-simulation')
       for (var i = 1; i < 1000; i = i + 10) {
@@ -89,54 +89,54 @@ export class Game {
     this.statsHeading.position.set(30, 30)
     this.statusView.stage.addChild(this.statsHeading)
 
-    const tanksContainer = new PIXI.Container()
+    const rigsContainer = new PIXI.Container()
     const SPACING_X = 40 // horizontal spacing
     const SPACING_Y = 5 // vertical spacing
     let offsetY = 0
     let containerOffset = 0
-    for (let i = 0; i < tanks.length; i++) {
-      const tank = tanks[i]
-      const asset = tankIcons[i][tank?.name]
-      var tank_sprite = new PIXI.Sprite(
+    for (let i = 0; i < rigs.length; i++) {
+      const rig = rigs[i]
+      const asset = rigIcons[i][rig?.name]
+      var rig_sprite = new PIXI.Sprite(
         PIXI.Texture.from('/images/' + asset + '.png')
       )
-      if (this.app.stage && tank?.status !== 'disabled') {
-        this.app.stage.addChild(tank.tank_sprite)
+      if (this.app.stage && rig?.status !== 'disabled') {
+        this.app.stage.addChild(rig.rig_sprite)
       }
       const container = new PIXI.Container()
-      const name = tank.display_name || tank.name
+      const name = rig.display_name || rig.name
       const nameText = new PIXI.Text(name?.split('#')[0]?.padEnd(12), {
         fill: '#ffffff',
       })
-      const damageText = new PIXI.Text('dm: ' + tank.damage, {
+      const damageText = new PIXI.Text('dm: ' + rig.damage, {
         fontSize: 20,
         fill: '#00b739',
       })
-      const speedText = new PIXI.Text('sp: ' + tank.speed, {
+      const speedText = new PIXI.Text('sp: ' + rig.speed, {
         fontSize: 20,
         fill: '#ffffff',
       })
-      const headingText = new PIXI.Text('hd: ' + tank.heading, {
+      const headingText = new PIXI.Text('hd: ' + rig.heading, {
         fontSize: 20,
         fill: '#ffffff',
       })
-      const scanText = new PIXI.Text('sc: ' + (tank.scan ? tank.scan : '-'), {
+      const scanText = new PIXI.Text('sc: ' + (rig.scan ? rig.scan : '-'), {
         fontSize: 20,
         fill: '#ffffff',
       })
       const statusText = new PIXI.Text(
-        'st: ' + (tank.status ? tank.status : '-'),
+        'st: ' + (rig.status ? rig.status : '-'),
         { fontSize: 20, fill: '#ffffff' }
       )
       const debugText = new PIXI.Text(
-        'debug: ' + (tank.debug ? tank.debug : '-'),
+        'debug: ' + (rig.debug ? rig.debug : '-'),
         { fontSize: 20, fill: '#ffffff' }
       )
 
-      tank_sprite.x = 0 // no horizontal spacing for nameText
-      tank_sprite.y = offsetY
-      tank_sprite.width = 25
-      tank_sprite.height = nameText.height
+      rig_sprite.x = 0 // no horizontal spacing for nameText
+      rig_sprite.y = offsetY
+      rig_sprite.width = 25
+      rig_sprite.height = nameText.height
 
       nameText.x = 40 // no horizontal spacing for nameText
       nameText.y = offsetY
@@ -176,7 +176,7 @@ export class Game {
       offsetY += debugText.height + SPACING_Y
 
       container.addChild(
-        tank_sprite,
+        rig_sprite,
         nameText,
         damageText,
         speedText,
@@ -186,14 +186,14 @@ export class Game {
         debugText
       )
       container.position.y = containerOffset
-      tanksContainer.addChild(container)
-      this.tankInstances[tank.name] = container
+      rigsContainer.addChild(container)
+      this.rigInstances[rig.name] = container
       containerOffset += 50
     }
 
     if (this.statusView) {
-      tanksContainer.position.set(30, 100)
-      this.statusView.stage.addChild(tanksContainer)
+      rigsContainer.position.set(30, 100)
+      this.statusView.stage.addChild(rigsContainer)
     }
 
     //this.statusView.stage.addChild(this.stats)
@@ -217,33 +217,33 @@ export class Game {
   event(payload) {
     var { args, event } = payload
 
-    if (event == 'create_tank') {
-      if (!this.tanks.map(({ name }) => name).includes(args[0])) {
-        var tank_name = args[0]
+    if (event == 'create_rig') {
+      if (!this.rigs.map(({ name }) => name).includes(args[0])) {
+        var rig_name = args[0]
         var [x, y] = args[1]
         var heading = args[2]
         var speed = args[3]
-        this.createTank(tank_name, x, y, heading, speed)
+        this.createRig(rig_name, x, y, heading, speed)
       }
-    } else if (event == 'move_tank') {
-      var tank_name = args[0]
+    } else if (event == 'move_rig') {
+      var rig_name = args[0]
       var [x, y] = args[1]
       var heading = args[2]
       var speed = args[3]
-      if (this.tanks.map(({ name }) => name).includes(tank_name)) {
-        this.moveTank(tank_name, x, y, heading, speed)
+      if (this.rigs.map(({ name }) => name).includes(rig_name)) {
+        this.moveRig(rig_name, x, y, heading, speed)
       } else {
-        this.createTank(tank_name, x, y, heading, speed)
+        this.createRig(rig_name, x, y, heading, speed)
       }
-    } else if (event == 'kill_tank') {
-      var tank_name = args[0]
-      var tank_index = this.tanks.findIndex((tank) => tank.name == tank_name)
-      if (tank_index > -1) {
-        var old_tank = this.tanks[tank_index]
-        old_tank.tank_sprite.x = undefined
-        old_tank.tank_sprite.y = undefined
+    } else if (event == 'kill_rig') {
+      var rig_name = args[0]
+      var rig_index = this.rigs.findIndex((rig) => rig.name == rig_name)
+      if (rig_index > -1) {
+        var old_rig = this.rigs[rig_index]
+        old_rig.rig_sprite.x = undefined
+        old_rig.rig_sprite.y = undefined
 
-        this.tanks.splice(tank_index, 1)
+        this.rigs.splice(rig_index, 1)
       }
     } else if (event == 'create_miss') {
       var missile_name = args[0]
@@ -257,23 +257,21 @@ export class Game {
       var missile_name = args[0]
       this.explodeMissile(missile_name)
     } else if (event == 'scan') {
-      var tank_name = args[0]
+      var rig_name = args[0]
       var deg = args[1]
       var res = args[2]
 
-      var tank_index = this.tanks.findIndex(
-        (tank) => tank && tank.name == tank_name
-      )
-      var tank = this.tanks[tank_index]
+      var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
+      var rig = this.rigs[rig_index]
 
-      if (tank.scan_line != undefined) {
-        tank.scan_line[0].clear()
-        tank.scan_line[1].clear()
-        tank.scan_line = undefined
+      if (rig.scan_line != undefined) {
+        rig.scan_line[0].clear()
+        rig.scan_line[1].clear()
+        rig.scan_line = undefined
       }
 
-      var x = tank.loc[0]
-      var y = tank.loc[1]
+      var x = rig.loc[0]
+      var y = rig.loc[1]
       var x2 = x + 700 * Math.cos((Math.PI * (deg - res)) / 180)
       var y2 = y + 700 * Math.sin((Math.PI * (deg - res)) / 180)
       var x3 = x + 700 * Math.cos((Math.PI * (deg + res)) / 180)
@@ -287,45 +285,37 @@ export class Game {
       g2.position.set(7.5, 7.5)
       g2.lineStyle(1, 0xffffff).moveTo(x, y).lineTo(x3, y3)
 
-      var new_tank = tank.update_scan(g, g2, deg, res)
-      this.tanks[tank_index] = new_tank
+      var new_rig = rig.update_scan(g, g2, deg, res)
+      this.rigs[rig_index] = new_rig
       this.app.stage.addChild(g, g2)
     } else if (event == 'damage') {
-      var tank_name = args[0]
+      var rig_name = args[0]
       var damage = args[1]
 
-      var tank_index = this.tanks.findIndex(
-        (tank) => tank && tank.name == tank_name
-      )
-      var old_tank = this.tanks[tank_index]
-      var new_tank = old_tank.update_damage(damage)
-      this.tanks[tank_index] = new_tank
+      var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
+      var old_rig = this.rigs[rig_index]
+      var new_rig = old_rig.update_damage(damage)
+      this.rigs[rig_index] = new_rig
     } else if (event == 'fsm_state') {
-      var tank_name = args[0]
-      var tank_status = args[1]
+      var rig_name = args[0]
+      var rig_status = args[1]
 
-      var tank_index = this.tanks.findIndex(
-        (tank) => tank && tank.name == tank_name
-      )
-      var old_tank = this.tanks[tank_index]
-      var new_tank = old_tank.update_status(tank_status)
-      this.tanks[tank_index] = new_tank
+      var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
+      var old_rig = this.rigs[rig_index]
+      var new_rig = old_rig.update_status(rig_status)
+      this.rigs[rig_index] = new_rig
     } else if (event == 'fsm_debug') {
-      var tank_name = args[0]
+      var rig_name = args[0]
       var fsm_debug = args[1]
-      var tank_index = this.tanks.findIndex(
-        (tank) => tank && tank.name == tank_name
-      )
-      var old_tank = this.tanks[tank_index]
-      var new_tank = old_tank.update_fsm_debug(fsm_debug)
-      this.tanks[tank_index] = new_tank
+      var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
+      var old_rig = this.rigs[rig_index]
+      var new_rig = old_rig.update_fsm_debug(fsm_debug)
+      this.rigs[rig_index] = new_rig
     } else if (event == 'game_over') {
-      console.log('Game Over', args)
       let winner = 'Winner: '
       for (let i = 0; i < args.length; i++) {
         winner += args[i] + ' '
       }
-      console.log('Winner:', winner)
       var result = new PIXI.Text(winner, {
         fontSize: 20,
         lineHeight: 20,
@@ -352,40 +342,38 @@ export class Game {
       console.log('Unhandled Payload Received -->', payload)
     }
     this.get_stats()
-    return this.tanks
+    return this.rigs
   }
 
-  createTank(tank_name, x, y, heading, speed) {
-    if (!this.tanks.map(({ name }) => name).includes(tank_name)) {
-      var asset = tankHead(tank_name)
-      var tank_sprite = new PIXI.Sprite(
+  createRig(rig_name, x, y, heading, speed) {
+    if (!this.rigs.map(({ name }) => name).includes(rig_name)) {
+      var asset = rigHead(rig_name)
+      var rig_sprite = new PIXI.Sprite(
         PIXI.Texture.from('/images/' + asset + '.png')
       )
-      tank_sprite.x = x
-      tank_sprite.y = y
+      rig_sprite.x = x
+      rig_sprite.y = y
 
-      var new_tank = new Tank(tank_name, x, y, heading, speed, tank_sprite)
-      this.tanks.push(new_tank)
+      var new_rig = new Rig(rig_name, x, y, heading, speed, rig_sprite)
+      this.rigs.push(new_rig)
 
-      this.app.stage.addChild(tank_sprite)
+      this.app.stage.addChild(rig_sprite)
     }
   }
 
-  moveTank(tank_name, x, y, heading, speed) {
-    var tank_index = this.tanks.findIndex(
-      (tank) => tank && tank.name == tank_name
-    )
-    var old_tank = this.tanks[tank_index]
-    if (old_tank.scan_line != undefined) {
-      old_tank.scan_line[0].clear()
-      old_tank.scan_line[1].clear()
-      old_tank.scan_line = undefined
+  moveRig(rig_name, x, y, heading, speed) {
+    var rig_index = this.rigs.findIndex((rig) => rig && rig.name == rig_name)
+    var old_rig = this.rigs[rig_index]
+    if (old_rig.scan_line != undefined) {
+      old_rig.scan_line[0].clear()
+      old_rig.scan_line[1].clear()
+      old_rig.scan_line = undefined
     }
-    var new_tank = old_tank.update(x, y, heading, speed)
-    this.tanks[tank_index] = new_tank
+    var new_rig = old_rig.update(x, y, heading, speed)
+    this.rigs[rig_index] = new_rig
 
-    new_tank.tank_sprite.x = new_tank.loc[0]
-    new_tank.tank_sprite.y = new_tank.loc[1]
+    new_rig.rig_sprite.x = new_rig.loc[0]
+    new_rig.rig_sprite.y = new_rig.loc[1]
   }
 
   moveMissile(missile_name, x, y) {
@@ -438,8 +426,8 @@ export class Game {
   }
 
   get_stats() {
-    for (let i = 0; i < this.tanks.length; i++) {
-      this.get_stat(this.tanks[i])
+    for (let i = 0; i < this.rigs.length; i++) {
+      this.get_stat(this.rigs[i])
     }
   }
 
@@ -448,15 +436,15 @@ export class Game {
     this.statusView.destroy(true)
   }
 
-  get_stat(tank) {
-    const tankDetails = this.tankInstances[tank.name]
-    tankDetails.children[2].text = `dm: ${tank.damage}`
-    tankDetails.children[2].style.fill = this.getDamageColor(tank.damage)
-    tankDetails.children[3].text = `sp: ${tank.speed}`
-    tankDetails.children[4].text = `hd: ${tank.heading}`
-    tankDetails.children[5].text = `sc: ${tank.scan ? tank.scan : '-'}`
-    tankDetails.children[6].text = `st: ${tank.status ? tank.status : '-'}`
-    tankDetails.children[7].text = `debug: ${tank.debug ? tank.debug : '-'}`
+  get_stat(rig) {
+    const rigDetails = this.rigInstances[rig.name]
+    rigDetails.children[2].text = `dm: ${rig.damage}`
+    rigDetails.children[2].style.fill = this.getDamageColor(rig.damage)
+    rigDetails.children[3].text = `sp: ${rig.speed}`
+    rigDetails.children[4].text = `hd: ${rig.heading}`
+    rigDetails.children[5].text = `sc: ${rig.scan ? rig.scan : '-'}`
+    rigDetails.children[6].text = `st: ${rig.status ? rig.status : '-'}`
+    rigDetails.children[7].text = `debug: ${rig.debug ? rig.debug : '-'}`
   }
 
   getDamageColor(damage) {
@@ -482,9 +470,7 @@ export class Game {
   }
 }
 
-export function tankHead(tank_name) {
-  console.log('Inside Tank Head', tank_name)
-
+export function rigHead(rig_name) {
   var assets = [
     'blue1',
     'blue2',
@@ -508,18 +494,18 @@ export function tankHead(tank_name) {
   ]
   var asset = null
   if (
-    tank_name.match('sniper') != null ||
-    tank_name.match('random') != null ||
-    tank_name.match('rook') != null ||
-    tank_name.match('tracker') != null
+    rig_name.match('sniper') != null ||
+    rig_name.match('random') != null ||
+    rig_name.match('rook') != null ||
+    rig_name.match('tracker') != null
   ) {
     asset = assets[Math.floor(Math.random() * 7) + 8]
   } else if (
-    tank_name.match('dummy') != null ||
-    tank_name.match('target') != null
+    rig_name.match('dummy') != null ||
+    rig_name.match('target') != null
   ) {
     asset = assets[Math.floor(Math.random() * 2) + 16]
-  } else if (tank_name.match('rabbit') != null) {
+  } else if (rig_name.match('rabbit') != null) {
     asset = 'rabbit'
   } else {
     asset = assets[Math.floor(Math.random() * 9)]

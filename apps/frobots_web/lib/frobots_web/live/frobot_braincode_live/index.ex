@@ -253,21 +253,21 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
   end
 
   @impl true
-  def handle_info({:create_tank, _frobot, _loc} = msg, socket) do
+  def handle_info({:create_rig, _frobot, _loc} = msg, socket) do
     {:noreply,
      socket
      |> push_event(:simulator_event, encode_event(msg))}
   end
 
   @impl true
-  def handle_info({:move_tank, _frobot, _loc, _heading, _speed} = msg, socket) do
+  def handle_info({:move_rig, _frobot, _loc, _heading, _speed} = msg, socket) do
     {:noreply,
      socket
      |> push_event(:simulator_event, encode_event(msg))}
   end
 
   @impl true
-  def handle_info({:kill_tank, _frobot} = msg, socket) do
+  def handle_info({:kill_rig, _frobot} = msg, socket) do
     {:noreply,
      socket
      |> push_event(:simulator_event, encode_event(msg))}

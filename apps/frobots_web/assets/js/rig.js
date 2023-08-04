@@ -1,11 +1,11 @@
-export class Tank {
+export class Rig {
   constructor(
-    tank_name,
+    rig_name,
     x,
     y,
     heading,
     speed,
-    tank_sprite,
+    rig_sprite,
     damage = 0,
     display_name = ''
   ) {
@@ -15,13 +15,13 @@ export class Tank {
     this.heading = heading
     this.ploc = [0, 0]
     this.loc = [x, y]
-    this.id = tank_name
-    this.name = tank_name
+    this.id = rig_name
+    this.name = rig_name
     this.timer = undefined
     this.status = 'alive'
     this.fsm_debug = undefined
     this.class = undefined
-    this.tank_sprite = tank_sprite
+    this.rig_sprite = rig_sprite
     this.scan_line = undefined
     this.display_name = display_name
   }

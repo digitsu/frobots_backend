@@ -1,11 +1,12 @@
 
-# Controlling your Tank
+# Controlling your Rig
 
-Frobots wouldn&rsquo;t be very interesting if they were just disembodied AIs floating around in virtual space. So in order for them to actually DO anything they are uploaded into a FROBOT CPU RIG, which is a Virtual Machine where they can execute their commands. Think of the CPU RIG as a &rsquo;cockpit&rsquo; for your FROBOT brain.
+Frobots wouldn&rsquo;t be very interesting if they were just disembodied AIs floating around in virtual space. So in order for them to actually DO anything they are uploaded into a FROBOT CPU, which is a Virtual Machine where they can execute their commands. Think of the CPU as a &rsquo;cockpit&rsquo; for your FROBOT brain.
 
-These RIGs are installed into a TANK, which is a physical object in the virtual world of the FROBOTS game grid. The tank can interact with its environment, like move, turn, and blow up other tanks!
+These CPUs are installed into a RIG, which is a process in the virtual world of the FROBOTS game grid. The rig can interact with its environment, like move, turn, and blow up other rigs! It's simplest to think of the rig as the interface and manifestation of your FROBOT in the arena game grid.  The rig only exists in the arena, it is not an NFT asset, it is ephemeral. The rig will be created from FROBOT and the equipment loadout you have equipped to it at the time you entered the FROBOT into a match.
 
-The interface for the tank is as follows:
+
+The interface for the rig is as follows:
 
 ## 1. Scan
 
