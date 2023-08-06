@@ -41,8 +41,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
       user_id: user_id,
       s3_base_url: s3_base_url,
       arena: arena,
-      snapshot: snapshot,
-      parent: parent
+      snapshot: snapshot
     } = socket.assigns
 
     {:noreply,
@@ -199,7 +198,7 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
   end
 
   @impl true
-  def handle_info(msg, socket) do
+  def handle_info(_msg, socket) do
     {:noreply, socket}
   end
 
