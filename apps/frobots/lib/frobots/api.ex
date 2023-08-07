@@ -182,6 +182,20 @@ defmodule Frobots.Api do
       Events.list_matches_by_status_for_user(status, user_id)
       |> Enum.group_by(fn match -> match_type(match.user_id, user_id) end)
 
+  def get_replay_events(match_id) do
+    case Events.get_battlelog_by(match_id: match_id) do
+      nil ->
+        {:error, :not_found}
+
+      battlelog ->
+        if is_nil(battlelog.events) or is_nil(Map.get(battlelog.events, "match:match#{match_id}")) do
+          {:error, :not_found}
+        else
+          {:ok, Map.get(battlelog.events, "match:match#{match_id}")}
+        end
+    end
+  end
+
   defp match_type(user_id, user_id), do: "host"
   defp match_type(_, _), do: "joined"
 

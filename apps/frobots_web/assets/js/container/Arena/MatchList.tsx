@@ -234,7 +234,7 @@ export const MatchList: FC<MatchListTableProps> = (props) => {
                     ) : (
                       <>
                         <Button
-                          disabled
+                          href={`/arena/${match.id}/replay`}
                           variant="outlined"
                           size="medium"
                           sx={{
