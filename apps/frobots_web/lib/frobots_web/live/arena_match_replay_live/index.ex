@@ -62,7 +62,8 @@ defmodule FrobotsWeb.ArenaMatchReplayLive.Index do
        "current_user_id" => user_id,
        "s3_base_url" => s3_base_url,
        "arena" => arena,
-       "snapshot" => snapshot
+       "snapshot" => snapshot,
+       "is_replay" => true
      })}
   end
 
