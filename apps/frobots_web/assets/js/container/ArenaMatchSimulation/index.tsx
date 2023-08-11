@@ -16,13 +16,14 @@ export default (props: any) => {
     arena,
     runSimulation,
     snapshot,
+    is_replay,
   } = props
   const dispatch = useDispatch()
   const isHost = user_id === current_user_id
   const { setSlots, setS3BaseUrl } = matchSimulationActions
   const [gameState, setGameState] = useState({ event: () => {} })
   const [isGameStarted, setisGameStarted] = useState(
-    match.status === 'running' || isHost
+    match.status === 'running' || isHost || is_replay
   )
   const { slots, status } = match
 
@@ -34,7 +35,7 @@ export default (props: any) => {
   }, [])
 
   useEffect(() => {
-    if (match.status === 'done') {
+    if (!is_replay && match.status === 'done') {
       window.location.href = `/arena/${match.id}/results`
     }
   }, [])
