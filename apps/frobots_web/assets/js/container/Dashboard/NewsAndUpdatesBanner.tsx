@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Card, Typography } from '@mui/material'
 import ViewMore from '../../components/generic/Button/ViewMore'
+import { getBlogPostImage } from '../../utils/util'
 
 interface blogPost {
   excerpt: string
@@ -31,7 +32,7 @@ export default ({ post }: NewsAndUpdatesProps) => {
           sx={{
             objectFit: 'cover',
           }}
-          src={post.feature_image || '/images/blog-post-bg.png'}
+          src={post.feature_image || getBlogPostImage()}
         />
         <Box
           position={'absolute'}

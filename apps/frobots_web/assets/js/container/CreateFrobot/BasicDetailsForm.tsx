@@ -26,6 +26,7 @@ export default (props: any) => {
     setFrobotName,
     setBio,
     setBrainCode,
+    setBlocklyCode,
   } = createFrobotActions
   const changeStarterMechHandler = (starterMech) => {
     dispatch(changeStarterMech(starterMech))
@@ -34,6 +35,11 @@ export default (props: any) => {
     (store: any) => store.createFrobot
   )
   const selectedMech = starterMech.id
+
+  const handleSelectTemplate = (frobot: any) => {
+    dispatch(setBrainCode(frobot))
+    dispatch(setBlocklyCode(frobot.blockly_code))
+  }
 
   return (
     <Box width={'65%'} m={'auto'} mt={10}>
@@ -134,7 +140,7 @@ export default (props: any) => {
           key="brain-code"
           options={templateFrobots}
           defaultValue={templateFrobots.find(({ id }) => id === brainCode?.id)}
-          onChange={(_item, target) => dispatch(setBrainCode(target))}
+          onChange={(_item, target) => handleSelectTemplate(target)}
           renderInput={(params) => (
             <TextField
               {...params}
