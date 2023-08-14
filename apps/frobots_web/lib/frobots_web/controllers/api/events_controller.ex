@@ -23,7 +23,7 @@ defmodule FrobotsWeb.Api.EventsController do
     end
   end
 
-  def start_match(conn, params) do
+  def start_match(conn, _params) do
     %{"id" => match_id} = conn.params
     case Events.get_match_by([id: match_id],
            slots: [
