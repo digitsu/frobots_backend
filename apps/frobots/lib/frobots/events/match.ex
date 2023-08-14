@@ -21,8 +21,7 @@ defmodule Frobots.Events.Match do
     :user_id,
     :type,
     :started_at,
-    :reason,
-    :slots
+    :reason
   ]
 
   @derive {Jason.Encoder, only: @fields}
