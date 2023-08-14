@@ -8,12 +8,14 @@ defmodule FrobotsWeb.Api.EventsController do
   def change(conn, _params) do
     %{"id" => match_id} = conn.params
     attrs = conn.body_params
-    case Events.get_match_by([id: match_id]) do
+
+    case Events.get_match_by(id: match_id) do
       nil ->
         conn
         |> put_status(:not_found)
         |> json([])
         |> halt()
+
       match ->
         {:ok, updated_match} = Events.change_match(match, attrs)
 
@@ -25,6 +27,7 @@ defmodule FrobotsWeb.Api.EventsController do
 
   def start_match(conn, _params) do
     %{"id" => match_id} = conn.params
+
     case Events.get_match_by([id: match_id],
            slots: [
              frobot: [

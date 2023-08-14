@@ -6,6 +6,7 @@ defmodule FrobotsWeb.Api.AssetsController do
 
   def index(conn, _params) do
     entries = Assets.user_classes()
+
     conn
     |> put_status(200)
     |> json(entries)

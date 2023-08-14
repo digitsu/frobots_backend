@@ -51,7 +51,6 @@ defmodule Frobots.Events.Match do
     timestamps()
   end
 
-
   @doc false
   def changeset(match, attrs) do
     match
