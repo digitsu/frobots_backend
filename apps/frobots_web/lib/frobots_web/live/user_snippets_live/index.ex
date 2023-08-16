@@ -6,14 +6,10 @@ defmodule FrobotsWeb.UserSnippetsLive.Index do
   alias Frobots.Assets
 
   @impl Phoenix.LiveView
-  def mount(params, session, socket) do
+  def mount(_params, session, socket) do
     FrobotsWeb.Presence.track(socket)
-    current_user = Accounts.get_user_by_session_token(session["user_token"])
+    _current_user = Accounts.get_user_by_session_token(session["user_token"])
 
-    
-    end
+    {:ok, socket}
   end
-
-  # add additional handle param events as needed to handle button clicks etc
-
 end
