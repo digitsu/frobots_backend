@@ -5,7 +5,7 @@ defmodule Frobots.Assets.Snippet do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @derive {Jason.Encoder, only: [:name, :code, :user_id]}
+  @derive {Jason.Encoder, only: [:id, :name, :code, :user_id]}
 
   schema "snippets" do
     field :name, :string
@@ -24,6 +24,5 @@ defmodule Frobots.Assets.Snippet do
       :user_id
     ])
     |> validate_required([:code, :name, :user_id])
-    |> unique_constraint([:name])
   end
 end

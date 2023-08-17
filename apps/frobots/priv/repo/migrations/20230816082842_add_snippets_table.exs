@@ -9,7 +9,5 @@ defmodule Frobots.Repo.Migrations.AddSnippetsTable do
 
       timestamps()
     end
-
-    create unique_index(:snippets, :name, name: :unique_name)
   end
 end
