@@ -3,12 +3,10 @@ defmodule FrobotsWeb.UserSnippetsLive.Index do
   use FrobotsWeb, :live_view
   require Logger
 
-  alias Frobots.Assets
-
   @impl Phoenix.LiveView
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
     FrobotsWeb.Presence.track(socket)
-    _current_user = Accounts.get_user_by_session_token(session["user_token"])
+    # _current_user = Accounts.get_user_by_session_token(session["user_token"])
 
     {:ok, socket}
   end
