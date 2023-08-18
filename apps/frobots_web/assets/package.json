@@ -3,6 +3,7 @@
     "format": "prettier --write \"./js/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "dependencies": {
+    "@blockly/plugin-cross-tab-copy-paste": "^4.0.2",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@monaco-editor/react": "^4.4.6",

@@ -14,6 +14,7 @@ import BlogsHook from './BlogsHook'
 import ArenaMatchResults from './ArenaMatchResults'
 import ArenaMatchSimulationHook from './ArenaMatchSimulationHook'
 import PlayerProfileHook from './PlayerProfileHook'
+import UserSnippetHook from './UserSnippetHook'
 
 interface HookType {
   [key: string]: {
@@ -42,5 +43,6 @@ Hooks.BlogsHook = BlogsHook
 Hooks.ArenaMatchResults = ArenaMatchResults
 Hooks.ArenaMatchSimulationHook = ArenaMatchSimulationHook
 Hooks.PlayerProfileHook = PlayerProfileHook
+Hooks.UserSnippetHook = UserSnippetHook
 
 export default Hooks

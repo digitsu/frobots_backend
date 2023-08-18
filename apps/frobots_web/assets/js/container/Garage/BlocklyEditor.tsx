@@ -8,6 +8,7 @@ export const BlocklyEditor: React.FC<any> = ({
   defaultXml = '',
   setXmlText,
   workspaceDidChange,
+  key = '',
 }) => {
   return (
     <Box display={'flex'} minHeight={'100vh'}>

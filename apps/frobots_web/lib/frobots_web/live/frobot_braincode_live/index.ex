@@ -34,6 +34,7 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
          |> assign(:simulator, simulator)
          |> assign(:frobot, frobot)
          |> assign(:user, current_user)
+         |> assign(:user_snippets, Assets.list_snippet(current_user.id))
          |> assign(
            :current_user_ranking_details,
            Events.get_current_user_ranking_details(current_user)
@@ -81,7 +82,8 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
      push_event(socket, "react.return_bot_braincode", %{
        "frobot" => frobot_details,
        "currentUser" => current_user,
-       "templates" => socket.assigns.templates
+       "templates" => socket.assigns.templates,
+       "userSnippets" => socket.assigns.user_snippets
      })}
   end
 
