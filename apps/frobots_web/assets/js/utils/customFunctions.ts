@@ -1,7 +1,14 @@
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
+import { CrossTabCopyPaste } from '@blockly/plugin-cross-tab-copy-paste'
 
 export default () => {
+  // Initiate cross tab copy paste feature
+  new CrossTabCopyPaste().init({
+    contextMenu: true,
+    shortcut: true,
+  })
+
   // Create Frobot code
   Blockly.Blocks['frobot'] = {
     init: function () {
