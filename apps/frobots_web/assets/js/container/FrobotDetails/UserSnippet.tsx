@@ -9,6 +9,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  Button,
 } from '@mui/material'
 import { luaGenerator } from 'blockly/lua'
 import LuaEditor from '../Garage/LuaEditor'
@@ -51,6 +52,10 @@ export default (props: any) => {
     setCurrentSnippet(item)
     setBlocklyCode(item.code)
     setShowEditor(true)
+  }
+
+  const handleGoToSnippet = () => {
+    window.location.href = '/snippets'
   }
 
   return (
@@ -108,6 +113,42 @@ export default (props: any) => {
               >
                 <Table>
                   <TableBody>
+                    {userSnippets.length !== 0 && (
+                      <TableRow
+                        sx={{
+                          cursor: 'pointer',
+                          '&:hover': {
+                            backgroundColor: 'action.hover',
+                          },
+                          borderBottom: '1px solid #555454',
+                        }}
+                      >
+                        <TableCell
+                          colSpan={2}
+                          sx={{
+                            color: '#fff',
+                            borderColor: '#333D49',
+                            p: 2,
+                            pl: '8px !important',
+                            pr: '8px !important',
+                          }}
+                          align="left"
+                        >
+                          <Box>
+                            <Button
+                              color="inherit"
+                              variant="outlined"
+                              fullWidth
+                              size="small"
+                              onClick={handleGoToSnippet}
+                            >
+                              {'Go to snippets manager'}
+                            </Button>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    )}
+
                     {userSnippets.map((snippet: any) => (
                       <TableRow
                         key={snippet.id}

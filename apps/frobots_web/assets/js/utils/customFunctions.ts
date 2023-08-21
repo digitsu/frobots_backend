@@ -20,7 +20,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['frobot'] = function (block: any) {
+  luaGenerator.forBlock['frobot'] = function (block: any) {
     let code_new = ''
     var nestedBlock = block.getInputTargetBlock('nested_blocks')
     if (nestedBlock) {
@@ -44,7 +44,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['custom_return'] = function (block: any) {
+  luaGenerator.forBlock['custom_return'] = function (block: any) {
     var inputBlock = block.getInputTargetBlock('INPUT')
     const result =
       luaGenerator.valueToCode(block, 'return', luaGenerator.ORDER_NONE) || 0
@@ -63,7 +63,7 @@ export default () => {
       this.appendDummyInput().appendField('Damage')
     },
   }
-  luaGenerator['damage'] = function () {
+  luaGenerator.forBlock['damage'] = function () {
     var code = 'damage()'
     return [code, luaGenerator.ORDER_ATOMIC]
   }
@@ -77,7 +77,7 @@ export default () => {
       this.appendDummyInput().appendField('Speed')
     },
   }
-  luaGenerator['speed'] = function () {
+  luaGenerator.forBlock['speed'] = function () {
     var code = 'speed()'
     return [code, luaGenerator.ORDER_ATOMIC]
   }
@@ -94,7 +94,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['drive'] = function (block: any) {
+  luaGenerator.forBlock['drive'] = function (block: any) {
     const degree =
       luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
     const speed =
@@ -115,7 +115,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['cannon'] = function (block: any) {
+  luaGenerator.forBlock['cannon'] = function (block: any) {
     const degree =
       luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
     const range =
@@ -135,7 +135,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['cannon_2'] = function (block: any) {
+  luaGenerator.forBlock['cannon_2'] = function (block: any) {
     const degree =
       luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
     const range =
@@ -157,7 +157,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['scan'] = function (block: any) {
+  luaGenerator.forBlock['scan'] = function (block: any) {
     const degree =
       luaGenerator.valueToCode(block, 'degree', luaGenerator.ORDER_NONE) || 0
     const resolution =
@@ -176,7 +176,7 @@ export default () => {
       this.appendDummyInput().appendField('X Location')
     },
   }
-  luaGenerator['xlocation'] = function () {
+  luaGenerator.forBlock['xlocation'] = function () {
     var code = 'loc_x()'
     return [code, luaGenerator.ORDER_ATOMIC]
   }
@@ -191,7 +191,7 @@ export default () => {
       this.appendDummyInput().appendField('Y Location')
     },
   }
-  luaGenerator['ylocation'] = function () {
+  luaGenerator.forBlock['ylocation'] = function () {
     var code = 'loc_y()'
     return [code, luaGenerator.ORDER_ATOMIC]
   }
@@ -208,7 +208,7 @@ export default () => {
       )
     },
   }
-  luaGenerator['math_atan2'] = function (block: any) {
+  luaGenerator.forBlock['math_atan2'] = function (block: any) {
     var y =
       luaGenerator.valueToCode(block, 'Y', luaGenerator.ORDER_ATOMIC) || '0'
     var x =
@@ -231,7 +231,7 @@ export default () => {
       )
     },
   }
-  luaGenerator['math_randomseed'] = function (block: any) {
+  luaGenerator.forBlock['math_randomseed'] = function (block: any) {
     var seed =
       luaGenerator.valueToCode(block, 'SEED', luaGenerator.ORDER_ATOMIC) || '0'
     var code = 'math.randomseed(' + seed + ')\n'
@@ -247,7 +247,7 @@ export default () => {
       this.setHelpUrl('https://www.lua.org/manual/5.4/manual.html#pdf-os.time')
     },
   }
-  luaGenerator['os_time'] = function (block: any) {
+  luaGenerator.forBlock['os_time'] = function (block: any) {
     var code = 'os.time()'
     return [code, luaGenerator.ORDER_ATOMIC]
   }
@@ -266,7 +266,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['os_execute_sleep'] = function (block: any) {
+  luaGenerator.forBlock['os_execute_sleep'] = function (block: any) {
     var seconds =
       luaGenerator.valueToCode(block, 'SECONDS', luaGenerator.ORDER_ATOMIC) ||
       '1'
@@ -279,11 +279,11 @@ export default () => {
     init: function () {
       this.appendDummyInput()
         .appendField('repeat')
-        .setAlign(Blockly.ALIGN_CENTRE)
+        .setAlign(Blockly.inputs.Align.CENTRE)
       this.appendStatementInput('nested_blocks').setCheck(null)
       this.appendValueInput('CONDITION')
         .setCheck(null)
-        .setAlign(Blockly.ALIGN_CENTRE)
+        .setAlign(Blockly.inputs.Align.CENTRE)
         .appendField('until')
       this.setPreviousStatement(true, null)
       this.setNextStatement(true, null)
@@ -294,7 +294,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['repeat_until'] = function (block: any) {
+  luaGenerator.forBlock['repeat_until'] = function (block: any) {
     var doCode = ''
     var condition =
       luaGenerator.valueToCode(block, 'CONDITION', luaGenerator.ORDER_ATOMIC) ||
@@ -322,7 +322,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['set_cannon'] = function (block: any) {
+  luaGenerator.forBlock['set_cannon'] = function (block: any) {
     const cannon_id =
       luaGenerator.valueToCode(block, 'cannon_id', luaGenerator.ORDER_NONE) || 0
     var code = `set_cannon(${cannon_id})\n`
@@ -341,7 +341,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['set_scanner'] = function (block: any) {
+  luaGenerator.forBlock['set_scanner'] = function (block: any) {
     const scanner_id =
       luaGenerator.valueToCode(block, 'scanner_id', luaGenerator.ORDER_NONE) ||
       0
@@ -362,7 +362,7 @@ export default () => {
   //   },
   // }
 
-  // luaGenerator['create_object'] = function (block) {
+  // luaGenerator.forBlock['create_object'] = function (block) {
   //   var variable_object = luaGenerator.nameDB_.getName(
   //     block.getFieldValue('object'),
   //     Blockly.Variables.NAME_TYPE
@@ -387,7 +387,7 @@ export default () => {
     },
   }
 
-  luaGenerator['set_object_property'] = function (block: any) {
+  luaGenerator.forBlock['set_object_property'] = function (block: any) {
     var value_object = luaGenerator.valueToCode(
       block,
       'object',
@@ -416,7 +416,7 @@ export default () => {
     },
   }
 
-  luaGenerator['get_object_property'] = function (block: any) {
+  luaGenerator.forBlock['get_object_property'] = function (block: any) {
     var value_object = luaGenerator.valueToCode(
       block,
       'object',
@@ -455,7 +455,7 @@ export default () => {
       this.setHelpUrl('')
     },
   }
-  luaGenerator['change_object_property'] = function (block: any) {
+  luaGenerator.forBlock['change_object_property'] = function (block: any) {
     var objectName = luaGenerator.nameDB_.getName(
       block.getFieldValue('object'),
       Blockly.VARIABLE_CATEGORY_NAME
@@ -492,7 +492,7 @@ export default () => {
     },
   }
 
-  luaGenerator['set_variable_type'] = function (block: any) {
+  luaGenerator.forBlock['set_variable_type'] = function (block: any) {
     var variable = luaGenerator.nameDB_.getName(
       block.getFieldValue('VAR'),
       Blockly.VARIABLE_CATEGORY_NAME
