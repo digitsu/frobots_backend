@@ -11,7 +11,7 @@
     "@mui/material": "^5.11.9",
     "@mui/styles": "^5.11.12",
     "@reduxjs/toolkit": "^1.9.3",
-    "blockly": "^9.1.1",
+    "blockly": "10.1.2",
     "lodash": "^4.17.21",
     "moment": "2.29.4",
     "p2": "^0.7.1",
