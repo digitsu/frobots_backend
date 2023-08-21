@@ -137,6 +137,7 @@ defmodule FrobotsWeb.Router do
     # manage users
     live "/users", UsersLive.Index, :index
     live "/users/new", UsersLive.Index, :new
+    live "/snippets", UserSnippetsLive.Index, :index
 
     # garage
     live "/garage", GarageFrobotsListLive.Index, :index

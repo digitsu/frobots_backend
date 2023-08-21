@@ -5,7 +5,7 @@ defmodule Frobots.Assets do
 
   import Ecto.Query, warn: false
   alias Frobots.Repo
-  alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon, Cpu}
+  alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon, Cpu, Snippet}
   alias Frobots.Accounts
 
   @prototype_class "P"
@@ -482,5 +482,53 @@ defmodule Frobots.Assets do
 
   def list_cpu() do
     Repo.all(Cpu)
+  end
+
+  ## Snippet
+
+  ## code,
+  ## name,
+  ## user_id
+
+  def create_snippet(attrs \\ %{}) do
+    %Snippet{}
+    |> Snippet.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_snippet!(attrs \\ %{}) do
+    %Snippet{}
+    |> Snippet.changeset(attrs)
+    |> Repo.insert!()
+  end
+
+  def get_snippet(id) do
+    from(s in Snippet, where: s.id == ^id)
+    |> Repo.one()
+  end
+
+  def get_snippet!(id) do
+    from(s in Snippet, where: s.id == ^id)
+    |> Repo.one!()
+  end
+
+  def update_snippet(snippet, attrs) do
+    snippet_cs = Snippet.changeset(snippet, attrs)
+
+    case Repo.update(snippet_cs) do
+      {:ok, _struct} -> :ok
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
+  def list_snippet(user_id) do
+    from(s in Snippet, where: s.user_id == ^user_id)
+    |> Repo.all()
+  end
+
+  def delete_snippet(snippet_id) do
+    snippet_id
+    |> get_snippet!()
+    |> Repo.delete()
   end
 end

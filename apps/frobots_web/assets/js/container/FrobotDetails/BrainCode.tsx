@@ -26,6 +26,7 @@ import {
 } from '../../mock/texts'
 import SaveIcon from '@mui/icons-material/Save'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import UserSnippet from './UserSnippet'
 
 const BlankBlocklyCode =
   '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
@@ -39,6 +40,7 @@ export default (props: any) => {
     cancelSimulation,
     changeProtobot,
     templates,
+    userSnippets,
   } = props
   const isOwnFrobot = frobot.user_id === currentUser.id
   const [luaCode, setLuaCode] = useState(frobot.brain_code || '')
@@ -276,6 +278,11 @@ export default (props: any) => {
                     label="Brain Code"
                     {...a11yProps(1)}
                   />
+                  <Tab
+                    sx={{ color: '#fff' }}
+                    label="Snippets"
+                    {...a11yProps(2)}
+                  />
                 </Tabs>
               </Box>
               <Box
@@ -285,7 +292,7 @@ export default (props: any) => {
                 gap={1}
                 alignItems={'center'}
               >
-                {currentUser.admin && (
+                {tabIndex !== 2 && currentUser.admin && (
                   <Tooltip title={'Download Brain Code'}>
                     <Button
                       color="inherit"
@@ -298,7 +305,7 @@ export default (props: any) => {
                     </Button>
                   </Tooltip>
                 )}
-                {isOwnFrobot && (
+                {tabIndex !== 2 && isOwnFrobot && (
                   <>
                     <Tooltip title={'Save Brain Code'}>
                       <Button
@@ -415,6 +422,11 @@ export default (props: any) => {
           {
             <Box sx={{ p: 3 }} display={tabIndex === 1 ? 'block' : 'none'}>
               <LuaEditor luaCode={luaCode} onEditorChange={onEditorChange} />
+            </Box>
+          }
+          {
+            <Box sx={{ p: 3 }} display={tabIndex === 2 ? 'block' : 'none'}>
+              <UserSnippet userSnippets={userSnippets} />
             </Box>
           }
         </Box>
