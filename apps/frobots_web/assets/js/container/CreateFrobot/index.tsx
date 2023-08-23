@@ -28,7 +28,7 @@ export default (props: any) => {
         />
       ),
     },
-    { label: 'Step 2', component: <EditBrainCode /> },
+    { label: 'Step 2', component: <EditBrainCode templates={templates} /> },
     {
       label: 'Step 3',
       component: (
@@ -106,7 +106,7 @@ export default (props: any) => {
           </Box>
           <Box>
             <Button
-              disabled={activeStep === 1 && brainCode?.brain_code.length === 0}
+              disabled={activeStep === 1 && brainCode?.brain_code?.length === 0}
               onClick={() => dispatch(incrementStep())}
               variant="contained"
               sx={{

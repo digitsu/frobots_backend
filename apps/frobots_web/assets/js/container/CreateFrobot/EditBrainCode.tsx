@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Joyride from 'react-joyride'
 import { Box, Tab, Tabs, Button, Grid, Tooltip } from '@mui/material'
 import Blockly from 'blockly'
 import { luaGenerator } from 'blockly/lua'
@@ -8,12 +9,25 @@ import { BlocklyEditor } from '../Garage/BlocklyEditor'
 import LuaEditor from '../Garage/LuaEditor'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
 import Popup from '../../components/Popup'
-import { CreateFrobotBrainCodeCopyPromptDescription } from '../../mock/texts'
+import {
+  CreateFrobotBrainCodeCopyPromptDescription,
+  ResetWorkspacePopupPromptDescription,
+  TutorialPopupPromptDescription,
+} from '../../mock/texts'
+import HistoryIcon from '@mui/icons-material/History'
+import LightbulbIcon from '@mui/icons-material/Lightbulb'
+import { handleTourCallback } from '../../utils/util'
 
-export default () => {
-  const { brainCode, blocklyCode: blocklyCodeStore } = useSelector(
-    (store: any) => store.createFrobot
-  )
+export default ({ templates }) => {
+  const {
+    brainCode,
+    blocklyCode: blocklyCodeStore,
+    introSteps,
+    selectedProtobot,
+  } = useSelector((store: any) => store.createFrobot)
+  const [showTutorial, setShowTutorial] = useState(false)
+  const [showTutorialPopup, setShowTutorialPopup] = useState(false)
+  const [showResetPopup, setShowResetPopup] = useState(false)
   const [luaCode, setLuaCode] = useState('')
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState('')
@@ -21,8 +35,13 @@ export default () => {
   const [blocklyLuaCode, setBlocklyLuaCode] = useState(
     brainCode?.brain_code || ''
   )
-  const { setBlocklyCode: setBlocklyCodeHandler, setBrainCode } =
-    createFrobotActions
+  const {
+    setBlocklyCode: setBlocklyCodeHandler,
+    setBrainCode,
+    onExit,
+  } = createFrobotActions
+  const currentProtobot =
+    templates.find(({ name }) => name === selectedProtobot?.label) || null
   const dispatch = useDispatch()
   function a11yProps(index: number) {
     return {
@@ -30,7 +49,6 @@ export default () => {
       'aria-controls': `simple-tabpanel-${index}`,
     }
   }
-
   const [tabIndex, setTabIndex] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -74,9 +92,45 @@ export default () => {
     setBlocklyLuaCode(blocklyCode)
     setShowCopyPrompt(false)
   }
+
+  const showTutorialHandler = () => {
+    Blockly.getMainWorkspace().clear()
+    setShowTutorialPopup(false)
+    setShowTutorial(true)
+  }
+
+  const resetHandler = () => {
+    const parser = new DOMParser()
+    const workspace = Blockly.getMainWorkspace()
+    const xmlDom = parser.parseFromString(
+      currentProtobot?.blockly_code,
+      'text/xml'
+    )
+    Blockly.Xml.clearWorkspaceAndLoadFromXml(xmlDom.documentElement, workspace)
+    setShowResetPopup(false)
+  }
+
   return (
-    <Box mt={5}>
-      <>
+    <>
+      <Joyride
+        steps={introSteps}
+        run={showTutorial}
+        continuous={true}
+        showSkipButton={true}
+        callback={(data) => handleTourCallback(data, setShowTutorial)}
+        showProgress={true}
+        disableOverlay
+        styles={{
+          buttonNext: {
+            backgroundColor: '#00AB55',
+          },
+          buttonBack: {
+            color: '#00AB55',
+          },
+        }}
+      />
+
+      <Box mt={5}>
         <Box
           sx={{
             width: '90%',
@@ -110,6 +164,7 @@ export default () => {
                   <Tab
                     sx={{ color: '#fff' }}
                     label="Block Editor"
+                    className="block-editor"
                     {...a11yProps(0)}
                   />
                   <Tab
@@ -119,7 +174,7 @@ export default () => {
                   />
                 </Tabs>
               </Box>
-              <Box>
+              <Box display={'flex'} gap={1}>
                 {tabIndex === 0 && (
                   <>
                     <Tooltip title={'Sync Brain Code'}>
@@ -142,6 +197,42 @@ export default () => {
                     />
                   </>
                 )}
+                <>
+                  <Button
+                    startIcon={<LightbulbIcon />}
+                    variant="contained"
+                    onClick={() => setShowTutorialPopup(true)}
+                  >
+                    Tutorial
+                  </Button>
+                  <Popup
+                    open={showTutorialPopup}
+                    cancelAction={() => setShowTutorialPopup(false)}
+                    successAction={showTutorialHandler}
+                    successLabel={'Confirm'}
+                    cancelLabel={'Cancel'}
+                    label={'Warning'}
+                    description={TutorialPopupPromptDescription}
+                  />
+                </>
+                <>
+                  <Button
+                    startIcon={<HistoryIcon />}
+                    variant="outlined"
+                    onClick={() => setShowResetPopup(true)}
+                  >
+                    Reset
+                  </Button>
+                  <Popup
+                    open={showResetPopup}
+                    cancelAction={() => setShowResetPopup(false)}
+                    successAction={resetHandler}
+                    successLabel={'Confirm'}
+                    cancelLabel={'Cancel'}
+                    label={'Warning'}
+                    description={ResetWorkspacePopupPromptDescription}
+                  />
+                </>
               </Box>
             </Box>
           </Box>
@@ -170,7 +261,7 @@ export default () => {
             </Box>
           }
         </Box>
-      </>
-    </Box>
+      </Box>
+    </>
   )
 }

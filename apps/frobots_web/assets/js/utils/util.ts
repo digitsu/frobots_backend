@@ -1,4 +1,5 @@
 import moment from 'moment'
+import Blockly from 'blockly'
 
 const characters =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -94,4 +95,109 @@ const blogPostImages = [
 
 export const getBlogPostImage = () => {
   return blogPostImages[Math.floor(Math.random() * blogPostImages.length)]
+}
+
+export const handleTourCallback = (data, setShowTutorial) => {
+  const toolbox = Blockly.getMainWorkspace().getToolbox()
+  const flyout = toolbox.getFlyout()
+  const isFlyOutVisible = flyout.isVisible_
+  const toolBoxItems = toolbox.getToolboxItems()
+  if (
+    (data.index === 1 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'next') ||
+    (data.index === 2 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'next') ||
+    (data.index === 4 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'prev')
+  ) {
+    if (!isFlyOutVisible) {
+      const category = toolBoxItems.find(
+        (toolBoxItem) => toolBoxItem.toolboxItemDef_.id === 'frobot-functions'
+      )
+      toolbox.setSelectedItem(category)
+    }
+  }
+  if (
+    (data.index === 4 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'next') ||
+    (data.index === 6 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'prev') ||
+    (data.index === 5 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'prev')
+  ) {
+    const category = toolBoxItems.find(
+      (toolBoxItem) => toolBoxItem.toolboxItemDef_.id === 'objects-category'
+    )
+    toolbox.setSelectedItem(category)
+  }
+  if (
+    (data.index === 5 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'next') ||
+    (data.index === 7 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'prev')
+  ) {
+    const mainCategory = toolBoxItems.find(
+      (toolBoxItem) => toolBoxItem.name_ === 'Variables'
+    )
+    const category = mainCategory.toolboxItems_.find(
+      (toolboxItem) => toolboxItem.toolboxItemDef_.id === 'catVariables'
+    )
+    mainCategory.setExpanded(true)
+    toolbox.setSelectedItem(category)
+  }
+  if (
+    (data.index === 6 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'next') ||
+    (data.index === 8 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'prev')
+  ) {
+    const mainCategory = toolBoxItems.find(
+      (toolBoxItem) => toolBoxItem.name_ === 'Variables'
+    )
+    mainCategory.setExpanded(false)
+
+    const category = toolBoxItems.find(
+      (toolBoxItem) => toolBoxItem.toolboxItemDef_.id === 'catText'
+    )
+    toolbox.setSelectedItem(category)
+  }
+  if (
+    (data.index === 7 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'next') ||
+    (data.index === 9 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'prev') ||
+    (data.index === 8 &&
+      data.lifecycle === 'complete' &&
+      data.action === 'next')
+  ) {
+    const category = toolBoxItems.find(
+      (toolBoxItem) => toolBoxItem.toolboxItemDef_.id === 'catLogic'
+    )
+    toolbox.setSelectedItem(category)
+  }
+  if (
+    data.index === 5 &&
+    data.lifecycle === 'complete' &&
+    data.action === 'prev'
+  ) {
+    flyout.hide()
+  }
+  if (
+    (data.action === 'reset' && data.type === 'tour:status') ||
+    data.action === 'close'
+  ) {
+    setShowTutorial(false)
+  }
 }
