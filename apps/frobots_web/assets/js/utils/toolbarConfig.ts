@@ -325,7 +325,7 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
-    <category name="Objects" colour="210">
+    <category name="Objects" colour="210" id="objects-category">
       <block type="set_object_property"></block>
       <block type="get_object_property"></block>
       <block type="change_object_property">
@@ -336,7 +336,7 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
-    <category name="Frobot Functions" colour="20">
+    <category name="Frobot Functions" colour="20" id="frobot-functions">
       <block type="frobot" name="frobot"></block>
       <block type="custom_return" name="custom_return"></block>
       <block type="speed" name="speed"></block>

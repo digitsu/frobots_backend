@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { createFrobotOnboardingSteps } from '../../mock/OnboardingSteps'
 
 const initialState = {
   activeStep: 0,
@@ -7,6 +8,8 @@ const initialState = {
   bio: '',
   brainCode: {},
   blocklyCode: '',
+  selectedProtobot: null,
+  introSteps: createFrobotOnboardingSteps,
 }
 
 const createFrobotSlice = createSlice({
@@ -33,6 +36,12 @@ const createFrobotSlice = createSlice({
     },
     setBlocklyCode: (state, action) => {
       state.blocklyCode = action.payload
+    },
+    onExit: (state, action) => {
+      state.stepsEnabled = false
+    },
+    setSelectedProtobot: (state, action) => {
+      state.selectedProtobot = action.payload
     },
   },
 })
