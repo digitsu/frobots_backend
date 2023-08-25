@@ -39,6 +39,10 @@ defmodule Frobots.Events.Match do
     field :status, Ecto.Enum, values: [:pending, :running, :done, :cancelled, :aborted]
     field :type, Ecto.Enum, values: [:simulation, :real], default: :real
 
+    field :tournament_match_type, Ecto.Enum, values: [:pool_a, :pool_b, :pool_c, :quarter_final, :semi_final, :final]
+    field :tournament_match_id, :integer
+    belongs_to :tournament, Frobots.Events.Tournament
+
     ## legacy column
     field :frobots, {:array, :integer}
     belongs_to :user, Frobots.Accounts.User
