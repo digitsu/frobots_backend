@@ -8,7 +8,23 @@ defmodule Frobots.Events.Match do
 
   alias Frobots.Events.Slot
 
-  @derive Jason.Encoder
+  @fields [
+    :title,
+    :description,
+    :match_time,
+    :timer,
+    :arena_id,
+    :min_player_frobot,
+    :max_player_frobot,
+    :status,
+    :frobots,
+    :user_id,
+    :type,
+    :started_at,
+    :reason
+  ]
+
+  @derive {Jason.Encoder, only: @fields}
   # a battlelog is written after a match is completed, and there are winners declared.
   schema "matches" do
     field :title, :string
@@ -34,22 +50,6 @@ defmodule Frobots.Events.Match do
     timestamps()
   end
 
-  @fields [
-    :title,
-    :description,
-    :match_time,
-    :timer,
-    :arena_id,
-    :min_player_frobot,
-    :max_player_frobot,
-    :status,
-    :frobots,
-    :user_id,
-    :type,
-    :started_at,
-    :reason
-  ]
-
   @doc false
   def changeset(match, attrs) do
     match
@@ -70,7 +70,7 @@ defmodule Frobots.Events.Match do
 
   def update_changeset(match, attrs) do
     match
-    |> cast(attrs, [:status, :started_at, :reason])
+    |> cast(attrs, [:status, :started_at, :reason, :type])
     |> cast_assoc(:slots, with: &Slot.update_changeset/2)
     |> validate_required([
       :status
