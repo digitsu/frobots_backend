@@ -3,6 +3,7 @@
     "format": "prettier --write \"./js/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "dependencies": {
+    "@blockly/plugin-cross-tab-copy-paste": "^4.0.2",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@monaco-editor/react": "^4.4.6",
@@ -10,7 +11,7 @@
     "@mui/material": "^5.11.9",
     "@mui/styles": "^5.11.12",
     "@reduxjs/toolkit": "^1.9.3",
-    "blockly": "^9.1.1",
+    "blockly": "10.1.2",
     "lodash": "^4.17.21",
     "moment": "2.29.4",
     "p2": "^0.7.1",
@@ -23,8 +24,9 @@
     "pixi.js": "^7.0.3",
     "prettier": "^2.8.4",
     "react": "^17.0.2",
-    "react-blockly": "7.0.0",
+    "react-blockly": "8.0.0",
     "react-dom": "^17.0.2",
+    "react-joyride": "^2.5.5",
     "react-markdown": "^8.0.7",
     "react-redux": "^8.0.5",
     "react-syntax-highlighter": "^15.5.0",

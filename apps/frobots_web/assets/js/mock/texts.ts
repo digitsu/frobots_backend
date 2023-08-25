@@ -13,3 +13,7 @@ export const CreateFrobotBrainCodeCopyPromptDescription =
   'The current brain code will be overwritten by the lua code in the Block Editor, are you sure?'
 export const SaveBlockCodePromptDescription =
   'Saving the block code does not sync the code over to the brain code, you must click “Sync” to do that. Do you wish to save blockly code without syncing ?'
+export const TutorialPopupPromptDescription =
+  'Starting the tutorial flow will reset your current blocks, giving you a fresh start. However, you can always return to the original Protobot template whenever you like by clicking the "Reset" button. Are you ready to proceed?'
+export const ResetWorkspacePopupPromptDescription =
+  'This action will clear your existing custom blocks. Would you like to Reset your workspace using the selected Protobot blocks?'

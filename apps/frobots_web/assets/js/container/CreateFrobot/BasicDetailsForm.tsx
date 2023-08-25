@@ -27,6 +27,7 @@ export default (props: any) => {
     setBio,
     setBrainCode,
     setBlocklyCode,
+    setSelectedProtobot,
   } = createFrobotActions
   const changeStarterMechHandler = (starterMech) => {
     dispatch(changeStarterMech(starterMech))
@@ -37,6 +38,7 @@ export default (props: any) => {
   const selectedMech = starterMech.id
 
   const handleSelectTemplate = (frobot: any) => {
+    dispatch(setSelectedProtobot(frobot))
     dispatch(setBrainCode(frobot))
     dispatch(setBlocklyCode(frobot.blockly_code))
   }
