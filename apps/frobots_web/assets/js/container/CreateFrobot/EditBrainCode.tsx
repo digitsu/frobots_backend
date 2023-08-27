@@ -24,6 +24,7 @@ export default ({ templates }) => {
     blocklyCode: blocklyCodeStore,
     introSteps,
     selectedProtobot,
+    isTutorialFlow,
   } = useSelector((store: any) => store.createFrobot)
   const [showTutorial, setShowTutorial] = useState(false)
   const [showTutorialPopup, setShowTutorialPopup] = useState(false)
@@ -38,7 +39,7 @@ export default ({ templates }) => {
   const {
     setBlocklyCode: setBlocklyCodeHandler,
     setBrainCode,
-    onExit,
+    setTutorialFlow,
   } = createFrobotActions
   const currentProtobot =
     templates.find(({ name }) => name === selectedProtobot?.label) || null
@@ -95,8 +96,9 @@ export default ({ templates }) => {
 
   const showTutorialHandler = () => {
     Blockly.getMainWorkspace().clear()
-    setShowTutorialPopup(false)
+    dispatch(setTutorialFlow(true))
     setShowTutorial(true)
+    setShowTutorialPopup(false)
   }
 
   const resetHandler = () => {
@@ -110,9 +112,16 @@ export default ({ templates }) => {
     setShowResetPopup(false)
   }
 
+  useEffect(() => {
+    if (!isTutorialFlow) {
+      resetHandler()
+    }
+  }, [isTutorialFlow])
+
   return (
     <>
       <Joyride
+        key={`joyride-${showTutorial ? 'active' : 'inactive'}`}
         steps={introSteps}
         run={showTutorial}
         continuous={true}
