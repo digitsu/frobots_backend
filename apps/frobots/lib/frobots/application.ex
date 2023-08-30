@@ -18,7 +18,8 @@ defmodule Frobots.Application do
       Frobots.DatabaseListener,
       Frobots.MatchChannel,
       Frobots.Cron.ScheduledMatch,
-      Frobots.Cron.JoiningStatus
+      Frobots.Cron.JoiningStatus,
+      Frobots.TournamentManager
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Frobots.Supervisor)
