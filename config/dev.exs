@@ -99,8 +99,12 @@ config :ex_aws, :s3,
   region: "US",
   bucket: s3_store_bucket
 
+
 battle_background_audio = System.get_env("BATTLE_BACKGROUND_AUDIO") || "audio/map-battle.mp3"
 
 config :frobots_web,
        :battle_background,
        battle_background_audio
+
+config :appsignal, :config, active: true
+
