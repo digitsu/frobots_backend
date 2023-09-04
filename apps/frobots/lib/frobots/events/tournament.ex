@@ -14,6 +14,7 @@ defmodule Frobots.Events.Tournament do
     field :name, :string
     field :starts_at, :integer
     field :ended_at, :integer
+    field :description, :string
     field :prizes, {:array, :integer}
     field :commission_percent, :integer
     field :arena_fees_percent, :integer

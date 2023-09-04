@@ -4,6 +4,7 @@ defmodule Frobots.Repo.Migrations.CreateTournamentsTable do
   def change do
     create_if_not_exists table(:tournaments) do
       add :name, :string
+      add :description, :string
       add :starts_at, :integer
       add :ended_at, :integer
       add :prizes, {:array, :integer}
