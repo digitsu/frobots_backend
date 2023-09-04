@@ -1,6 +1,7 @@
 defmodule FrobotsWeb.TournnamentCreateLive.Index do
   # use Phoenix.LiveView
   use FrobotsWeb, :live_view
+  alias Frobots.Api
 
   @impl Phoenix.LiveView
   def mount(_params, %{"user_id" => id}, socket) do
@@ -19,6 +20,7 @@ defmodule FrobotsWeb.TournnamentCreateLive.Index do
     socket
   end
 
+  @impl Phoenix.LiveView
   def handle_event("react.create_tournament", params, socket) do
     case Api.create_tournament(params) do
       {:ok, tournament} ->

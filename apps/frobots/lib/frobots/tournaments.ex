@@ -67,16 +67,23 @@ defmodule Frobots.Tournaments do
   # Wins score a 5.
   # Ties (timeout) score a 3
   # Losses score a 1
-  defp pairing(_tournament_id, :pool_a) do
+  def pairing(_tournament_id, :pool_a) do
     # Get the tournament match type from tournament_players ordered by rank
-    frobot_ids = []
+    frobot_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+
+    max_range = div(length(frobot_ids), 2) - 1
 
     pairing =
-      Enum.reduce([0..(length(frobot_ids) / 2 - 1)], [], fn index, acc ->
-        [{Enum.at(frobot_ids, index), Enum.at(frobot_ids, length(frobot_ids) - 1 - index)} | acc]
+      Enum.reduce(0..max_range, [], fn index, acc ->
+        acc ++ [{Enum.at(frobot_ids, index), Enum.at(frobot_ids, length(frobot_ids) - 1 - index)}]
       end)
 
     ## Logic for ordered pairing
-    _ordered_pairing = pairing
+    max_range = div(length(pairing), 2) - 1
+
+    _ordered_pairing =
+      Enum.reduce(0..max_range, [], fn index, acc ->
+        acc ++ [Enum.at(pairing, index), Enum.at(pairing, length(pairing) - 1 - index)]
+      end)
   end
 end
