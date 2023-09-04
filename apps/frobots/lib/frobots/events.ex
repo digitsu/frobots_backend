@@ -8,7 +8,7 @@ defmodule Frobots.Events do
   alias Frobots.Repo
 
   alias Frobots.Events.Battlelog
-  alias Frobots.Events.{Match, Slot}
+  alias Frobots.Events.{Match, Slot, Tournament}
   alias Frobots.Leaderboard
 
   @topic inspect(__MODULE__)
@@ -506,5 +506,27 @@ defmodule Frobots.Events do
     |> preload(^preload)
     |> order_by(^order_by)
     |> Repo.paginate(page_config)
+  end
+
+  defp _create_tournament(tournament, attrs) do
+    tournament
+    |> Tournament.changeset(attrs)
+  end
+
+  def create_tournament(attrs \\ %{}) do
+    _create_tournament(%Tournament{}, attrs)
+    |> Repo.insert()
+    |> case do
+      {:ok, tournament} ->
+        Frobots.TournamentManager.start_child(tournament.id)
+        {:ok, tournament}
+
+      error ->
+        error
+    end
+  end
+
+  def get_tournament(id) do
+    Repo.get(Tournament, id)
   end
 end

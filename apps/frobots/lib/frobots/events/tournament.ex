@@ -20,6 +20,7 @@ defmodule Frobots.Events.Tournament do
     field :platform_fees, :integer
     field :entry_fees, :integer
     field :participants, :integer
+
     ## Once the tournament is Over calculate these
     field :final_ranking, :map
     field :total_quedos, :integer
