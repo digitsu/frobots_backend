@@ -34,7 +34,9 @@ defmodule Frobots.Events.Tournament do
   end
 
   @fields [
+    :name,
     :starts_at,
+    :description,
     :prizes,
     :commission_percent,
     :arena_fees_percent,
@@ -42,10 +44,19 @@ defmodule Frobots.Events.Tournament do
     :entry_fees
   ]
 
+  @optional_fields [
+    :ended_at,
+    :participants,
+    :final_ranking,
+    :total_quedos,
+    :payouts,
+    :status
+  ]
+
   @doc false
   def changeset(tournament, attrs) do
     tournament
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ @optional_fields)
     |> validate_required(@fields)
   end
 end
