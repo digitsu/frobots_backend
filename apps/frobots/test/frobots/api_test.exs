@@ -1,5 +1,5 @@
 defmodule Frobots.ApiTest do
-  use Frobots.DataCase, async: true
+  use Frobots.DataCase, async: false
   alias Frobots.Api
   alias Frobots.Assets.Frobot
 
@@ -122,6 +122,34 @@ defmodule Frobots.ApiTest do
 
     assert {:ok, _details} = Api.get_frobot_details("sniper")
     assert {:ok, _details} = Api.get_frobot_details("necron99")
+  end
+
+  describe "tournaments" do
+    test "create tournament" do
+      attrs = %{
+        name: "tournament_aug",
+        starts_at: System.os_time(:second) + 24 * 60 * 60,
+        description: "Test Tournament for August",
+        prizes: [50, 30, 20],
+        commission_percent: 0,
+        arena_fees_percent: 0,
+        platform_fees: 0,
+        entry_fees: 0,
+        participants: 64,
+        status: :open
+      }
+
+      {:ok, tournament} = Api.create_tournament(attrs)
+      assert tournament.status == :open
+      assert is_integer(tournament.id)
+      assert tournament.name == "tournament_aug"
+
+      ## Tournament Process is started
+      assert "tournament#{tournament.id}"
+             |> String.to_atom()
+             |> Process.whereis()
+             |> Process.alive?()
+    end
   end
 
   # need to add a test for Api.create_frobot()

@@ -38,19 +38,19 @@ defmodule Frobots.Events.Tournament do
     :starts_at,
     :description,
     :prizes,
+    :participants,
     :commission_percent,
     :arena_fees_percent,
     :platform_fees,
-    :entry_fees
+    :entry_fees,
+    :status
   ]
 
   @optional_fields [
     :ended_at,
-    :participants,
     :final_ranking,
     :total_quedos,
-    :payouts,
-    :status
+    :payouts
   ]
 
   @doc false
