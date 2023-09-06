@@ -35,4 +35,10 @@ defmodule FrobotsWeb.TournnamentCreateLive.Index do
          |> put_flash(:error, "Could not create tournament. #{error}")}
     end
   end
+
+  @impl Phoenix.LiveView
+  def handle_event("react.join_tournament", _params, socket) do
+    # Api.join_tournament(params)
+    {:noreply, socket}
+  end
 end

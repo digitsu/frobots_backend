@@ -7,9 +7,11 @@ defmodule Frobots.Events do
   import Ecto.Query, warn: false
   alias Frobots.Repo
 
+  alias Frobots.Assets
   alias Frobots.Events.Battlelog
   alias Frobots.Events.{Match, Slot, Tournament}
   alias Frobots.Leaderboard
+  alias Frobots.Events.TournamentPlayers
 
   @topic inspect(__MODULE__)
   @pubsub_server Frobots.PubSub
@@ -519,6 +521,8 @@ defmodule Frobots.Events do
     |> case do
       {:ok, tournament} ->
         Frobots.TournamentManager.start_child(tournament.id)
+        |> IO.inspect(label: "Tournament Process")
+
         {:ok, tournament}
 
       error ->
@@ -528,5 +532,30 @@ defmodule Frobots.Events do
 
   def get_tournament(id) do
     Repo.get(Tournament, id)
+  end
+
+  def create_tournament_players(attrs \\ %{}) do
+    %TournamentPlayers{}
+    |> TournamentPlayers.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def join_tournament(tournament_id, frobot_id) do
+    with {:ok, tournament} <- get_tournament(tournament_id),
+         true <- is_open?(tournament),
+         {:ok, _frobot} <- Assets.get_frobot(frobot_id),
+         attrs <- %{
+           frobot_id: frobot_id,
+           tournament_id: tournament_id,
+           score: 0,
+           tournament_match_type: :pool_a
+         },
+         {:ok, tp} <- create_tournament_players(attrs) do
+      {:ok, tp}
+    end
+  end
+
+  defp is_open?(tournament) do
+    tournament.status == :open
   end
 end

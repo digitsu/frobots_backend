@@ -48,6 +48,10 @@ defmodule Frobots.Api do
     Events.create_tournament(attrs)
   end
 
+  def join_tournament(attrs) do
+    Events.join_tournament(attrs["tournament_id"], attrs["frobot_id"])
+  end
+
   ## params = [search_pattern: "as", match_status: :done, match_type: :real]
   def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
     query =

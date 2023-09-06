@@ -27,7 +27,7 @@ defmodule Frobots.Events.TournamentPlayers do
   @doc false
   def changeset(tournament_player, attrs) do
     tournament_player
-    |> cast(attrs, @fields)
+    |> cast(attrs, @fields ++ [:order])
     |> validate_required(@fields)
   end
 end
