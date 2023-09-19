@@ -522,10 +522,10 @@ defmodule Frobots.Api do
   """
   def get_frobot_details(id_or_name) do
     case Assets.get_frobot(id_or_name) do
-      nil ->
+      {:error, :not_found} ->
         {:error, "There are no frobots with given id/name"}
 
-      frobot ->
+      {:ok, frobot} ->
         _preload_equipment_instances(frobot)
     end
   end

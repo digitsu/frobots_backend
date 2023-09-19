@@ -7,6 +7,7 @@ defmodule Frobots.Events.Tournament do
   import Ecto.Changeset
 
   alias Frobots.Events.Match
+  alias Frobots.Events.TournamentPlayers
 
   @derive Jason.Encoder
 
@@ -30,6 +31,7 @@ defmodule Frobots.Events.Tournament do
     field :status, Ecto.Enum, values: [:open, :progress, :completed, :cancelled]
 
     has_many :matches, Match, foreign_key: :tournament_id
+    has_many :tournament_players, TournamentPlayers, foreign_key: :tournament_id
 
     timestamps()
   end

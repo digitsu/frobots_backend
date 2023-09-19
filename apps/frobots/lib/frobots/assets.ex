@@ -99,10 +99,10 @@ defmodule Frobots.Assets do
 
       iex> Frobots.Assets.get_frobot("sniper")
 
-      %Elixir.Frobots.Assets.Frobot{}
+      {:ok, %Elixir.Frobots.Assets.Frobot{}}
 
       iex> Frobots.Assets.get_frobot("notaname")
-      nil
+      {:error, :not_found}
 
   """
   def get_frobot(name) when is_bitstring(name) do
