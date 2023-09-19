@@ -531,7 +531,10 @@ defmodule Frobots.Events do
   end
 
   def get_tournament(id) do
-    Repo.get(Tournament, id)
+    case Repo.get(Tournament, id) do
+      nil -> {:error, :not_found}
+      tournament -> {:ok, tournament}
+    end
   end
 
   def create_tournament_players(attrs \\ %{}) do

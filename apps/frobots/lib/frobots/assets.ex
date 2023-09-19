@@ -109,6 +109,10 @@ defmodule Frobots.Assets do
     Frobot
     |> frobots_name_query(name)
     |> Repo.one()
+    |> case do
+      nil -> {:error, :not_found}
+      frobot -> {:ok, frobot}
+    end
   end
 
   def get_frobot(id), do: Repo.get(Frobot, id)
