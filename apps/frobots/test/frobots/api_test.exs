@@ -15,7 +15,7 @@ defmodule Frobots.ApiTest do
   end
 
   test "list matches by pagination" do
-    assert %{entries: matches, page_number: 1} = Api.list_paginated_matches(status: :pending)
+    assert %{entries: matches, page_number: 1} = Api.list_paginated_matches(match_status: :pending)
     assert Enum.all?(matches, fn match -> match.status == :pending end)
   end
 
