@@ -127,6 +127,7 @@ defmodule Frobots.ApiTest do
   describe "tournaments" do
     test "create tournament" do
       attrs = %{
+        arena_id: 1,
         name: "tournament_aug",
         starts_at: System.os_time(:second) + 24 * 60 * 60,
         description: "Test Tournament for August",

@@ -548,7 +548,7 @@ defmodule Frobots.Events do
            frobot_id: frobot_id,
            tournament_id: tournament_id,
            score: 0,
-           tournament_match_type: :pool_a
+           tournament_match_type: "pool"
          },
          {:ok, tp} <- create_tournament_players(attrs) do
       {:ok, tp}

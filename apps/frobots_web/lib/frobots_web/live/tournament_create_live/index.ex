@@ -4,7 +4,7 @@ defmodule FrobotsWeb.TournnamentCreateLive.Index do
   alias Frobots.Api
 
   @impl Phoenix.LiveView
-  def mount(_params, %{"user_id" => id}, socket) do
+  def mount(_params, %{"user_id" => _id}, socket) do
     FrobotsWeb.Presence.track(socket)
 
     {:ok, socket}

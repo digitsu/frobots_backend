@@ -39,9 +39,7 @@ defmodule Frobots.Events.Match do
     field :status, Ecto.Enum, values: [:pending, :running, :done, :cancelled, :aborted]
     field :type, Ecto.Enum, values: [:simulation, :real], default: :real
 
-    field :tournament_match_type, Ecto.Enum,
-      values: [:pool_a, :pool_b, :pool_c, :quarter_final, :semi_final, :final]
-
+    field :tournament_match_type, :string
     field :tournament_match_id, :integer
     belongs_to :tournament, Frobots.Events.Tournament
 
@@ -55,6 +53,23 @@ defmodule Frobots.Events.Match do
 
     timestamps()
   end
+
+  @fields [
+    :title,
+    :description,
+    :match_time,
+    :timer,
+    :arena_id,
+    :min_player_frobot,
+    :max_player_frobot,
+    :status,
+    :frobots,
+    :user_id,
+    :type,
+    :started_at,
+    :reason,
+    :tournament_match_type
+  ]
 
   @doc false
   def changeset(match, attrs) do

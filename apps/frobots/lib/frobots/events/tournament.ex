@@ -18,6 +18,7 @@ defmodule Frobots.Events.Tournament do
     field :prizes, {:array, :integer}
     field :commission_percent, :integer
     field :arena_fees_percent, :integer
+    field :arena_id, :integer
     field :platform_fees, :integer
     field :entry_fees, :integer
     field :participants, :integer
@@ -43,7 +44,8 @@ defmodule Frobots.Events.Tournament do
     :arena_fees_percent,
     :platform_fees,
     :entry_fees,
-    :status
+    :status,
+    :arena_id
   ]
 
   @optional_fields [

@@ -10,6 +10,7 @@ defmodule Frobots.Repo.Migrations.CreateTournamentsTable do
       add :prizes, {:array, :integer}
       add :commission_percent, :integer
       add :arena_fees_percent, :integer
+      add :arena_id, :integer
       add :platform_fees, :integer
       add :entry_fees, :integer
       add :participants, :integer
