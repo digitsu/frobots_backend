@@ -44,6 +44,14 @@ defmodule Frobots.Api do
     end
   end
 
+  def create_tournament(attrs) do
+    Events.create_tournament(attrs)
+  end
+
+  def join_tournament(attrs) do
+    Events.join_tournament(attrs["tournament_id"], attrs["frobot_id"])
+  end
+
   ## params = [search_pattern: "as", match_status: :done, match_type: :real]
   def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
     query =
@@ -514,10 +522,10 @@ defmodule Frobots.Api do
   """
   def get_frobot_details(id_or_name) do
     case Assets.get_frobot(id_or_name) do
-      nil ->
+      {:error, :not_found} ->
         {:error, "There are no frobots with given id/name"}
 
-      frobot ->
+      {:ok, frobot} ->
         _preload_equipment_instances(frobot)
     end
   end
