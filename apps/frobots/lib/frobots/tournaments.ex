@@ -50,18 +50,18 @@ defmodule Frobots.Tournaments do
     {:noreply, state}
   end
 
-  defp get_tournament_pool(participants) do
-    number_of_pools_matches = :math.log2(participants)
+  # defp get_tournament_pool(participants) do
+  #   number_of_pools_matches = :math.log2(participants)
 
-    cond do
-      number_of_pools_matches > 32 -> :pool_a
-      number_of_pools_matches > 16 -> :pool_b
-      number_of_pools_matches > 8 -> :pool_c
-      number_of_pools_matches > 4 -> :quarter_final
-      number_of_pools_matches > 2 -> :semi_final
-      number_of_pools_matches == 2 -> :final
-    end
-  end
+  #   cond do
+  #     number_of_pools_matches > 32 -> :pool_a
+  #     number_of_pools_matches > 16 -> :pool_b
+  #     number_of_pools_matches > 8 -> :pool_c
+  #     number_of_pools_matches > 4 -> :quarter_final
+  #     number_of_pools_matches > 2 -> :semi_final
+  #     number_of_pools_matches == 2 -> :final
+  #   end
+  # end
 
   # Each FROBOT plays each other in scheduled matches in each pool.
   # Wins score a 5.
