@@ -263,7 +263,7 @@ defmodule Frobots.Events do
   end
 
   def get_slot_by(params) do
-    Repo.get_by(Slot, params)
+    Slot |> where(^params) |> Repo.one()
   end
 
   def get_battlelog_by(params) do
@@ -530,8 +530,8 @@ defmodule Frobots.Events do
     end
   end
 
-  def get_tournament(id) do
-    case Repo.get(Tournament, id) do
+  def get_tournament_by(params, preload \\ []) do
+    case Tournament |> where(^params) |> preload(^preload) |> Repo.one() do
       nil -> {:error, :not_found}
       tournament -> {:ok, tournament}
     end
@@ -543,22 +543,57 @@ defmodule Frobots.Events do
     |> Repo.insert()
   end
 
+  def update_tournament_players(tournament_player, attrs \\ %{}) do
+    tournament_player
+    |> TournamentPlayers.update_changeset(attrs)
+    |> Repo.update()
+  end
+
   def join_tournament(tournament_id, frobot_id) do
-    with {:ok, tournament} <- get_tournament(tournament_id),
+    with {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
          true <- is_open?(tournament),
+         true <- is_frobot_available?(frobot_id),
          {:ok, _frobot} <- Assets.get_frobot(frobot_id),
          attrs <- %{
            frobot_id: frobot_id,
            tournament_id: tournament_id,
            score: 0,
-           tournament_match_type: "pool"
+           tournament_match_type: :pool
          },
          {:ok, tp} <- create_tournament_players(attrs) do
       {:ok, tp}
+    else
+      false -> {:error, "Unable to join tournament"}
+      error -> error
     end
   end
 
+  def is_frobot_available?(frobot_id) do
+    no_matches =
+      case get_slot_by(frobot_id: frobot_id, status: :ready) do
+        nil -> true
+        _ -> false
+      end
+
+    no_tournaments = is_frobot_part_of_tournament(frobot_id) == 0
+
+    no_matches and no_tournaments
+  end
+
+  defp is_frobot_part_of_tournament(frobot_id) do
+    q =
+      from(t in "tournaments",
+        join: tp in "tournament_players",
+        on: tp.tournament_id == t.id,
+        where: t.status != "done" and t.frobot_id == ^frobot_id,
+        select: tp.frobot_id
+      )
+
+    Repo.all(q)
+    |> Enum.count()
+  end
+
   defp is_open?(tournament) do
-    tournament.status == :open
+    tournament.status == :open and length(tournament.tournament_players) < tournament.participants
   end
 end
