@@ -12,19 +12,47 @@ export default () => {
       this.setTooltip('frobot')
       this.setHelpUrl('')
     },
+    onchange: function () {
+      if (this.workspace && !this.workspace.isFlyout) {
+        // Create variable state if not exists
+        if (!Blockly.Variables.getVariable(this.workspace, 'state')) {
+          this.workspace.createVariable('state')
+        }
+      }
+    },
   }
   luaGenerator.forBlock['frobot'] = function (block: any) {
-    let code_new = ''
-    var nestedBlock = block.getInputTargetBlock('nested_blocks')
-    if (nestedBlock) {
-      var code_nested = luaGenerator.blockToCode(nestedBlock)
-      code_new = Array.isArray(code_nested) ? code_nested[0] : code_nested
-      code_new = luaGenerator.prefixLines(code_new, '\t')
-    }
+    var statements = luaGenerator.statementToCode(block, 'nested_blocks') || ''
 
-    return `return function(state, ...)\n\tstate = state or {}${
-      code_new ? `\n${code_new}` : `\n`
-    }\treturn state\nend\n`
+    return (
+      'return function(state, ...)\n\tstate = state or {}\n' +
+      statements +
+      '\treturn state \nend\n'
+    )
+  }
+
+  // Exit block code
+  Blockly.Blocks['exit_block'] = {
+    init: function () {
+      this.appendDummyInput().appendField('Exit Block')
+      this.appendValueInput('condition').setCheck('Boolean').appendField('if')
+      this.appendStatementInput('nested_blocks')
+        .setCheck(null)
+        .appendField('do')
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setColour(210)
+      this.setTooltip('')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator.forBlock['exit_block'] = function (block: any) {
+    var condition =
+      luaGenerator.valueToCode(block, 'condition', luaGenerator.ORDER_NONE) ||
+      'true'
+    var statements = luaGenerator.statementToCode(block, 'nested_blocks') || ''
+
+    return 'if ' + condition + ' then\n' + statements + '\treturn state \nend\n'
   }
 
   // Custom Return code
@@ -503,6 +531,128 @@ export default () => {
     }
 
     return code
+  }
+
+  Blockly.Blocks['set_state_property'] = {
+    init: function () {
+      this.appendDummyInput().appendField('Set state .')
+      this.appendDummyInput().appendField(
+        new Blockly.FieldTextInput('property'),
+        'property'
+      )
+      this.appendValueInput('value').setCheck(null).appendField('to')
+      this.setInputsInline(true)
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setColour(230)
+      this.setTooltip('Update the value of a state property')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator.forBlock['set_state_property'] = function (block: any) {
+    var text_property = block.getFieldValue('property')
+    var value_value = luaGenerator.valueToCode(
+      block,
+      'value',
+      luaGenerator.ORDER_ATOMIC
+    )
+
+    return 'state' + '.' + text_property + ' = ' + value_value + '\n'
+  }
+
+  Blockly.Blocks['get_state_property'] = {
+    init: function () {
+      this.appendDummyInput().appendField('Get state .')
+      this.appendDummyInput().appendField(
+        new Blockly.FieldTextInput('property'),
+        'property'
+      )
+      this.setInputsInline(true)
+      this.setOutput(true, null)
+      this.setColour(230)
+      this.setTooltip('Get the value of a state property')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator.forBlock['get_state_property'] = function (block: any) {
+    var text_property = block.getFieldValue('property')
+
+    return ['state' + '.' + text_property, luaGenerator.ORDER_ATOMIC]
+  }
+
+  Blockly.Blocks['change_state_property'] = {
+    init: function () {
+      this.appendDummyInput().appendField('Change state .')
+      this.appendDummyInput()
+        .appendField(new Blockly.FieldTextInput('property'), 'property')
+        .appendField('using')
+        .appendField(
+          new Blockly.FieldDropdown([
+            ['+', '+'],
+            ['-', '-'],
+            ['*', '*'],
+            ['/', '/'],
+            ['%', '%'],
+          ]),
+          'operator'
+        )
+        .appendField('by')
+      this.appendValueInput('value').setCheck('Number')
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setInputsInline(true)
+      this.setColour(230)
+      this.setTooltip('Arithmetic operation on an state property')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator.forBlock['change_state_property'] = function (block: any) {
+    var objectProperty = block.getFieldValue('property')
+    var operator = block.getFieldValue('operator')
+    var changeValue = luaGenerator.valueToCode(
+      block,
+      'value',
+      luaGenerator.ORDER_ATOMIC
+    )
+
+    return `state.${objectProperty} = state.${objectProperty} ${operator} ${changeValue}\n`
+  }
+
+  // Set FSM state code
+  Blockly.Blocks['set_fsm_state'] = {
+    init: function () {
+      this.appendValueInput('STATE')
+        .setCheck('String')
+        .appendField('set FSM state to')
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setColour(230)
+      this.setTooltip('')
+      this.setHelpUrl('')
+    },
+  }
+  luaGenerator.forBlock['set_fsm_state'] = function (block: any) {
+    var state =
+      luaGenerator.valueToCode(block, 'STATE', luaGenerator.ORDER_ATOMIC) ||
+      'new_state'
+    var code = 'set_FSM_state(' + state + ')\n'
+
+    return code
+  }
+
+  // get FSM state code
+  Blockly.Blocks['get_fsm_state'] = {
+    init: function () {
+      this.setOutput(true, 'String')
+      this.setColour(230)
+      this.setTooltip('')
+      this.setHelpUrl('')
+      this.appendDummyInput().appendField('get FSM state')
+    },
+  }
+  luaGenerator.forBlock['get_fsm_state'] = function () {
+    var code = 'get_FSM_state()'
+    return [code, luaGenerator.ORDER_ATOMIC]
   }
 
   Blockly.Msg.LOGIC_NULL = 'nil'

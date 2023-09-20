@@ -337,7 +337,39 @@ export const MY_TOOLBOX = `
       </block>
     </category>
     <category name="Frobot Functions" colour="20" id="frobot-functions">
-      <block type="frobot" name="frobot"></block>
+      <block type="frobot">
+        <statement name="nested_blocks">
+          <block type="set_fsm_state">
+            <value name="STATE">
+              <shadow type="text">
+                <field name="TEXT">newstate</field>
+              </shadow>
+            </value>
+          </block>
+        </statement>
+      </block>
+      <block type="set_fsm_state">
+        <value name="STATE">
+          <shadow type="text">
+            <field name="TEXT">newstate</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="get_fsm_state" name="get_fsm_state"></block>
+      <block type="exit_block" name="exit_block">
+        <value name="condition">
+          <shadow type="logic_boolean"></shadow>
+        </value>
+        <statement name="nested_blocks">
+          <block type="set_fsm_state">
+            <value name="STATE">
+              <shadow type="text">
+                <field name="TEXT">newstate</field>
+              </shadow>
+            </value>
+          </block>
+        </statement>
+      </block>
       <block type="custom_return" name="custom_return"></block>
       <block type="speed" name="speed"></block>
       <block type="damage" name="damage"></block>
@@ -364,6 +396,15 @@ export const MY_TOOLBOX = `
       <block type="os_time" name="os_time"></block>
       <block type="os_execute_sleep" name="os_execute_sleep">
         <value name="SECONDS">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="set_state_property"></block>
+      <block type="get_state_property"></block>
+      <block type="change_state_property">
+        <value name="value">
           <shadow type="math_number">
             <field name="NUM">1</field>
           </shadow>
