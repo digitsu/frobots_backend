@@ -61,23 +61,30 @@ defmodule Frobots.Tournaments do
     number_of_partially_filled_pools = number_of_pools + 1 - number_of_fully_filled_pools
 
     {fully_filled_pools, partially_filled_pools} =
-      if number_of_partially_filled_pools > 0 do
-        [fully_filled_pools_participants, partially_filled_pools_participants] =
-          Enum.chunk_every(
-            tournament.tournament_players,
-            number_of_fully_filled_pools * participant_per_pool
-          )
+      cond do
+        number_of_partially_filled_pools > 0 and length(tournament.tournament_players) > 0 ->
+          [fully_filled_pools_participants, partially_filled_pools_participants] =
+            Enum.chunk_every(
+              tournament.tournament_players,
+              number_of_fully_filled_pools * participant_per_pool
+            )
 
-        fully_filled_pools =
-          Enum.chunk_every(fully_filled_pools_participants, participant_per_pool)
+          fully_filled_pools =
+            Enum.chunk_every(fully_filled_pools_participants, participant_per_pool)
 
-        partially_filled_pools =
-          Enum.chunk_every(partially_filled_pools_participants, participant_per_pool - 1)
+          partially_filled_pools =
+            Enum.chunk_every(partially_filled_pools_participants, participant_per_pool - 1)
 
-        {fully_filled_pools, partially_filled_pools}
-      else
-        fully_filled_pools = Enum.chunk_every(tournament.tournament_players, participant_per_pool)
-        {fully_filled_pools, []}
+          {fully_filled_pools, partially_filled_pools}
+
+        length(tournament.tournament_players) > 0 ->
+          fully_filled_pools =
+            Enum.chunk_every(tournament.tournament_players, participant_per_pool)
+
+          {fully_filled_pools, []}
+
+        true ->
+          {[], []}
       end
 
     total_index =

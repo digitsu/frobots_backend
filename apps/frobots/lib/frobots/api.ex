@@ -7,6 +7,7 @@ defmodule Frobots.Api do
   alias Frobots.Accounts.User
 
   alias Frobots.{Equipment, Accounts, Assets}
+  alias Frobots.Events.{Tournament, TournamentPlayers}
 
   # alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
   alias Frobots.Assets.Frobot
@@ -51,6 +52,47 @@ defmodule Frobots.Api do
   def join_tournament(attrs) do
     Events.join_tournament(attrs["tournament_id"], attrs["frobot_id"])
   end
+
+  ## params = [search_pattern: "as", tournament_status: :open | :progress | :completed | :cancelled]
+  def list_paginated_tournaments(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
+    query =
+      Tournament
+      |> join(:left, [t], tp in TournamentPlayers, on: tp.tournamment_id == t.id)
+
+    query =
+      case Keyword.get(params, :search_pattern, nil) do
+        nil ->
+          query
+
+        search_pattern ->
+          pattern = "%" <> search_pattern <> "%"
+
+          query
+          |> where(
+            [t, tp],
+            ilike(t.name, ^pattern)
+          )
+      end
+
+    query =
+      case Keyword.get(params, :tournament_status, nil) do
+        nil ->
+          query
+
+        tournament_status ->
+          query
+          |> where([t, tp], t.status == ^tournament_status)
+      end
+
+    Events.list_paginated(query, page_config, preload, order_by)
+  end
+
+  def get_tournament_details_by_id(tournament_id),
+    do:
+      Events.get_tournament_by([id: tournament_id], [
+        :tournament_players,
+        [matches: [slots: [frobot: :user]]]
+      ])
 
   ## params = [search_pattern: "as", match_status: :done, match_type: :real]
   def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
