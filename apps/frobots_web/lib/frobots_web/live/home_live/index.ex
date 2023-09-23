@@ -3,7 +3,7 @@ defmodule FrobotsWeb.HomeLive.Index do
   alias Frobots.{UserStats, GlobalStats, Api}
   alias Frobots.{Accounts, Assets, Events}
   require Logger
-  alias FrobotsWeb.Presence
+  alias FrobotsWeb.{Presence, Utils}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -28,7 +28,7 @@ defmodule FrobotsWeb.HomeLive.Index do
        :current_user_ranking_details,
        Events.get_current_user_ranking_details(current_user)
      )
-     |> assign(:blog_posts, get_blog_posts())
+     |> assign(:blog_posts, Utils.get_blog_posts())
      |> assign(
        :global_stats,
        GlobalStats.get_global_stats(current_user, Presence.list(Presence.topic()) |> map_size)
@@ -62,26 +62,6 @@ defmodule FrobotsWeb.HomeLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-  end
-
-  def get_blog_posts() do
-    with {:ok, url} <- Application.fetch_env(:frobots_web, :ghost_blog_url),
-         {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- HTTPoison.get(url),
-         {:ok, data} <- Jason.decode(body) do
-      data["posts"]
-    else
-      {:ok, _} ->
-        Logger.info("Something other than HTTP 200 returned")
-        []
-
-      {:error, %Jason.DecodeError{}} ->
-        Logger.error("Error decoding JSON")
-        []
-
-      :error ->
-        Logger.error("GhostBlog: No Ghost URL!")
-        []
-    end
   end
 
   @impl true

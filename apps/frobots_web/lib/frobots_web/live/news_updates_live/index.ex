@@ -2,6 +2,7 @@ defmodule FrobotsWeb.NewsAndUpdatesLive.Index do
   use FrobotsWeb, :live_view
   alias Frobots.{Accounts, Events}
   require Logger
+  alias FrobotsWeb.Utils
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -15,7 +16,7 @@ defmodule FrobotsWeb.NewsAndUpdatesLive.Index do
        :current_user_ranking_details,
        Events.get_current_user_ranking_details(current_user)
      )
-     |> assign(:blog_posts, get_blog_posts())}
+     |> assign(:blog_posts, Utils.get_blog_posts())}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -26,26 +27,6 @@ defmodule FrobotsWeb.NewsAndUpdatesLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-  end
-
-  def get_blog_posts() do
-    with {:ok, url} <- Application.fetch_env(:frobots_web, :ghost_blog_url),
-         {:ok, %HTTPoison.Response{status_code: 200, body: body}} <- HTTPoison.get(url),
-         {:ok, data} <- Jason.decode(body) do
-      data["posts"]
-    else
-      {:ok, _} ->
-        Logger.info("Something other than HTTP 200 returned")
-        []
-
-      {:error, err} ->
-        Logger.error(err)
-        []
-
-      :error ->
-        Logger.error("GhostBlog: No Ghost URL!")
-        []
-    end
   end
 
   @impl true

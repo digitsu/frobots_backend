@@ -17,7 +17,7 @@ defmodule FrobotsWeb.HomeLiveTest do
     setup [:create_user, :register_and_log_in_user]
 
     test "Try to get the ghost blog in test, should return nothing", %{conn: _conn} do
-      assert FrobotsWeb.HomeLive.Index.get_blog_posts() == []
+      assert FrobotsWeb.Utils.get_blog_posts() == []
     end
   end
 end
