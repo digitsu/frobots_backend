@@ -74,8 +74,8 @@ defmodule FrobotsWeb.HomeLive.Index do
         Logger.info("Something other than HTTP 200 returned")
         []
 
-      {:error, err} ->
-        Logger.error("GhostBlog: no data posts! Err: " <> err.reason)
+      {:error, %Jason.DecodeError{}} ->
+        Logger.error("Error decoding JSON")
         []
 
       :error ->
