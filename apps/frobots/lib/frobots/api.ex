@@ -224,6 +224,16 @@ defmodule Frobots.Api do
           |> where([match], match.match_time <= ^match_time)
       end
 
+    query =
+      case Keyword.get(params, :tournament_match_type, nil) do
+        nil ->
+          query
+
+        tournament_match_type ->
+          query
+          |> where([match], match.tournament_match_type == ^tournament_match_type)
+      end
+
     Events.list_match_by(query, preload, order_by)
   end
 
