@@ -7,6 +7,7 @@ import Notifications from './Notifications'
 import FeaturedFrobotSection from './FeaturedFrobotSection'
 import ProfileDetails from './ProfileDetails'
 import NewsAndUpdatesBanner from './NewsAndUpdatesBanner'
+import TournamentsSection from './TournamentsSection'
 
 export default (props: any) => {
   const {
@@ -21,6 +22,7 @@ export default (props: any) => {
     player_leaderboard_stats,
     s3_base_url,
     latestBlogPost,
+    tournaments,
   } = props
 
   const handleOpenGarage = useCallback(
@@ -231,6 +233,11 @@ export default (props: any) => {
           {latestBlogPost && (
             <Grid item lg={12} md={12} sm={12} xs={12}>
               <NewsAndUpdatesBanner post={latestBlogPost} />
+            </Grid>
+          )}
+          {tournaments.length > 0 && (
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <TournamentsSection tournaments={tournaments} />
             </Grid>
           )}
         </Grid>

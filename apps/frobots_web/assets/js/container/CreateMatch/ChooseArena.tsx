@@ -1,14 +1,10 @@
 import { Box, Card, Grid, TextField, Typography } from '@mui/material'
-import { createMatchActions } from '../../redux/slices/createMatch'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-export default ({ arenas, s3_base_url }) => {
-  const { mapSelected, minFrobots, maxFrobots } = useSelector(
-    (store) => store.createMatch
-  )
+export default ({ arenas, s3_base_url, setMap, mapSelected }) => {
+  const { minFrobots, maxFrobots } = useSelector((store) => store.createMatch)
   const dispatch = useDispatch()
-  const { setMap, setMinFrobots, setMaxFrobots } = createMatchActions
   const currentMap = mapSelected?.id
   return (
     <Box width={'60%'} m={'auto'} mt={10}>
@@ -63,6 +59,7 @@ export default ({ arenas, s3_base_url }) => {
               <Box
                 component={'img'}
                 src={`${s3_base_url}${mapSelected.image_url}`}
+                sx={{ height: '100%' }}
               />
             ) : (
               <Box

@@ -12,13 +12,20 @@ export default (props: any) => {
   const { activeStep, mapSelected } = useSelector(
     (store: any) => store.createMatch
   )
-  const { incrementStep, decrementStep, setProtobots, setUserFrobots } =
+  const { incrementStep, decrementStep, setProtobots, setUserFrobots, setMap } =
     createMatchActions
   const steps = [
     { label: 'Step 1', component: <CreateMatchDetails /> },
     {
       label: 'Step 2',
-      component: <ChooseArena arenas={arenas} s3_base_url={s3_base_url} />,
+      component: (
+        <ChooseArena
+          arenas={arenas}
+          s3_base_url={s3_base_url}
+          setMap={setMap}
+          mapSelected={mapSelected}
+        />
+      ),
     },
     {
       label: 'Step 3',

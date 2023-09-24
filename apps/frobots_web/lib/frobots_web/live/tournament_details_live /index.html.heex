@@ -20,10 +20,16 @@
           .
         </p>
         <p class="inline-block items-left font-bold text-xs text-gray-400">
-          Create Tournament
+          <%= case @tournament_details do
+      {:ok, tournament} ->
+        tournament.name
+      _ ->
+        "Untitled Tournament"
+    end 
+    %>
         </p>
       </div>
     </div>
   </div>
-  <div id="blogs-content" phx-hook="CreateTournamentHook" phx-update="ignore"></div>
+  <div id="blogs-content" phx-hook="TournamentDetailsHook" phx-update="ignore"></div>
 </section>
