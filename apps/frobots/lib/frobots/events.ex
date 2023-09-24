@@ -186,7 +186,10 @@ defmodule Frobots.Events do
   end
 
   def list_match_by(query, preload \\ [], order_by \\ []) do
-    query |> preload(^preload) |> order_by(^order_by) |> Repo.all()
+    query
+    |> preload(^preload)
+    |> order_by(^order_by)
+    |> Repo.all()
   end
 
   def count_matches_by_status(status) when is_atom(status) do
@@ -549,6 +552,19 @@ defmodule Frobots.Events do
     |> Repo.update()
   end
 
+  def get_tournament_players_by(params) do
+    TournamentPlayers |> where(^params) |> Repo.one()
+  end
+
+  # asc: :order
+  def list_tournament_players_by(params, order_by, limit) do
+    TournamentPlayers
+    |> where(^params)
+    |> order_by(^order_by)
+    |> limit(^limit)
+    |> Repo.all()
+  end
+
   def join_tournament(tournament_id, frobot_id) do
     with {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
          true <- is_open?(tournament),
@@ -585,7 +601,7 @@ defmodule Frobots.Events do
       from(t in "tournaments",
         join: tp in "tournament_players",
         on: tp.tournament_id == t.id,
-        where: t.status != "done" and t.frobot_id == ^frobot_id,
+        where: t.status != "done" and tp.frobot_id == ^frobot_id,
         select: tp.frobot_id
       )
 

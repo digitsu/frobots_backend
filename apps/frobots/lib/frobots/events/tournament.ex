@@ -62,5 +62,6 @@ defmodule Frobots.Events.Tournament do
     tournament
     |> cast(attrs, @fields ++ @optional_fields)
     |> validate_required(@fields)
+    |> unique_constraint(:name)
   end
 end
