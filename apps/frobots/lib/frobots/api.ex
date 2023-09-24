@@ -57,7 +57,7 @@ defmodule Frobots.Api do
   def list_paginated_tournaments(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
     query =
       Tournament
-      |> join(:left, [t], tp in TournamentPlayers, on: tp.tournamment_id == t.id)
+      |> join(:left, [t], tp in TournamentPlayers, on: tp.tournament_id == t.id)
 
     query =
       case Keyword.get(params, :search_pattern, nil) do
