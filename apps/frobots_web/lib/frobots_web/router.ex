@@ -151,6 +151,11 @@ defmodule FrobotsWeb.Router do
     live "/garage/frobot/equipment_bay", FrobotEquipmentBayLive.Index, :index
     live "/garage/frobot/edit", FrobotDetailsEditLive.Index, :index
 
+    # tournaments
+    live "/tournaments", TournamentsLive.Index, :index
+    live "/tournaments/create", TournamentCreateLive.Index, :index
+    live "/tournaments/:tournament_id", TournamentDetailsLive.Index, :index
+
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
