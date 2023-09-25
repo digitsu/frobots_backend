@@ -569,7 +569,7 @@ defmodule Frobots.Events do
     with {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
          true <- is_open?(tournament),
          true <- is_frobot_available?(frobot_id),
-         {:ok, _frobot} <- Assets.get_frobot(frobot_id),
+         frobot when not is_nil(frobot) <- Assets.get_frobot(frobot_id),
          attrs <- %{
            frobot_id: frobot_id,
            tournament_id: tournament_id,
@@ -580,6 +580,7 @@ defmodule Frobots.Events do
       {:ok, tp}
     else
       false -> {:error, "Unable to join tournament"}
+      nil -> {:error, "invalid frobot id"}
       error -> error
     end
   end
