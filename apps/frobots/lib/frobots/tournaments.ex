@@ -51,11 +51,14 @@ defmodule Frobots.Tournaments do
   @impl true
   def handle_info(:pool_matches, %{tournament_id: tournament_id, admin_user: admin_user} = state) do
     Logger.info("Create Pools for Tournament #{tournament_id}")
+
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
     participants = length(tournament.tournament_players) |> IO.inspect(label: "Participants")
-    {number_of_fully_filled_pools, number_of_partially_filled_pools, participant_per_pool} = pool_mapper(participants)
+
+    {number_of_fully_filled_pools, number_of_partially_filled_pools, participant_per_pool} =
+      pool_mapper(participants)
 
     {fully_filled_pools, partially_filled_pools} =
       cond do
@@ -98,7 +101,9 @@ defmodule Frobots.Tournaments do
     Enum.reduce(partially_filled_pools, total_index, fn pool_participants, index ->
       Enum.each(pool_participants, fn pool_participant ->
         {:ok, _} =
-          Frobots.Events.update_tournament_players(pool_participant, %{tournament_match_sub_type: index})
+          Frobots.Events.update_tournament_players(pool_participant, %{
+            tournament_match_sub_type: index
+          })
       end)
 
       index + 1
@@ -142,7 +147,8 @@ defmodule Frobots.Tournaments do
     start_after = 14 * 60 * 60 * 1000
     Process.send_after(self(), :knockout_matches, start_after)
 
-    {:noreply, state |> Map.put(:match_index, match_index) |> Map.put(:tournament_id, tournament.id)}
+    {:noreply,
+     state |> Map.put(:match_index, match_index) |> Map.put(:tournament_id, tournament.id)}
   end
 
   @impl true
@@ -176,6 +182,7 @@ defmodule Frobots.Tournaments do
         %{tournament_id: tournament_id, admin_user: admin_user, match_index: match_index} = state
       ) do
     Logger.info("Create Knockout Matches for Tournament #{tournament_id}")
+
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
@@ -234,6 +241,7 @@ defmodule Frobots.Tournaments do
 
     start_after = 6 * 60 * 60 * 1000
     Process.send_after(self(), :semifinal_matches, start_after)
+
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
@@ -254,6 +262,7 @@ defmodule Frobots.Tournaments do
 
     start_after = 6 * 60 * 60 * 1000
     Process.send_after(self(), :final_match, start_after)
+
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
@@ -274,6 +283,7 @@ defmodule Frobots.Tournaments do
 
     start_after = 6 * 60 * 60 * 1000
     Process.send_after(self(), :update_tournament, start_after)
+
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
