@@ -41,8 +41,9 @@ defmodule FrobotsWeb.TournamentCreateLive.Index do
     case Api.create_tournament(params) do
       {:ok, tournament} ->
         {:noreply,
-         socket
-         |> assign(:tournament_id, tournament.id)}
+         push_redirect(socket,
+           to: Routes.tournament_details_index_path(socket, :index, tournament.id)
+         )}
 
       {:error, error} ->
         {:noreply,
