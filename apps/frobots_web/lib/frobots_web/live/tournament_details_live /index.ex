@@ -49,9 +49,8 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
 
   def handle_event("react.join_tournament", tournament_props, socket) do
     case Api.join_tournament(tournament_props) do
-      {:ok, tournament} ->
-        {:noreply,
-         push_redirect(socket, to: Routes.arena_lobby_index_path(socket, :index, tournament.id))}
+      {:ok, _tournament} ->
+        {:noreply, socket |> put_flash(:info, 'Successfully joined the tournament')}
 
       {:error, errors} ->
         {:noreply, socket |> put_flash(:error, errors)}
