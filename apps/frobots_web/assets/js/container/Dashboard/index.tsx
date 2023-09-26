@@ -23,6 +23,7 @@ export default (props: any) => {
     s3_base_url,
     latestBlogPost,
     tournaments,
+    arenas,
   } = props
 
   const handleOpenGarage = useCallback(
@@ -237,7 +238,11 @@ export default (props: any) => {
           )}
           {tournaments.length > 0 && (
             <Grid item lg={12} md={12} sm={12} xs={12}>
-              <TournamentsSection tournaments={tournaments} />
+              <TournamentsSection
+                tournaments={tournaments}
+                imageBaseUrl={s3_base_url}
+                arenas={arenas}
+              />
             </Grid>
           )}
         </Grid>
