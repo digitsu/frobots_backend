@@ -3,8 +3,7 @@ import { Card, CardContent, Typography, Box, Button } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { SeverityPill } from '../../components/generic/SeverityPill'
 import moment from 'moment'
-import Popup from '../../components/Popup'
-import TournamentFrobots from './TournamentFrobots'
+import JoinTournamentPopup from './JoinTournamentPopup'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -35,9 +34,9 @@ const useStyles = makeStyles((theme) => ({
 
 function TournamentBanner({
   tournament_details,
+  joinTournament,
   user_frobots,
   s3_base_url,
-  joinTournament,
 }) {
   const classes = useStyles()
   const scheduleDate = moment.unix(tournament_details.starts_at)
@@ -47,17 +46,12 @@ function TournamentBanner({
   const time = scheduleDate.format('hh:mm A')
   const [showJoinTournamentPrompt, setShowJoinTournamentPrompt] =
     useState(false)
-  // const { currentFrobot } = useSelector((store: any) => store.tournamentDetails)
   const joinTournamentPopupHandler = () => {
     setShowJoinTournamentPrompt(true)
   }
-  const joinTournamentSuccessHandler = () => {
-    // const frobot_id = currentFrobot.id;
-    // const tournament_id = tournament_details.id
-    // joinTournament({frobot_id,tournament_id})
-  }
+
   return (
-    <Card className={classes.card} key={tournament_details.name}>
+    <Card className={classes.card}>
       <div className={classes.overlay}></div>{' '}
       {/* Transparent Gradient Overlay */}
       <CardContent sx={{ textAlign: 'left' }}>
@@ -119,19 +113,13 @@ function TournamentBanner({
           </Box>
         </Box>
       </CardContent>
-      <Popup
+      <JoinTournamentPopup
+        user_frobots={user_frobots}
+        s3_base_url={s3_base_url}
         open={showJoinTournamentPrompt}
-        successAction={joinTournamentSuccessHandler}
-        successLabel={'Confirm'}
-        label={'Choose Frobot'}
-        description={
-          <TournamentFrobots
-            user_frobots={user_frobots}
-            s3_base_url={s3_base_url}
-          />
-        }
+        tournament_details={tournament_details}
+        joinTournament={joinTournament}
         cancelAction={() => setShowJoinTournamentPrompt(false)}
-        cancelLabel={'Cancel'}
       />
     </Card>
   )

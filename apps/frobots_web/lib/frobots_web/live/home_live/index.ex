@@ -88,7 +88,8 @@ defmodule FrobotsWeb.HomeLive.Index do
   def handle_event("react.fetch_dashboard_details", _params, socket) do
     current_user_status = socket.assigns.current_user_stats
     current_user = socket.assigns.current_user
-    tournaments = []
+    tournaments = extract_tournamentdetails(Api.list_paginated_tournaments().entries)
+    arenas = Api.list_arena()
 
     {:noreply,
      push_event(socket, "react.return_dashboard_details", %{
@@ -108,7 +109,8 @@ defmodule FrobotsWeb.HomeLive.Index do
        },
        "s3_base_url" => socket.assigns.s3_base_url,
        "latestBlogPost" => List.first(socket.assigns.blog_posts),
-       "tournaments" => tournaments
+       "tournaments" => tournaments,
+       "arenas" => arenas
      })}
   end
 
@@ -142,6 +144,31 @@ defmodule FrobotsWeb.HomeLive.Index do
           user_id: user_id,
           inserted_at: inserted_at,
           updated_at: updated_at
+        }
+      end
+    )
+  end
+
+  def extract_tournamentdetails(tournaments) do
+    Enum.map(
+      tournaments,
+      fn %{
+           id: id,
+           arena_id: arena_id,
+           arena_fees_percent: arena_fees_percent,
+           description: description,
+           name: name,
+           starts_at: starts_at,
+           status: status
+         } ->
+        %{
+          id: id,
+          arena_id: arena_id,
+          arena_fees_percent: arena_fees_percent,
+          description: description,
+          name: name,
+          starts_at: starts_at,
+          status: status
         }
       end
     )
