@@ -28,10 +28,6 @@ defmodule Frobots.Events.Slot do
     |> validate_slot_type(attrs)
     |> validate_status(attrs)
     |> validate_required(@fields)
-    |> unique_constraint(:frobot_id,
-      name: :unique_frobot_id_slot,
-      message: "is already used in a match"
-    )
   end
 
   @doc false
@@ -40,10 +36,6 @@ defmodule Frobots.Events.Slot do
     |> cast(attrs, [:frobot_id])
     |> validate_slot_type(attrs)
     |> validate_status(attrs)
-    |> unique_constraint(:frobot_id,
-      name: :unique_frobot_id_slot,
-      message: "is already used in a match"
-    )
   end
 
   defp validate_status(%Ecto.Changeset{valid?: true} = changeset, attrs) do
