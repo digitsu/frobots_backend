@@ -55,7 +55,7 @@ defmodule Frobots.Tournaments do
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
-    participants = length(tournament.tournament_players) |> IO.inspect(label: "Participants")
+    participants = length(tournament.tournament_players)
 
     {number_of_fully_filled_pools, number_of_partially_filled_pools, participant_per_pool} =
       pool_mapper(participants)
@@ -73,7 +73,7 @@ defmodule Frobots.Tournaments do
             Enum.chunk_every(fully_filled_pools_participants, participant_per_pool)
 
           partially_filled_pools =
-            Enum.chunk_every(partially_filled_pools_participants, participant_per_pool + 1)
+            Enum.chunk_every(partially_filled_pools_participants, participant_per_pool - 1)
 
           {fully_filled_pools, partially_filled_pools}
 
@@ -86,13 +86,14 @@ defmodule Frobots.Tournaments do
         true ->
           {[], []}
       end
-      |> IO.inspect(label: "pools")
 
     total_index =
-      Enum.reduce(fully_filled_pools, 1, fn pool_participants, index ->
+      Enum.reduce(fully_filled_pools, 0, fn pool_participants, index ->
         Enum.each(pool_participants, fn pool_participant ->
           {:ok, _} =
-            Frobots.Events.update_tournament_players(pool_participant, %{match_sub_type: index})
+            Frobots.Events.update_tournament_players(pool_participant, %{
+              match_sub_type: index + 1
+            })
         end)
 
         index + 1
@@ -102,49 +103,80 @@ defmodule Frobots.Tournaments do
       Enum.each(pool_participants, fn pool_participant ->
         {:ok, _} =
           Frobots.Events.update_tournament_players(pool_participant, %{
-            tournament_match_sub_type: index
+            tournament_match_sub_type: index + 1
           })
       end)
 
       index + 1
     end)
-    |> IO.inspect(label: "Updated Tournament Players")
+
+    {pool_index, match_index} =
+      Enum.reduce(fully_filled_pools, {0, 0}, fn pool_participants, {pool_index, match_index} ->
+        match_index =
+          for x <- pool_participants, y <- pool_participants, x.id != y.id do
+            if x.frobot_id < y.frobot_id do
+              {x.frobot_id, y.frobot_id}
+            else
+              {y.frobot_id, x.frobot_id}
+            end
+          end
+          |> Enum.uniq()
+          |> Enum.reduce(match_index, fn {f1, f2}, match_index ->
+            params =
+              create_match_params(
+                "pool",
+                pool_index + 1,
+                match_index + 1,
+                tournament,
+                admin_user.id,
+                f1,
+                f2
+              )
+
+            {:ok, _match} = Frobots.Events.create_match(params)
+            match_index + 1
+          end)
+
+        {pool_index + 1, match_index + 1}
+      end)
 
     {_, match_index} =
-      Enum.reduce(fully_filled_pools, {1, 1}, fn pool_participants, {pool_index, match_index} ->
-        for x <- pool_participants, y <- pool_participants, x.id != y.id do
-          if x.frobot_id < y.frobot_id do
-            {x.frobot_id, y.frobot_id}
-          else
-            {y.frobot_id, x.frobot_id}
+      Enum.reduce(partially_filled_pools, {pool_index, match_index}, fn pool_participants,
+                                                                        {pool_index, match_index} ->
+        match_index =
+          for x <- pool_participants, y <- pool_participants, x.id != y.id do
+            if x.frobot_id < y.frobot_id do
+              {x.frobot_id, y.frobot_id}
+            else
+              {y.frobot_id, x.frobot_id}
+            end
           end
-        end
-        |> Enum.uniq()
-        |> Enum.reduce(match_index, fn {f1, f2}, match_index ->
-          params =
-            create_match_params(
-              "pool",
-              pool_index,
-              match_index,
-              tournament,
-              admin_user.id,
-              f1,
-              f2
-            )
+          |> Enum.uniq()
+          |> Enum.reduce(match_index, fn {f1, f2}, match_index ->
+            params =
+              create_match_params(
+                "pool",
+                pool_index + 1,
+                match_index + 1,
+                tournament,
+                admin_user.id,
+                f1,
+                f2
+              )
 
-          {:ok, _match} = Frobots.Events.create_match(params) |> IO.inspect(label: "Matches")
-          match_index + 1
-        end)
+            {:ok, _match} = Frobots.Events.create_match(params)
+            match_index + 1
+          end)
 
         {pool_index + 1, match_index + 1}
       end)
 
     ## Update Pool Matches Score after 12 Hours
-    start_after = 12 * 60 * 60 * 1000
+    start_after = 60 * 60 * 1000
     Process.send_after(self(), {:update_score, :pool}, start_after)
 
     ## Start KnockOut Matches after 14 Hours
-    start_after = 14 * 60 * 60 * 1000
+    start_after = 60 * 60 * 1000 + 15 * 1000
     Process.send_after(self(), :knockout_matches, start_after)
 
     {:noreply,
@@ -192,35 +224,42 @@ defmodule Frobots.Tournaments do
       cond do
         participants > 16 ->
           ## Update Pool Matches Score after 5 Hours
-          start_after = 5 * 60 * 60 * 1000
+          # 5 * 60 * 60 * 1000
+          start_after = 60 * 60 * 1000
           Process.send_after(self(), {:update_score, :knockout}, start_after)
 
-          start_after = 6 * 60 * 60 * 1000
+          # 6 * 60 * 60 * 1000
+          start_after = 60 * 60 * 1000 + 15 * 1000
           Process.send_after(self(), :qualifier_matches, start_after)
           tournament_matches(:knockout, tournament, admin_user, match_index)
 
         participants > 8 ->
           ## Update Qualifier Matches Score after 5 Hours
-          start_after = 5 * 60 * 60 * 1000
+          # 5 * 60 * 60 * 1000
+          start_after = 60 * 60 * 1000
           Process.send_after(self(), {:update_score, :qualifier}, start_after)
 
-          start_after = 6 * 60 * 60 * 1000
+          # 6 * 60 * 60 * 1000
+          start_after = 60 * 60 * 1000 + 15 * 1000
           Process.send_after(self(), :semifinal_matches, start_after)
           tournament_matches(:qualifier, tournament, admin_user, match_index)
 
         participants > 4 ->
           ## Update Qualifier Matches Score after 5 Hours
-          start_after = 5 * 60 * 60 * 1000
+          # 5 * 60 * 60 * 1000
+          start_after = 60 * 60 * 1000
           Process.send_after(self(), {:update_score, :semifinal}, start_after)
 
-          start_after = 6 * 60 * 60 * 1000
+          # 6 * 60 * 60 * 1000
+          start_after = 60 * 60 * 1000 + 15 * 1000
           Process.send_after(self(), :final_match, start_after)
           tournament_matches(:semifinal, tournament, admin_user, match_index)
 
         participants > 2 ->
           # start_after = 6 * 60 * 60 * 1000
           # Process.send_after(self(), :elimination_matches, start_after)
-          start_after = 3 * 60 * 60 * 1000
+          # 3 * 60 * 60 * 1000
+          start_after = 60 * 60 * 1000
           Process.send_after(self(), {:update_score, :final}, start_after)
 
           tournament_matches(:final, tournament, admin_user, match_index)
@@ -236,10 +275,12 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Qualifier Matches for Tournament #{tournament_id}")
 
-    start_after = 5 * 60 * 60 * 1000
+    # 5 * 60 * 60 * 1000
+    start_after = 60 * 60 * 1000
     Process.send_after(self(), {:update_score, :qualifier}, start_after)
 
-    start_after = 6 * 60 * 60 * 1000
+    # 6 * 60 * 60 * 1000
+    start_after = 60 * 60 * 1000 + 15 * 1000
     Process.send_after(self(), :semifinal_matches, start_after)
 
     {:ok, tournament} =
@@ -257,10 +298,12 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Semi Final Matches for Tournament #{tournament_id}")
 
-    start_after = 5 * 60 * 60 * 1000
+    # 5 * 60 * 60 * 1000
+    start_after = 60 * 60 * 1000
     Process.send_after(self(), {:update_score, :semifinal}, start_after)
 
-    start_after = 6 * 60 * 60 * 1000
+    # 6 * 60 * 60 * 1000
+    start_after = 60 * 60 * 1000 + 15 * 1000
     Process.send_after(self(), :final_match, start_after)
 
     {:ok, tournament} =
@@ -278,10 +321,12 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Final Match for Tournament #{tournament_id}")
 
-    start_after = 5 * 60 * 60 * 1000
+    # 5 * 60 * 60 * 1000
+    start_after = 60 * 60 * 1000
     Process.send_after(self(), {:update_score, :final}, start_after)
 
-    start_after = 6 * 60 * 60 * 1000
+    # 6 * 60 * 60 * 1000
+    start_after = 60 * 60 * 1000 + 15 * 1000
     Process.send_after(self(), :update_tournament, start_after)
 
     {:ok, tournament} =
@@ -315,8 +360,6 @@ defmodule Frobots.Tournaments do
       {:ok, _match} = Frobots.Events.create_match(params)
       match_index + 1
     end)
-
-    :ok
   end
 
   defp tournament_matches(:qualifier, tournament, admin_user, match_index) do
@@ -389,25 +432,6 @@ defmodule Frobots.Tournaments do
     end
   end
 
-  # @impl true
-  # def handle_info(:create_matches, %{tournament_id: tournament_id} = state) do
-  #   Logger.info("create matches for tournament #{tournament_id}")
-  #   {:noreply, state}
-  # end
-
-  # defp get_tournament_pool(participants) do
-  #   number_of_pools_matches = :math.log2(participants)
-
-  #   cond do
-  #     number_of_pools_matches > 32 -> :pool_a
-  #     number_of_pools_matches > 16 -> :pool_b
-  #     number_of_pools_matches > 8 -> :pool_c
-  #     number_of_pools_matches > 4 -> :quarter_final
-  #     number_of_pools_matches > 2 -> :semi_final
-  #     number_of_pools_matches == 2 -> :final
-  #   end
-  # end
-
   # Each FROBOT plays each other in scheduled matches in each pool.
   # Wins score a 5.
   # Ties (timeout) score a 3
@@ -452,7 +476,7 @@ defmodule Frobots.Tournaments do
         %{
           "frobot_id" => f1,
           "status" => "ready",
-          "slot_type" => "player"
+          "slot_type" => "host"
         },
         %{
           "frobot_id" => f2,
@@ -473,9 +497,14 @@ defmodule Frobots.Tournaments do
   end
 
   def pool_mapper(participants, participant_per_pool \\ 5) do
-    number_of_fully_filled_pools = div(participants, participant_per_pool)
-    _reminder = rem(participants, participant_per_pool)
+    x = trunc(:math.ceil(participants / participant_per_pool))
+    reminder = rem(participants, x)
+    participant_per_pool = div(participants, x)
 
-    {number_of_fully_filled_pools, 0, participant_per_pool}
+    if reminder > 0 do
+      {reminder, x - reminder, participant_per_pool + 1}
+    else
+      {x, 0, participant_per_pool}
+    end
   end
 end

@@ -266,7 +266,7 @@ defmodule Frobots.Events do
   end
 
   def get_slot_by(params) do
-    Slot |> where(^params) |> Repo.one()
+    Slot |> where(^params) |> Repo.all() |> hd()
   end
 
   def get_battlelog_by(params) do
@@ -567,8 +567,8 @@ defmodule Frobots.Events do
 
   def join_tournament(tournament_id, frobot_id) do
     with {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
-         true <- is_open?(tournament),
-         true <- is_frobot_available?(frobot_id),
+         {:is_open, true} <- {:is_open, is_open?(tournament)},
+         {:is_frobot_available, true} <- {:is_frobot_available, is_frobot_available?(frobot_id)},
          frobot when not is_nil(frobot) <- Assets.get_frobot(frobot_id),
          attrs <- %{
            frobot_id: frobot_id,
@@ -579,11 +579,14 @@ defmodule Frobots.Events do
          {:ok, tp} <- create_tournament_players(attrs) do
       {:ok, tp}
     else
-      false -> {:error, "Unable to join tournament"}
+      {:is_open, false} -> {:error, "tournament is closed"}
+      {:is_frobot_available, false} -> {:error, "frobot is already part of existing match"}
       nil -> {:error, "invalid frobot id"}
       error -> error
     end
   end
+
+  ## TODO CALL FROM JOINING A MATCH
 
   def is_frobot_available?(frobot_id) do
     no_matches =
