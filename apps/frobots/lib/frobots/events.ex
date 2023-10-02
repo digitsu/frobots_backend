@@ -266,7 +266,7 @@ defmodule Frobots.Events do
   end
 
   def get_slot_by(params) do
-    Slot |> where(^params) |> Repo.all() |> hd()
+    Slot |> where(^params) |> Repo.all() |> List.first()
   end
 
   def get_battlelog_by(params) do
