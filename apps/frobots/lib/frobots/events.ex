@@ -552,8 +552,8 @@ defmodule Frobots.Events do
     |> Repo.update()
   end
 
-  def get_tournament_players_by(params) do
-    TournamentPlayers |> where(^params) |> Repo.one()
+  def get_tournament_players_by(params, preload \\ []) do
+    TournamentPlayers |> where(^params) |> preload(^preload) |> Repo.one()
   end
 
   # asc: :order

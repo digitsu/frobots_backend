@@ -90,7 +90,7 @@ defmodule Frobots.Api do
   def get_tournament_details_by_id(tournament_id),
     do:
       Events.get_tournament_by([id: tournament_id], [
-        :tournament_players,
+        [tournament_players: [frobot: :user]],
         [matches: [slots: [frobot: :user]]]
       ])
 
