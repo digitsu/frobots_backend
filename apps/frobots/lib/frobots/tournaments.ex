@@ -8,7 +8,6 @@ defmodule Frobots.Tournaments do
   alias Frobots.Accounts
 
   ## GenServer API
-
   def start_link(tournament_id) do
     GenServer.start_link(__MODULE__, tournament_id,
       name: String.to_atom("tournament#{tournament_id}")
@@ -33,7 +32,6 @@ defmodule Frobots.Tournaments do
   end
 
   ## GenServer Callbacks
-
   @impl true
   def init(tournament_id) do
     Logger.info("Starting process for #{tournament_id}")
@@ -43,8 +41,27 @@ defmodule Frobots.Tournaments do
 
     admin_user = Accounts.get_user_by(name: Accounts.admin_user_name())
 
-    start_after = (tournament.starts_at - System.os_time(:second) + 60) * 1000
-    Process.send_after(self(), :pool_matches, start_after)
+    cond do
+      tournament.status == :open ->
+        ## start after 15 seconds of scheduled time
+        start_after = (tournament.starts_at - System.os_time(:second) + 15) * 1000
+
+        start_after =
+          if start_after < 0 do
+            1_000
+          else
+            start_after
+          end
+
+        Process.send_after(self(), :pool_matches, start_after)
+
+      tournament.status == :progress ->
+        :ok
+
+      true ->
+        :ok
+    end
+
     {:ok, %{tournament_id: tournament_id, admin_user: admin_user}}
   end
 
@@ -54,6 +71,8 @@ defmodule Frobots.Tournaments do
 
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
+
+    {:ok, _} = Frobots.Events.update_tournament(tournament, %{status: :progress})
 
     participants = length(tournament.tournament_players)
 
@@ -171,13 +190,9 @@ defmodule Frobots.Tournaments do
         {pool_index + 1, match_index + 1}
       end)
 
-    ## Update Pool Matches Score after 12 Hours
-    start_after = 60 * 60 * 1000
-    Process.send_after(self(), {:update_score, :pool}, start_after)
-
-    ## Start KnockOut Matches after 14 Hours
-    start_after = 60 * 60 * 1000 + 15 * 1000
-    Process.send_after(self(), :knockout_matches, start_after)
+    ## 3 mins for the match + 10 mins running time of match + 2 mins buffer
+    start_after = 15 * 60 * 1000
+    Process.send_after(self(), :update_score, start_after)
 
     {:noreply,
      state |> Map.put(:match_index, match_index) |> Map.put(:tournament_id, tournament.id)}
@@ -185,10 +200,11 @@ defmodule Frobots.Tournaments do
 
   @impl true
   def handle_info(
-        {:update_score, tournament_match_type},
+        :update_score,
         %{tournament_id: tournament_id} = state
       ) do
     Logger.info("Update Score for Tournament #{tournament_id}")
+    tournament_match_type = get_match_type(tournament_id)
 
     case Frobots.Events.list_match_by(
            [tournament_id: tournament_id, tournament_match_type: tournament_match_type],
@@ -459,9 +475,8 @@ defmodule Frobots.Tournaments do
       "user_id" => user_id,
       "title" => "Match of #{tournament.name}",
       "description" => "Match of #{tournament.description}",
-      ## Start After 30 mins
-      "match_time" =>
-        DateTime.utc_now() |> DateTime.add(30 * 60, :second) |> DateTime.to_string(),
+      ## Start After 3 mins
+      "match_time" => DateTime.utc_now() |> DateTime.add(3 * 60, :second) |> DateTime.to_string(),
       "type" => "real",
       "tournament_match_type" => match_type,
       "tournament_match_sub_type" => match_sub_type,
@@ -507,4 +522,21 @@ defmodule Frobots.Tournaments do
       {x, 0, participant_per_pool}
     end
   end
+
+  defp get_match_type(tournament_id) do
+    Frobots.Events.list_match_by([tournament: tournament_id], [], desc: :tournament_match_id)
+    |> List.first()
+    |> case do
+      nil -> :pool
+      match -> match.tournament_match_type
+    end
+  end
+
+  # ## Update Pool Matches Score after 12 Hours
+  # start_after = 60 * 60 * 1000
+  # Process.send_after(self(), {:update_score, :pool}, start_after)
+
+  # ## Start KnockOut Matches after 14 Hours
+  # start_after = 60 * 60 * 1000 + 15 * 1000
+  # Process.send_after(self(), :knockout_matches, start_after)
 end

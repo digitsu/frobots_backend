@@ -64,4 +64,10 @@ defmodule Frobots.Events.Tournament do
     |> validate_required(@fields)
     |> unique_constraint(:name)
   end
+
+  def update_changeset(tournament, attrs) do
+    tournament
+    |> cast(attrs, [:status] ++ @optional_fields)
+    |> validate_required(@fields)
+  end
 end

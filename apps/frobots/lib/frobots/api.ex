@@ -53,6 +53,10 @@ defmodule Frobots.Api do
     Events.join_tournament(attrs["tournament_id"], attrs["frobot_id"])
   end
 
+  def unjoin_tournament(attrs) do
+    Events.unjoin_tournament(attrs["tournament_id"], attrs["frobot_id"])
+  end
+
   ## params = [search_pattern: "as", tournament_status: :open | :progress | :completed | :cancelled]
   def list_paginated_tournaments(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
     query =

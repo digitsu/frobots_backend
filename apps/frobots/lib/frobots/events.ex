@@ -524,7 +524,6 @@ defmodule Frobots.Events do
     |> case do
       {:ok, tournament} ->
         Frobots.TournamentManager.start_child(tournament.id)
-        |> IO.inspect(label: "Tournament Process")
 
         {:ok, tournament}
 
@@ -538,6 +537,16 @@ defmodule Frobots.Events do
       nil -> {:error, :not_found}
       tournament -> {:ok, tournament}
     end
+  end
+
+  def list_tournament_by(params, preload \\ []) do
+    Tournament |> where(^params) |> preload(^preload) |> Repo.all()
+  end
+
+  def update_tournament(tournament, params) do
+    tournament
+    |> Tournament.update_changeset(params)
+    |> Repo.update()
   end
 
   def create_tournament_players(attrs \\ %{}) do
@@ -556,7 +565,6 @@ defmodule Frobots.Events do
     TournamentPlayers |> where(^params) |> preload(^preload) |> Repo.one()
   end
 
-  # asc: :order
   def list_tournament_players_by(params, order_by, limit) do
     TournamentPlayers
     |> where(^params)
@@ -586,8 +594,22 @@ defmodule Frobots.Events do
     end
   end
 
-  ## TODO CALL FROM JOINING A MATCH
+  def unjoin_tournament(tournament_id, frobot_id) do
+    with {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
+         {:is_open, true} <- {:is_open, is_open?(tournament)},
+         tournament_player when not is_nil(tournament_player) <-
+           Enum.find(tournament.tournament_players, fn tp -> tp.frobot_id == frobot_id end),
+         {:ok, tp} <- remove_tournament_players(tournament_player) do
+      {:ok, tp}
+    else
+      {:is_open, false} -> {:error, "tournament is closed"}
+      {:is_frobot_available, false} -> {:error, "frobot is already part of existing match"}
+      nil -> {:error, "frobot is not part of tournament"}
+      error -> error
+    end
+  end
 
+  ## TODO CALL FROM JOINING A MATCH
   def is_frobot_available?(frobot_id) do
     no_matches =
       case get_slot_by(frobot_id: frobot_id, status: :ready) do
@@ -615,5 +637,9 @@ defmodule Frobots.Events do
 
   defp is_open?(tournament) do
     tournament.status == :open and length(tournament.tournament_players) < tournament.participants
+  end
+
+  defp remove_tournament_players(tournament_player) do
+    Repo.delete(tournament_player)
   end
 end
