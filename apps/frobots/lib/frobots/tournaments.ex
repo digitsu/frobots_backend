@@ -322,6 +322,7 @@ defmodule Frobots.Tournaments do
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
+    |> IO.inspect(label: "Knockout pairing")
     |> Enum.reduce(match_index, fn [f1, f2], match_index ->
       params = create_match_params("knockout", 0, match_index, tournament, admin_user.id, f1, f2)
 
@@ -341,6 +342,7 @@ defmodule Frobots.Tournaments do
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
+    |> IO.inspect(label: "Qualifier pairing")
     |> Enum.reduce(match_index, fn [f1, f2], match_index ->
       params = create_match_params("qualifier", 0, match_index, tournament, admin_user.id, f1, f2)
 
@@ -360,6 +362,7 @@ defmodule Frobots.Tournaments do
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
+    |> IO.inspect(label: "Semifinal pairing")
     |> Enum.reduce(match_index, fn [f1, f2], match_index ->
       params = create_match_params("semifinal", 0, match_index, tournament, admin_user.id, f1, f2)
 
@@ -379,6 +382,7 @@ defmodule Frobots.Tournaments do
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
+    |> IO.inspect(label: "Final pairing")
     |> Enum.reduce(match_index, fn [f1, f2], match_index ->
       params = create_match_params("final", 0, match_index, tournament, admin_user.id, f1, f2)
 

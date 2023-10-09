@@ -36,7 +36,7 @@ defmodule Frobots.DatabaseListener do
         Logger.info("update tournament score for match #{payload["id"]}")
         frobots = match.frobots
         winners = match.battlelog.winners
-        update_score(frobots, match, winners)
+        update_score(frobots, match, winners) |> IO.inspect(label: "Update Score")
 
       true ->
         :ok
