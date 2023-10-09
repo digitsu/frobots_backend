@@ -36,7 +36,7 @@ defmodule Frobots.DatabaseListener do
         Logger.info("update tournament score for match #{payload["id"]}")
         frobots = match.frobots
         winners = match.battlelog.winners
-        update_score(frobots, match, winners) |> IO.inspect(label: "Update Score")
+        update_score(frobots, match.tournament_id, winners) |> IO.inspect(label: "Update Score")
 
       true ->
         :ok
@@ -45,26 +45,36 @@ defmodule Frobots.DatabaseListener do
     {:noreply, state}
   end
 
-  defp update_score(frobots, match, winners) do
-    Enum.each(frobots, fn frobot ->
-      score = get_score(frobot, winners)
+  # [info] update tournament score for match 458
+  # [error] GenServer Frobots.DatabaseListener terminating
+  # ** (ArgumentError) errors were found at the given arguments:
+
+  #   * 1st argument: not an atom
+
+  #   :erlang.apply(8, :id, [])
+  #   (frobots 0.1.1) lib/frobots/database_listener.ex:55: anonymous fn/3 in Frobots.DatabaseListener.update_score/3
+  #   (elixir 1.13.4) lib/enum.ex:937: Enum."-each/2-list
+
+  defp update_score(frobot_ids, tournament_id, winners) do
+    Enum.each(frobot_ids, fn frobot_id ->
+      score = get_score(frobot_id, winners)
 
       tp =
         Frobots.Events.get_tournament_players_by(
-          tournament_id: match.tournament_id,
-          frobot_id: frobot.id
+          tournament_id: tournament_id,
+          frobot_id: frobot_id
         )
 
       Frobots.Events.update_tournament_players(tp, %{score: tp.score + score})
     end)
   end
 
-  defp get_score(frobot, winners) do
+  defp get_score(frobot_id, winners) do
     cond do
       ## winnner
-      length(winners) == 1 and frobot.id in winners -> 5
+      length(winners) == 1 and frobot_id in winners -> 5
       ## loser
-      length(winners) == 1 and frobot.id not in winners -> 1
+      length(winners) == 1 and frobot_id not in winners -> 1
       ## tie
       true -> 3
     end
