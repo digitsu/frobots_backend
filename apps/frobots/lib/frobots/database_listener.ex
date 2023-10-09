@@ -62,9 +62,9 @@ defmodule Frobots.DatabaseListener do
   defp get_score(frobot, winners) do
     cond do
       ## winnner
-      frobot.id in winners and length(winners) == 1 -> 5
+      length(winners) == 1 and frobot.id in winners -> 5
       ## loser
-      frobot.id not in winners -> 1
+      length(winners) == 1 and frobot.id not in winners -> 1
       ## tie
       true -> 3
     end

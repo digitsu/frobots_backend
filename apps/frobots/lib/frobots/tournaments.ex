@@ -303,7 +303,6 @@ defmodule Frobots.Tournaments do
   @impl true
   def handle_info(:update_tournament, %{tournament_id: tournament_id} = state) do
     Logger.info("Update Tournament .........")
-
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
@@ -323,7 +322,18 @@ defmodule Frobots.Tournaments do
 
     pairing(frobots_ids)
     |> IO.inspect(label: "Knockout pairing")
-    |> Enum.reduce(match_index, fn [f1, f2], match_index ->
+    |> Enum.reduce(match_index, fn frobots, match_index ->
+      {f1, f2} =
+        cond do
+          is_list(frobots) ->
+            [f1, f2] = frobots
+            {f1, f2}
+          is_tuple(frobots) ->
+            frobots
+          true ->
+            IO.inspect(frobots, label: "Not supported pairing")
+            {nil, nil}
+        end
       params = create_match_params("knockout", 0, match_index, tournament, admin_user.id, f1, f2)
 
       {:ok, _match} = Frobots.Events.create_match(params)
@@ -343,7 +353,18 @@ defmodule Frobots.Tournaments do
 
     pairing(frobots_ids)
     |> IO.inspect(label: "Qualifier pairing")
-    |> Enum.reduce(match_index, fn [f1, f2], match_index ->
+    |> Enum.reduce(match_index, fn frobots, match_index ->
+      {f1, f2} =
+        cond do
+          is_list(frobots) ->
+            [f1, f2] = frobots
+            {f1, f2}
+          is_tuple(frobots) ->
+            frobots
+          true ->
+            IO.inspect(frobots, label: "Not supported pairing")
+            {nil, nil}
+        end
       params = create_match_params("qualifier", 0, match_index, tournament, admin_user.id, f1, f2)
 
       {:ok, _match} = Frobots.Events.create_match(params)
@@ -363,7 +384,18 @@ defmodule Frobots.Tournaments do
 
     pairing(frobots_ids)
     |> IO.inspect(label: "Semifinal pairing")
-    |> Enum.reduce(match_index, fn [f1, f2], match_index ->
+    |> Enum.reduce(match_index, fn frobots, match_index ->
+      {f1, f2} =
+        cond do
+          is_list(frobots) ->
+            [f1, f2] = frobots
+            {f1, f2}
+          is_tuple(frobots) ->
+            frobots
+          true ->
+            IO.inspect(frobots, label: "Not supported pairing")
+            {nil, nil}
+        end
       params = create_match_params("semifinal", 0, match_index, tournament, admin_user.id, f1, f2)
 
       {:ok, _match} = Frobots.Events.create_match(params)
@@ -383,7 +415,19 @@ defmodule Frobots.Tournaments do
 
     pairing(frobots_ids)
     |> IO.inspect(label: "Final pairing")
-    |> Enum.reduce(match_index, fn [f1, f2], match_index ->
+    |> Enum.reduce(match_index, fn frobots, match_index ->
+      {f1, f2} =
+        cond do
+          is_list(frobots) ->
+            [f1, f2] = frobots
+            {f1, f2}
+          is_tuple(frobots) ->
+            frobots
+          true ->
+            IO.inspect(frobots, label: "Not supported pairing")
+            {nil, nil}
+        end
+
       params = create_match_params("final", 0, match_index, tournament, admin_user.id, f1, f2)
 
       {:ok, _match} = Frobots.Events.create_match(params)
