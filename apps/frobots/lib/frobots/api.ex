@@ -57,7 +57,15 @@ defmodule Frobots.Api do
     Events.unjoin_tournament(attrs["tournament_id"], attrs["frobot_id"])
   end
 
-  ## params = [search_pattern: "as", tournament_status: :open | :progress | :completed | :cancelled]
+  def cancel_tournament(attrs) do
+    Events.cancel_tournament(attrs["tournament_id"], attrs["admin_user_id"])
+  end
+
+  def player_stats(attrs) do
+    Events.player_stats(attrs["tournament_id"], attrs["frobot_id"])
+  end
+
+  ## params = [search_pattern: "as", tournament_status: :open | :inprogress | :completed | :cancelled]
   def list_paginated_tournaments(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
     query =
       Tournament
@@ -238,6 +246,16 @@ defmodule Frobots.Api do
           |> where([match], match.tournament_match_type == ^tournament_match_type)
       end
 
+    query =
+      case Keyword.get(params, :tournament_id, nil) do
+        nil ->
+          query
+
+        tournament_id ->
+          query
+          |> where([match], match.tournament_id == ^tournament_id)
+      end
+
     Events.list_match_by(query, preload, order_by)
   end
 
@@ -274,9 +292,6 @@ defmodule Frobots.Api do
     else
       {:error, :invalid_protobot}
     end
-  end
-
-  def join_match(_user, _match) do
   end
 
   def create_frobot(user, name, brain_code, extra_params \\ %{})

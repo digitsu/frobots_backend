@@ -36,6 +36,7 @@ defmodule Frobots.Tournaments do
   def init(tournament_id) do
     Logger.info("Starting process for #{tournament_id}")
     ## Get the timer from scheduled time of tournament
+
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
@@ -55,14 +56,24 @@ defmodule Frobots.Tournaments do
 
         Process.send_after(self(), :pool_matches, start_after)
 
-      tournament.status == :progress ->
-        :ok
+      tournament.status == :inprogress ->
+        start_after = 60 * 1000
+
+        case get_match_type(tournament.id) do
+          nil -> Process.send_after(self(), :pool_matches, start_after)
+          :pool -> Process.send_after(self(), :knockout_matches, start_after)
+          :knockout -> Process.send_after(self(), :qualifier_matches, start_after)
+          :qualifier -> Process.send_after(self(), :semifinal_matches, start_after)
+          :semifinal -> Process.send_after(self(), :final_matches, start_after)
+          :final -> :ok
+        end
 
       true ->
         :ok
     end
 
-    {:ok, %{tournament_id: tournament_id, admin_user: admin_user}}
+    match_index = get_match_index(tournament_id)
+    {:ok, %{tournament_id: tournament_id, admin_user: admin_user, match_index: match_index}}
   end
 
   @impl true
@@ -72,7 +83,7 @@ defmodule Frobots.Tournaments do
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
-    {:ok, _} = Frobots.Events.update_tournament(tournament, %{status: :progress})
+    {:ok, _} = Frobots.Events.update_tournament(tournament, %{status: :inprogress})
 
     participants = length(tournament.tournament_players)
 
@@ -192,36 +203,10 @@ defmodule Frobots.Tournaments do
 
     ## 3 mins for the match + 10 mins running time of match + 2 mins buffer
     start_after = 15 * 60 * 1000
-    Process.send_after(self(), :update_score, start_after)
+    Process.send_after(self(), :knockout_matches, start_after)
 
     {:noreply,
      state |> Map.put(:match_index, match_index) |> Map.put(:tournament_id, tournament.id)}
-  end
-
-  @impl true
-  def handle_info(
-        :update_score,
-        %{tournament_id: tournament_id} = state
-      ) do
-    Logger.info("Update Score for Tournament #{tournament_id}")
-    tournament_match_type = get_match_type(tournament_id)
-
-    case Frobots.Events.list_match_by(
-           [tournament_id: tournament_id, tournament_match_type: tournament_match_type],
-           [:battlelog]
-         ) do
-      [] ->
-        :ok
-
-      matches ->
-        Enum.each(matches, fn match ->
-          frobots = match.frobots
-          winners = match.battlelog.winners
-          update_score(frobots, match, winners)
-        end)
-    end
-
-    {:noreply, state}
   end
 
   @impl true
@@ -239,45 +224,21 @@ defmodule Frobots.Tournaments do
     match_index =
       cond do
         participants > 16 ->
-          ## Update Pool Matches Score after 5 Hours
-          # 5 * 60 * 60 * 1000
-          start_after = 60 * 60 * 1000
-          Process.send_after(self(), {:update_score, :knockout}, start_after)
-
-          # 6 * 60 * 60 * 1000
-          start_after = 60 * 60 * 1000 + 15 * 1000
-          Process.send_after(self(), :qualifier_matches, start_after)
           tournament_matches(:knockout, tournament, admin_user, match_index)
+          start_after = 2 * 60 * 60 * 1000
+          Process.send_after(self(), :qualifier_matches, start_after)
 
         participants > 8 ->
-          ## Update Qualifier Matches Score after 5 Hours
-          # 5 * 60 * 60 * 1000
-          start_after = 60 * 60 * 1000
-          Process.send_after(self(), {:update_score, :qualifier}, start_after)
-
-          # 6 * 60 * 60 * 1000
-          start_after = 60 * 60 * 1000 + 15 * 1000
-          Process.send_after(self(), :semifinal_matches, start_after)
           tournament_matches(:qualifier, tournament, admin_user, match_index)
+          start_after = 2 * 60 * 60 * 1000
+          Process.send_after(self(), :semifinal_matches, start_after)
 
         participants > 4 ->
-          ## Update Qualifier Matches Score after 5 Hours
-          # 5 * 60 * 60 * 1000
-          start_after = 60 * 60 * 1000
-          Process.send_after(self(), {:update_score, :semifinal}, start_after)
-
-          # 6 * 60 * 60 * 1000
-          start_after = 60 * 60 * 1000 + 15 * 1000
-          Process.send_after(self(), :final_match, start_after)
           tournament_matches(:semifinal, tournament, admin_user, match_index)
+          start_after = 2 * 60 * 60 * 1000
+          Process.send_after(self(), :final_match, start_after)
 
         participants > 2 ->
-          # start_after = 6 * 60 * 60 * 1000
-          # Process.send_after(self(), :elimination_matches, start_after)
-          # 3 * 60 * 60 * 1000
-          start_after = 60 * 60 * 1000
-          Process.send_after(self(), {:update_score, :final}, start_after)
-
           tournament_matches(:final, tournament, admin_user, match_index)
       end
 
@@ -291,12 +252,7 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Qualifier Matches for Tournament #{tournament_id}")
 
-    # 5 * 60 * 60 * 1000
-    start_after = 60 * 60 * 1000
-    Process.send_after(self(), {:update_score, :qualifier}, start_after)
-
-    # 6 * 60 * 60 * 1000
-    start_after = 60 * 60 * 1000 + 15 * 1000
+    start_after = 2 * 60 * 60
     Process.send_after(self(), :semifinal_matches, start_after)
 
     {:ok, tournament} =
@@ -314,12 +270,8 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Semi Final Matches for Tournament #{tournament_id}")
 
-    # 5 * 60 * 60 * 1000
-    start_after = 60 * 60 * 1000
-    Process.send_after(self(), {:update_score, :semifinal}, start_after)
-
     # 6 * 60 * 60 * 1000
-    start_after = 60 * 60 * 1000 + 15 * 1000
+    start_after = 2 * 60 * 60
     Process.send_after(self(), :final_match, start_after)
 
     {:ok, tournament} =
@@ -337,12 +289,7 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Final Match for Tournament #{tournament_id}")
 
-    # 5 * 60 * 60 * 1000
-    start_after = 60 * 60 * 1000
-    Process.send_after(self(), {:update_score, :final}, start_after)
-
-    # 6 * 60 * 60 * 1000
-    start_after = 60 * 60 * 1000 + 15 * 1000
+    start_after = 2 * 60 * 60
     Process.send_after(self(), :update_tournament, start_after)
 
     {:ok, tournament} =
@@ -354,8 +301,13 @@ defmodule Frobots.Tournaments do
   end
 
   @impl true
-  def handle_info(:update_tournament, state) do
-    Logger.info("Update Tournament")
+  def handle_info(:update_tournament, %{tournament_id: tournament_id} = state) do
+    Logger.info("Update Tournament .........")
+
+    {:ok, tournament} =
+      Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
+
+    Frobots.Events.update_tournament(tournament, %{status: :completed})
     {:noreply, state}
   end
 
@@ -363,7 +315,7 @@ defmodule Frobots.Tournaments do
     tp =
       Frobots.Events.list_tournament_players_by(
         [tournament_id: tournament.id],
-        [desc: :score],
+        [desc: :score, asc: :inserted_at],
         16
       )
 
@@ -380,7 +332,11 @@ defmodule Frobots.Tournaments do
 
   defp tournament_matches(:qualifier, tournament, admin_user, match_index) do
     tp =
-      Frobots.Events.list_tournament_players_by([tournament_id: tournament.id], [desc: :score], 8)
+      Frobots.Events.list_tournament_players_by(
+        [tournament_id: tournament.id],
+        [desc: :score, asc: :inserted_at],
+        8
+      )
 
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
@@ -395,7 +351,11 @@ defmodule Frobots.Tournaments do
 
   defp tournament_matches(:semifinal, tournament, admin_user, match_index) do
     tp =
-      Frobots.Events.list_tournament_players_by([tournament_id: tournament.id], [desc: :score], 4)
+      Frobots.Events.list_tournament_players_by(
+        [tournament_id: tournament.id],
+        [desc: :score, asc: :inserted_at],
+        4
+      )
 
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
@@ -410,7 +370,11 @@ defmodule Frobots.Tournaments do
 
   defp tournament_matches(:final, tournament, admin_user, match_index) do
     tp =
-      Frobots.Events.list_tournament_players_by([tournament_id: tournament.id], [desc: :score], 2)
+      Frobots.Events.list_tournament_players_by(
+        [tournament_id: tournament.id],
+        [desc: :score, asc: :inserted_at],
+        2
+      )
 
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
@@ -421,31 +385,6 @@ defmodule Frobots.Tournaments do
       {:ok, _match} = Frobots.Events.create_match(params)
       match_index + 1
     end)
-  end
-
-  defp update_score(frobots, match, winners) do
-    Enum.each(frobots, fn frobot ->
-      score = get_score(frobot, winners)
-
-      tp =
-        Frobots.Events.get_tournament_players_by(
-          tournament_id: match.tournament_id,
-          frobot_id: frobot.id
-        )
-
-      Frobots.Events.update_tournament_players(tp, %{score: tp.score + score})
-    end)
-  end
-
-  defp get_score(frobot, winners) do
-    cond do
-      ## winnner
-      frobot.id in winners and length(winners) == 1 -> 5
-      ## loser
-      frobot.id not in winners -> 1
-      ## tie
-      true -> 3
-    end
   end
 
   # Each FROBOT plays each other in scheduled matches in each pool.
@@ -524,19 +463,22 @@ defmodule Frobots.Tournaments do
   end
 
   defp get_match_type(tournament_id) do
-    Frobots.Events.list_match_by([tournament: tournament_id], [], desc: :tournament_match_id)
+    Frobots.Api.list_match_by([tournament: tournament_id], [], desc: :tournament_match_id)
     |> List.first()
     |> case do
-      nil -> :pool
+      nil -> nil
       match -> match.tournament_match_type
     end
   end
 
-  # ## Update Pool Matches Score after 12 Hours
-  # start_after = 60 * 60 * 1000
-  # Process.send_after(self(), {:update_score, :pool}, start_after)
+  defp get_match_index(tournament_id) do
+    case Frobots.Api.list_match_by([tournament_id: tournament_id], [], desc: :tournament_match_id)
+         |> List.first() do
+      nil ->
+        1
 
-  # ## Start KnockOut Matches after 14 Hours
-  # start_after = 60 * 60 * 1000 + 15 * 1000
-  # Process.send_after(self(), :knockout_matches, start_after)
+      match ->
+        match.tournament_match_id + 1
+    end
+  end
 end

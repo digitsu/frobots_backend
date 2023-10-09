@@ -8,6 +8,7 @@ defmodule Frobots.Events do
   alias Frobots.Repo
 
   alias Frobots.Assets
+  alias Frobots.Accounts
   alias Frobots.Events.Battlelog
   alias Frobots.Events.{Match, Slot, Tournament}
   alias Frobots.Leaderboard
@@ -609,6 +610,46 @@ defmodule Frobots.Events do
     end
   end
 
+  def cancel_tournament(tournament_id, user_id) do
+    with admin_user <- Accounts.get_user_by(name: Accounts.admin_user_name()),
+         {:admin_check, true} <- {:admin_check, admin_user.id == user_id},
+         {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
+         {:is_open, true} <- {:is_open, is_open?(tournament)},
+         {:ok, tournament} <- Frobots.Events.update_tournament(tournament, %{status: :cancelled}) do
+      {:ok, tournament}
+    else
+      {:admin_check, false} -> {:error, "tournament can be cancelled by admin"}
+      {:is_open, false} -> {:error, "tournament is in progress"}
+      error -> error
+    end
+  end
+
+  def player_stats(tournament_id, frobot_id) do
+    with {:ok, tournament} <-
+           get_tournament_by([id: tournament_id], tournament_players: [frobot: :user]),
+         tp = Enum.find(tournament.tournament_players, fn tp -> tp.frobot_id == frobot_id end),
+         matches =
+           Frobots.Api.list_match_by(
+             [tournament_match_type: :pool, tournament_id: tournament_id],
+             [:battlelog]
+           ),
+         user_matches <- Enum.filter(matches, fn m -> frobot_id in m.frobots end) do
+      wins = Enum.count(user_matches, fn m -> frobot_id in m.battlelog.winners end)
+      loss = Enum.count(user_matches, fn m -> frobot_id not in m.battlelog.winners end)
+
+      {:ok,
+       %{
+         frobot_name: tp.frobot.name,
+         player_name: tp.frobot.user.name,
+         points: tp.score,
+         wins: wins,
+         loss: loss
+       }}
+    else
+      error -> error
+    end
+  end
+
   ## TODO CALL FROM JOINING A MATCH
   def is_frobot_available?(frobot_id) do
     no_matches =
@@ -627,7 +668,7 @@ defmodule Frobots.Events do
       from(t in "tournaments",
         join: tp in "tournament_players",
         on: tp.tournament_id == t.id,
-        where: t.status != "done" and tp.frobot_id == ^frobot_id,
+        where: t.status in ["open", "inprogress"] and tp.frobot_id == ^frobot_id,
         select: tp.frobot_id
       )
 

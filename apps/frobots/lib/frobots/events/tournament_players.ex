@@ -16,7 +16,7 @@ defmodule Frobots.Events.TournamentPlayers do
     field :score, :integer
 
     field :tournament_match_type, Ecto.Enum,
-      values: [:pool, :knockout, :qualifier, :semi_final, :eliminator, :final]
+      values: [:pool, :knockout, :qualifier, :semifinal, :eliminator, :final]
 
     field :tournament_match_sub_type, :string
     field :order, :integer

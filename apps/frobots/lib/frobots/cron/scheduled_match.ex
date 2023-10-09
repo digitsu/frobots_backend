@@ -41,7 +41,7 @@ defmodule Frobots.Cron.ScheduledMatch do
     Process.send_after(self(), :start_tournament_manager, cron_interval * 10)
 
     (Frobots.Events.list_tournament_by([status: :open], []) ++
-       Frobots.Events.list_tournament_by([status: :progress], []))
+       Frobots.Events.list_tournament_by([status: :inprogress], []))
     |> Enum.each(fn tournament ->
       if is_nil(Process.whereis("tournament#{tournament.id}" |> String.to_atom())) do
         Frobots.TournamentManager.start_child(tournament.id)

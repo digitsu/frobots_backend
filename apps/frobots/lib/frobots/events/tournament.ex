@@ -28,7 +28,7 @@ defmodule Frobots.Events.Tournament do
     field :final_ranking, :map
     field :total_quedos, :integer
     field :payouts, :map
-    field :status, Ecto.Enum, values: [:open, :progress, :completed, :cancelled]
+    field :status, Ecto.Enum, values: [:open, :inprogress, :completed, :cancelled]
 
     has_many :matches, Match, foreign_key: :tournament_id
     has_many :tournament_players, TournamentPlayers, foreign_key: :tournament_id
