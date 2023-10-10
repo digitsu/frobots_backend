@@ -35,7 +35,13 @@ defmodule Frobots.Events.TournamentPlayers do
 
   def update_changeset(tournament_player, attrs) do
     tournament_player
-    |> cast(attrs, [:order, :score, :pool_score, :tournament_match_type, :tournament_match_sub_type])
+    |> cast(attrs, [
+      :order,
+      :score,
+      :pool_score,
+      :tournament_match_type,
+      :tournament_match_sub_type
+    ])
     |> validate_required(@fields)
   end
 end
