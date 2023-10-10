@@ -14,6 +14,7 @@ defmodule Frobots.Events.TournamentPlayers do
     belongs_to(:frobot, Frobot)
     belongs_to(:tournament, Tournament)
     field :score, :integer
+    field :pool_score, :integer
 
     field :tournament_match_type, Ecto.Enum,
       values: [:pool, :knockout, :qualifier, :semifinal, :eliminator, :final]
@@ -23,7 +24,7 @@ defmodule Frobots.Events.TournamentPlayers do
     timestamps()
   end
 
-  @fields [:frobot_id, :tournament_id, :score, :tournament_match_type]
+  @fields [:frobot_id, :tournament_id, :score, :pool_score, :tournament_match_type]
 
   @doc false
   def changeset(tournament_player, attrs) do
@@ -34,7 +35,7 @@ defmodule Frobots.Events.TournamentPlayers do
 
   def update_changeset(tournament_player, attrs) do
     tournament_player
-    |> cast(attrs, [:order, :score, :tournament_match_type, :tournament_match_sub_type])
+    |> cast(attrs, [:order, :score, :pool_score, :tournament_match_type, :tournament_match_sub_type])
     |> validate_required(@fields)
   end
 end
