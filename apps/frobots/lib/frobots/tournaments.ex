@@ -303,6 +303,7 @@ defmodule Frobots.Tournaments do
   @impl true
   def handle_info(:update_tournament, %{tournament_id: tournament_id} = state) do
     Logger.info("Update Tournament .........")
+
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
@@ -318,6 +319,10 @@ defmodule Frobots.Tournaments do
         16
       )
 
+    Enum.each(tp, fn p ->
+      Frobots.Events.update_tournament_players(p, %{tournament_match_type: :knockout})
+    end)
+
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
@@ -328,12 +333,15 @@ defmodule Frobots.Tournaments do
           is_list(frobots) ->
             [f1, f2] = frobots
             {f1, f2}
+
           is_tuple(frobots) ->
             frobots
+
           true ->
             IO.inspect(frobots, label: "Not supported pairing")
             {nil, nil}
         end
+
       params = create_match_params("knockout", 0, match_index, tournament, admin_user.id, f1, f2)
 
       {:ok, _match} = Frobots.Events.create_match(params)
@@ -349,6 +357,10 @@ defmodule Frobots.Tournaments do
         8
       )
 
+    Enum.each(tp, fn p ->
+      Frobots.Events.update_tournament_players(p, %{tournament_match_type: :qualifier})
+    end)
+
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
@@ -359,12 +371,15 @@ defmodule Frobots.Tournaments do
           is_list(frobots) ->
             [f1, f2] = frobots
             {f1, f2}
+
           is_tuple(frobots) ->
             frobots
+
           true ->
             IO.inspect(frobots, label: "Not supported pairing")
             {nil, nil}
         end
+
       params = create_match_params("qualifier", 0, match_index, tournament, admin_user.id, f1, f2)
 
       {:ok, _match} = Frobots.Events.create_match(params)
@@ -380,6 +395,10 @@ defmodule Frobots.Tournaments do
         4
       )
 
+    Enum.each(tp, fn p ->
+      Frobots.Events.update_tournament_players(p, %{tournament_match_type: :semifinal})
+    end)
+
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
@@ -390,12 +409,15 @@ defmodule Frobots.Tournaments do
           is_list(frobots) ->
             [f1, f2] = frobots
             {f1, f2}
+
           is_tuple(frobots) ->
             frobots
+
           true ->
             IO.inspect(frobots, label: "Not supported pairing")
             {nil, nil}
         end
+
       params = create_match_params("semifinal", 0, match_index, tournament, admin_user.id, f1, f2)
 
       {:ok, _match} = Frobots.Events.create_match(params)
@@ -411,6 +433,10 @@ defmodule Frobots.Tournaments do
         2
       )
 
+    Enum.each(tp, fn p ->
+      Frobots.Events.update_tournament_players(p, %{tournament_match_type: :final})
+    end)
+
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
@@ -421,8 +447,10 @@ defmodule Frobots.Tournaments do
           is_list(frobots) ->
             [f1, f2] = frobots
             {f1, f2}
+
           is_tuple(frobots) ->
             frobots
+
           true ->
             IO.inspect(frobots, label: "Not supported pairing")
             {nil, nil}

@@ -634,14 +634,23 @@ defmodule Frobots.Events do
              [:battlelog]
            ),
          user_matches <- Enum.filter(matches, fn m -> frobot_id in m.frobots end) do
-      wins = Enum.count(user_matches, fn m -> frobot_id in m.battlelog.winners end)
-      loss = Enum.count(user_matches, fn m -> frobot_id not in m.battlelog.winners end)
+      wins =
+        Enum.count(user_matches, fn m ->
+          not is_nil(m.battlelog) and frobot_id in m.battlelog.winners
+        end)
+
+      loss =
+        Enum.count(user_matches, fn m ->
+          is_nil(m.battlelog) or
+            (not is_nil(m.battlelog) and frobot_id not in m.battlelog.winners)
+        end)
 
       {:ok,
        %{
          frobot_name: tp.frobot.name,
          player_name: tp.frobot.user.name,
          points: tp.score,
+         pool_points: tp.pool_score,
          wins: wins,
          loss: loss
        }}

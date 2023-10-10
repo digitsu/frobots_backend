@@ -36,7 +36,7 @@ defmodule Frobots.DatabaseListener do
         Logger.info("update tournament score for match #{payload["id"]}")
         frobots = match.frobots
         winners = match.battlelog.winners
-        update_score(frobots, match.tournament_id, winners) |> IO.inspect(label: "Update Score")
+        update_score(match.tournament_match_type, frobots, match.tournament_id, winners)
 
       true ->
         :ok
@@ -45,17 +45,7 @@ defmodule Frobots.DatabaseListener do
     {:noreply, state}
   end
 
-  # [info] update tournament score for match 458
-  # [error] GenServer Frobots.DatabaseListener terminating
-  # ** (ArgumentError) errors were found at the given arguments:
-
-  #   * 1st argument: not an atom
-
-  #   :erlang.apply(8, :id, [])
-  #   (frobots 0.1.1) lib/frobots/database_listener.ex:55: anonymous fn/3 in Frobots.DatabaseListener.update_score/3
-  #   (elixir 1.13.4) lib/enum.ex:937: Enum."-each/2-list
-
-  defp update_score(frobot_ids, tournament_id, winners) do
+  defp update_score(tournament_match_type, frobot_ids, tournament_id, winners) do
     Enum.each(frobot_ids, fn frobot_id ->
       score = get_score(frobot_id, winners)
 
@@ -65,7 +55,11 @@ defmodule Frobots.DatabaseListener do
           frobot_id: frobot_id
         )
 
-      Frobots.Events.update_tournament_players(tp, %{score: tp.score + score})
+      if tournament_match_type == :pool do
+        Frobots.Events.update_tournament_players(tp, %{pool_score: tp.pool_score + score})
+      else
+        Frobots.Events.update_tournament_players(tp, %{score: tp.score + score})
+      end
     end)
   end
 
