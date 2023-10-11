@@ -342,10 +342,15 @@ defmodule Frobots.Tournaments do
             {nil, nil}
         end
 
-      params = create_match_params("knockout", 0, match_index, tournament, admin_user.id, f1, f2)
+      if is_nil(f1) or is_nil(f2) do
+        match_index
+      else
+        params =
+          create_match_params("knockout", 0, match_index, tournament, admin_user.id, f1, f2)
 
-      {:ok, _match} = Frobots.Events.create_match(params)
-      match_index + 1
+        {:ok, _match} = Frobots.Events.create_match(params)
+        match_index + 1
+      end
     end)
   end
 
@@ -380,10 +385,15 @@ defmodule Frobots.Tournaments do
             {nil, nil}
         end
 
-      params = create_match_params("qualifier", 0, match_index, tournament, admin_user.id, f1, f2)
+      if is_nil(f1) or is_nil(f2) do
+        match_index
+      else
+        params =
+          create_match_params("qualifier", 0, match_index, tournament, admin_user.id, f1, f2)
 
-      {:ok, _match} = Frobots.Events.create_match(params)
-      match_index + 1
+        {:ok, _match} = Frobots.Events.create_match(params)
+        match_index + 1
+      end
     end)
   end
 
@@ -418,10 +428,15 @@ defmodule Frobots.Tournaments do
             {nil, nil}
         end
 
-      params = create_match_params("semifinal", 0, match_index, tournament, admin_user.id, f1, f2)
+      if is_nil(f1) or is_nil(f2) do
+        match_index
+      else
+        params =
+          create_match_params("semifinal", 0, match_index, tournament, admin_user.id, f1, f2)
 
-      {:ok, _match} = Frobots.Events.create_match(params)
-      match_index + 1
+        {:ok, _match} = Frobots.Events.create_match(params)
+        match_index + 1
+      end
     end)
   end
 
@@ -456,10 +471,14 @@ defmodule Frobots.Tournaments do
             {nil, nil}
         end
 
-      params = create_match_params("final", 0, match_index, tournament, admin_user.id, f1, f2)
+      if is_nil(f1) or is_nil(f2) do
+        match_index
+      else
+        params = create_match_params("final", 0, match_index, tournament, admin_user.id, f1, f2)
 
-      {:ok, _match} = Frobots.Events.create_match(params)
-      match_index + 1
+        {:ok, _match} = Frobots.Events.create_match(params)
+        match_index + 1
+      end
     end)
   end
 
@@ -471,18 +490,23 @@ defmodule Frobots.Tournaments do
     # Get the tournament match type from tournament_players ordered by rank
     max_range = div(length(frobot_ids), 2) - 1
 
-    pairing =
-      Enum.reduce(0..max_range, [], fn index, acc ->
-        acc ++ [{Enum.at(frobot_ids, index), Enum.at(frobot_ids, length(frobot_ids) - 1 - index)}]
-      end)
+    if max_range < 0 do
+      []
+    else
+      pairing =
+        Enum.reduce(0..max_range, [], fn index, acc ->
+          acc ++
+            [{Enum.at(frobot_ids, index), Enum.at(frobot_ids, length(frobot_ids) - 1 - index)}]
+        end)
 
-    ## Logic for ordered pairing
-    max_range = div(length(pairing), 2) - 1
+      ## Logic for ordered pairing
+      max_range = div(length(pairing), 2) - 1
 
-    _ordered_pairing =
-      Enum.reduce(0..max_range, [], fn index, acc ->
-        acc ++ [Enum.at(pairing, index), Enum.at(pairing, length(pairing) - 1 - index)]
-      end)
+      _ordered_pairing =
+        Enum.reduce(0..max_range, [], fn index, acc ->
+          acc ++ [Enum.at(pairing, index), Enum.at(pairing, length(pairing) - 1 - index)]
+        end)
+    end
   end
 
   defp create_match_params(match_type, match_sub_type, match_id, tournament, user_id, f1, f2) do
