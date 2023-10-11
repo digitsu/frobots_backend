@@ -17,6 +17,9 @@ export default {
   joinTournament(tournament_params) {
     this.pushEventTo(this.el, 'react.join_tournament', tournament_params)
   },
+  unJoinTournament(tournament_params) {
+    this.pushEventTo(this.el, 'react.unjoin_tournament', tournament_params)
+  },
   destroyed() {
     if (!this.unmountComponent) {
       console.error('Component unmounted')
@@ -30,6 +33,7 @@ export default {
     return {
       name: 'TournamentDetails',
       joinTournament: this.joinTournament.bind(this),
+      unJoinTournament: this.unJoinTournament.bind(this),
       ...details,
     }
   },
