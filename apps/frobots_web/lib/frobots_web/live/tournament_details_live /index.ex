@@ -3,6 +3,7 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
   alias Frobots.Api
   alias Frobots.Accounts
   alias Frobots.Assets
+
   def mount(params, %{"user_id" => id}, socket) do
     current_user = Accounts.get_user!(id)
     tournament_id = params["tournament_id"]
@@ -206,5 +207,6 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
     end)
   end
 
-    def extract_battlelog(battlelog), do: if battlelog, do: %{"winners" => battlelog.winners}, else: nil
+  def extract_battlelog(battlelog),
+    do: if(battlelog, do: %{"winners" => battlelog.winners}, else: nil)
 end
