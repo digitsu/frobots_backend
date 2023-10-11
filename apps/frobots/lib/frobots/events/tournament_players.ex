@@ -24,12 +24,12 @@ defmodule Frobots.Events.TournamentPlayers do
     timestamps()
   end
 
-  @fields [:frobot_id, :tournament_id, :score, :pool_score, :tournament_match_type]
+  @fields [:frobot_id, :tournament_id, :score, :tournament_match_type]
 
   @doc false
   def changeset(tournament_player, attrs) do
     tournament_player
-    |> cast(attrs, @fields ++ [:order, :tournament_match_sub_type])
+    |> cast(attrs, @fields ++ [:order, :pool_score, :tournament_match_sub_type])
     |> validate_required(@fields)
   end
 

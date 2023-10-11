@@ -103,7 +103,7 @@ defmodule Frobots.Api do
     do:
       Events.get_tournament_by([id: tournament_id], [
         [tournament_players: [frobot: :user]],
-        [matches: [slots: [frobot: :user]]]
+        [matches: [:battlelog, slots: [frobot: :user]]]
       ])
 
   ## params = [search_pattern: "as", match_status: :done, match_type: :real]
