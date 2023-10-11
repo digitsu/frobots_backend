@@ -252,7 +252,7 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Qualifier Matches for Tournament #{tournament_id}")
 
-    start_after = 2 * 60 * 60
+    start_after = 2 * 60 * 60 * 1000
     Process.send_after(self(), :semifinal_matches, start_after)
 
     {:ok, tournament} =
@@ -271,7 +271,7 @@ defmodule Frobots.Tournaments do
     Logger.info("Create Semi Final Matches for Tournament #{tournament_id}")
 
     # 6 * 60 * 60 * 1000
-    start_after = 2 * 60 * 60
+    start_after = 2 * 60 * 60 * 1000
     Process.send_after(self(), :final_match, start_after)
 
     {:ok, tournament} =
@@ -289,7 +289,7 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Final Match for Tournament #{tournament_id}")
 
-    start_after = 2 * 60 * 60
+    start_after = 30 * 60 * 1000
     Process.send_after(self(), :update_tournament, start_after)
 
     {:ok, tournament} =
@@ -307,7 +307,7 @@ defmodule Frobots.Tournaments do
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
-    Frobots.Events.update_tournament(tournament, %{status: :completed})
+    Frobots.Events.update_tournament(tournament, %{status: :completed, ended_at: System.os_time(:second)})
     {:noreply, state}
   end
 
