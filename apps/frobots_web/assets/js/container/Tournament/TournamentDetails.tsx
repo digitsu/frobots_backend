@@ -4,14 +4,17 @@ import TournamentBanner from './TournamentBanner'
 import TournamentBrackets from './TournamentBrackets'
 import TournamentGroupMatches from './TournamentGroupMatches'
 import TournamentMatches from './TournamentMatches'
+import TournamentPlayers from './TournamentPlayers'
 
 export default ({
   s3_base_url,
   tournament_details,
   user_frobots,
   joinTournament,
+  unJoinTournament,
+  all_user_frobots,
 }) => {
-  const tabs = ['Matches', 'Group Stage', 'Knockout']
+  const tabs = ['Matches', 'Group Stage', 'Knockout', 'Players']
   const [tabIndex, setTabIndex] = React.useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
@@ -23,7 +26,6 @@ export default ({
       'aria-controls': `simple-tabpanel-${index}`,
     }
   }
-
   return (
     <Box width={'90%'} m={'auto'}>
       <Container sx={{ maxWidth: 1440, p: '0 !important', m: 0 }}>
@@ -54,6 +56,17 @@ export default ({
             ))}
           </Tabs>
           <Box my={4}>
+            {tabIndex === 3 && (
+              <TournamentPlayers
+                tournament_id={tournament_details.id}
+                tournament_players={tournament_details.tournament_players}
+                s3_base_url={s3_base_url}
+                user_frobots={all_user_frobots}
+                unJoinTournament={unJoinTournament}
+              />
+            )}
+          </Box>
+          <Box my={4}>
             {tabIndex === 2 && (
               <TournamentBrackets tournament_details={tournament_details} />
             )}
@@ -65,7 +78,10 @@ export default ({
           </Box>
           <Box my={4}>
             {tabIndex === 0 && (
-              <TournamentMatches tournament_details={tournament_details} />
+              <TournamentMatches
+                tournament_details={tournament_details}
+                s3_base_url={s3_base_url}
+              />
             )}
           </Box>
         </Box>
