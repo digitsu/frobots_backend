@@ -106,6 +106,22 @@ defmodule Frobots.Api do
         [matches: [:battlelog, slots: [frobot: :user]]]
       ])
 
+
+  def list_tournament_matches_by_id(tournament_id) do
+    {:ok, tournament} =
+      Events.get_tournament_by([id: tournament_id],
+        [matches: [:battlelog, slots: [frobot: :user]]]
+      )
+
+    Enum.group_by(tournament.matches, fn m ->
+      if m.tournament_match_type == :pool do
+        "Pool #{m.tournament_match_sub_type}"
+      else
+        m.tournament_match_type |> to_string() |> String.capitalize()
+      end
+    end)
+  end
+
   ## params = [search_pattern: "as", match_status: :done, match_type: :real]
   def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
     query =
