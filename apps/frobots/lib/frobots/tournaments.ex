@@ -307,7 +307,11 @@ defmodule Frobots.Tournaments do
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
-    Frobots.Events.update_tournament(tournament, %{status: :completed, ended_at: System.os_time(:second)})
+    Frobots.Events.update_tournament(tournament, %{
+      status: :completed,
+      ended_at: System.os_time(:second)
+    })
+
     {:noreply, state}
   end
 
