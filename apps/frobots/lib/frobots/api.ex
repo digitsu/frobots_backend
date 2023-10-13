@@ -106,21 +106,82 @@ defmodule Frobots.Api do
         [matches: [:battlelog, slots: [frobot: :user]]]
       ])
 
-
-  def list_tournament_matches_by_id(tournament_id) do
+  def list_tournament_matches_by_id(tournament_id, "pool") do
     {:ok, tournament} =
       Events.get_tournament_by([id: tournament_id],
-        [matches: [:battlelog, slots: [frobot: :user]]]
+        matches: [:battlelog, slots: [frobot: :user]]
       )
 
-    Enum.group_by(tournament.matches, fn m ->
-      if m.tournament_match_type == :pool do
-        "Pool #{m.tournament_match_sub_type}"
-      else
-        m.tournament_match_type |> to_string() |> String.capitalize()
-      end
+    matches =
+      Enum.filter(tournament.matches, fn m ->
+        m.tournament_match_type == :pool
+      end)
+      |> Enum.group_by(fn m ->
+        m.tournament_match_sub_type
+      end)
+
+    all_keys = Map.keys(matches)
+
+    Enum.reduce(all_keys |> Enum.sort(), [], fn key, acc ->
+      match = Map.get(matches, key)
+
+      [
+        %{
+          pool_name: get_pool_name(key + 96),
+          pool_id: key,
+          players: get_players(match),
+          matches: match
+        }
+        | acc
+      ]
     end)
   end
+
+  def list_tournament_matches_by_id(tournament_id, "knockout") do
+    {:ok, tournament} =
+      Events.get_tournament_by([id: tournament_id],
+        matches: [:battlelog, slots: [frobot: :user]]
+      )
+
+    matches =
+      Enum.filter(tournament.matches, fn m ->
+        m.tournament_match_type in [:qualifier, :semifinal, :final]
+      end)
+      |> Enum.group_by(fn m ->
+        m.tournament_match_type
+      end)
+
+    all_keys = Map.keys(matches)
+
+    Enum.reduce(all_keys |> Enum.sort(), [], fn key, acc ->
+      match = Map.get(matches, key)
+
+      [
+        %{
+          pool_name: key |> to_string() |> String.capitalize(),
+          pool_id: nil,
+          players: get_players(match),
+          matches: match
+        }
+        | acc
+      ]
+    end)
+  end
+
+  defp get_pool_name(value), do: <<value::utf8>> |> String.upcase()
+
+  defp get_players(matches) do
+    Enum.reduce(matches, [], fn match, acc ->
+      acc ++ match.frobots
+    end)
+    |> Enum.uniq()
+  end
+
+  # defp transform(matches) do
+  #   Enum.map(matches, fn match ->
+  #     Map.put(match, :battlelog, Map.get(match, :battlelog) |> Map.drop(:events))
+  #   end)
+  # end
 
   ## params = [search_pattern: "as", match_status: :done, match_type: :real]
   def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
