@@ -129,7 +129,7 @@ defmodule Frobots.Api do
         %{
           pool_name: get_pool_name(key + 96),
           pool_id: key,
-          players: get_players(match),
+          players: match |> get_players |> get_detailed_players(),
           matches: match
         }
         | acc
@@ -160,7 +160,7 @@ defmodule Frobots.Api do
         %{
           pool_name: key |> to_string() |> String.capitalize(),
           pool_id: nil,
-          players: get_players(match),
+          players: match |> get_players() |> get_detailed_players(),
           matches: match
         }
         | acc
@@ -175,6 +175,10 @@ defmodule Frobots.Api do
       acc ++ match.frobots
     end)
     |> Enum.uniq()
+  end
+
+  defp get_detailed_players(frobots_id) do
+    Frobots.Assets.get_frobot_by(frobots_id, [:user])
   end
 
   # defp transform(matches) do
