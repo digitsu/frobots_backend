@@ -19,8 +19,8 @@ defmodule Frobots.Cron.ScheduledMatch do
   @impl true
   def init(_args) do
     cron_interval = Application.get_env(:frobots, :cron_interval) * 1_000
-    Process.send_after(self(), :start_match, cron_interval)
-    Process.send_after(self(), :start_tournament_manager, cron_interval * 10)
+    Process.send_after(self(), :start_match, cron_interval * 30)
+    Process.send_after(self(), :start_tournament_manager, cron_interval * 30)
     {:ok, %{cron_interval: cron_interval}}
   end
 
