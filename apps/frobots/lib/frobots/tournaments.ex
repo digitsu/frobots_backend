@@ -129,16 +129,17 @@ defmodule Frobots.Tournaments do
         index + 1
       end)
 
-    Enum.reduce(partially_filled_pools, total_index, fn pool_participants, index ->
-      Enum.each(pool_participants, fn pool_participant ->
-        {:ok, _} =
-          Frobots.Events.update_tournament_players(pool_participant, %{
-            tournament_match_sub_type: index + 1
-          })
-      end)
+    _total_index =
+      Enum.reduce(partially_filled_pools, total_index, fn pool_participants, index ->
+        Enum.each(pool_participants, fn pool_participant ->
+          {:ok, _} =
+            Frobots.Events.update_tournament_players(pool_participant, %{
+              tournament_match_sub_type: index + 1
+            })
+        end)
 
-      index + 1
-    end)
+        index + 1
+      end)
 
     {pool_index, match_index} =
       Enum.reduce(fully_filled_pools, {0, 0}, fn pool_participants, {pool_index, match_index} ->

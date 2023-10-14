@@ -129,7 +129,7 @@ defmodule Frobots.Api do
         %{
           pool_name: get_pool_name(key + 96),
           pool_id: key,
-          players: match |> get_players |> get_detailed_players(),
+          players: match |> get_players |> get_detailed_players(tournament_id),
           matches: match
         }
         | acc
@@ -160,7 +160,7 @@ defmodule Frobots.Api do
         %{
           pool_name: key |> to_string() |> String.capitalize(),
           pool_id: nil,
-          players: match |> get_players() |> get_detailed_players(),
+          players: match |> get_players() |> get_detailed_players(tournament_id),
           matches: match
         }
         | acc
@@ -177,8 +177,19 @@ defmodule Frobots.Api do
     |> Enum.uniq()
   end
 
-  defp get_detailed_players(frobots_id) do
-    Frobots.Assets.get_frobot_by(frobots_id, [:user])
+  defp get_detailed_players(frobots_id, tournament_id) do
+    frobots = Frobots.Assets.get_frobot_by(frobots_id, [:user])
+
+    Enum.map(frobots, fn frobot ->
+      {:ok, stats} = player_stats(%{"tournament_id" => tournament_id, "frobot_id" => frobot.id})
+
+      %{
+        name: frobot.user.name,
+        id: frobot.id,
+        email: frobot.user.email
+      }
+      |> Map.merge(stats)
+    end)
   end
 
   # defp transform(matches) do
