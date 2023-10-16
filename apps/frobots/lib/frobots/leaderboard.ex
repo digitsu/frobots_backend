@@ -65,10 +65,15 @@ defmodule Frobots.Leaderboard do
 
   def update_frobot_xp(frobot_id, points) do
     # find frobot
-    frobot = Assets.get_frobot(frobot_id)
-    new_xp = frobot.xp + points
-    # get xp and add to points
-    Assets.update_frobot(frobot, %{"xp" => new_xp})
+    case Assets.get_frobot(frobot_id) do
+      {:ok, frobot} ->
+        new_xp = frobot.xp + points
+        # get xp and add to points
+        Assets.update_frobot(frobot, %{"xp" => new_xp})
+
+      {:error, _} ->
+        nil
+    end
   end
 
   # total number of matches participated

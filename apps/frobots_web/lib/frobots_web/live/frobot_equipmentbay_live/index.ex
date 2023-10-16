@@ -17,13 +17,13 @@ defmodule FrobotsWeb.FrobotEquipmentBayLive.Index do
     end
 
     case Assets.get_frobot(String.to_integer(frobot_id)) do
-      nil ->
+      {:error, _} ->
         {:ok,
          socket
          |> put_flash(:error, "Not found any frobot with id #{frobot_id}")
          |> push_redirect(to: "/garage")}
 
-      frobot ->
+      {:ok, frobot} ->
         if frobot.user_id !== current_user.id do
           {:ok,
            socket

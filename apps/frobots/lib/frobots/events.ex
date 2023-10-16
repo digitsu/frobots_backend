@@ -578,7 +578,7 @@ defmodule Frobots.Events do
     with {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
          {:is_open, true} <- {:is_open, is_open?(tournament)},
          {:is_frobot_available, true} <- {:is_frobot_available, is_frobot_available?(frobot_id)},
-         frobot when not is_nil(frobot) <- Assets.get_frobot(frobot_id),
+         {:ok, _frobot} <- Assets.get_frobot(frobot_id),
          attrs <- %{
            frobot_id: frobot_id,
            tournament_id: tournament_id,
