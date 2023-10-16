@@ -688,14 +688,14 @@ defmodule Frobots.AccountsTest do
       Accounts.user_login_by(user.email, @pass)
       assert logs = Accounts.get_user_logins(user)
 
-      assert length(logs) > 0
+      assert !Enum.empty?(logs)
     end
 
     test "should not log login info if login was failed", %{user: user} do
       Accounts.user_login_by(user.email, "badpass")
       assert logs = Accounts.get_user_logins(user)
 
-      assert length(logs) == 0
+      assert Enum.empty?(logs)
     end
 
     test "should return logs of user logins", %{user: user} do

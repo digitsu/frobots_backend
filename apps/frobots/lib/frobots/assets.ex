@@ -115,7 +115,12 @@ defmodule Frobots.Assets do
     end
   end
 
-  def get_frobot(id), do: Repo.get(Frobot, id)
+  def get_frobot(id) do
+    case Repo.get(Frobot, id) do
+      nil -> {:error, :not_found}
+      frobot -> {:ok, frobot}
+    end
+  end
 
   def get_frobot!(name) when is_bitstring(name) do
     Frobot
