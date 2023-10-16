@@ -17,7 +17,10 @@ defmodule Frobots.Leaderboard do
     participants = match.frobots
     winners = match.battlelog.winners
     winning_frobot = hd(winners)
-    frobot = Assets.get_frobot(winning_frobot)
+    frobot = case Assets.get_frobot(winning_frobot) do
+      {:ok, frobot} -> frobot
+      {:error, _} -> nil
+    end
 
     matches_participated = get_match_participation_count([winning_frobot])
     matches_won = get_matches_won_count(winning_frobot)
