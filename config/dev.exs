@@ -22,6 +22,7 @@ config :frobots_web, FrobotsWeb.Endpoint,
 ## in seconds
 config :frobots, status_reset_interval: 60
 config :frobots, cron_interval: 1
+config :frobots, tournament_match_interval: 2 * 60
 
 # ## SSL Support
 #
