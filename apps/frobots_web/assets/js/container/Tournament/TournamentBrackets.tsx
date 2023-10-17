@@ -37,7 +37,19 @@ const CustomSeed = ({
     </Seed>
   )
 }
-export default ({ tournament_details }) => {
+export default ({ tournament_knockouts }) => {
+  const matches = tournament_knockouts.map(
+    ({ pool_name, players, matches }) => ({
+      title: pool_name,
+      seeds: matches.map((match, index) => ({
+        id: index,
+        date: new Date(match.match_time).toDateString(),
+        teams: match.frobots.map((frobot) => ({
+          name: players.find(({ id }) => id === frobot)?.frobot_name,
+        })),
+      })),
+    })
+  )
   return (
     <>
       <Bracket rounds={matches} renderSeedComponent={CustomSeed} />

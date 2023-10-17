@@ -12,7 +12,7 @@ import {
   Card,
 } from '@mui/material'
 
-export default ({ tableTitle, tableData, tableHeads }) => {
+export default ({ tableTitle, tableData, tableHeads, s3_base_url }) => {
   return (
     <Card sx={{ width: '100%', background: 'transparent' }}>
       <Typography variant="h6" sx={{ p: 2, color: '#fff' }}>
@@ -51,20 +51,27 @@ export default ({ tableTitle, tableData, tableHeads }) => {
                     gap: 1,
                   }}
                 >
-                  {row.avatar && <Box component={'img'} src={row.avatar} />}
-                  {row.name}
+                  {row.avatar && (
+                    <Box
+                      component={'img'}
+                      src={`${s3_base_url}${row.avatar}`}
+                      width={15}
+                      height={15}
+                    />
+                  )}
+                  {row.frobot_name}
                 </TableCell>
                 <TableCell
                   sx={{ color: '#fff', borderColor: '#333D49' }}
                   align="left"
                 >
-                  {row.player}
+                  {row.name || row?.email?.split('@')[0] || ''}
                 </TableCell>
                 <TableCell
                   sx={{ color: '#fff', borderColor: '#333D49' }}
                   align="left"
                 >
-                  {row.xp}
+                  {row.points}
                 </TableCell>
                 <TableCell
                   sx={{ color: '#fff', borderColor: '#333D49' }}
@@ -76,7 +83,7 @@ export default ({ tableTitle, tableData, tableHeads }) => {
                   sx={{ color: '#fff', borderColor: '#333D49' }}
                   align="left"
                 >
-                  {row.loses}
+                  {row.loss}
                 </TableCell>
               </TableRow>
             ))}
