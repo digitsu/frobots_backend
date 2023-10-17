@@ -13,6 +13,8 @@ export default ({
   joinTournament,
   unJoinTournament,
   all_user_frobots,
+  tournament_pools,
+  tournament_knockouts,
 }) => {
   const tabs = ['Matches', 'Group Stage', 'Knockout', 'Players']
   const [tabIndex, setTabIndex] = React.useState(0)
@@ -68,12 +70,16 @@ export default ({
           </Box>
           <Box my={4}>
             {tabIndex === 2 && (
-              <TournamentBrackets tournament_details={tournament_details} />
+              <TournamentBrackets tournament_knockouts={tournament_knockouts} />
             )}
           </Box>
           <Box my={4}>
             {tabIndex === 1 && (
-              <TournamentGroupMatches tournament_details={tournament_details} />
+              <TournamentGroupMatches
+                tournament_details={tournament_details}
+                tournament_pools={tournament_pools}
+                s3_base_url={s3_base_url}
+              />
             )}
           </Box>
           <Box my={4}>

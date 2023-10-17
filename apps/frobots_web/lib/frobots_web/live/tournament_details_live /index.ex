@@ -26,6 +26,8 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
 
     case socket.assigns.tournament_details do
       {:ok, tournament} ->
+        tournament_pools = Api.list_tournament_matches_by_id(tournament.id, "pool")
+
         {:noreply,
          push_event(socket, "react.return_fetch_tournament_details", %{
            "s3_base_url" => socket.assigns.s3_base_url,
@@ -73,7 +75,20 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
                end)
            },
            "user_frobots" => user_frobots,
-           "all_user_frobots" => all_user_frobots
+           "all_user_frobots" => all_user_frobots,
+           "tournament_pools" =>
+             Enum.map(tournament_pools, fn %{
+                                             pool_id: pool_id,
+                                             pool_name: pool_name,
+                                             players: players
+                                           } ->
+               %{
+                 pool_id: pool_id,
+                 pool_name: pool_name,
+                 players: players
+               }
+             end),
+           "tournament_knockouts" => Api.list_tournament_matches_by_id(tournament.id, "knockout")
          })}
     end
   end
@@ -209,4 +224,7 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
 
   def extract_battlelog(battlelog),
     do: if(battlelog, do: %{"winners" => battlelog.winners}, else: nil)
+
+  def extract_userdetails(user),
+    do: if(user, do: Jason.encode!(user), else: nil)
 end
