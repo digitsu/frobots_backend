@@ -322,7 +322,6 @@ defmodule Frobots.Tournaments do
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
-    |> IO.inspect(label: "Knockout pairing")
     |> Enum.reduce(match_index, fn frobots, match_index ->
       {f1, f2} =
         cond do
@@ -334,7 +333,6 @@ defmodule Frobots.Tournaments do
             frobots
 
           true ->
-            IO.inspect(frobots, label: "Not supported pairing")
             {nil, nil}
         end
 
@@ -365,7 +363,6 @@ defmodule Frobots.Tournaments do
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
-    |> IO.inspect(label: "Qualifier pairing")
     |> Enum.reduce(match_index, fn frobots, match_index ->
       {f1, f2} =
         cond do
@@ -377,7 +374,6 @@ defmodule Frobots.Tournaments do
             frobots
 
           true ->
-            IO.inspect(frobots, label: "Not supported pairing")
             {nil, nil}
         end
 
@@ -408,7 +404,6 @@ defmodule Frobots.Tournaments do
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
-    |> IO.inspect(label: "Semifinal pairing")
     |> Enum.reduce(match_index, fn frobots, match_index ->
       {f1, f2} =
         cond do
@@ -420,7 +415,6 @@ defmodule Frobots.Tournaments do
             frobots
 
           true ->
-            IO.inspect(frobots, label: "Not supported pairing")
             {nil, nil}
         end
 
@@ -451,7 +445,6 @@ defmodule Frobots.Tournaments do
     frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
     pairing(frobots_ids)
-    |> IO.inspect(label: "Final pairing")
     |> Enum.reduce(match_index, fn frobots, match_index ->
       {f1, f2} =
         cond do
@@ -463,7 +456,6 @@ defmodule Frobots.Tournaments do
             frobots
 
           true ->
-            IO.inspect(frobots, label: "Not supported pairing")
             {nil, nil}
         end
 
