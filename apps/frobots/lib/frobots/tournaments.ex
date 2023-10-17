@@ -194,8 +194,8 @@ defmodule Frobots.Tournaments do
       end)
 
     ## 3 mins for the match + 10 mins running time of match + 2 mins buffer
-    start_after = 15 * 60 * 1000
-    Process.send_after(self(), :knockout_matches, start_after)
+    # start_after = 15 * 60 * 1000
+    # Process.send_after(self(), :knockout_matches, start_after)
 
     {:noreply,
      state |> Map.put(:match_index, match_index) |> Map.put(:tournament_id, tournament.id)}
@@ -217,18 +217,21 @@ defmodule Frobots.Tournaments do
       cond do
         participants > 16 ->
           tournament_matches(:knockout, tournament, admin_user, match_index)
-          # start_after = 2 * 60 * 60 * 1000
-          # Process.send_after(self(), :qualifier_matches, start_after)
+
+        # start_after = 2 * 60 * 60 * 1000
+        # Process.send_after(self(), :qualifier_matches, start_after)
 
         participants > 8 ->
           tournament_matches(:qualifier, tournament, admin_user, match_index)
-          # start_after = 2 * 60 * 60 * 1000
-          # Process.send_after(self(), :semifinal_matches, start_after)
+
+        # start_after = 2 * 60 * 60 * 1000
+        # Process.send_after(self(), :semifinal_matches, start_after)
 
         participants > 4 ->
           tournament_matches(:semifinal, tournament, admin_user, match_index)
-          # start_after = 2 * 60 * 60 * 1000
-          # Process.send_after(self(), :final_match, start_after)
+
+        # start_after = 2 * 60 * 60 * 1000
+        # Process.send_after(self(), :final_match, start_after)
 
         participants > 2 ->
           tournament_matches(:final, tournament, admin_user, match_index)
@@ -505,7 +508,10 @@ defmodule Frobots.Tournaments do
       "title" => "Match of #{tournament.name}",
       "description" => "Match of #{tournament.description}",
       ## Start After 3 mins
-      "match_time" => DateTime.utc_now() |> DateTime.add(tournament_match_interval, :second) |> DateTime.to_string(),
+      "match_time" =>
+        DateTime.utc_now()
+        |> DateTime.add(tournament_match_interval, :second)
+        |> DateTime.to_string(),
       "type" => "real",
       "tournament_match_type" => match_type,
       "tournament_match_sub_type" => match_sub_type,
@@ -575,20 +581,28 @@ defmodule Frobots.Tournaments do
   defp maybe_start_next_round(tournament_id) do
     ## In 30 seconds
     start_after = 30 * 1000
-    if Frobots.Api.list_match_by(tournament_id: tournament_id) |> Enum.all?(fn m -> m.status == :done end) do
+
+    if Frobots.Api.list_match_by(tournament_id: tournament_id)
+       |> Enum.all?(fn m -> m.status == :done end) do
       ## Place Next Matches
       case get_match_type(tournament_id) do
         nil ->
           Process.send_after(self(), :pool_matches, start_after)
+
         :pool ->
           Process.send_after(self(), :knockout_matches, start_after)
+
         :knockout ->
           Process.send_after(self(), :qualifier_matches, start_after)
+
         :qualifier ->
           Process.send_after(self(), :semifinal_matches, start_after)
+
         :semifinal ->
-          Process.send_after(self(), :final_matches, start_after)
-        :final -> :ok
+          Process.send_after(self(), :final_match, start_after)
+
+        :final ->
+          :ok
       end
     end
   end

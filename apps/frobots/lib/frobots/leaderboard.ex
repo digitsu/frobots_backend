@@ -16,50 +16,52 @@ defmodule Frobots.Leaderboard do
     # now get winner and participants
     participants = match.frobots
     winners = match.battlelog.winners
-    winning_frobot = hd(winners)
+    winning_frobot = winners |> List.first()
 
-    frobot =
-      case Assets.get_frobot(winning_frobot) do
-        {:ok, frobot} -> frobot
-        {:error, _} -> nil
+    if not is_nil(winning_frobot) do
+      frobot =
+        case Assets.get_frobot(winning_frobot) do
+          {:ok, frobot} -> frobot
+          {:error, _} -> nil
+        end
+
+      matches_participated = get_match_participation_count([winning_frobot])
+      matches_won = get_matches_won_count(winning_frobot)
+
+      # start with 10 points, actual points are reduced based on how many times winning frobot fought
+      # with same combination of participants
+      points = Frobots.Leaderboard.compute_points(winning_frobot, participants, 10)
+
+      stat = %{
+        "points" => points,
+        "user_id" => match.user_id,
+        "xp" => frobot.xp + points,
+        "attempts" => get_match_attempts_count(winning_frobot),
+        "matches_participated" => matches_participated,
+        "matches_won" => matches_won,
+        "frobot_id" => frobot.id
+      }
+
+      # check if there is an entry in leaderboard_starts with winner frobot_id if yes update exisiting row
+      #  else insert new row
+      case get_entry(winning_frobot) do
+        nil ->
+          # new entry
+          Logger.info("Adding new leaderboard entry")
+          create_entry(stat)
+          update_frobot_xp(winning_frobot, points)
+
+        entry ->
+          # update entry
+          Logger.info("Updating leaderboard entry")
+
+          stat =
+            Map.delete(stat, "frobot_id")
+            |> Map.merge(%{"points" => entry.points + points})
+
+          update_entry(entry, stat)
+          update_frobot_xp(winning_frobot, points)
       end
-
-    matches_participated = get_match_participation_count([winning_frobot])
-    matches_won = get_matches_won_count(winning_frobot)
-
-    # start with 10 points, actual points are reduced based on how many times winning frobot fought
-    # with same combination of participants
-    points = Frobots.Leaderboard.compute_points(winning_frobot, participants, 10)
-
-    stat = %{
-      "points" => points,
-      "user_id" => match.user_id,
-      "xp" => frobot.xp + points,
-      "attempts" => get_match_attempts_count(winning_frobot),
-      "matches_participated" => matches_participated,
-      "matches_won" => matches_won,
-      "frobot_id" => frobot.id
-    }
-
-    # check if there is an entry in leaderboard_starts with winner frobot_id if yes update exisiting row
-    #  else insert new row
-    case get_entry(winning_frobot) do
-      nil ->
-        # new entry
-        Logger.info("Adding new leaderboard entry")
-        create_entry(stat)
-        update_frobot_xp(winning_frobot, points)
-
-      entry ->
-        # update entry
-        Logger.info("Updating leaderboard entry")
-
-        stat =
-          Map.delete(stat, "frobot_id")
-          |> Map.merge(%{"points" => entry.points + points})
-
-        update_entry(entry, stat)
-        update_frobot_xp(winning_frobot, points)
     end
   end
 
@@ -171,6 +173,7 @@ defmodule Frobots.Leaderboard do
     case result do
       {:ok, _stat} ->
         Logger.info("Updated successful")
+        :ok
 
       # Updated with success
       {:error, changeset} ->

@@ -38,6 +38,7 @@ defmodule Frobots.DatabaseListener do
         winners = match.battlelog.winners
         update_score(match.tournament_match_type, frobots, match.tournament_id, winners)
         maybe_start_next_round(match)
+
       true ->
         :ok
     end
@@ -56,9 +57,11 @@ defmodule Frobots.DatabaseListener do
         )
 
       if tournament_match_type == :pool do
-        Frobots.Events.update_tournament_players(tp, %{pool_score: tp.pool_score + score})
+        pool_score = if is_nil(tp.pool_score), do: 0, else: tp.pool_score
+        Frobots.Events.update_tournament_players(tp, %{pool_score: pool_score + score})
       else
-        Frobots.Events.update_tournament_players(tp, %{score: tp.score + score})
+        old_score = if is_nil(tp.score), do: 0, else: tp.score
+        Frobots.Events.update_tournament_players(tp, %{score: old_score + score})
       end
     end)
   end
@@ -78,24 +81,31 @@ defmodule Frobots.DatabaseListener do
     start_after = 30 * 1000
     tournament_id = match.tournament_id
     self = String.to_atom("tournament#{tournament_id}")
-    if Api.list_match_by(tournament_id: match.tournament_id) |> Enum.all?(fn m -> m.status == :done end) do
+
+    if not (Api.list_match_by(tournament_id: match.tournament_id)
+            |> Enum.any?(fn m -> m.status == :pending end)) do
       ## Place Next Matches
       case get_match_type(tournament_id) do
         :pool ->
           Process.send_after(self, :knockout_matches, start_after)
+
         :knockout ->
           Process.send_after(self, :qualifier_matches, start_after)
+
         :qualifier ->
           Process.send_after(self, :semifinal_matches, start_after)
+
         :semifinal ->
           Process.send_after(self, :final_matches, start_after)
-        :final -> :ok
+
+        :final ->
+          :ok
       end
     end
   end
 
   defp get_match_type(tournament_id) do
-    Frobots.Api.list_match_by([tournament: tournament_id], [], desc: :tournament_match_id)
+    Frobots.Api.list_match_by([tournament_id: tournament_id], [], desc: :tournament_match_id)
     |> List.first()
     |> case do
       nil -> nil
