@@ -4,7 +4,7 @@ defmodule Frobots.DatabaseListener do
   """
   use GenServer
   alias Frobots.Leaderboard
-  alias Frobots.Events
+  alias Frobots.{Api, Events}
   require Logger
   @channel "match_status_updated"
 
@@ -37,7 +37,7 @@ defmodule Frobots.DatabaseListener do
         frobots = match.frobots
         winners = match.battlelog.winners
         update_score(match.tournament_match_type, frobots, match.tournament_id, winners)
-
+        maybe_start_next_round(match)
       true ->
         :ok
     end
@@ -71,6 +71,35 @@ defmodule Frobots.DatabaseListener do
       length(winners) == 1 and frobot_id not in winners -> 1
       ## tie
       true -> 3
+    end
+  end
+
+  defp maybe_start_next_round(match) do
+    start_after = 30 * 1000
+    tournament_id = match.tournament_id
+    self = String.to_atom("tournament#{tournament_id}")
+    if Api.list_match_by(tournament_id: match.tournament_id) |> Enum.all?(fn m -> m.status == :done end) do
+      ## Place Next Matches
+      case get_match_type(tournament_id) do
+        :pool ->
+          Process.send_after(self, :knockout_matches, start_after)
+        :knockout ->
+          Process.send_after(self, :qualifier_matches, start_after)
+        :qualifier ->
+          Process.send_after(self, :semifinal_matches, start_after)
+        :semifinal ->
+          Process.send_after(self, :final_matches, start_after)
+        :final -> :ok
+      end
+    end
+  end
+
+  defp get_match_type(tournament_id) do
+    Frobots.Api.list_match_by([tournament: tournament_id], [], desc: :tournament_match_id)
+    |> List.first()
+    |> case do
+      nil -> nil
+      match -> match.tournament_match_type
     end
   end
 end

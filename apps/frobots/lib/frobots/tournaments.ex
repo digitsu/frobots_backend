@@ -57,16 +57,7 @@ defmodule Frobots.Tournaments do
         Process.send_after(self(), :pool_matches, start_after)
 
       tournament.status == :inprogress ->
-        start_after = 60 * 1000
-
-        case get_match_type(tournament.id) do
-          nil -> Process.send_after(self(), :pool_matches, start_after)
-          :pool -> Process.send_after(self(), :knockout_matches, start_after)
-          :knockout -> Process.send_after(self(), :qualifier_matches, start_after)
-          :qualifier -> Process.send_after(self(), :semifinal_matches, start_after)
-          :semifinal -> Process.send_after(self(), :final_matches, start_after)
-          :final -> :ok
-        end
+        maybe_start_next_round(tournament.id)
 
       true ->
         :ok
@@ -226,18 +217,18 @@ defmodule Frobots.Tournaments do
       cond do
         participants > 16 ->
           tournament_matches(:knockout, tournament, admin_user, match_index)
-          start_after = 2 * 60 * 60 * 1000
-          Process.send_after(self(), :qualifier_matches, start_after)
+          # start_after = 2 * 60 * 60 * 1000
+          # Process.send_after(self(), :qualifier_matches, start_after)
 
         participants > 8 ->
           tournament_matches(:qualifier, tournament, admin_user, match_index)
-          start_after = 2 * 60 * 60 * 1000
-          Process.send_after(self(), :semifinal_matches, start_after)
+          # start_after = 2 * 60 * 60 * 1000
+          # Process.send_after(self(), :semifinal_matches, start_after)
 
         participants > 4 ->
           tournament_matches(:semifinal, tournament, admin_user, match_index)
-          start_after = 2 * 60 * 60 * 1000
-          Process.send_after(self(), :final_match, start_after)
+          # start_after = 2 * 60 * 60 * 1000
+          # Process.send_after(self(), :final_match, start_after)
 
         participants > 2 ->
           tournament_matches(:final, tournament, admin_user, match_index)
@@ -253,8 +244,8 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Qualifier Matches for Tournament #{tournament_id}")
 
-    start_after = 2 * 60 * 60 * 1000
-    Process.send_after(self(), :semifinal_matches, start_after)
+    # start_after = 2 * 60 * 60 * 1000
+    # Process.send_after(self(), :semifinal_matches, start_after)
 
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
@@ -272,8 +263,8 @@ defmodule Frobots.Tournaments do
     Logger.info("Create Semi Final Matches for Tournament #{tournament_id}")
 
     # 6 * 60 * 60 * 1000
-    start_after = 2 * 60 * 60 * 1000
-    Process.send_after(self(), :final_match, start_after)
+    # start_after = 2 * 60 * 60 * 1000
+    # Process.send_after(self(), :final_match, start_after)
 
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
@@ -290,8 +281,8 @@ defmodule Frobots.Tournaments do
       ) do
     Logger.info("Create Final Match for Tournament #{tournament_id}")
 
-    start_after = 30 * 60 * 1000
-    Process.send_after(self(), :update_tournament, start_after)
+    # start_after = 30 * 60 * 1000
+    # Process.send_after(self(), :update_tournament, start_after)
 
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
@@ -515,21 +506,23 @@ defmodule Frobots.Tournaments do
   end
 
   defp create_match_params(match_type, match_sub_type, match_id, tournament, user_id, f1, f2) do
+    tournament_match_interval = Application.get_env(:frobots, :tournament_match_interval)
+
     %{
       "user_id" => user_id,
       "title" => "Match of #{tournament.name}",
       "description" => "Match of #{tournament.description}",
       ## Start After 3 mins
-      "match_time" => DateTime.utc_now() |> DateTime.add(3 * 60, :second) |> DateTime.to_string(),
+      "match_time" => DateTime.utc_now() |> DateTime.add(tournament_match_interval, :second) |> DateTime.to_string(),
       "type" => "real",
       "tournament_match_type" => match_type,
       "tournament_match_sub_type" => match_sub_type,
       "tournament_match_id" => match_id,
       "tournament_id" => tournament.id,
-      # 10 mins
-      "timer" => 600,
+      # 15 mins
+      "timer" => 900,
       "arena_id" => tournament.arena_id,
-      "min_player_frobot" => 1,
+      "min_player_frobot" => 2,
       "max_player_frobot" => 2,
       "slots" => [
         %{
@@ -550,7 +543,7 @@ defmodule Frobots.Tournaments do
         "match_type" => "individual",
         "payout_map" => [100],
         "max_frobots" => 2,
-        "min_frobots" => 1
+        "min_frobots" => 2
       }
     }
   end
@@ -584,6 +577,27 @@ defmodule Frobots.Tournaments do
 
       match ->
         match.tournament_match_id + 1
+    end
+  end
+
+  defp maybe_start_next_round(tournament_id) do
+    ## In 30 seconds
+    start_after = 30 * 1000
+    if Frobots.Api.list_match_by(tournament_id: tournament_id) |> Enum.all?(fn m -> m.status == :done end) do
+      ## Place Next Matches
+      case get_match_type(tournament_id) do
+        nil ->
+          Process.send_after(self(), :pool_matches, start_after)
+        :pool ->
+          Process.send_after(self(), :knockout_matches, start_after)
+        :knockout ->
+          Process.send_after(self(), :qualifier_matches, start_after)
+        :qualifier ->
+          Process.send_after(self(), :semifinal_matches, start_after)
+        :semifinal ->
+          Process.send_after(self(), :final_matches, start_after)
+        :final -> :ok
+      end
     end
   end
 end
