@@ -19,7 +19,7 @@ const BlankBlocklyCode =
   '<xml xmlns="https://developers.google.com/blockly/xml"></xml>'
 
 export default (props: any) => {
-  const { userSnippets } = props
+  const { userSnippets, heightValue } = props
   const [currentSnippet, setCurrentSnippet] = useState(null)
   const [xmlText, setXmlText] = useState(null)
   const [blocklyCode, setBlocklyCode] = useState(
@@ -59,12 +59,12 @@ export default (props: any) => {
   }
 
   return (
-    <Grid container>
-      <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
+    <Grid container height={heightValue}>
+      <Grid item xs={12} sm={12} md={2} lg={2} xl={2} height={'100%'}>
         <Box
           flexDirection={'column'}
           display={'flex'}
-          height={'100vh'}
+          height={heightValue}
           sx={{
             borderRight: 1,
             borderColor: 'divider',
@@ -105,7 +105,7 @@ export default (props: any) => {
               <Box
                 position={'absolute'}
                 width={'100%'}
-                maxHeight={'100vh'}
+                maxHeight={'100%'}
                 sx={{
                   overflow: 'hidden',
                   overflowY: 'scroll',
@@ -191,8 +191,8 @@ export default (props: any) => {
           </Card>
         </Box>
       </Grid>
-      <Grid item xs={12} sm={12} md={10} lg={10} xl={10}>
-        <Grid container display={showEditor ? 'flex' : 'none'}>
+      <Grid item xs={12} sm={12} md={10} lg={10} xl={10} height={'100%'}>
+        <Grid container display={showEditor ? 'flex' : 'none'} height={'100%'}>
           <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
             <BlocklyEditor
               key={currentSnippet?.id}
@@ -205,7 +205,7 @@ export default (props: any) => {
             <LuaEditor luaCode={blocklyLuaCode} onEditorChange={() => {}} />
           </Grid>
         </Grid>
-        <Box display={showEditor ? 'none' : 'block'} height={'100vh'}>
+        <Box display={showEditor ? 'none' : 'block'} height={'100%'}>
           <Card sx={{ height: '100%', borderRadius: '0 !important' }}>
             <Box position={'relative'} height={'100%'}>
               <Box

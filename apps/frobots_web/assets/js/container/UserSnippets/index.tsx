@@ -43,6 +43,12 @@ export default (props: any) => {
   const [isEditEnabled, setEditEnabled] = useState(false)
   const [isNewEnabled, setNewEnabled] = useState(false)
   const [newSnippetName, setNewSnippetName] = useState('')
+  const workspaceElement = document.getElementById('snippet-workspace')
+  const rect = workspaceElement
+    ? workspaceElement.getBoundingClientRect()
+    : { top: 0 }
+  const distanceFromTop = rect.top + window.scrollY
+  const containerMinHeight = `calc(92vh - ${distanceFromTop}px)`
 
   useEffect(() => {
     //@ts-ignore
@@ -208,6 +214,18 @@ export default (props: any) => {
               p={2}
             >
               <Box display={'flex'} gap={1}>
+                {!isNewEnabled && !isEditEnabled && (
+                  <Tooltip title={'Create new snippet'}>
+                    <Button
+                      onClick={handleCreateNewSnippet}
+                      variant="contained"
+                      color="inherit"
+                      size="small"
+                    >
+                      {'New snippet'}
+                    </Button>
+                  </Tooltip>
+                )}
                 {isNewEnabled && (
                   <>
                     <Tooltip title={'Save your new snippet'}>
@@ -269,86 +287,41 @@ export default (props: any) => {
               </Box>
             </Box>
           </Box>
-          <Box sx={{ p: 3 }}>
-            <Grid container>
-              <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
-                <Box
-                  flexDirection={'column'}
-                  display={'flex'}
-                  height={'100vh'}
-                  sx={{
-                    borderRight: 1,
-                    borderColor: 'divider',
-                  }}
-                >
-                  <Card sx={{ height: '100%', borderRadius: 0 }}>
-                    <Box position={'relative'} height={'100%'}>
-                      <Box
-                        sx={{ filter: 'grayscale(1)' }}
-                        component={'img'}
-                        src={'/images/creatematch_bg.png'}
-                        width={'100%'}
-                        height={'100%'}
-                        display={'none'}
-                      />
-                      <Box
-                        position={'absolute'}
-                        width={'100%'}
-                        maxHeight={'100vh'}
-                        sx={{
-                          overflow: 'hidden',
-                          overflowY: 'scroll',
-                        }}
-                      >
-                        <Table>
-                          <TableBody>
-                            <TableRow
-                              sx={{
-                                cursor: 'pointer',
-                                '&:hover': {
-                                  backgroundColor: 'action.hover',
-                                },
-                                borderBottom: '1px solid #555454',
-                              }}
-                            >
-                              <TableCell
-                                colSpan={2}
-                                sx={{
-                                  color: '#fff',
-                                  borderColor: '#333D49',
-                                  p: 2,
-                                  pl: '8px !important',
-                                  pr: '8px !important',
-                                }}
-                                align="left"
-                              >
-                                {isNewEnabled ? (
-                                  <TextField
-                                    label={'Snippet name'}
-                                    fullWidth
-                                    value={currentSnippet?.name}
-                                    onChange={handleSnippetName}
-                                    size="small"
-                                  />
-                                ) : (
-                                  <Box>
-                                    <Button
-                                      color="inherit"
-                                      variant="outlined"
-                                      fullWidth
-                                      size="small"
-                                      onClick={handleCreateNewSnippet}
-                                    >
-                                      {'New snippet'}
-                                    </Button>
-                                  </Box>
-                                )}
-                              </TableCell>
-                            </TableRow>
-
-                            {userSnippets.map((snippet: any) => (
+          <Box id={'snippet-workspace'}>
+            <Box sx={{ p: 3 }}>
+              <Grid container minHeight={containerMinHeight}>
+                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
+                  <Box
+                    flexDirection={'column'}
+                    display={'flex'}
+                    height={containerMinHeight}
+                    sx={{
+                      borderRight: 1,
+                      borderColor: 'divider',
+                    }}
+                  >
+                    <Card sx={{ height: '100%', borderRadius: 0 }}>
+                      <Box position={'relative'} height={'100%'}>
+                        <Box
+                          sx={{ filter: 'grayscale(1)' }}
+                          component={'img'}
+                          src={'/images/creatematch_bg.png'}
+                          width={'100%'}
+                          height={'100%'}
+                          display={'none'}
+                        />
+                        <Box
+                          position={'absolute'}
+                          width={'100%'}
+                          maxHeight={containerMinHeight}
+                          sx={{
+                            overflow: 'hidden',
+                            overflowY: 'scroll',
+                          }}
+                        >
+                          <Table>
+                            <TableBody>
                               <TableRow
-                                key={snippet.id}
                                 sx={{
                                   cursor: 'pointer',
                                   '&:hover': {
@@ -358,147 +331,223 @@ export default (props: any) => {
                                 }}
                               >
                                 <TableCell
+                                  colSpan={2}
                                   sx={{
                                     color: '#fff',
                                     borderColor: '#333D49',
                                     p: 2,
                                     pl: '8px !important',
-                                    pr: '0px !important',
+                                    pr: '8px !important',
                                   }}
                                   align="left"
                                 >
-                                  {snippet.id === currentSnippet?.id &&
-                                  isEditEnabled ? (
-                                    <>
-                                      <TextField
-                                        label={'Snippet name'}
-                                        fullWidth
-                                        value={newSnippetName}
-                                        onChange={handleNewSnippetName}
-                                        size="small"
-                                      />
-                                    </>
+                                  {isNewEnabled ? (
+                                    <TextField
+                                      label={'Snippet name'}
+                                      fullWidth
+                                      value={currentSnippet?.name}
+                                      onChange={handleSnippetName}
+                                      size="small"
+                                    />
                                   ) : (
-                                    <Typography
-                                      variant="subtitle2"
-                                      onClick={() =>
-                                        handleSelectSnippet(snippet)
-                                      }
-                                      color={
-                                        snippet.id === currentSnippet?.id
-                                          ? 'primary.main'
-                                          : 'inherit'
-                                      }
-                                    >
-                                      {snippet.name}
-                                    </Typography>
+                                    <Box>
+                                      <Button
+                                        color="inherit"
+                                        variant="outlined"
+                                        fullWidth
+                                        size="small"
+                                        onClick={handleCreateNewSnippet}
+                                      >
+                                        {'New snippet'}
+                                      </Button>
+                                    </Box>
                                   )}
                                 </TableCell>
-
-                                <TableCell
-                                  sx={{
-                                    color: '#fff',
-                                    borderColor: '#333D49',
-                                    display: 'flex',
-                                    p: 2,
-                                    px: '0px !important',
-                                    justifyContent: 'end',
-                                  }}
-                                  align="left"
-                                >
-                                  <Button
-                                    variant="text"
-                                    color="inherit"
-                                    size="small"
-                                    onClick={() => handleClickEdit(snippet)}
-                                    sx={{
-                                      minWidth: '16px !important',
-                                    }}
-                                  >
-                                    <EditIcon />
-                                  </Button>
-                                  <Button
-                                    variant="text"
-                                    color="inherit"
-                                    size="small"
-                                    onClick={() => handleClickDelete(snippet)}
-                                    sx={{
-                                      minWidth: '16px !important',
-                                    }}
-                                  >
-                                    <DeleteIcon />
-                                  </Button>
-                                </TableCell>
                               </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+
+                              {userSnippets.map((snippet: any) => (
+                                <TableRow
+                                  key={snippet.id}
+                                  sx={{
+                                    cursor: 'pointer',
+                                    '&:hover': {
+                                      backgroundColor: 'action.hover',
+                                    },
+                                    borderBottom: '1px solid #555454',
+                                  }}
+                                >
+                                  <TableCell
+                                    sx={{
+                                      color: '#fff',
+                                      borderColor: '#333D49',
+                                      p: 2,
+                                      pl: '8px !important',
+                                      pr: '0px !important',
+                                    }}
+                                    align="left"
+                                  >
+                                    {snippet.id === currentSnippet?.id &&
+                                    isEditEnabled ? (
+                                      <>
+                                        <TextField
+                                          label={'Snippet name'}
+                                          fullWidth
+                                          value={newSnippetName}
+                                          onChange={handleNewSnippetName}
+                                          size="small"
+                                        />
+                                      </>
+                                    ) : (
+                                      <Typography
+                                        variant="subtitle2"
+                                        onClick={() =>
+                                          handleSelectSnippet(snippet)
+                                        }
+                                        color={
+                                          snippet.id === currentSnippet?.id
+                                            ? 'primary.main'
+                                            : 'inherit'
+                                        }
+                                      >
+                                        {snippet.name}
+                                      </Typography>
+                                    )}
+                                  </TableCell>
+
+                                  <TableCell
+                                    sx={{
+                                      color: '#fff',
+                                      borderColor: '#333D49',
+                                      display: 'flex',
+                                      p: 2,
+                                      px: '0px !important',
+                                      justifyContent: 'end',
+                                    }}
+                                    align="left"
+                                  >
+                                    <Tooltip title="Edit">
+                                      <Button
+                                        variant="text"
+                                        color="inherit"
+                                        size="small"
+                                        onClick={() => handleClickEdit(snippet)}
+                                        sx={{
+                                          minWidth: '30px !important',
+                                        }}
+                                      >
+                                        <EditIcon fontSize="small" />
+                                      </Button>
+                                    </Tooltip>
+                                    <Tooltip title="Remove">
+                                      <Button
+                                        variant="text"
+                                        color="inherit"
+                                        size="small"
+                                        onClick={() =>
+                                          handleClickDelete(snippet)
+                                        }
+                                        sx={{
+                                          minWidth: '30px !important',
+                                        }}
+                                      >
+                                        <DeleteIcon fontSize="small" />
+                                      </Button>
+                                    </Tooltip>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </Box>
                       </Box>
-                    </Box>
-                  </Card>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={12} md={10} lg={10} xl={10}>
-                <Grid container display={showEditor ? 'flex' : 'none'}>
-                  <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
-                    <BlocklyEditor
-                      key={blocklyCode}
-                      defaultXml={blocklyCode}
-                      setXmlText={setXmlText}
-                      workspaceDidChange={workspaceDidChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                    <LuaEditor
-                      luaCode={blocklyLuaCode}
-                      onEditorChange={() => {}}
-                    />
-                  </Grid>
+                    </Card>
+                  </Box>
                 </Grid>
-                <Box display={showEditor ? 'none' : 'block'} height={'100vh'}>
-                  <Card sx={{ height: '100%', borderRadius: '0 !important' }}>
-                    <Box position={'relative'} height={'100%'}>
-                      <Box
-                        sx={{ filter: 'grayscale(1)' }}
-                        component={'img'}
-                        src={'/images/creatematch_bg.png'}
-                        width={'100%'}
+                <Grid item xs={12} sm={12} md={10} lg={10} xl={10}>
+                  <Box display={showEditor ? 'flex' : 'none'} height={'100%'}>
+                    <Grid container height={containerMinHeight}>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={8}
+                        lg={8}
+                        xl={8}
                         height={'100%'}
-                      ></Box>
-                      <Box position={'absolute'} top={'40%'} width={'100%'}>
-                        <Typography
-                          variant="h3"
-                          display={'flex'}
-                          justifyContent={'center'}
-                        >
-                          {'Snippets'}
-                        </Typography>
-                        <Typography
-                          variant="h6"
-                          display={'flex'}
-                          justifyContent={'center'}
-                        >
-                          {
-                            'Create your own blockly function snippet that can be copied and pasted into any frobot braincode.'
-                          }
-                        </Typography>
-                        {userSnippets.length !== 0 && (
+                      >
+                        <BlocklyEditor
+                          key={blocklyCode}
+                          defaultXml={blocklyCode}
+                          setXmlText={setXmlText}
+                          workspaceDidChange={workspaceDidChange}
+                        />
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={4}
+                        lg={4}
+                        xl={4}
+                        height={'100%'}
+                      >
+                        <LuaEditor
+                          luaCode={blocklyLuaCode}
+                          onEditorChange={() => {}}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <Box display={showEditor ? 'none' : 'block'} height={'100%'}>
+                    <Card
+                      sx={{
+                        height: containerMinHeight,
+                        borderRadius: '0 !important',
+                      }}
+                    >
+                      <Box position={'relative'} height={'100%'}>
+                        <Box
+                          sx={{ filter: 'grayscale(1)' }}
+                          component={'img'}
+                          src={'/images/creatematch_bg.png'}
+                          width={'100%'}
+                          height={'100%'}
+                        ></Box>
+                        <Box position={'absolute'} top={'40%'} width={'100%'}>
                           <Typography
-                            variant="body1"
+                            variant="h3"
+                            display={'flex'}
+                            justifyContent={'center'}
+                          >
+                            {'Snippets'}
+                          </Typography>
+                          <Typography
+                            variant="h6"
                             display={'flex'}
                             justifyContent={'center'}
                           >
                             {
-                              'You can view the details for a snippet by clicking it'
+                              'Create your own blockly function snippet that can be copied and pasted into any frobot braincode.'
                             }
                           </Typography>
-                        )}
+                          {userSnippets.length !== 0 && (
+                            <Typography
+                              variant="body1"
+                              display={'flex'}
+                              justifyContent={'center'}
+                            >
+                              {
+                                'You can view the details for a snippet by clicking it'
+                              }
+                            </Typography>
+                          )}
+                        </Box>
                       </Box>
-                    </Box>
-                  </Card>
-                </Box>
+                    </Card>
+                  </Box>
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           </Box>
         </Box>
       </>
