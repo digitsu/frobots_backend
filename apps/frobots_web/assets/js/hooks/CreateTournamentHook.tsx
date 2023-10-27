@@ -1,5 +1,6 @@
 import { mount } from '../mounter'
 import CreateTournament from '../container/Tournament/CreateTournament'
+import { getTournamentName } from '../mock/tournament'
 
 export default {
   mounted() {
@@ -9,7 +10,10 @@ export default {
       (createTournamentDetails) => {
         this.unmountComponent = mount(CreateTournament)(
           this.el.id,
-          this.opts({ ...createTournamentDetails })
+          this.opts({
+            ...createTournamentDetails,
+            tournament_initial_name: getTournamentName(),
+          })
         )
       }
     )

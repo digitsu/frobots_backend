@@ -41,7 +41,7 @@ export default ({ s3_base_url, createTournament }) => {
     })
   }
   return (
-    <Box width={'65%'} m={'auto'} mt={10}>
+    <Box width={'60%'} m={'auto'} mt={10}>
       <Card sx={{ p: 3 }}>
         <Box display={'flex'} alignItems={'start'} gap={2} mb={2}>
           <Box
@@ -165,14 +165,13 @@ export default ({ s3_base_url, createTournament }) => {
           </Grid>
         </Grid>
       </Card>
-      <Box
-        display={'flex'}
-        justifyContent={'flex-end'}
-        mt={2}
-        pb={6}
-        width={'100%'}
-      >
-        <Button onClick={handleTournamentCreate} variant="contained">
+      <Box display={'flex'} justifyContent={'flex-end'} mt={6} width={'100%'}>
+        <Button
+          fullWidth
+          onClick={handleTournamentCreate}
+          variant="contained"
+          sx={{ px: 5, py: 1.5 }}
+        >
           Create
         </Button>
       </Box>

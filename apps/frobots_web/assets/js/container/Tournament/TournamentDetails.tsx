@@ -30,7 +30,7 @@ export default ({
   }
   return (
     <Box width={'90%'} m={'auto'}>
-      <Container sx={{ maxWidth: 1440, p: '0 !important', m: 0 }}>
+      <Container sx={{ maxWidth: 1440, p: '0 !important', m: 'auto' }}>
         <TournamentBanner
           tournament_details={tournament_details}
           s3_base_url={s3_base_url}
