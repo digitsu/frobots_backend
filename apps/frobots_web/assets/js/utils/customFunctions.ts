@@ -6,6 +6,9 @@ export default () => {
   Blockly.Blocks['frobot'] = {
     init: function () {
       this.appendDummyInput().appendField('Create Frobot')
+      this.appendValueInput('initial_state')
+        .setCheck('String')
+        .appendField('Initial state')
       this.appendStatementInput('nested_blocks').setCheck(null)
       this.setPreviousStatement(true, null)
       this.setNextStatement(true, null)
@@ -23,9 +26,15 @@ export default () => {
   }
   luaGenerator.forBlock['frobot'] = function (block: any) {
     var statements = luaGenerator.statementToCode(block, 'nested_blocks') || ''
+    var state = luaGenerator.valueToCode(
+      block,
+      'initial_state',
+      luaGenerator.ORDER_NONE
+    )
 
     return (
       'return function(state, ...)\n\tstate = state or {}\n' +
+      `${state ? '\tset_FSM_state(' + state + ')\n' : ''}` +
       statements +
       '\treturn state \nend\n'
     )
@@ -35,24 +44,101 @@ export default () => {
   Blockly.Blocks['exit_block'] = {
     init: function () {
       this.appendDummyInput().appendField('Exit Block')
-      this.appendValueInput('condition').setCheck('Boolean').appendField('if')
+      this.appendDummyInput('operator')
+        .appendField(
+          new Blockly.FieldDropdown([
+            ['if', 'if'],
+            ['else if', 'elseif'],
+            ['else', 'else'],
+          ]),
+          'operator'
+        )
+        .setAlign(Blockly.inputs.Align.LEFT)
+      this.appendValueInput('condition')
+        .setCheck('Boolean')
+        .appendField('condition')
+        .setAlign(Blockly.inputs.Align.CENTRE)
+      this.appendValueInput('state')
+        .setCheck('String')
+        .appendField('new state')
+        .setAlign(Blockly.inputs.Align.RIGHT)
       this.appendStatementInput('nested_blocks')
         .setCheck(null)
         .appendField('do')
+      this.setInputsInline(true)
       this.setPreviousStatement(true, null)
       this.setNextStatement(true, null)
       this.setColour(210)
       this.setTooltip('')
       this.setHelpUrl('')
     },
+    onchange: function () {
+      var operator = this.getFieldValue('operator')
+      if (operator && operator === 'else') {
+        this.getInput('condition').setVisible(false)
+        this.getInput('state').setAlign(Blockly.inputs.Align.CENTRE)
+      } else {
+        this.getInput('condition')
+          .setAlign(Blockly.inputs.Align.CENTRE)
+          .setVisible(true)
+        this.getInput('state').setAlign(Blockly.inputs.Align.RIGHT)
+      }
+    },
   }
   luaGenerator.forBlock['exit_block'] = function (block: any) {
+    var operator = block.getFieldValue('operator') || 'if'
     var condition =
       luaGenerator.valueToCode(block, 'condition', luaGenerator.ORDER_NONE) ||
-      'true'
+      'false'
+    var new_state =
+      luaGenerator.valueToCode(block, 'state', luaGenerator.ORDER_NONE) || ''
     var statements = luaGenerator.statementToCode(block, 'nested_blocks') || ''
+    let doesLoopEnd = true
 
-    return 'if ' + condition + ' then\n' + statements + '\treturn state \nend\n'
+    // check if any other exit_block attached to this
+    var nextConnection = block.nextConnection
+    if (nextConnection.isConnected()) {
+      var nextBlock = nextConnection.targetBlock()
+      var nextBlockType = nextBlock.type
+      var fieldValue = nextBlock.getFieldValue('operator')
+
+      // if the next block exit_block
+      if (nextBlockType == 'exit_block') {
+        // if next block is a continuation, current loop should not end
+        if (['elseif', 'else'].includes(fieldValue)) {
+          doesLoopEnd = false
+        }
+
+        // make sure the loop ends if current operator is else
+        if (operator === 'else') {
+          doesLoopEnd = true
+        }
+      }
+    }
+
+    let code = ''
+
+    if (['if', 'elseif'].includes(operator)) {
+      code =
+        `${operator} ` +
+        condition +
+        ' then\n' +
+        '\tset_FSM_state(' +
+        new_state +
+        ')\n' +
+        statements +
+        `\treturn state \n${doesLoopEnd ? 'end\n' : ''}`
+    } else {
+      code =
+        `${operator}\n` +
+        '\tset_FSM_state(' +
+        new_state +
+        ')\n' +
+        statements +
+        `\treturn state \n${doesLoopEnd ? 'end\n' : ''}`
+    }
+
+    return code
   }
 
   // Custom Return code
