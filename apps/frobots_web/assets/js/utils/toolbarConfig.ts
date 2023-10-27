@@ -287,44 +287,6 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
-    <category name="Colour" id="catColour" colour="20">
-      <block type="colour_picker"></block>
-      <block type="colour_random"></block>
-      <block type="colour_rgb">
-        <value name="RED">
-          <shadow type="math_number">
-            <field name="NUM">100</field>
-          </shadow>
-        </value>
-        <value name="GREEN">
-          <shadow type="math_number">
-            <field name="NUM">50</field>
-          </shadow>
-        </value>
-        <value name="BLUE">
-          <shadow type="math_number">
-            <field name="NUM">0</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="colour_blend">
-        <value name="COLOUR1">
-          <shadow type="colour_picker">
-            <field name="COLOUR">#ff0000</field>
-          </shadow>
-        </value>
-        <value name="COLOUR2">
-          <shadow type="colour_picker">
-            <field name="COLOUR">#3333ff</field>
-          </shadow>
-        </value>
-        <value name="RATIO">
-          <shadow type="math_number">
-            <field name="NUM">0.5</field>
-          </shadow>
-        </value>
-      </block>
-    </category>
     <category name="Objects" colour="210" id="objects-category">
       <block type="set_object_property"></block>
       <block type="get_object_property"></block>
@@ -338,15 +300,8 @@ export const MY_TOOLBOX = `
     </category>
     <category name="Frobot Functions" colour="20" id="frobot-functions">
       <block type="frobot">
-        <statement name="nested_blocks">
-          <block type="set_fsm_state">
-            <value name="STATE">
-              <shadow type="text">
-                <field name="TEXT">newstate</field>
-              </shadow>
-            </value>
-          </block>
-        </statement>
+        <value name="initial_state"></value>
+        <statement name="nested_blocks"></statement>
       </block>
       <block type="set_fsm_state">
         <value name="STATE">
@@ -357,18 +312,13 @@ export const MY_TOOLBOX = `
       </block>
       <block type="get_fsm_state" name="get_fsm_state"></block>
       <block type="exit_block" name="exit_block">
-        <value name="condition">
-          <shadow type="logic_boolean"></shadow>
+        <value name="condition"></value>
+        <value name="state">
+          <shadow type="text">
+            <field name="TEXT">newstate</field>
+          </shadow>
         </value>
-        <statement name="nested_blocks">
-          <block type="set_fsm_state">
-            <value name="STATE">
-              <shadow type="text">
-                <field name="TEXT">newstate</field>
-              </shadow>
-            </value>
-          </block>
-        </statement>
+        <statement name="nested_blocks"></statement>
       </block>
       <block type="custom_return" name="custom_return"></block>
       <block type="speed" name="speed"></block>
