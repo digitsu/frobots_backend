@@ -6,6 +6,7 @@ defmodule Frobots.Tournaments do
   use GenServer
   require Logger
   alias Frobots.Accounts
+  import Ecto.Query
 
   ## GenServer API
   def start_link(tournament_id) do
@@ -78,132 +79,134 @@ defmodule Frobots.Tournaments do
 
     participants = length(tournament.tournament_players)
 
-    {number_of_fully_filled_pools, number_of_partially_filled_pools, participant_per_pool} =
-      pool_mapper(participants)
+    if participants < 8 do
+      Frobots.Events.cancel_tournament(tournament_id, admin_user.id)
+      {:stop, :normal, state}
+    else
+      {number_of_fully_filled_pools, number_of_partially_filled_pools, participant_per_pool} =
+        pool_mapper(participants)
 
-    {fully_filled_pools, partially_filled_pools} =
-      cond do
-        number_of_partially_filled_pools > 0 and length(tournament.tournament_players) > 0 ->
-          [fully_filled_pools_participants, partially_filled_pools_participants] =
-            Enum.chunk_every(
-              tournament.tournament_players,
-              number_of_fully_filled_pools * participant_per_pool
-            )
-
-          fully_filled_pools =
-            Enum.chunk_every(fully_filled_pools_participants, participant_per_pool)
-
-          partially_filled_pools =
-            Enum.chunk_every(partially_filled_pools_participants, participant_per_pool - 1)
-
-          {fully_filled_pools, partially_filled_pools}
-
-        length(tournament.tournament_players) > 0 ->
-          fully_filled_pools =
-            Enum.chunk_every(tournament.tournament_players, participant_per_pool)
-
-          {fully_filled_pools, []}
-
-        true ->
-          {[], []}
-      end
-
-    total_index =
-      Enum.reduce(fully_filled_pools, 0, fn pool_participants, index ->
-        Enum.each(pool_participants, fn pool_participant ->
-          {:ok, _} =
-            Frobots.Events.update_tournament_players(pool_participant, %{
-              match_sub_type: index + 1
-            })
-        end)
-
-        index + 1
-      end)
-
-    _total_index =
-      Enum.reduce(partially_filled_pools, total_index, fn pool_participants, index ->
-        Enum.each(pool_participants, fn pool_participant ->
-          {:ok, _} =
-            Frobots.Events.update_tournament_players(pool_participant, %{
-              tournament_match_sub_type: index + 1
-            })
-        end)
-
-        index + 1
-      end)
-
-    {pool_index, match_index} =
-      Enum.reduce(fully_filled_pools, {0, 0}, fn pool_participants, {pool_index, match_index} ->
-        match_index =
-          for x <- pool_participants, y <- pool_participants, x.id != y.id do
-            if x.frobot_id < y.frobot_id do
-              {x.frobot_id, y.frobot_id}
-            else
-              {y.frobot_id, x.frobot_id}
-            end
-          end
-          |> Enum.uniq()
-          |> Enum.reduce(match_index, fn {f1, f2}, match_index ->
-            params =
-              create_match_params(
-                "pool",
-                pool_index + 1,
-                match_index + 1,
-                tournament,
-                admin_user.id,
-                f1,
-                f2
+      {fully_filled_pools, partially_filled_pools} =
+        cond do
+          number_of_partially_filled_pools > 0 and length(tournament.tournament_players) > 0 ->
+            [fully_filled_pools_participants, partially_filled_pools_participants] =
+              Enum.chunk_every(
+                tournament.tournament_players,
+                number_of_fully_filled_pools * participant_per_pool
               )
 
-            {:ok, _match} = Frobots.Events.create_match(params)
-            match_index + 1
+            fully_filled_pools =
+              Enum.chunk_every(fully_filled_pools_participants, participant_per_pool)
+
+            partially_filled_pools =
+              Enum.chunk_every(partially_filled_pools_participants, participant_per_pool - 1)
+
+            {fully_filled_pools, partially_filled_pools}
+
+          length(tournament.tournament_players) > 0 ->
+            fully_filled_pools =
+              Enum.chunk_every(tournament.tournament_players, participant_per_pool)
+
+            {fully_filled_pools, []}
+
+          true ->
+            {[], []}
+        end
+
+      total_index =
+        Enum.reduce(fully_filled_pools, 0, fn pool_participants, index ->
+          Enum.each(pool_participants, fn pool_participant ->
+            {:ok, _} =
+              Frobots.Events.update_tournament_players(pool_participant, %{
+                tournament_match_sub_type: index + 1
+              })
           end)
 
-        {pool_index + 1, match_index + 1}
-      end)
+          index + 1
+        end)
 
-    {_, match_index} =
-      Enum.reduce(partially_filled_pools, {pool_index, match_index}, fn pool_participants,
-                                                                        {pool_index, match_index} ->
-        match_index =
-          for x <- pool_participants, y <- pool_participants, x.id != y.id do
-            if x.frobot_id < y.frobot_id do
-              {x.frobot_id, y.frobot_id}
-            else
-              {y.frobot_id, x.frobot_id}
+      _total_index =
+        Enum.reduce(partially_filled_pools, total_index, fn pool_participants, index ->
+          Enum.each(pool_participants, fn pool_participant ->
+            {:ok, _} =
+              Frobots.Events.update_tournament_players(pool_participant, %{
+                tournament_match_sub_type: index + 1
+              })
+          end)
+
+          index + 1
+        end)
+
+      {pool_index, match_index} =
+        Enum.reduce(fully_filled_pools, {0, 0}, fn pool_participants, {pool_index, match_index} ->
+          match_index =
+            for x <- pool_participants, y <- pool_participants, x.id != y.id do
+              if x.frobot_id < y.frobot_id do
+                {x.frobot_id, y.frobot_id}
+              else
+                {y.frobot_id, x.frobot_id}
+              end
             end
-          end
-          |> Enum.uniq()
-          |> Enum.reduce(match_index, fn {f1, f2}, match_index ->
-            params =
-              create_match_params(
-                "pool",
-                pool_index + 1,
-                match_index + 1,
-                tournament,
-                admin_user.id,
-                f1,
-                f2
-              )
+            |> Enum.uniq()
+            |> Enum.reduce(match_index, fn {f1, f2}, match_index ->
+              params =
+                create_match_params(
+                  :pool,
+                  pool_index + 1,
+                  match_index + 1,
+                  tournament,
+                  admin_user.id,
+                  f1,
+                  f2
+                )
 
-            {:ok, _match} = Frobots.Events.create_match(params)
-            match_index + 1
-          end)
+              {:ok, _match} = Frobots.Events.create_match(params)
+              match_index + 1
+            end)
 
-        {pool_index + 1, match_index + 1}
-      end)
+          {pool_index + 1, match_index + 1}
+        end)
 
-    ## 3 mins for the match + 10 mins running time of match + 2 mins buffer
-    # start_after = 15 * 60 * 1000
-    # Process.send_after(self(), :knockout_matches, start_after)
+      {_, match_index} =
+        Enum.reduce(partially_filled_pools, {pool_index, match_index}, fn pool_participants,
+                                                                          {pool_index,
+                                                                           match_index} ->
+          match_index =
+            for x <- pool_participants, y <- pool_participants, x.id != y.id do
+              if x.frobot_id < y.frobot_id do
+                {x.frobot_id, y.frobot_id}
+              else
+                {y.frobot_id, x.frobot_id}
+              end
+            end
+            |> Enum.uniq()
+            |> Enum.reduce(match_index, fn {f1, f2}, match_index ->
+              params =
+                create_match_params(
+                  :pool,
+                  pool_index + 1,
+                  match_index + 1,
+                  tournament,
+                  admin_user.id,
+                  f1,
+                  f2
+                )
 
-    {:noreply,
-     state |> Map.put(:match_index, match_index) |> Map.put(:tournament_id, tournament.id)}
+              {:ok, _match} = Frobots.Events.create_match(params)
+              match_index + 1
+            end)
+
+          {pool_index + 1, match_index + 1}
+        end)
+
+      {:noreply,
+       state |> Map.put(:match_index, match_index) |> Map.put(:tournament_id, tournament.id)}
+    end
   end
 
   @impl true
   def handle_info(
-        :knockout_matches,
+        {:knockout_matches, event},
         %{tournament_id: tournament_id, admin_user: admin_user, match_index: match_index} = state
       ) do
     Logger.info("Create Knockout Matches for Tournament #{tournament_id}")
@@ -211,88 +214,96 @@ defmodule Frobots.Tournaments do
     {:ok, tournament} =
       Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
 
-    participants = length(tournament.tournament_players)
+    tournament_players =
+      Enum.filter(tournament.tournament_players, fn tp -> is_nil(tp.order) or tp.order > 0 end)
 
-    match_index =
-      cond do
-        participants > 16 ->
-          tournament_matches(:knockout, tournament, admin_user, match_index)
+    total_participants = length(tournament_players)
 
-        # start_after = 2 * 60 * 60 * 1000
-        # Process.send_after(self(), :qualifier_matches, start_after)
-
-        participants > 8 ->
-          tournament_matches(:qualifier, tournament, admin_user, match_index)
-
-        # start_after = 2 * 60 * 60 * 1000
-        # Process.send_after(self(), :semifinal_matches, start_after)
-
-        participants > 4 ->
-          tournament_matches(:semifinal, tournament, admin_user, match_index)
-
-        # start_after = 2 * 60 * 60 * 1000
-        # Process.send_after(self(), :final_match, start_after)
-
-        participants > 2 ->
-          tournament_matches(:final, tournament, admin_user, match_index)
+    participants =
+      if total_participants > 1 do
+        trunc(:math.pow(2, trunc(:math.log2(total_participants))))
+      else
+        0
       end
 
-    {:noreply, state |> Map.put(:match_index, match_index)}
-  end
+    cond do
+      participants > 1 and Map.get(state, :event, :notfound) != event ->
+        Logger.info("Participants: #{participants}")
+        {old_tournament_match_type, old_tournament_match_sub_type} = get_match_type(tournament_id)
 
-  @impl true
-  def handle_info(
-        :qualifier_matches,
-        %{tournament_id: tournament_id, admin_user: admin_user, match_index: match_index} = state
-      ) do
-    Logger.info("Create Qualifier Matches for Tournament #{tournament_id}")
+        {tournament_match_type, tournament_match_sub_type} =
+          create_match_type(
+            old_tournament_match_type,
+            old_tournament_match_sub_type,
+            participants
+          )
 
-    # start_after = 2 * 60 * 60 * 1000
-    # Process.send_after(self(), :semifinal_matches, start_after)
+        tp =
+          Frobots.Events.list_tournament_players_by(
+            [
+              tournament_id: tournament.id,
+              order: 1,
+              tournament_match_type: old_tournament_match_type
+            ],
+            [desc: :pool_score, desc: :score, asc: :inserted_at],
+            participants
+          )
 
-    {:ok, tournament} =
-      Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
+        Frobots.Repo.update_all(
+          from(tp in Frobots.Events.TournamentPlayers, where: tp.tournament_id == 1),
+          set: [order: 0]
+        )
 
-    match_index = tournament_matches(:qualifier, tournament, admin_user, match_index)
+        Enum.each(tp, fn p ->
+          Frobots.Events.update_tournament_players(p, %{
+            tournament_match_type: tournament_match_type,
+            tournament_match_sub_type: tournament_match_sub_type,
+            order: 1
+          })
+        end)
 
-    {:noreply, state |> Map.put(:match_index, match_index)}
-  end
+        frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
 
-  @impl true
-  def handle_info(
-        :semifinal_matches,
-        %{tournament_id: tournament_id, admin_user: admin_user, match_index: match_index} = state
-      ) do
-    Logger.info("Create Semi Final Matches for Tournament #{tournament_id}")
+        match_index =
+          pairing(frobots_ids)
+          |> Enum.reduce(match_index, fn frobots, match_index ->
+            {f1, f2} =
+              cond do
+                is_list(frobots) ->
+                  [f1, f2] = frobots
+                  {f1, f2}
 
-    # 6 * 60 * 60 * 1000
-    # start_after = 2 * 60 * 60 * 1000
-    # Process.send_after(self(), :final_match, start_after)
+                is_tuple(frobots) ->
+                  frobots
 
-    {:ok, tournament} =
-      Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
+                true ->
+                  {nil, nil}
+              end
 
-    match_index = tournament_matches(:semifinal, tournament, admin_user, match_index)
+            if is_nil(f1) or is_nil(f2) do
+              match_index
+            else
+              params =
+                create_match_params(
+                  tournament_match_type,
+                  tournament_match_sub_type,
+                  match_index,
+                  tournament,
+                  admin_user.id,
+                  f1,
+                  f2
+                )
 
-    {:noreply, state |> Map.put(:match_index, match_index)}
-  end
+              {:ok, _match} = Frobots.Events.create_match(params)
+              match_index + 1
+            end
+          end)
 
-  @impl true
-  def handle_info(
-        :final_match,
-        %{tournament_id: tournament_id, admin_user: admin_user, match_index: match_index} = state
-      ) do
-    Logger.info("Create Final Match for Tournament #{tournament_id}")
+        {:noreply, state |> Map.put(:match_index, match_index) |> Map.put(:event, event)}
 
-    # start_after = 30 * 60 * 1000
-    # Process.send_after(self(), :update_tournament, start_after)
-
-    {:ok, tournament} =
-      Frobots.Events.get_tournament_by([id: tournament_id], [:tournament_players])
-
-    match_index = tournament_matches(:semifinal, tournament, admin_user, match_index)
-
-    {:noreply, state |> Map.put(:match_index, match_index)}
+      true ->
+        {:noreply, state}
+    end
   end
 
   @impl true
@@ -307,170 +318,14 @@ defmodule Frobots.Tournaments do
       ended_at: System.os_time(:second)
     })
 
-    {:noreply, state}
+    # Process.send_after(self(), :stop, 1000)
+    {:stop, :normal, state}
   end
 
-  defp tournament_matches(:knockout, tournament, admin_user, match_index) do
-    tp =
-      Frobots.Events.list_tournament_players_by(
-        [tournament_id: tournament.id],
-        [desc: :score, asc: :inserted_at],
-        16
-      )
-
-    Enum.each(tp, fn p ->
-      Frobots.Events.update_tournament_players(p, %{tournament_match_type: :knockout})
-    end)
-
-    frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
-
-    pairing(frobots_ids)
-    |> Enum.reduce(match_index, fn frobots, match_index ->
-      {f1, f2} =
-        cond do
-          is_list(frobots) ->
-            [f1, f2] = frobots
-            {f1, f2}
-
-          is_tuple(frobots) ->
-            frobots
-
-          true ->
-            {nil, nil}
-        end
-
-      if is_nil(f1) or is_nil(f2) do
-        match_index
-      else
-        params =
-          create_match_params("knockout", 0, match_index, tournament, admin_user.id, f1, f2)
-
-        {:ok, _match} = Frobots.Events.create_match(params)
-        match_index + 1
-      end
-    end)
-  end
-
-  defp tournament_matches(:qualifier, tournament, admin_user, match_index) do
-    tp =
-      Frobots.Events.list_tournament_players_by(
-        [tournament_id: tournament.id],
-        [desc: :score, asc: :inserted_at],
-        8
-      )
-
-    Enum.each(tp, fn p ->
-      Frobots.Events.update_tournament_players(p, %{tournament_match_type: :qualifier})
-    end)
-
-    frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
-
-    pairing(frobots_ids)
-    |> Enum.reduce(match_index, fn frobots, match_index ->
-      {f1, f2} =
-        cond do
-          is_list(frobots) ->
-            [f1, f2] = frobots
-            {f1, f2}
-
-          is_tuple(frobots) ->
-            frobots
-
-          true ->
-            {nil, nil}
-        end
-
-      if is_nil(f1) or is_nil(f2) do
-        match_index
-      else
-        params =
-          create_match_params("qualifier", 0, match_index, tournament, admin_user.id, f1, f2)
-
-        {:ok, _match} = Frobots.Events.create_match(params)
-        match_index + 1
-      end
-    end)
-  end
-
-  defp tournament_matches(:semifinal, tournament, admin_user, match_index) do
-    tp =
-      Frobots.Events.list_tournament_players_by(
-        [tournament_id: tournament.id],
-        [desc: :score, asc: :inserted_at],
-        4
-      )
-
-    Enum.each(tp, fn p ->
-      Frobots.Events.update_tournament_players(p, %{tournament_match_type: :semifinal})
-    end)
-
-    frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
-
-    pairing(frobots_ids)
-    |> Enum.reduce(match_index, fn frobots, match_index ->
-      {f1, f2} =
-        cond do
-          is_list(frobots) ->
-            [f1, f2] = frobots
-            {f1, f2}
-
-          is_tuple(frobots) ->
-            frobots
-
-          true ->
-            {nil, nil}
-        end
-
-      if is_nil(f1) or is_nil(f2) do
-        match_index
-      else
-        params =
-          create_match_params("semifinal", 0, match_index, tournament, admin_user.id, f1, f2)
-
-        {:ok, _match} = Frobots.Events.create_match(params)
-        match_index + 1
-      end
-    end)
-  end
-
-  defp tournament_matches(:final, tournament, admin_user, match_index) do
-    tp =
-      Frobots.Events.list_tournament_players_by(
-        [tournament_id: tournament.id],
-        [desc: :score, asc: :inserted_at],
-        2
-      )
-
-    Enum.each(tp, fn p ->
-      Frobots.Events.update_tournament_players(p, %{tournament_match_type: :final})
-    end)
-
-    frobots_ids = Enum.map(tp, fn tp -> tp.frobot_id end)
-
-    pairing(frobots_ids)
-    |> Enum.reduce(match_index, fn frobots, match_index ->
-      {f1, f2} =
-        cond do
-          is_list(frobots) ->
-            [f1, f2] = frobots
-            {f1, f2}
-
-          is_tuple(frobots) ->
-            frobots
-
-          true ->
-            {nil, nil}
-        end
-
-      if is_nil(f1) or is_nil(f2) do
-        match_index
-      else
-        params = create_match_params("final", 0, match_index, tournament, admin_user.id, f1, f2)
-
-        {:ok, _match} = Frobots.Events.create_match(params)
-        match_index + 1
-      end
-    end)
+  @impl true
+  def terminate(reason, _state) do
+    Logger.info("terminating....")
+    reason
   end
 
   # Each FROBOT plays each other in scheduled matches in each pool.
@@ -507,18 +362,17 @@ defmodule Frobots.Tournaments do
       "user_id" => user_id,
       "title" => "Match of #{tournament.name}",
       "description" => "Match of #{tournament.description}",
-      ## Start After 3 mins
       "match_time" =>
         DateTime.utc_now()
-        |> DateTime.add(tournament_match_interval, :second)
+        |> DateTime.add(tournament_match_interval + match_id * 10, :second)
         |> DateTime.to_string(),
       "type" => "real",
-      "tournament_match_type" => match_type,
+      "tournament_match_type" => match_type |> to_string(),
       "tournament_match_sub_type" => match_sub_type,
       "tournament_match_id" => match_id,
       "tournament_id" => tournament.id,
-      # 15 mins
-      "timer" => 900,
+      # 60 mins
+      "timer" => 60 * 60,
       "arena_id" => tournament.arena_id,
       "min_player_frobot" => 2,
       "max_player_frobot" => 2,
@@ -559,13 +413,19 @@ defmodule Frobots.Tournaments do
   end
 
   defp get_match_type(tournament_id) do
-    Frobots.Api.list_match_by([tournament: tournament_id], [], desc: :tournament_match_id)
+    Frobots.Api.list_match_by([tournament_id: tournament_id], [], desc: :tournament_match_id)
     |> List.first()
     |> case do
       nil -> nil
-      match -> match.tournament_match_type
+      match -> {match.tournament_match_type, match.tournament_match_sub_type}
     end
   end
+
+  defp create_match_type(_, _, 2), do: {:final, 1}
+  defp create_match_type(_, _, 4), do: {:semifinal, 1}
+  defp create_match_type(_, _, 8), do: {:qualifier, 1}
+  defp create_match_type(:pool, _, _), do: {:knockout, 1}
+  defp create_match_type(:knockout, count, _), do: {:knockout, count + 1}
 
   defp get_match_index(tournament_id) do
     case Frobots.Api.list_match_by([tournament_id: tournament_id], [], desc: :tournament_match_id)
@@ -578,31 +438,23 @@ defmodule Frobots.Tournaments do
     end
   end
 
-  defp maybe_start_next_round(tournament_id) do
+  def maybe_start_next_round(tournament_id) do
     ## In 30 seconds
     start_after = 30 * 1000
+    self = String.to_atom("tournament#{tournament_id}")
 
     if Frobots.Api.list_match_by(tournament_id: tournament_id)
-       |> Enum.all?(fn m -> m.status == :done end) do
+       |> Enum.all?(fn m -> m.status != :pending and m.status != :running end) do
       ## Place Next Matches
       case get_match_type(tournament_id) do
         nil ->
-          Process.send_after(self(), :pool_matches, start_after)
+          Process.send_after(self, :pool_matches, start_after)
 
-        :pool ->
-          Process.send_after(self(), :knockout_matches, start_after)
+        {:final, _} ->
+          Process.send_after(self, :update_tournament, start_after)
 
-        :knockout ->
-          Process.send_after(self(), :qualifier_matches, start_after)
-
-        :qualifier ->
-          Process.send_after(self(), :semifinal_matches, start_after)
-
-        :semifinal ->
-          Process.send_after(self(), :final_match, start_after)
-
-        :final ->
-          :ok
+        any ->
+          Process.send_after(self, {:knockout_matches, any}, start_after)
       end
     end
   end

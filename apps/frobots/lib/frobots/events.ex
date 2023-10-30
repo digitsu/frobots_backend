@@ -584,7 +584,8 @@ defmodule Frobots.Events do
            tournament_id: tournament_id,
            score: 0,
            pool_score: 0,
-           tournament_match_type: :pool
+           tournament_match_type: :pool,
+           order: 1
          },
          {:ok, tp} <- create_tournament_players(attrs) do
       {:ok, tp}
@@ -615,12 +616,12 @@ defmodule Frobots.Events do
     with admin_user <- Accounts.get_user_by(name: Accounts.admin_user_name()),
          {:admin_check, true} <- {:admin_check, admin_user.id == user_id},
          {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
-         {:is_open, true} <- {:is_open, is_open?(tournament)},
+         #  {:is_open, true} <- {:is_open, is_open?(tournament)},
          {:ok, tournament} <- Frobots.Events.update_tournament(tournament, %{status: :cancelled}) do
       {:ok, tournament}
     else
       {:admin_check, false} -> {:error, "tournament can be cancelled by admin"}
-      {:is_open, false} -> {:error, "tournament is in progress"}
+      # {:is_open, false} -> {:error, "tournament is in progress"}
       error -> error
     end
   end

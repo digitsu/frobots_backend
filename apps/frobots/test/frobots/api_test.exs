@@ -147,6 +147,7 @@ defmodule Frobots.ApiTest do
       assert is_integer(tournament.id)
       assert tournament.name == "tournament_aug"
 
+      Process.sleep(2_000)
       ## Tournament Process is started
       assert "tournament#{tournament.id}"
              |> String.to_atom()
