@@ -19,17 +19,17 @@ defmodule Frobots.Events.TournamentPlayers do
     field :tournament_match_type, Ecto.Enum,
       values: [:pool, :knockout, :qualifier, :semifinal, :eliminator, :final]
 
-    field :tournament_match_sub_type, :string
+    field :tournament_match_sub_type, :integer
     field :order, :integer
     timestamps()
   end
 
-  @fields [:frobot_id, :tournament_id, :score, :tournament_match_type]
+  @fields [:frobot_id, :tournament_id, :score, :tournament_match_type, :order]
 
   @doc false
   def changeset(tournament_player, attrs) do
     tournament_player
-    |> cast(attrs, @fields ++ [:order, :pool_score, :tournament_match_sub_type])
+    |> cast(attrs, @fields ++ [:pool_score, :tournament_match_sub_type])
     |> validate_required(@fields)
   end
 

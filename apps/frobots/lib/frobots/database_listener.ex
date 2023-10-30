@@ -4,7 +4,8 @@ defmodule Frobots.DatabaseListener do
   """
   use GenServer
   alias Frobots.Leaderboard
-  alias Frobots.{Api, Events}
+  alias Frobots.Events
+  alias Frobots.Tournaments
   require Logger
   @channel "match_status_updated"
 
@@ -37,7 +38,7 @@ defmodule Frobots.DatabaseListener do
         frobots = match.frobots
         winners = match.battlelog.winners
         update_score(match.tournament_match_type, frobots, match.tournament_id, winners)
-        maybe_start_next_round(match)
+        Tournaments.maybe_start_next_round(match.tournament_id)
 
       true ->
         :ok
@@ -46,24 +47,40 @@ defmodule Frobots.DatabaseListener do
     {:noreply, state}
   end
 
-  defp update_score(tournament_match_type, frobot_ids, tournament_id, winners) do
-    Enum.each(frobot_ids, fn frobot_id ->
-      score = get_score(frobot_id, winners)
+  defp update_score(tournament_match_type, [f1, f2], tournament_id, winners) do
+    tp1 =
+      Frobots.Events.get_tournament_players_by(
+        tournament_id: tournament_id,
+        frobot_id: f1
+      )
 
-      tp =
-        Frobots.Events.get_tournament_players_by(
-          tournament_id: tournament_id,
-          frobot_id: frobot_id
-        )
+    tp2 =
+      Frobots.Events.get_tournament_players_by(
+        tournament_id: tournament_id,
+        frobot_id: f2
+      )
 
-      if tournament_match_type == :pool do
-        pool_score = if is_nil(tp.pool_score), do: 0, else: tp.pool_score
-        Frobots.Events.update_tournament_players(tp, %{pool_score: pool_score + score})
-      else
-        old_score = if is_nil(tp.score), do: 0, else: tp.score
-        Frobots.Events.update_tournament_players(tp, %{score: old_score + score})
-      end
-    end)
+    score1 = get_score(f1, winners)
+    score2 = get_score(f2, winners)
+
+    # local winner
+    winner = get_winner(tp1, tp2, winners)
+
+    if tournament_match_type == :pool do
+      pool_score = if is_nil(tp1.pool_score), do: 0, else: tp1.pool_score
+      Frobots.Events.update_tournament_players(tp1, %{pool_score: pool_score + score1})
+
+      pool_score = if is_nil(tp2.pool_score), do: 0, else: tp2.pool_score
+      Frobots.Events.update_tournament_players(tp2, %{pool_score: pool_score + score2})
+    else
+      order1 = if winner == tp1, do: 1, else: 0
+      old_score1 = if is_nil(tp1.score), do: 0, else: tp1.score
+      Frobots.Events.update_tournament_players(tp1, %{score: old_score1 + score1, order: order1})
+
+      order2 = if winner == tp2, do: 1, else: 0
+      old_score2 = if is_nil(tp2.score), do: 0, else: tp2.score
+      Frobots.Events.update_tournament_players(tp2, %{score: old_score2 + score2, order: order2})
+    end
   end
 
   defp get_score(frobot_id, winners) do
@@ -77,39 +94,12 @@ defmodule Frobots.DatabaseListener do
     end
   end
 
-  defp maybe_start_next_round(match) do
-    start_after = 30 * 1000
-    tournament_id = match.tournament_id
-    self = String.to_atom("tournament#{tournament_id}")
-
-    if not (Api.list_match_by(tournament_id: match.tournament_id)
-            |> Enum.any?(fn m -> m.status == :pending end)) do
-      ## Place Next Matches
-      case get_match_type(tournament_id) do
-        :pool ->
-          Process.send_after(self, :knockout_matches, start_after)
-
-        :knockout ->
-          Process.send_after(self, :qualifier_matches, start_after)
-
-        :qualifier ->
-          Process.send_after(self, :semifinal_matches, start_after)
-
-        :semifinal ->
-          Process.send_after(self, :final_matches, start_after)
-
-        :final ->
-          :ok
-      end
-    end
-  end
-
-  defp get_match_type(tournament_id) do
-    Frobots.Api.list_match_by([tournament_id: tournament_id], [], desc: :tournament_match_id)
-    |> List.first()
-    |> case do
-      nil -> nil
-      match -> match.tournament_match_type
+  defp get_winner(tp1, tp2, winners) do
+    cond do
+      length(winners) == 1 and tp1.frobot_id in winners -> tp1
+      length(winners) == 1 and tp2.frobot_id in winners -> tp2
+      tp2.score > tp1.score -> tp2
+      true -> tp1
     end
   end
 end
