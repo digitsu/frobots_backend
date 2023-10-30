@@ -64,7 +64,6 @@ RUN yes | npx update-browserslist-db@latest
 WORKDIR /app/apps/frobots_web
 RUN yarn config set https-proxy $HTTPS_PROXY
 RUN yarn config set http-proxy $HTTP_PROXY
-RUN yes | npx update-browserslist-db@latest
 RUN mix assets.deploy
 
 
