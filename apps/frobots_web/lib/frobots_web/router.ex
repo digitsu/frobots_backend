@@ -152,7 +152,7 @@ defmodule FrobotsWeb.Router do
     live "/garage/frobot/edit", FrobotDetailsEditLive.Index, :index
 
     # tournaments
-    live "/tournaments", TournamentsLive.Index, :index
+    live "/tournaments", TournamentListLive.Index, :index
     live "/tournaments/create", TournamentCreateLive.Index, :index
     live "/tournaments/:tournament_id", TournamentDetailsLive.Index, :index
 
