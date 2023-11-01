@@ -201,3 +201,12 @@ export const handleTourCallback = (data, setShowTutorial) => {
     setShowTutorial(false)
   }
 }
+
+export const formatEpochDateTime = (starts_at) => {
+  const scheduleDate = moment.unix(starts_at)
+  const day = scheduleDate.format('D')
+  const month = scheduleDate.format('MMMM')
+  const year = scheduleDate.format('y')
+  const time = scheduleDate.format('hh:mm A')
+  return { day, month, year, time }
+}

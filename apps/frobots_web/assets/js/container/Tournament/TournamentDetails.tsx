@@ -16,7 +16,7 @@ export default ({
   tournament_pools,
   tournament_knockouts,
 }) => {
-  const tabs = ['Matches', 'Group Stage', 'Knockout', 'Players']
+  const tabs = ['Matches', 'Group Stage', 'Finals', 'Players']
   const [tabIndex, setTabIndex] = React.useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)

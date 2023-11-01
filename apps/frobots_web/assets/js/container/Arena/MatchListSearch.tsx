@@ -101,22 +101,6 @@ export const MatchListSearch: FC<MatchListSearchProps> = (props) => {
               Create Match
             </Button>
           </a>
-          <a href={'/tournaments/create'}>
-            <Button
-              sx={{
-                textTransform: 'capitalize',
-                backgroundColor: 'transparent',
-                color: '#00AB55',
-                borderColor: '#00AB55',
-                '&:hover': {
-                  borderColor: '#13D273',
-                },
-              }}
-              variant="outlined"
-            >
-              Create Tournament
-            </Button>
-          </a>
         </Box>
       </Box>
 
