@@ -588,7 +588,8 @@ defmodule Frobots.Events do
            order: 1
          },
          {:ok, tp} <- create_tournament_players(attrs) do
-      {:ok, tp}
+      get_tournament_by([id: tournament_id], [:tournament_players])
+      |> broadcast_change([:tournament, :join])
     else
       {:is_open, false} -> {:error, "tournament is closed"}
       {:is_frobot_available, false} -> {:error, "frobot is already part of existing match"}
@@ -603,7 +604,8 @@ defmodule Frobots.Events do
          tournament_player when not is_nil(tournament_player) <-
            Enum.find(tournament.tournament_players, fn tp -> tp.frobot_id == frobot_id end),
          {:ok, tp} <- remove_tournament_players(tournament_player) do
-      {:ok, tp}
+      get_tournament_by([id: tournament_id], [:tournament_players])
+      |> broadcast_change([:tournament, :unjoin])
     else
       {:is_open, false} -> {:error, "tournament is closed"}
       {:is_frobot_available, false} -> {:error, "frobot is already part of existing match"}
