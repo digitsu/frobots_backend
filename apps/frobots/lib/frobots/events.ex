@@ -587,7 +587,7 @@ defmodule Frobots.Events do
            tournament_match_type: :pool,
            order: 1
          },
-         {:ok, tp} <- create_tournament_players(attrs) do
+         {:ok, _tp} <- create_tournament_players(attrs) do
       get_tournament_by([id: tournament_id], [:tournament_players])
       |> broadcast_change([:tournament, :join])
     else
@@ -603,7 +603,7 @@ defmodule Frobots.Events do
          {:is_open, true} <- {:is_open, is_open?(tournament)},
          tournament_player when not is_nil(tournament_player) <-
            Enum.find(tournament.tournament_players, fn tp -> tp.frobot_id == frobot_id end),
-         {:ok, tp} <- remove_tournament_players(tournament_player) do
+         {:ok, _tp} <- remove_tournament_players(tournament_player) do
       get_tournament_by([id: tournament_id], [:tournament_players])
       |> broadcast_change([:tournament, :unjoin])
     else
