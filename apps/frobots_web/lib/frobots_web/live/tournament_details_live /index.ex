@@ -3,8 +3,11 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
   alias Frobots.Api
   alias Frobots.Accounts
   alias Frobots.Assets
+  alias Frobots.Events
 
   def mount(params, %{"user_id" => id}, socket) do
+    if connected?(socket), do: Events.subscribe()
+
     current_user = Accounts.get_user!(id)
     tournament_id = params["tournament_id"]
     tournament_details = Api.get_tournament_details_by_id(tournament_id)
@@ -111,6 +114,14 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
       {:error, errors} ->
         {:noreply, socket |> put_flash(:error, errors)}
     end
+  end
+
+  def handle_info({Events, [:tournament, :join], _updated_tournament}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_info({Events, [:tournament, :unjoin], _updated_tournament}, socket) do
+    {:noreply, socket}
   end
 
   def extract_tournament_details(tournament) do

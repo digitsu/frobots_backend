@@ -27,13 +27,20 @@ defmodule FrobotsWeb.TournamentCreateLive.Index do
   end
 
   def handle_event("react.fetch_create_tournament_details", _params, socket) do
-    arenas = Api.list_arena()
+    if socket.assigns.current_user.admin do
+      arenas = Api.list_arena()
 
-    {:noreply,
-     push_event(socket, "react.return_create_tournament_details", %{
-       "s3_base_url" => socket.assigns.s3_base_url,
-       "arenas" => arenas
-     })}
+      {:noreply,
+       push_event(socket, "react.return_create_tournament_details", %{
+         "s3_base_url" => socket.assigns.s3_base_url,
+         "arenas" => arenas
+       })}
+    else
+      {:noreply,
+       socket
+       |> put_flash(:info, "Only Admin can create tournament")
+       |> redirect(to: "/tournaments")}
+    end
   end
 
   @impl Phoenix.LiveView
