@@ -3,6 +3,7 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
   alias Frobots.Api
   alias Frobots.Accounts
   alias Frobots.Assets
+  alias Frobots.Events
 
   def mount(params, %{"user_id" => id}, socket) do
     if connected?(socket), do: Events.subscribe()
@@ -115,12 +116,10 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
     end
   end
 
-  @impl Phoenix.LiveView
   def handle_info({Events, [:tournament, :join], _updated_tournament}, socket) do
     {:noreply, socket}
   end
 
-  @impl Phoenix.LiveView
   def handle_info({Events, [:tournament, :unjoin], _updated_tournament}, socket) do
     {:noreply, socket}
   end
