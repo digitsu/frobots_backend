@@ -21,7 +21,8 @@ defmodule FrobotsWeb.TournamentListLive.Index do
      |> assign(
        :current_user_ranking_details,
        Events.get_current_user_ranking_details(current_user)
-     )}
+     )
+     |> assign(:current_user, current_user)}
   end
 
   # add additional handle param events as needed to handle button clicks etc
@@ -37,7 +38,8 @@ defmodule FrobotsWeb.TournamentListLive.Index do
      push_event(socket, "react.return_tournaments_list", %{
        "tournaments" => socket.assigns.tournaments,
        "s3_base_url" => socket.assigns.s3_base_url,
-       "arenas" => socket.assigns.arenas
+       "arenas" => socket.assigns.arenas,
+       "isAdmin" => socket.assigns.current_user.admin
      })}
   end
 
