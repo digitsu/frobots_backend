@@ -12,6 +12,7 @@ export default ({
   const [showUnjoinModal, setShowUnjoinModal] = useState(false)
   const [current_frobot_id, setCurrentFrobotId] = useState(null)
   const showUnjoinModalHandler = () => setShowUnjoinModal(true)
+  const hideUnjoinModalHandler = () => setShowUnjoinModal(false)
   return (
     <>
       <Grid container spacing={2}>
@@ -118,12 +119,13 @@ export default ({
           'Are you sure you want to remove this frobot from the tournament?'
         }
         label={'Warning'}
-        successAction={() =>
+        successAction={() => {
           unJoinTournament({
             tournament_id,
             frobot_id: current_frobot_id,
           })
-        }
+          hideUnjoinModalHandler()
+        }}
         cancelAction={() => setShowUnjoinModal(false)}
       />
     </>

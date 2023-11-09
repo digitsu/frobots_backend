@@ -1,5 +1,7 @@
 import { Box, Container, Tab, Tabs, Typography } from '@mui/material'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { tournamentDetailsActions } from '../../redux/slices/tournamentDetails'
 import TournamentBanner from './TournamentBanner'
 import TournamentBrackets from './TournamentBrackets'
 import TournamentGroupMatches from './TournamentGroupMatches'
@@ -16,6 +18,8 @@ export default ({
   tournament_pools,
   tournament_knockouts,
 }) => {
+  const dispatch = useDispatch()
+  const { tournamentPlayers } = useSelector((store) => store.tournamentDetails)
   const tabs = ['Matches', 'Group Stage', 'Finals', 'Players']
   const [tabIndex, setTabIndex] = React.useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -28,6 +32,33 @@ export default ({
       'aria-controls': `simple-tabpanel-${index}`,
     }
   }
+
+  const fetchUpdatedTournamentPlayers = useCallback((e) => {
+    dispatch(
+      tournamentDetailsActions.setTournamentPlayers(e.detail.tournament_players)
+    )
+  }, [])
+  useEffect(() => {
+    window.addEventListener(
+      `phx:tournamentplayers`,
+      fetchUpdatedTournamentPlayers
+    )
+    return () => {
+      window.removeEventListener(
+        `phx:tournamentplayers`,
+        fetchUpdatedTournamentPlayers
+      )
+    }
+  }, [])
+
+  useEffect(() => {
+    dispatch(
+      tournamentDetailsActions.setTournamentPlayers(
+        tournament_details.tournament_players
+      )
+    )
+  }, [])
+
   return (
     <Box width={'90%'} m={'auto'}>
       <Container sx={{ maxWidth: 1440, p: '0 !important', m: 'auto' }}>
@@ -61,7 +92,7 @@ export default ({
             {tabIndex === 3 && (
               <TournamentPlayers
                 tournament_id={tournament_details.id}
-                tournament_players={tournament_details.tournament_players}
+                tournament_players={tournamentPlayers}
                 s3_base_url={s3_base_url}
                 user_frobots={all_user_frobots}
                 unJoinTournament={unJoinTournament}
