@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
-import moment from 'moment'
 
 const initialState = {
   currentFrobot: null,
+  tournamentPlayers: [],
 }
 
 const tournamentDetails = createSlice({
@@ -11,6 +11,9 @@ const tournamentDetails = createSlice({
   reducers: {
     setCurrentFrobot: (state, action) => {
       state.currentFrobot = action.payload
+    },
+    setTournamentPlayers: (state, action) => {
+      state.tournamentPlayers = action.payload
     },
   },
 })

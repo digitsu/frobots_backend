@@ -17,7 +17,8 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
      socket
      |> assign(:current_user, current_user)
      |> assign(:s3_base_url, s3_base_url)
-     |> assign(:tournament_details, tournament_details)}
+     |> assign(:tournament_details, tournament_details)
+     |> assign(:tournament_id, tournament_id)}
   end
 
   def handle_event("react.fetch_tournament_details", _params, socket) do
@@ -117,11 +118,25 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
   end
 
   def handle_info({Events, [:tournament, :join], _updated_tournament}, socket) do
-    {:noreply, socket}
+    case Api.get_tournament_details_by_id(socket.assigns.tournament_id) do
+      {:ok, tournament} ->
+        {:noreply,
+         socket
+         |> push_event(:tournamentplayers, %{
+           tournament_players: extract_tournamentplayer_details(tournament.tournament_players)
+         })}
+    end
   end
 
   def handle_info({Events, [:tournament, :unjoin], _updated_tournament}, socket) do
-    {:noreply, socket}
+    case Api.get_tournament_details_by_id(socket.assigns.tournament_id) do
+      {:ok, tournament} ->
+        {:noreply,
+         socket
+         |> push_event(:tournamentplayers, %{
+           tournament_players: extract_tournamentplayer_details(tournament.tournament_players)
+         })}
+    end
   end
 
   def extract_tournament_details(tournament) do
