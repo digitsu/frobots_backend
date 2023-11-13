@@ -755,6 +755,7 @@ export default () => {
       this.setHelpUrl('')
       this.elseifCount_ = 0
       this.elseCount_ = 0
+      this.suppressPrefixSuffix = true
       this.setMutator(
         new Blockly.icons.MutatorIcon(
           ['transition_elseif', 'transition_else'],
@@ -763,6 +764,10 @@ export default () => {
       )
     },
 
+    /**
+     * Create XML to represent the number of else-if and else inputs.
+     * Backwards compatible serialization implementation.
+     */
     mutationToDom: function () {
       if (!this.elseifCount_ && !this.elseCount_) {
         return null
@@ -770,7 +775,7 @@ export default () => {
 
       var container = Blockly.utils.xml.createElement('mutation')
       if (this.elseifCount_) {
-        container.setAttribute('elseif', this.elseifCount_)
+        container.setAttribute('elseif', String(this.elseifCount_))
       }
       if (this.elseCount_) {
         container.setAttribute('else', '1')
@@ -779,45 +784,83 @@ export default () => {
       return container
     },
 
-    domToMutation: function (xmlElement: {
-      getAttribute: (arg0: string) => string
-    }) {
-      this.elseifCount_ = parseInt(xmlElement.getAttribute('elseif'), 10) || 0
-      this.elseCount_ = parseInt(xmlElement.getAttribute('else'), 10) || 0
+    /**
+     * Parse XML to restore the else-if and else inputs.
+     * Backwards compatible serialization implementation.
+     */
+    domToMutation: function (xmlElement: any) {
+      this.prevElseifCount_ = this.elseifCount_
+      this.elseifCount_ = parseInt(xmlElement.getAttribute('elseif')!, 10) || 0
+      this.elseCount_ = parseInt(xmlElement.getAttribute('else')!, 10) || 0
       this.rebuildShape_()
     },
 
-    decompose: function (workspace: any) {
-      var containerBlock = workspace.newBlock('transition_if_mutator')
-      containerBlock.initSvg()
-      var connection = containerBlock.nextConnection
-      for (var i = 1; i <= this.elseifCount_; i++) {
-        var elseifBlock = workspace.newBlock('transition_elseif')
-        elseifBlock.initSvg()
-        connection.connect(elseifBlock.previousConnection)
-        connection = elseifBlock.nextConnection
+    /**
+     * Returns the state of this block as a JSON serializable object.
+     *
+     * @returns The state of this block, ie the else if count and else state.
+     */
+    saveExtraState: function (this: any): any | null {
+      if (!this.elseifCount_ && !this.elseCount_) {
+        return null
+      }
+      const state = Object.create(null)
+      if (this.elseifCount_) {
+        state['elseIfCount'] = this.elseifCount_
       }
       if (this.elseCount_) {
-        var elseBlock = workspace.newBlock('transition_else')
+        state['hasElse'] = true
+      }
+      return state
+    },
+
+    /** Applies the given state to this block. */
+    loadExtraState: function (this: any, state: any) {
+      this.elseifCount_ = state['elseIfCount'] || 0
+      this.elseCount_ = state['hasElse'] ? 1 : 0
+      this.updateShape_()
+    },
+
+    /** Populate the mutator's dialog with this block's components. */
+    decompose: function (this: any, workspace: any): any {
+      const containerBlock = workspace.newBlock('transition_if_mutator')
+      containerBlock.initSvg()
+      let connection = containerBlock.nextConnection!
+      for (let i = 1; i <= this.elseifCount_; i++) {
+        const elseifBlock = workspace.newBlock('transition_elseif')
+        elseifBlock.initSvg()
+        connection.connect(elseifBlock.previousConnection!)
+        connection = elseifBlock.nextConnection!
+      }
+      if (this.elseCount_) {
+        const elseBlock = workspace.newBlock('transition_else')
         elseBlock.initSvg()
-        connection.connect(elseBlock.previousConnection)
+        connection.connect(elseBlock.previousConnection!)
       }
       return containerBlock
     },
 
-    compose: function (containerBlock: any) {
-      var clauseBlock = containerBlock.nextConnection.targetBlock()
+    /** Reconfigure this block based on the mutator dialog's components. */
+    compose: function (this: any, containerBlock: any) {
+      let clauseBlock = containerBlock.nextConnection!.targetBlock()
       // Count number of inputs.
       this.elseifCount_ = 0
       this.elseCount_ = 0
-      var valueConnections = [null]
-      var statementConnections = [null]
-      var elseStatementConnection = null
-
-      while (clauseBlock && !clauseBlock.isInsertionMarker()) {
+      // Connections arrays are passed to .reconnectChildBlocks_() which
+      // takes 1-based arrays, so are initialised with a dummy value at
+      // index 0 for convenience.
+      const valueConnections = [null]
+      const statementConnections = [null]
+      let elseStatementConnection = null
+      while (clauseBlock) {
+        if (clauseBlock.isInsertionMarker()) {
+          clauseBlock = clauseBlock.getNextBlock()
+          continue
+        }
         switch (clauseBlock.type) {
           case 'transition_elseif':
             this.elseifCount_++
+            // TODO(#6920): null valid, undefined not.
             valueConnections.push(clauseBlock.valueConnection_)
             statementConnections.push(clauseBlock.statementConnection_)
             break
@@ -828,11 +871,10 @@ export default () => {
           default:
             throw TypeError('Unknown block type: ' + clauseBlock.type)
         }
-        clauseBlock =
-          clauseBlock.nextConnection && clauseBlock.nextConnection.targetBlock()
+        clauseBlock = clauseBlock.getNextBlock()
       }
-
       this.updateShape_()
+      // Reconnect any child blocks.
       this.reconnectChildBlocks_(
         valueConnections,
         statementConnections,
@@ -840,53 +882,55 @@ export default () => {
       )
     },
 
-    saveConnections: function (containerBlock: any) {
-      var clauseBlock = containerBlock.nextConnection.targetBlock()
-      var i = 1
-
+    /** Store pointers to any connected child blocks. */
+    saveConnections: function (this: any, containerBlock: any) {
+      let clauseBlock = containerBlock!.nextConnection!.targetBlock()
+      let i = 1
       while (clauseBlock) {
+        if (clauseBlock.isInsertionMarker()) {
+          clauseBlock = clauseBlock.getNextBlock()
+          continue
+        }
         switch (clauseBlock.type) {
-          case 'transition_elseif':
-            var inputIf = this.getInput('IF' + i)
-            var inputDo = this.getInput('DO' + i)
+          case 'transition_elseif': {
+            const inputIf = this.getInput('IF' + i)
+            const inputDo = this.getInput('DO' + i)
             clauseBlock.valueConnection_ =
-              inputIf && inputIf.connection.targetConnection
+              inputIf && inputIf.connection!.targetConnection
             clauseBlock.statementConnection_ =
-              inputDo && inputDo.connection.targetConnection
+              inputDo && inputDo.connection!.targetConnection
             i++
             break
-          case 'transition_else':
-            var inputDo = this.getInput('ELSE')
+          }
+          case 'transition_else': {
+            const inputDo = this.getInput('ELSE')
             clauseBlock.statementConnection_ =
-              inputDo && inputDo.connection.targetConnection
+              inputDo && inputDo.connection!.targetConnection
             break
+          }
           default:
             throw TypeError('Unknown block type: ' + clauseBlock.type)
         }
-        clauseBlock =
-          clauseBlock.nextConnection && clauseBlock.nextConnection.targetBlock()
+        clauseBlock = clauseBlock.getNextBlock()
       }
     },
 
-    rebuildShape_: function () {
-      var valueConnections = [null]
-      var statementConnections = [null]
-      var elseStatementConnection = null
+    /** Reconstructs the block with all child blocks attached. */
+    rebuildShape_: function (this: any) {
+      const valueConnections = [null]
+      const statementConnections = [null]
+      let elseStatementConnection = null
 
       if (this.getInput('ELSE')) {
         elseStatementConnection =
-          this.getInput('ELSE').connection.targetConnection
+          this.getInput('ELSE')!.connection!.targetConnection
       }
-
-      var i = 1
-      while (this.getInput('IF' + i)) {
-        var inputIf = this.getInput('IF' + i)
-        var inputDo = this.getInput('DO' + i)
-        valueConnections.push(inputIf.connection.targetConnection)
-        statementConnections.push(inputDo.connection.targetConnection)
-        i++
+      for (let i = 1; this.getInput('IF' + i); i++) {
+        const inputIf = this.getInput('IF' + i)
+        const inputDo = this.getInput('DO' + i)
+        valueConnections.push(inputIf!.connection!.targetConnection)
+        statementConnections.push(inputDo!.connection!.targetConnection)
       }
-
       this.updateShape_()
       this.reconnectChildBlocks_(
         valueConnections,
@@ -895,21 +939,18 @@ export default () => {
       )
     },
 
-    updateShape_: function () {
+    /** Modify this block to have the correct number of inputs. */
+    updateShape_: function (this: any) {
       // Delete everything.
-      var i = 1
       if (this.getInput('ELSE')) {
         this.removeInput('ELSE')
       }
-
-      while (this.getInput('IF' + i)) {
+      for (let i = 1; this.getInput('IF' + i); i++) {
         this.removeInput('IF' + i)
         this.removeInput('DO' + i)
-        i++
       }
-
       // Rebuild block.
-      for (i = 1; i <= this.elseifCount_; i++) {
+      for (let i = 1; i <= this.elseifCount_; i++) {
         this.appendValueInput('IF' + i)
           .setCheck('String')
           .appendField('else if state in')
@@ -917,7 +958,6 @@ export default () => {
           Blockly.Msg['CONTROLS_IF_MSG_THEN']
         )
       }
-
       if (this.elseCount_) {
         this.appendStatementInput('ELSE').appendField(
           Blockly.Msg['CONTROLS_IF_MSG_ELSE']
@@ -925,27 +965,18 @@ export default () => {
       }
     },
 
+    /** Reconnects child blocks. */
     reconnectChildBlocks_: function (
-      valueConnections: Blockly.Block[],
-      statementConnections: Blockly.Block[],
-      elseStatementConnection: Blockly.Block
+      this: any,
+      valueConnections: any,
+      statementConnections: any,
+      elseStatementConnection: any
     ) {
-      var connection = new Blockly.Connection(this, 2)
-
-      for (var i = 1; i <= this.elseifCount_; i++) {
-        connection.reconnect(
-          valueConnections[i] ? valueConnections[i] : this,
-          'IF' + i
-        )
-        connection.reconnect(
-          statementConnections[i] ? statementConnections[i] : this,
-          'DO' + i
-        )
+      for (let i = 1; i <= this.elseifCount_; i++) {
+        valueConnections[i]?.reconnect(this, 'IF' + i)
+        statementConnections[i]?.reconnect(this, 'DO' + i)
       }
-      connection.reconnect(
-        elseStatementConnection ? elseStatementConnection : this,
-        'ELSE'
-      )
+      elseStatementConnection?.reconnect(this, 'ELSE')
     },
   }
 
