@@ -1,6 +1,14 @@
 export const MY_TOOLBOX = `
 <xml id="toolbox" style="display: none">
     <category name="Logic" id="catLogic" colour="210">
+      <block type="transition_if">
+        <value name="IF0">
+          <shadow type="text">
+          <field name="TEXT">newstate</field>
+          </shadow>
+        </value>
+        <statement name="DO0"></statement>
+      </block>
       <block type="controls_if"></block>
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
