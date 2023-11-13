@@ -742,4 +742,288 @@ export default () => {
   }
 
   Blockly.Msg.LOGIC_NULL = 'nil'
+
+  // transition_if block.
+  Blockly.Blocks['transition_if'] = {
+    init: function () {
+      this.appendValueInput('IF0').setCheck('String').appendField('If state in')
+      this.appendStatementInput('DO0').setCheck(null).appendField('do')
+      this.setPreviousStatement(true, null)
+      this.setNextStatement(true, null)
+      this.setColour(230)
+      this.setTooltip('state transition')
+      this.setHelpUrl('')
+      this.elseifCount_ = 0
+      this.elseCount_ = 0
+      this.setMutator(
+        new Blockly.icons.MutatorIcon(
+          ['transition_elseif', 'transition_else'],
+          this
+        )
+      )
+    },
+
+    mutationToDom: function () {
+      if (!this.elseifCount_ && !this.elseCount_) {
+        return null
+      }
+
+      var container = Blockly.utils.xml.createElement('mutation')
+      if (this.elseifCount_) {
+        container.setAttribute('elseif', this.elseifCount_)
+      }
+      if (this.elseCount_) {
+        container.setAttribute('else', '1')
+      }
+
+      return container
+    },
+
+    domToMutation: function (xmlElement: {
+      getAttribute: (arg0: string) => string
+    }) {
+      this.elseifCount_ = parseInt(xmlElement.getAttribute('elseif'), 10) || 0
+      this.elseCount_ = parseInt(xmlElement.getAttribute('else'), 10) || 0
+      this.rebuildShape_()
+    },
+
+    decompose: function (workspace: any) {
+      var containerBlock = workspace.newBlock('transition_if_mutator')
+      containerBlock.initSvg()
+      var connection = containerBlock.nextConnection
+      for (var i = 1; i <= this.elseifCount_; i++) {
+        var elseifBlock = workspace.newBlock('transition_elseif')
+        elseifBlock.initSvg()
+        connection.connect(elseifBlock.previousConnection)
+        connection = elseifBlock.nextConnection
+      }
+      if (this.elseCount_) {
+        var elseBlock = workspace.newBlock('transition_else')
+        elseBlock.initSvg()
+        connection.connect(elseBlock.previousConnection)
+      }
+      return containerBlock
+    },
+
+    compose: function (containerBlock: any) {
+      var clauseBlock = containerBlock.nextConnection.targetBlock()
+      // Count number of inputs.
+      this.elseifCount_ = 0
+      this.elseCount_ = 0
+      var valueConnections = [null]
+      var statementConnections = [null]
+      var elseStatementConnection = null
+
+      while (clauseBlock && !clauseBlock.isInsertionMarker()) {
+        switch (clauseBlock.type) {
+          case 'transition_elseif':
+            this.elseifCount_++
+            valueConnections.push(clauseBlock.valueConnection_)
+            statementConnections.push(clauseBlock.statementConnection_)
+            break
+          case 'transition_else':
+            this.elseCount_++
+            elseStatementConnection = clauseBlock.statementConnection_
+            break
+          default:
+            throw TypeError('Unknown block type: ' + clauseBlock.type)
+        }
+        clauseBlock =
+          clauseBlock.nextConnection && clauseBlock.nextConnection.targetBlock()
+      }
+
+      this.updateShape_()
+      this.reconnectChildBlocks_(
+        valueConnections,
+        statementConnections,
+        elseStatementConnection
+      )
+    },
+
+    saveConnections: function (containerBlock: any) {
+      var clauseBlock = containerBlock.nextConnection.targetBlock()
+      var i = 1
+
+      while (clauseBlock) {
+        switch (clauseBlock.type) {
+          case 'transition_elseif':
+            var inputIf = this.getInput('IF' + i)
+            var inputDo = this.getInput('DO' + i)
+            clauseBlock.valueConnection_ =
+              inputIf && inputIf.connection.targetConnection
+            clauseBlock.statementConnection_ =
+              inputDo && inputDo.connection.targetConnection
+            i++
+            break
+          case 'transition_else':
+            var inputDo = this.getInput('ELSE')
+            clauseBlock.statementConnection_ =
+              inputDo && inputDo.connection.targetConnection
+            break
+          default:
+            throw TypeError('Unknown block type: ' + clauseBlock.type)
+        }
+        clauseBlock =
+          clauseBlock.nextConnection && clauseBlock.nextConnection.targetBlock()
+      }
+    },
+
+    rebuildShape_: function () {
+      var valueConnections = [null]
+      var statementConnections = [null]
+      var elseStatementConnection = null
+
+      if (this.getInput('ELSE')) {
+        elseStatementConnection =
+          this.getInput('ELSE').connection.targetConnection
+      }
+
+      var i = 1
+      while (this.getInput('IF' + i)) {
+        var inputIf = this.getInput('IF' + i)
+        var inputDo = this.getInput('DO' + i)
+        valueConnections.push(inputIf.connection.targetConnection)
+        statementConnections.push(inputDo.connection.targetConnection)
+        i++
+      }
+
+      this.updateShape_()
+      this.reconnectChildBlocks_(
+        valueConnections,
+        statementConnections,
+        elseStatementConnection
+      )
+    },
+
+    updateShape_: function () {
+      // Delete everything.
+      var i = 1
+      if (this.getInput('ELSE')) {
+        this.removeInput('ELSE')
+      }
+
+      while (this.getInput('IF' + i)) {
+        this.removeInput('IF' + i)
+        this.removeInput('DO' + i)
+        i++
+      }
+
+      // Rebuild block.
+      for (i = 1; i <= this.elseifCount_; i++) {
+        this.appendValueInput('IF' + i)
+          .setCheck('String')
+          .appendField('else if state in')
+        this.appendStatementInput('DO' + i).appendField(
+          Blockly.Msg['CONTROLS_IF_MSG_THEN']
+        )
+      }
+
+      if (this.elseCount_) {
+        this.appendStatementInput('ELSE').appendField(
+          Blockly.Msg['CONTROLS_IF_MSG_ELSE']
+        )
+      }
+    },
+
+    reconnectChildBlocks_: function (
+      valueConnections: Blockly.Block[],
+      statementConnections: Blockly.Block[],
+      elseStatementConnection: Blockly.Block
+    ) {
+      var connection = new Blockly.Connection(this, 2)
+
+      for (var i = 1; i <= this.elseifCount_; i++) {
+        connection.reconnect(
+          valueConnections[i] ? valueConnections[i] : this,
+          'IF' + i
+        )
+        connection.reconnect(
+          statementConnections[i] ? statementConnections[i] : this,
+          'DO' + i
+        )
+      }
+      connection.reconnect(
+        elseStatementConnection ? elseStatementConnection : this,
+        'ELSE'
+      )
+    },
+  }
+
+  // Mutator blocks. Do not extract.
+  // Block representing the if statement in the transition_if mutator.
+  Blockly.Blocks['transition_if_mutator'] = {
+    init: function () {
+      this.setColour(230)
+      this.appendDummyInput().appendField('If state in')
+      this.appendStatementInput('STACK')
+      this.setPreviousStatement(true)
+      this.setNextStatement(true)
+      this.setTooltip(
+        'Add, remove, or reorder sections to reconfigure this if state in block.'
+      )
+    },
+  }
+
+  // Block representing the else-if statement in the transition_if mutator.
+  Blockly.Blocks['transition_elseif'] = {
+    init: function () {
+      this.setColour(230)
+      this.appendDummyInput().appendField('else if state in')
+      this.setPreviousStatement(true)
+      this.setNextStatement(true)
+      this.setTooltip('Add a condition to the if state in block.')
+    },
+  }
+
+  // Block representing the else statement in the transition_if mutator.
+  Blockly.Blocks['transition_else'] = {
+    init: function () {
+      this.setColour(230)
+      this.appendDummyInput().appendField('else')
+      this.setPreviousStatement(true)
+      this.setTooltip(
+        'Add a final, catch-all condition to the if state in block.'
+      )
+    },
+  }
+
+  // lua code for the transition_if block.
+  luaGenerator.forBlock['transition_if'] = function (block: any) {
+    var n = 0
+    var argument =
+      luaGenerator.valueToCode(block, 'IF' + n, luaGenerator.ORDER_NONE) || `''`
+    var branch = luaGenerator.statementToCode(block, 'DO' + n) || ''
+    var code = 'if get_FSM_state() == ' + argument + ' then\n' + branch
+
+    for (n = 1; n <= block.elseifCount_; n++) {
+      argument =
+        luaGenerator.valueToCode(block, 'IF' + n, luaGenerator.ORDER_NONE) ||
+        `''`
+      branch = luaGenerator.statementToCode(block, 'DO' + n) || ''
+      code += 'elseif get_FSM_state() == ' + argument + ' then\n' + branch
+    }
+
+    if (block.elseCount_) {
+      branch = luaGenerator.statementToCode(block, 'ELSE') || ''
+      code += 'else\n' + branch
+    }
+
+    return code + 'end\n'
+  }
+
+  // lua code for the transition_if mutator.
+  luaGenerator.forBlock['transition_if_mutator'] = function (block: any) {
+    var branch = luaGenerator.statementToCode(block, 'STACK')
+    return branch
+  }
+
+  // lua code for the transition_if mutator elseif block.
+  luaGenerator.forBlock['transition_elseif'] = function (block: any) {
+    return 'else if'
+  }
+
+  // lua code for the transition_if mutator else block.
+  luaGenerator.forBlock['transition_else'] = function (block: any) {
+    return 'else'
+  }
 }
