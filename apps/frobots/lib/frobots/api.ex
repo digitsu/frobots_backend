@@ -67,9 +67,9 @@ defmodule Frobots.Api do
 
   ## params = [search_pattern: "as", tournament_status: :open | :inprogress | :completed | :cancelled]
   def list_paginated_tournaments(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
-    query =
-      Tournament
-      |> join(:left, [t], tp in TournamentPlayers, on: tp.tournament_id == t.id)
+    query = Tournament
+    # |> join(:inner, [t], tp in TournamentPlayers, on: tp.tournament_id == t.id)
+    # |> select([t, tp], t)
 
     query =
       case Keyword.get(params, :search_pattern, nil) do
@@ -81,7 +81,7 @@ defmodule Frobots.Api do
 
           query
           |> where(
-            [t, tp],
+            [t],
             ilike(t.name, ^pattern)
           )
       end
@@ -93,7 +93,7 @@ defmodule Frobots.Api do
 
         tournament_status ->
           query
-          |> where([t, tp], t.status == ^tournament_status)
+          |> where([t], t.status == ^tournament_status)
       end
 
     Events.list_paginated(query, page_config, preload, order_by)
