@@ -7,7 +7,7 @@ defmodule Frobots.Api do
   alias Frobots.Accounts.User
 
   alias Frobots.{Equipment, Accounts, Assets}
-  alias Frobots.Events.{Tournament, TournamentPlayers}
+  alias Frobots.Events.Tournament
 
   # alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
   alias Frobots.Assets.Frobot
