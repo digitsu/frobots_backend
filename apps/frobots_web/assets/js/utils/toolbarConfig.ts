@@ -1,14 +1,6 @@
 export const MY_TOOLBOX = `
 <xml id="toolbox" style="display: none">
     <category name="Logic" id="catLogic" colour="210">
-      <block type="transition_if">
-        <value name="IF0">
-          <shadow type="text">
-          <field name="TEXT">newstate</field>
-          </shadow>
-        </value>
-        <statement name="DO0"></statement>
-      </block>
       <block type="controls_if"></block>
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
@@ -319,6 +311,14 @@ export const MY_TOOLBOX = `
         </value>
       </block>
       <block type="get_fsm_state" name="get_fsm_state"></block>
+      <block type="transition_if">
+        <value name="IF0">
+          <shadow type="text">
+          <field name="TEXT">newstate</field>
+          </shadow>
+        </value>
+        <statement name="DO0"></statement>
+      </block>
       <block type="exit_block" name="exit_block">
         <value name="condition"></value>
         <value name="state">

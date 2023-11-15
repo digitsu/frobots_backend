@@ -15,6 +15,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
     match = Api.get_match_details_by_id(match_id)
     arenas = Api.list_arena()
     s3_base_url = Api.get_s3_base_url()
+    battle_bg_audio = Api.get_battle_background_audio()
 
     arena = Enum.find(arenas, fn %{id: arena_id} -> arena_id == match.arena_id end)
 
@@ -70,12 +71,19 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
      |> assign(:match_id, match_id)
      |> assign(:user_id, id)
      |> assign(:s3_base_url, s3_base_url)
+     |> assign(:background_audio, "#{s3_base_url}#{battle_bg_audio}")
      |> assign(:snapshot, snapshot)}
   end
 
   def handle_event("react.fetch_match_details", %{}, socket) do
-    %{match: match, user_id: user_id, s3_base_url: s3_base_url, arena: arena, snapshot: snapshot} =
-      socket.assigns
+    %{
+      match: match,
+      user_id: user_id,
+      s3_base_url: s3_base_url,
+      background_audio: background_audio,
+      arena: arena,
+      snapshot: snapshot
+    } = socket.assigns
 
     {:noreply,
      push_event(socket, "react.return_match_details", %{
@@ -94,6 +102,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
        "user_id" => match.user_id,
        "current_user_id" => user_id,
        "s3_base_url" => s3_base_url,
+       "battle_background_audio" => background_audio,
        "arena" => arena,
        "snapshot" => snapshot,
        "is_replay" => false
@@ -128,6 +137,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
     match = assigns.match
     arena = assigns.arena
     s3_base_url = assigns.s3_base_url
+    background_audio = assigns.background_audio
 
     # Logger.info(match)
     match_details = %{
@@ -146,6 +156,7 @@ defmodule FrobotsWeb.ArenaMatchSimulationLive.Index do
        id: assigns.match_id,
        match_details: match_details,
        s3_base_url: s3_base_url,
+       battle_background_audio: background_audio,
        arena: arena
      })}
   end
