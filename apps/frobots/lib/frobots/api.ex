@@ -708,6 +708,10 @@ defmodule Frobots.Api do
     "https://#{s3_base_url}/#{s3_bucket}/"
   end
 
+  def get_battle_background_audio() do
+    Application.get_env(:frobots_web, :battle_background)
+  end
+
   def get_s3_bucket_name() do
     Application.get_env(:ex_aws, :s3)[:bucket]
   end

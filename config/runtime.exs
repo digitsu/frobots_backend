@@ -112,6 +112,17 @@ if config_env() == :prod || config_env() == :staging do
          :ghost_blog_url,
          "https://ghost.fubars.tech/ghost/api/content/posts/?key=#{ghost_api_key}"
 
+  battle_background_audio =
+    System.get_env("BATTLE_BACKGROUND_AUDIO") ||
+      raise """
+      environment variable BATTLE_BACKGROUND_AUDIO is missing.
+      Did you forget to source env vars?
+      """
+
+  config :frobots_web,
+         :battle_background,
+         battle_background_audio
+
   # ## Using releases
   #
   # If you are doing OTP releases, you need to instruct Phoenix
