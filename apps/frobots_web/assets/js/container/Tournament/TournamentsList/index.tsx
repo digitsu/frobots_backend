@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Button, Stack } from '@mui/material'
+import { Box, Container, Grid, Button, Stack, Typography } from '@mui/material'
 import React from 'react'
 import TournamentsSection from '../../Dashboard/TournamentsSection'
 
@@ -32,15 +32,28 @@ export default ({ tournaments, s3_base_url, arenas, isAdmin }) => {
           )}
         </Stack>
         <Grid container spacing={2}>
-          {tournaments.length > 0 && (
-            <Grid item lg={12} md={12} sm={12} xs={12}>
+          <Grid item lg={12} md={12} sm={12} xs={12}>
+            {tournaments.length > 0 ? (
               <TournamentsSection
                 tournaments={tournaments}
                 imageBaseUrl={s3_base_url}
                 arenas={arenas}
               />
-            </Grid>
-          )}
+            ) : (
+              <Box width={'100%'} height={'60vh'}>
+                <Typography
+                  variant="h6"
+                  display={'flex'}
+                  justifyContent={'center'}
+                  width={'100%'}
+                  position={'relative'}
+                  top={'50%'}
+                >
+                  It seems there are no tournaments created at the moment.
+                </Typography>
+              </Box>
+            )}
+          </Grid>
         </Grid>
       </Container>
     </Box>

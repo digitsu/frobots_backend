@@ -68,7 +68,7 @@ export default () => {
       this.setInputsInline(true)
       this.setPreviousStatement(true, null)
       this.setNextStatement(true, null)
-      this.setColour(210)
+      this.setColour(230)
       this.setTooltip('')
       this.setHelpUrl('')
     },
@@ -986,8 +986,6 @@ export default () => {
     init: function () {
       this.setColour(230)
       this.appendDummyInput().appendField('If state in')
-      this.appendStatementInput('STACK')
-      this.setPreviousStatement(true)
       this.setNextStatement(true)
       this.setTooltip(
         'Add, remove, or reorder sections to reconfigure this if state in block.'
