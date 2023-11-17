@@ -36,6 +36,7 @@ export const BlocklyEditor: React.FC<any> = ({
           scrollbars: true,
           zoom: {
             controls: true,
+            wheel: true,
             startScale: 0.9,
             maxScale: 3,
             minScale: 0.3,
