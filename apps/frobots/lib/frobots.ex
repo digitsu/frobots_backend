@@ -112,8 +112,11 @@ defmodule Frobots do
   def update_template_frobot(type) when is_binary(type) do
     name = String.to_atom(type)
     brain_code = File.read!(Map.get(@frobot_paths, name))
-    frobot = Frobots.Assets.get_frobot(Atom.to_string(name))
-    Frobots.Assets.update_frobot(frobot, %{brain_code: brain_code})
+
+    case Frobots.Assets.get_frobot(Atom.to_string(name)) do
+      {:ok, frobot} -> Frobots.Assets.update_frobot(frobot, %{brain_code: brain_code})
+      {:error, _} -> nil
+    end
   end
 
   def update_template_frobot(type) do

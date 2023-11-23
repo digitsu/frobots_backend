@@ -28,16 +28,21 @@ defmodule Frobots.PopulateLeaderboard do
           participating_frobots = battlelog.frobots |> Enum.map(fn x -> x.id end)
           # participating_frobots = winning_frobot |> Enum.map(fn x -> x.id end)
 
-          frobot = Assets.get_frobot(hd(winning_frobot))
-          user = Accounts.get_user!(frobot.user_id)
+          case Assets.get_frobot(hd(winning_frobot)) do
+            {:ok, frobot} ->
+              user = Accounts.get_user!(frobot.user_id)
 
-          # participating_frobots
-          if Frobots.Accounts.admin_user_name() != user.name do
-            WinnersBucket.add_or_update_score(
-              user.name,
-              hd(winning_frobot),
-              participating_frobots
-            )
+              # participating_frobots
+              if Frobots.Accounts.admin_user_name() != user.name do
+                WinnersBucket.add_or_update_score(
+                  user.name,
+                  hd(winning_frobot),
+                  participating_frobots
+                )
+              end
+
+            {:error, _} ->
+              nil
           end
         end
       end

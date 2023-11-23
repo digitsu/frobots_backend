@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Grid, Typography, Card } from '@mui/material'
-
+import { Box, Grid, Typography, SvgIcon, Tooltip } from '@mui/material'
+import { VolumeUp, VolumeOff } from '@mui/icons-material/'
 import { useDispatch } from 'react-redux'
 import { matchSimulationActions } from '../../redux/slices/matchSimulationSlice'
 import { Game, rigHead } from '../../game_updated'
@@ -17,6 +17,7 @@ export default (props: any) => {
     runSimulation,
     snapshot,
     is_replay,
+    battle_background_audio,
   } = props
   const dispatch = useDispatch()
   const isHost = user_id === current_user_id
@@ -25,6 +26,8 @@ export default (props: any) => {
   const [isGameStarted, setisGameStarted] = useState(
     match.status === 'running' || isHost || is_replay
   )
+  const [audio] = useState(new Audio(battle_background_audio))
+  const [isPlaying, setIsPlaying] = useState(isGameStarted ? true : false)
   const { slots, status } = match
 
   const showStartMatchButton = isHost
@@ -130,8 +133,39 @@ export default (props: any) => {
       </Box>
     )
   }
+
+  useEffect(() => {
+    if (isPlaying) {
+      audio.loop = true
+      audio.play()
+    } else {
+      audio.pause()
+    }
+  }, [isGameStarted, audio, isPlaying])
+
+  const toggleAudio = () => {
+    setIsPlaying(!isPlaying)
+  }
+
   return (
     <Box width={'90%'} m={'auto'} pb={4}>
+      {isGameStarted && (
+        <Box
+          sx={{
+            display: 'inline-block',
+            float: 'right',
+            marginTop: '-58px',
+            marginRight: '4px',
+          }}
+        >
+          <Tooltip title="background music">
+            <SvgIcon onClick={toggleAudio}>
+              {isPlaying ? <VolumeUp /> : <VolumeOff />}
+            </SvgIcon>
+          </Tooltip>
+        </Box>
+      )}
+
       {isGameStarted ? (
         <Grid container mt={4}>
           <Grid item sm={12} md={9} lg={9} xl={9}>

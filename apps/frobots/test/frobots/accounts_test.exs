@@ -675,4 +675,36 @@ defmodule Frobots.AccountsTest do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
     end
   end
+
+  describe "Track user logins" do
+    @pass "12345678"
+
+    setup do
+      {:ok, user} = user_fixture(password: @pass)
+      {:ok, user: user}
+    end
+
+    test "should log login info if login was successfull", %{user: user} do
+      Accounts.user_login_by(user.email, @pass)
+      assert logs = Accounts.get_user_logins(user)
+
+      assert !Enum.empty?(logs)
+    end
+
+    test "should not log login info if login was failed", %{user: user} do
+      Accounts.user_login_by(user.email, "badpass")
+      assert logs = Accounts.get_user_logins(user)
+
+      assert Enum.empty?(logs)
+    end
+
+    test "should return logs of user logins", %{user: user} do
+      Accounts.user_login_by(user.email, @pass)
+      Accounts.user_login_by(user.email, @pass)
+
+      assert logs = Accounts.get_user_logins(user)
+
+      assert length(logs) == 2
+    end
+  end
 end

@@ -7,9 +7,12 @@ defmodule Frobots.Events do
   import Ecto.Query, warn: false
   alias Frobots.Repo
 
+  alias Frobots.Assets
+  alias Frobots.Accounts
   alias Frobots.Events.Battlelog
-  alias Frobots.Events.{Match, Slot}
+  alias Frobots.Events.{Match, Slot, Tournament}
   alias Frobots.Leaderboard
+  alias Frobots.Events.TournamentPlayers
 
   @topic inspect(__MODULE__)
   @pubsub_server Frobots.PubSub
@@ -184,7 +187,10 @@ defmodule Frobots.Events do
   end
 
   def list_match_by(query, preload \\ [], order_by \\ []) do
-    query |> preload(^preload) |> order_by(^order_by) |> Repo.all()
+    query
+    |> preload(^preload)
+    |> order_by(^order_by)
+    |> Repo.all()
   end
 
   def count_matches_by_status(status) when is_atom(status) do
@@ -261,7 +267,7 @@ defmodule Frobots.Events do
   end
 
   def get_slot_by(params) do
-    Repo.get_by(Slot, params)
+    Slot |> where(^params) |> Repo.all() |> List.first()
   end
 
   def get_battlelog_by(params) do
@@ -506,5 +512,188 @@ defmodule Frobots.Events do
     |> preload(^preload)
     |> order_by(^order_by)
     |> Repo.paginate(page_config)
+  end
+
+  defp _create_tournament(tournament, attrs) do
+    tournament
+    |> Tournament.changeset(attrs)
+  end
+
+  def create_tournament(attrs \\ %{}) do
+    _create_tournament(%Tournament{}, attrs)
+    |> Repo.insert()
+    |> case do
+      {:ok, tournament} ->
+        Frobots.TournamentManager.start_child(tournament.id)
+
+        {:ok, tournament}
+
+      error ->
+        error
+    end
+  end
+
+  def get_tournament_by(params, preload \\ []) do
+    case Tournament |> where(^params) |> preload(^preload) |> Repo.one() do
+      nil -> {:error, :not_found}
+      tournament -> {:ok, tournament}
+    end
+  end
+
+  def list_tournament_by(params, preload \\ []) do
+    Tournament |> where(^params) |> preload(^preload) |> Repo.all()
+  end
+
+  def update_tournament(tournament, params) do
+    tournament
+    |> Tournament.update_changeset(params)
+    |> Repo.update()
+  end
+
+  def create_tournament_players(attrs \\ %{}) do
+    %TournamentPlayers{}
+    |> TournamentPlayers.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_tournament_players(tournament_player, attrs \\ %{}) do
+    tournament_player
+    |> TournamentPlayers.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def get_tournament_players_by(params, preload \\ []) do
+    TournamentPlayers |> where(^params) |> preload(^preload) |> Repo.one()
+  end
+
+  def list_tournament_players_by(params, order_by, limit) do
+    TournamentPlayers
+    |> where(^params)
+    |> order_by(^order_by)
+    |> limit(^limit)
+    |> Repo.all()
+  end
+
+  def join_tournament(tournament_id, frobot_id) do
+    with {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
+         {:is_open, true} <- {:is_open, is_open?(tournament)},
+         {:is_frobot_available, true} <- {:is_frobot_available, is_frobot_available?(frobot_id)},
+         {:ok, _frobot} <- Assets.get_frobot(frobot_id),
+         attrs <- %{
+           frobot_id: frobot_id,
+           tournament_id: tournament_id,
+           score: 0,
+           pool_score: 0,
+           tournament_match_type: :pool,
+           order: 1
+         },
+         {:ok, _tp} <- create_tournament_players(attrs) do
+      get_tournament_by([id: tournament_id], [:tournament_players])
+      |> broadcast_change([:tournament, :join])
+    else
+      {:is_open, false} -> {:error, "tournament is closed"}
+      {:is_frobot_available, false} -> {:error, "frobot is already part of existing match"}
+      nil -> {:error, "invalid frobot id"}
+      error -> error
+    end
+  end
+
+  def unjoin_tournament(tournament_id, frobot_id) do
+    with {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
+         {:is_open, true} <- {:is_open, is_open?(tournament)},
+         tournament_player when not is_nil(tournament_player) <-
+           Enum.find(tournament.tournament_players, fn tp -> tp.frobot_id == frobot_id end),
+         {:ok, _tp} <- remove_tournament_players(tournament_player) do
+      get_tournament_by([id: tournament_id], [:tournament_players])
+      |> broadcast_change([:tournament, :unjoin])
+    else
+      {:is_open, false} -> {:error, "tournament is closed"}
+      {:is_frobot_available, false} -> {:error, "frobot is already part of existing match"}
+      nil -> {:error, "frobot is not part of tournament"}
+      error -> error
+    end
+  end
+
+  def cancel_tournament(tournament_id, user_id) do
+    with admin_user <- Accounts.get_user_by(name: Accounts.admin_user_name()),
+         {:admin_check, true} <- {:admin_check, admin_user.id == user_id},
+         {:ok, tournament} <- get_tournament_by([id: tournament_id], [:tournament_players]),
+         #  {:is_open, true} <- {:is_open, is_open?(tournament)},
+         {:ok, tournament} <- Frobots.Events.update_tournament(tournament, %{status: :cancelled}) do
+      {:ok, tournament}
+    else
+      {:admin_check, false} -> {:error, "tournament can be cancelled by admin"}
+      # {:is_open, false} -> {:error, "tournament is in progress"}
+      error -> error
+    end
+  end
+
+  def player_stats(tournament_id, frobot_id) do
+    with {:ok, tournament} <-
+           get_tournament_by([id: tournament_id], tournament_players: [frobot: :user]),
+         tp = Enum.find(tournament.tournament_players, fn tp -> tp.frobot_id == frobot_id end),
+         matches =
+           Frobots.Api.list_match_by(
+             [tournament_match_type: :pool, tournament_id: tournament_id],
+             [:battlelog]
+           ),
+         user_matches <- Enum.filter(matches, fn m -> frobot_id in m.frobots end) do
+      wins =
+        Enum.count(user_matches, fn m ->
+          not is_nil(m.battlelog) and frobot_id in m.battlelog.winners
+        end)
+
+      loss =
+        Enum.count(user_matches, fn m ->
+          is_nil(m.battlelog) or
+            (not is_nil(m.battlelog) and frobot_id not in m.battlelog.winners)
+        end)
+
+      {:ok,
+       %{
+         frobot_name: tp.frobot.name,
+         player_name: tp.frobot.user.name,
+         points: tp.score,
+         pool_points: tp.pool_score,
+         wins: wins,
+         loss: loss
+       }}
+    else
+      error -> error
+    end
+  end
+
+  ## TODO CALL FROM JOINING A MATCH
+  def is_frobot_available?(frobot_id) do
+    no_matches =
+      case get_slot_by(frobot_id: frobot_id, status: :ready) do
+        nil -> true
+        _ -> false
+      end
+
+    no_tournaments = is_frobot_part_of_tournament(frobot_id) == 0
+
+    no_matches and no_tournaments
+  end
+
+  defp is_frobot_part_of_tournament(frobot_id) do
+    q =
+      from(t in "tournaments",
+        join: tp in "tournament_players",
+        on: tp.tournament_id == t.id,
+        where: t.status in ["open", "inprogress"] and tp.frobot_id == ^frobot_id,
+        select: tp.frobot_id
+      )
+
+    Repo.all(q)
+    |> Enum.count()
+  end
+
+  defp is_open?(tournament) do
+    tournament.status == :open and length(tournament.tournament_players) < tournament.participants
+  end
+
+  defp remove_tournament_players(tournament_player) do
+    Repo.delete(tournament_player)
   end
 end

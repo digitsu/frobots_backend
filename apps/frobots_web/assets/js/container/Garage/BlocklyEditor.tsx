@@ -16,7 +16,7 @@ export const BlocklyEditor: React.FC<any> = ({
   key = '',
 }) => {
   return (
-    <Box display={'flex'} minHeight={'100vh'}>
+    <Box display={'flex'} minHeight={'100%'}>
       <BlocklyWorkspace
         onXmlChange={(xml) => setXmlText(xml)}
         className="blockly-editorview"
@@ -29,8 +29,14 @@ export const BlocklyEditor: React.FC<any> = ({
             length: 3,
             colour: '#ccc',
           },
+          move: {
+            drag: true,
+            wheel: true,
+          },
+          scrollbars: true,
           zoom: {
             controls: true,
+            wheel: true,
             startScale: 0.9,
             maxScale: 3,
             minScale: 0.3,

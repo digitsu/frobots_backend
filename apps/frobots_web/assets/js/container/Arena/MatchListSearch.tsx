@@ -90,6 +90,7 @@ export const MatchListSearch: FC<MatchListSearchProps> = (props) => {
                 textTransform: 'capitalize',
                 backgroundColor: 'transparent',
                 color: '#00AB55',
+                mr: 1,
                 borderColor: '#00AB55',
                 '&:hover': {
                   borderColor: '#13D273',

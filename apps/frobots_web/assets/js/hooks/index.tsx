@@ -15,6 +15,9 @@ import ArenaMatchResults from './ArenaMatchResults'
 import ArenaMatchSimulationHook from './ArenaMatchSimulationHook'
 import PlayerProfileHook from './PlayerProfileHook'
 import UserSnippetHook from './UserSnippetHook'
+import TournamentDetailsHook from './TournamentDetails'
+import CreateTournamentHook from './CreateTournamentHook'
+import TournamentsListHook from './TournamentsListHook'
 
 interface HookType {
   [key: string]: {
@@ -44,5 +47,8 @@ Hooks.ArenaMatchResults = ArenaMatchResults
 Hooks.ArenaMatchSimulationHook = ArenaMatchSimulationHook
 Hooks.PlayerProfileHook = PlayerProfileHook
 Hooks.UserSnippetHook = UserSnippetHook
+Hooks.TournamentDetailsHook = TournamentDetailsHook
+Hooks.CreateTournamentHook = CreateTournamentHook
+Hooks.TournamentsListHook = TournamentsListHook
 
 export default Hooks

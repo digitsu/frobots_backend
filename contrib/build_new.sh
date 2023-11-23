@@ -41,6 +41,9 @@ elif [[ $CI_COMMIT_BRANCH == "dev" ]]; then
 else
     ip='not a valid branch'
 fi
+
+BATTLE_BACKGROUND_AUDIO = $BATTLE_BACKGROUND_AUDIO
+
 echo "making .ssh dir"
 mkdir -p ~/.ssh
 echo "copying config" $SSH_CONFIG
@@ -101,7 +104,7 @@ echo "running postgres"
 docker run --detach --rm --network $FROBOTS_NETWORK --network-alias postgres-server -e POSTGRES_PASSWORD=$POSTGRES_PASS -e POSTGRES_USER=$POSTGRES_USER -v postgres_home:/home/${POSTGRES_USER} -v postgres_data:/var/lib/postgresql/data --name postgres postgres:12-bullseye
 echo "running the backend on: "$DATABASE_URL_NEW${dbname}
 
-docker run --rm -dp $PORT:$PORT -e BETA_EMAIL_LIST -e GUARDIAN_SECRET_KEY -e S3_URL -e S3_BUCKET -e S3_ACCESS_KEY -e S3_SECRET_KEY -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW${dbname} -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
+docker run --rm -dp $PORT:$PORT -e BATTLE_BACKGROUND_AUDIO -e BETA_EMAIL_LIST -e GUARDIAN_SECRET_KEY -e S3_URL -e S3_BUCKET -e S3_ACCESS_KEY -e S3_SECRET_KEY -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW${dbname} -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
 
 #docker run --rm -p $PORT:$PORT -e GUARDIAN_SECRET_KEY -e S3_URL -e S3_BUCKET -e S3_ACCESS_KEY -e S3_SECRET_KEY -e GHOST_API_KEY -e SENDGRID_API_KEY -e SENDGRID_API_EXPORT_MAILINGLIST_KEY -e POOL_SIZE -e PORT -e DATABASE_URL=$DATABASE_URL_NEW${dbname} -e SECRET_KEY_BASE -e ADMIN_USER -e ADMIN_PASS --network $FROBOTS_NETWORK --network-alias frobots_backend -v web_certs:/var/certs --name frobots_backend elixir/frobots_backend
 

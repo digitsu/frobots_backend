@@ -99,19 +99,28 @@ defmodule Frobots.Assets do
 
       iex> Frobots.Assets.get_frobot("sniper")
 
-      %Elixir.Frobots.Assets.Frobot{}
+      {:ok, %Elixir.Frobots.Assets.Frobot{}}
 
       iex> Frobots.Assets.get_frobot("notaname")
-      nil
+      {:error, :not_found}
 
   """
   def get_frobot(name) when is_bitstring(name) do
     Frobot
     |> frobots_name_query(name)
     |> Repo.one()
+    |> case do
+      nil -> {:error, :not_found}
+      frobot -> {:ok, frobot}
+    end
   end
 
-  def get_frobot(id), do: Repo.get(Frobot, id)
+  def get_frobot(id) do
+    case Repo.get(Frobot, id) do
+      nil -> {:error, :not_found}
+      frobot -> {:ok, frobot}
+    end
+  end
 
   def get_frobot!(name) when is_bitstring(name) do
     Frobot
@@ -120,6 +129,11 @@ defmodule Frobots.Assets do
   end
 
   def get_frobot!(id), do: Repo.get!(Frobot, id)
+
+  def get_frobot_by(frobot_ids, preload \\ []) do
+    from(f in Frobot, where: f.id in ^frobot_ids, preload: ^preload)
+    |> Repo.all()
+  end
 
   @doc ~S"""
   Creates a frobot.

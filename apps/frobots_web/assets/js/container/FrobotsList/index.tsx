@@ -70,7 +70,7 @@ export default (props: any) => {
               </Grid>
             ))}
 
-            {currentUser.sparks && (
+            {currentUser.sparks !== 0 && (
               <Grid item xl={3} lg={3} md={3} sm={6} xs={12}>
                 <Card
                   sx={{

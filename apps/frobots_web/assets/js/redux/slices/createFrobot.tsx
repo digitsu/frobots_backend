@@ -10,6 +10,7 @@ const initialState = {
   blocklyCode: '',
   selectedProtobot: null,
   introSteps: createFrobotOnboardingSteps,
+  isTutorialFlow: false,
 }
 
 const createFrobotSlice = createSlice({
@@ -42,6 +43,9 @@ const createFrobotSlice = createSlice({
     },
     setSelectedProtobot: (state, action) => {
       state.selectedProtobot = action.payload
+    },
+    setTutorialFlow: (state, action) => {
+      state.isTutorialFlow = action.payload
     },
   },
 })

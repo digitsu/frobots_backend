@@ -679,22 +679,32 @@ defmodule Frobots.Equipment do
     inst_module = _get_inst_module("Xframe")
 
     # get xframeInst
-    current_frobot = Assets.get_frobot(frobot_id)
-    xframe = get_equipment("Xframe", xframe_inst_id) |> Repo.preload(:frobot)
+    case Assets.get_frobot(frobot_id) do
+      {:ok, frobot} ->
+        xframe = get_equipment("Xframe", xframe_inst_id) |> Repo.preload(:frobot)
 
-    inst_module.changeset(xframe, %{})
-    |> Ecto.Changeset.put_assoc(:frobot, current_frobot)
+        inst_module.changeset(xframe, %{})
+        |> Ecto.Changeset.put_assoc(:frobot, frobot)
+
+      {:error, _} ->
+        nil
+    end
   end
 
   def equip_cpu_changeset(cpu_inst_id, frobot_id) do
     inst_module = _get_inst_module("Cpu")
 
     # get xframeInst
-    current_frobot = Assets.get_frobot(frobot_id)
-    cpu = get_equipment("Cpu", cpu_inst_id) |> Repo.preload(:frobot)
+    case Assets.get_frobot(frobot_id) do
+      {:ok, frobot} ->
+        cpu = get_equipment("Cpu", cpu_inst_id) |> Repo.preload(:frobot)
 
-    inst_module.changeset(cpu, %{})
-    |> Ecto.Changeset.put_assoc(:frobot, current_frobot)
+        inst_module.changeset(cpu, %{})
+        |> Ecto.Changeset.put_assoc(:frobot, frobot)
+
+      {:error, _} ->
+        nil
+    end
   end
 
   # equip part changeset - called by equip_part
@@ -702,38 +712,44 @@ defmodule Frobots.Equipment do
     inst_module = _get_inst_module(equipment_class)
 
     xframe = from(xfi in XframeInst, where: xfi.frobot_id == ^frobot_id) |> Repo.one()
-    frobot = Assets.get_frobot(frobot_id)
 
-    xframe_class =
-      from(xf in Frobots.Assets.Xframe, where: xf.id == ^xframe.xframe_id) |> Repo.one()
+    case Assets.get_frobot(frobot_id) do
+      {:ok, frobot} ->
+        xframe_class =
+          from(xf in Frobots.Assets.Xframe, where: xf.id == ^xframe.xframe_id) |> Repo.one()
 
-    if is_nil(xframe_class) do
-      {:error, "Xframe needs to be installed first"}
-    else
-      # now check how many scanner and weapon endpoints are on xframe
-      max_sensor_hardpoints = xframe_class.sensor_hardpoints
-      max_weapon_endpoints = xframe_class.weapon_hardpoints
-      {weapon_count, sensor_count, _ammo_count} = get_equipment_count(frobot.id)
+        if is_nil(xframe_class) do
+          {:error, "Xframe needs to be installed first"}
+        else
+          # now check how many scanner and weapon endpoints are on xframe
+          max_sensor_hardpoints = xframe_class.sensor_hardpoints
+          max_weapon_endpoints = xframe_class.weapon_hardpoints
+          {weapon_count, sensor_count, _ammo_count} = get_equipment_count(frobot.id)
 
-      equipment = get_equipment(equipment_class, equipment_instance_id) |> Repo.preload(:frobot)
+          equipment =
+            get_equipment(equipment_class, equipment_instance_id) |> Repo.preload(:frobot)
 
-      if _is_ordinance_class?(equipment_class) do
-        build_part_changeset(
-          weapon_count,
-          max_weapon_endpoints,
-          frobot,
-          equipment,
-          inst_module
-        )
-      else
-        build_part_changeset(
-          sensor_count,
-          max_sensor_hardpoints,
-          frobot,
-          equipment,
-          inst_module
-        )
-      end
+          if _is_ordinance_class?(equipment_class) do
+            build_part_changeset(
+              weapon_count,
+              max_weapon_endpoints,
+              frobot,
+              equipment,
+              inst_module
+            )
+          else
+            build_part_changeset(
+              sensor_count,
+              max_sensor_hardpoints,
+              frobot,
+              equipment,
+              inst_module
+            )
+          end
+        end
+
+      {:error, _} ->
+        nil
     end
   end
 
