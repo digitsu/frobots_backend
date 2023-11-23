@@ -24,6 +24,7 @@ export default ({ templates }) => {
     blocklyCode: blocklyCodeStore,
     introSteps,
     selectedProtobot,
+    isTutorialFlow,
   } = useSelector((store: any) => store.createFrobot)
   const [showTutorial, setShowTutorial] = useState(false)
   const [showTutorialPopup, setShowTutorialPopup] = useState(false)
@@ -38,7 +39,7 @@ export default ({ templates }) => {
   const {
     setBlocklyCode: setBlocklyCodeHandler,
     setBrainCode,
-    onExit,
+    setTutorialFlow,
   } = createFrobotActions
   const currentProtobot =
     templates.find(({ name }) => name === selectedProtobot?.label) || null
@@ -50,6 +51,12 @@ export default ({ templates }) => {
     }
   }
   const [tabIndex, setTabIndex] = React.useState(0)
+  const workspaceElement = document.getElementById('user-workspace')
+  const rect = workspaceElement
+    ? workspaceElement.getBoundingClientRect()
+    : { top: 0 }
+  const distanceFromTop = rect.top + window.scrollY
+  const containerMinHeight = `calc(92vh - ${distanceFromTop}px)`
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
@@ -95,8 +102,9 @@ export default ({ templates }) => {
 
   const showTutorialHandler = () => {
     Blockly.getMainWorkspace().clear()
-    setShowTutorialPopup(false)
+    dispatch(setTutorialFlow(true))
     setShowTutorial(true)
+    setShowTutorialPopup(false)
   }
 
   const resetHandler = () => {
@@ -110,9 +118,16 @@ export default ({ templates }) => {
     setShowResetPopup(false)
   }
 
+  useEffect(() => {
+    if (!isTutorialFlow) {
+      resetHandler()
+    }
+  }, [isTutorialFlow])
+
   return (
     <>
       <Joyride
+        key={`joyride-${showTutorial ? 'active' : 'inactive'}`}
         steps={introSteps}
         run={showTutorial}
         continuous={true}
@@ -236,30 +251,36 @@ export default ({ templates }) => {
               </Box>
             </Box>
           </Box>
-          {
-            <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
-              <Grid container>
-                <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
-                  <BlocklyEditor
-                    defaultXml={blocklyCodeStore}
-                    setXmlText={setXmlText}
-                    workspaceDidChange={workspaceDidChange}
-                  />
+          <Box id={'user-workspace'}>
+            {
+              <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
+                <Grid container minHeight={containerMinHeight}>
+                  <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
+                    <BlocklyEditor
+                      defaultXml={blocklyCodeStore}
+                      setXmlText={setXmlText}
+                      workspaceDidChange={workspaceDidChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                    <LuaEditor luaCode={luaCode} onEditorChange={() => {}} />
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                  <LuaEditor luaCode={luaCode} onEditorChange={() => {}} />
+              </Box>
+            }
+            {
+              <Box sx={{ p: 3 }} display={tabIndex === 1 ? 'block' : 'none'}>
+                <Grid container minHeight={containerMinHeight}>
+                  <Grid item width={'100%'}>
+                    <LuaEditor
+                      luaCode={blocklyLuaCode}
+                      onEditorChange={onEditorChange}
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
-          }
-          {
-            <Box sx={{ p: 3 }} display={tabIndex === 1 ? 'block' : 'none'}>
-              <LuaEditor
-                luaCode={blocklyLuaCode}
-                onEditorChange={onEditorChange}
-              />
-            </Box>
-          }
+              </Box>
+            }
+          </Box>
         </Box>
       </Box>
     </>

@@ -17,3 +17,5 @@ export const TutorialPopupPromptDescription =
   'Starting the tutorial flow will reset your current blocks, giving you a fresh start. However, you can always return to the original Protobot template whenever you like by clicking the "Reset" button. Are you ready to proceed?'
 export const ResetWorkspacePopupPromptDescription =
   'This action will clear your existing custom blocks. Would you like to Reset your workspace using the selected Protobot blocks?'
+export const BackButtonWorkspacePromptDescription =
+  'Returning to the previous step will result in the loss of your current tutorial progress. Are you sure you want to go back?'

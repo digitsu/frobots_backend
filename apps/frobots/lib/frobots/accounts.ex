@@ -6,7 +6,7 @@ defmodule Frobots.Accounts do
   import Ecto.Query, warn: false
   alias Frobots.Repo
 
-  alias Frobots.Accounts.{User, UserToken, UserNotifier}
+  alias Frobots.Accounts.{User, UserToken, UserNotifier, UserLogin}
   alias Frobots.Assets
   @admin_user_name "god"
 
@@ -56,6 +56,30 @@ defmodule Frobots.Accounts do
 
   def get_user_by(params) do
     Repo.get_by(User, params)
+  end
+
+  @doc """
+  User login by email and password.
+
+  ## Examples
+
+    iex> user_login_by("foo@example.com", "correct_password")
+    %User{}
+
+    iex> user_login_by("foo@example.com", "invalid_password")
+    nil
+
+  """
+  def user_login_by(email, password) when is_binary(email) and is_binary(password) do
+    user = get_user_by_email_and_password(email, password)
+
+    # if login success, insert new record to login history
+    if user do
+      changeset = UserLogin.changeset(%UserLogin{}, %{user_id: user.id})
+      Repo.insert(changeset)
+    end
+
+    user
   end
 
   @doc """
@@ -434,5 +458,12 @@ defmodule Frobots.Accounts do
   def user_available_sparks(user_id) do
     user = get_user!(user_id)
     user_available_sparks(user)
+  end
+
+  @doc """
+  Gets the user login history
+  """
+  def get_user_logins(user) do
+    Repo.all(UserLogin.get_user_logins(user.id))
   end
 end

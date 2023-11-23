@@ -1,5 +1,77 @@
 export const MY_TOOLBOX = `
 <xml id="toolbox" style="display: none">
+    <category name="Frobot Functions" colour="20" id="frobot-functions">
+      <block type="frobot">
+        <value name="initial_state"></value>
+        <statement name="nested_blocks"></statement>
+      </block>
+      <block type="set_fsm_state">
+        <value name="STATE">
+          <shadow type="text">
+            <field name="TEXT">newstate</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="get_fsm_state" name="get_fsm_state"></block>
+      <block type="transition_if">
+        <value name="IF0">
+          <shadow type="text">
+          <field name="TEXT">newstate</field>
+          </shadow>
+        </value>
+        <statement name="DO0"></statement>
+      </block>
+      <block type="exit_block" name="exit_block">
+        <value name="condition"></value>
+        <value name="state">
+          <shadow type="text">
+            <field name="TEXT">newstate</field>
+          </shadow>
+        </value>
+        <statement name="nested_blocks"></statement>
+      </block>
+      <block type="custom_return" name="custom_return"></block>
+      <block type="speed" name="speed"></block>
+      <block type="damage" name="damage"></block>
+      <block type="drive" name="drive"></block>
+      <block type="cannon" name="cannon"></block>
+      <block type="cannon_2" name="cannon"></block>
+      <block type="scan" name="scan"></block>
+      <block type="set_cannon" name="set_cannon">
+        <value name="cannon_id">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="set_scanner" name="set_scanner">
+        <value name="scanner_id">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="xlocation" name="xlocation"></block>
+      <block type="ylocation" name="ylocation"></block>
+      <block type="os_time" name="os_time"></block>
+      <block type="os_execute_sleep" name="os_execute_sleep">
+        <value name="SECONDS">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="set_state_property"></block>
+      <block type="get_state_property"></block>
+      <block type="change_state_property">
+        <value name="value">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+    </category>
+
     <category name="Logic" id="catLogic" colour="210">
       <block type="controls_if"></block>
       <block type="logic_compare"></block>
@@ -287,83 +359,11 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
-    <category name="Colour" id="catColour" colour="20">
-      <block type="colour_picker"></block>
-      <block type="colour_random"></block>
-      <block type="colour_rgb">
-        <value name="RED">
-          <shadow type="math_number">
-            <field name="NUM">100</field>
-          </shadow>
-        </value>
-        <value name="GREEN">
-          <shadow type="math_number">
-            <field name="NUM">50</field>
-          </shadow>
-        </value>
-        <value name="BLUE">
-          <shadow type="math_number">
-            <field name="NUM">0</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="colour_blend">
-        <value name="COLOUR1">
-          <shadow type="colour_picker">
-            <field name="COLOUR">#ff0000</field>
-          </shadow>
-        </value>
-        <value name="COLOUR2">
-          <shadow type="colour_picker">
-            <field name="COLOUR">#3333ff</field>
-          </shadow>
-        </value>
-        <value name="RATIO">
-          <shadow type="math_number">
-            <field name="NUM">0.5</field>
-          </shadow>
-        </value>
-      </block>
-    </category>
     <category name="Objects" colour="210" id="objects-category">
       <block type="set_object_property"></block>
       <block type="get_object_property"></block>
       <block type="change_object_property">
         <value name="value">
-          <shadow type="math_number">
-            <field name="NUM">1</field>
-          </shadow>
-        </value>
-      </block>
-    </category>
-    <category name="Frobot Functions" colour="20" id="frobot-functions">
-      <block type="frobot" name="frobot"></block>
-      <block type="custom_return" name="custom_return"></block>
-      <block type="speed" name="speed"></block>
-      <block type="damage" name="damage"></block>
-      <block type="drive" name="drive"></block>
-      <block type="cannon" name="cannon"></block>
-      <block type="cannon_2" name="cannon"></block>
-      <block type="scan" name="scan"></block>
-      <block type="set_cannon" name="set_cannon">
-        <value name="cannon_id">
-          <shadow type="math_number">
-            <field name="NUM">1</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="set_scanner" name="set_scanner">
-        <value name="scanner_id">
-          <shadow type="math_number">
-            <field name="NUM">1</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="xlocation" name="xlocation"></block>
-      <block type="ylocation" name="ylocation"></block>
-      <block type="os_time" name="os_time"></block>
-      <block type="os_execute_sleep" name="os_execute_sleep">
-        <value name="SECONDS">
           <shadow type="math_number">
             <field name="NUM">1</field>
           </shadow>

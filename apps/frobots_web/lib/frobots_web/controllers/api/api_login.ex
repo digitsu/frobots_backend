@@ -23,7 +23,7 @@ defmodule FrobotsWeb.Api.Login do
              Regex.named_captures(~r/(?<username>.+):(?<pass>.+)/, admin_pass) do
         # change usernamet to email
         user = Frobots.Accounts.get_user_by(email: username)
-        Frobots.Accounts.get_user_by_email_and_password(user.email, pass)
+        Frobots.Accounts.user_login_by(user.email, pass)
       end
     end
   end

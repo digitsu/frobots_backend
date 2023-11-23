@@ -4,7 +4,7 @@
       <h1 class="font-bold">Match : <%= @match_id %>
       </h1>
     </div>
-    
+
   <div class="flex justify-between items-center my-2">
       <div>
         <p class="inline-block items-left font-bold text-xs text-400">
@@ -29,7 +29,7 @@
           <a href="/arena">Match <%= @match_id %></a>
         </p>
       </div>
-      <div>
+      <div class="mr-8">
         <p class="font-bold text-xs text-gray-400">
           TIMER <%= seconds_to_hh_mm_ss(@time_left) %>
         </p>
@@ -41,5 +41,4 @@
     <div id="match-simulation" phx-hook="ArenaMatchSimulationHook" phx-update="ignore"></div>
 
 </div>
-  
 

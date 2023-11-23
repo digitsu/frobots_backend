@@ -172,12 +172,12 @@ defmodule FrobotsWeb.GarageLive.Index do
 
   def handle_event("get_frobot_details", %{"id" => frobot_id}, socket) do
     case Assets.get_frobot(frobot_id) do
-      nil ->
+      {:error, _} ->
         {:noreply,
          socket
          |> assign(:error_messages, "Unable find frobot with id #{frobot_id}")}
 
-      frobot ->
+      {:ok, frobot} ->
         {:noreply,
          socket
          |> assign(:frobot, frobot)}

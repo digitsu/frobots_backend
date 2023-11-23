@@ -8,7 +8,7 @@ export default (props: any) => {
   const { match_status, s3_base_url, arenas } = props
 
   const imageList = arenas.reduce((result, arena) => {
-    result[arena.id] = `${s3_base_url}/${arena.image_url}`
+    result[arena.id] = `${s3_base_url}${arena.image_url}`
 
     return result
   }, {})

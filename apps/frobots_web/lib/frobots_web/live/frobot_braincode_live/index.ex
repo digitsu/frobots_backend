@@ -21,13 +21,13 @@ defmodule FrobotsWeb.FrobotBraincodeLive.Index do
     templates = extract_frobot_details(Assets.list_template_frobots())
 
     case Assets.get_frobot(String.to_integer(frobot_id)) do
-      nil ->
+      {:error, _} ->
         {:ok,
          socket
          |> put_flash(:error, "Not found any frobot with id #{frobot_id}")
          |> push_redirect(to: "/garage")}
 
-      frobot ->
+      {:ok, frobot} ->
         {:ok,
          socket
          |> assign(:templates, templates)

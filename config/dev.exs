@@ -20,8 +20,9 @@ config :frobots_web, FrobotsWeb.Endpoint,
   ]
 
 ## in seconds
-config :frobots, status_reset_interval: 60 * 30
-config :frobots, cron_interval: 1000 * 30 * 30
+config :frobots, status_reset_interval: 60
+config :frobots, cron_interval: 1
+config :frobots, tournament_match_interval: 2 * 60
 
 # ## SSL Support
 #
@@ -97,3 +98,9 @@ config :ex_aws, :s3,
   host: s3_store_url,
   region: "US",
   bucket: s3_store_bucket
+
+battle_background_audio = System.get_env("BATTLE_BACKGROUND_AUDIO") || "audio/map-battle.mp3"
+
+config :frobots_web,
+       :battle_background,
+       battle_background_audio

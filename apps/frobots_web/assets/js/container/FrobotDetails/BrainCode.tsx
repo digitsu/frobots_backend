@@ -70,6 +70,12 @@ export default (props: any) => {
   }
 
   const [tabIndex, setTabIndex] = React.useState(0)
+  const workspaceElement = document.getElementById('user-workspace')
+  const rect = workspaceElement
+    ? workspaceElement.getBoundingClientRect()
+    : { top: 0 }
+  const distanceFromTop = rect.top + window.scrollY
+  const containerMinHeight = `calc(92vh - ${distanceFromTop}px)`
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue)
@@ -400,35 +406,47 @@ export default (props: any) => {
               </Box>
             </Box>
           </Box>
-          {
-            <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
-              <Grid container>
-                <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
-                  <BlocklyEditor
-                    defaultXml={blocklyCode}
-                    setXmlText={setXmlText}
-                    workspaceDidChange={workspaceDidChange}
-                  />
+          <Box id={'user-workspace'}>
+            {
+              <Box sx={{ p: 3 }} display={tabIndex === 0 ? 'block' : 'none'}>
+                <Grid container minHeight={containerMinHeight}>
+                  <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
+                    <BlocklyEditor
+                      defaultXml={blocklyCode}
+                      setXmlText={setXmlText}
+                      workspaceDidChange={workspaceDidChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                    <LuaEditor
+                      luaCode={blocklyLuaCode}
+                      onEditorChange={() => {}}
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                  <LuaEditor
-                    luaCode={blocklyLuaCode}
-                    onEditorChange={() => {}}
-                  />
+              </Box>
+            }
+            {
+              <Box sx={{ p: 3 }} display={tabIndex === 1 ? 'block' : 'none'}>
+                <Grid container minHeight={containerMinHeight}>
+                  <Grid item width={'100%'}>
+                    <LuaEditor
+                      luaCode={luaCode}
+                      onEditorChange={onEditorChange}
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
-          }
-          {
-            <Box sx={{ p: 3 }} display={tabIndex === 1 ? 'block' : 'none'}>
-              <LuaEditor luaCode={luaCode} onEditorChange={onEditorChange} />
-            </Box>
-          }
-          {
-            <Box sx={{ p: 3 }} display={tabIndex === 2 ? 'block' : 'none'}>
-              <UserSnippet userSnippets={userSnippets} />
-            </Box>
-          }
+              </Box>
+            }
+            {
+              <Box sx={{ p: 3 }} display={tabIndex === 2 ? 'block' : 'none'}>
+                <UserSnippet
+                  userSnippets={userSnippets}
+                  heightValue={containerMinHeight}
+                />
+              </Box>
+            }
+          </Box>
         </Box>
       </>
     </Box>

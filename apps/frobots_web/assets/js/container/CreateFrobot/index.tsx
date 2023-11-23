@@ -1,18 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Stepper, Step, Box, StepLabel, Button } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
 import { createFrobotActions } from '../../redux/slices/createFrobot'
 import BasicDetailsForm from './BasicDetailsForm'
 import EditBrainCode from './EditBrainCode'
 import PreviewFrobot from './PreviewFrobot'
+import Popup from '../../components/Popup'
+import { BackButtonWorkspacePromptDescription } from '../../mock/texts'
+import Blockly from 'blockly'
 
 export default (props: any) => {
   const { templates, createFrobot, starterMechs, s3_base_url } = props
+  const [showBackButtonPrompt, setShowBackButtonPrompt] = useState(false)
   const dispatch = useDispatch()
-  const { activeStep, brainCode } = useSelector(
-    (store: any) => store.createFrobot
-  )
-  const { incrementStep, decrementStep } = createFrobotActions
+  const { activeStep, brainCode, isTutorialFlow, selectedProtobot } =
+    useSelector((store: any) => store.createFrobot)
+  const { incrementStep, decrementStep, setTutorialFlow } = createFrobotActions
   const steps = [
     {
       label: 'Step 1',
@@ -54,6 +57,36 @@ export default (props: any) => {
     )
   }
 
+  const backButtonHandler = () => {
+    if (activeStep === 1) {
+      if (!isTutorialFlow) {
+        dispatch(decrementStep())
+      } else {
+        setShowBackButtonPrompt(true)
+      }
+    } else {
+      dispatch(decrementStep())
+    }
+  }
+
+  const resetTutorial = () => {
+    const parser = new DOMParser()
+    const workspace = Blockly.getMainWorkspace()
+    const currentProtobot =
+      templates.find(({ name }) => name === selectedProtobot?.label) || null
+    const xmlDom = parser.parseFromString(
+      currentProtobot?.blockly_code,
+      'text/xml'
+    )
+    Blockly.Xml.clearWorkspaceAndLoadFromXml(xmlDom.documentElement, workspace)
+    setShowBackButtonPrompt(false)
+    dispatch(setTutorialFlow(false))
+  }
+
+  const handleBackPromptConfirm = () => {
+    dispatch(decrementStep())
+    resetTutorial()
+  }
   return (
     <>
       {' '}
@@ -65,7 +98,7 @@ export default (props: any) => {
         >
           <Box>
             <Button
-              onClick={() => dispatch(decrementStep())}
+              onClick={backButtonHandler}
               variant="outlined"
               sx={{
                 px: 5,
@@ -124,6 +157,15 @@ export default (props: any) => {
             </Button>
           </Box>
         </Box>
+        <Popup
+          open={showBackButtonPrompt}
+          cancelAction={() => setShowBackButtonPrompt(false)}
+          successAction={handleBackPromptConfirm}
+          successLabel={'Confirm'}
+          cancelLabel={'Cancel'}
+          label={'Warning'}
+          description={BackButtonWorkspacePromptDescription}
+        />
       </Box>
       {steps.map(({ component }, index) => index === activeStep && component)}
     </>

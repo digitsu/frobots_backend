@@ -43,7 +43,7 @@ for {name, brain_path} <- Frobots.frobot_paths() do
   }
 
   case Assets.get_frobot(Atom.to_string(name)) do
-    nil -> Assets.create_frobot!(user, frobot)
+    {:error, _} -> Assets.create_frobot!(user, frobot)
     _ -> nil
   end
 end

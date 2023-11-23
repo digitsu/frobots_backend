@@ -7,6 +7,7 @@ defmodule Frobots.Api do
   alias Frobots.Accounts.User
 
   alias Frobots.{Equipment, Accounts, Assets}
+  alias Frobots.Events.Tournament
 
   # alias Frobots.Assets.{Frobot, Xframe, Missile, Scanner, Cannon}
   alias Frobots.Assets.Frobot
@@ -43,6 +44,159 @@ defmodule Frobots.Api do
       {:ok, match} -> {:ok, match}
     end
   end
+
+  def create_tournament(attrs) do
+    Events.create_tournament(attrs)
+  end
+
+  def join_tournament(attrs) do
+    Events.join_tournament(attrs["tournament_id"], attrs["frobot_id"])
+  end
+
+  def unjoin_tournament(attrs) do
+    Events.unjoin_tournament(attrs["tournament_id"], attrs["frobot_id"])
+  end
+
+  def cancel_tournament(attrs) do
+    Events.cancel_tournament(attrs["tournament_id"], attrs["admin_user_id"])
+  end
+
+  def player_stats(attrs) do
+    Events.player_stats(attrs["tournament_id"], attrs["frobot_id"])
+  end
+
+  ## params = [search_pattern: "as", tournament_status: :open | :inprogress | :completed | :cancelled]
+  def list_paginated_tournaments(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
+    query = Tournament
+    # |> join(:inner, [t], tp in TournamentPlayers, on: tp.tournament_id == t.id)
+    # |> select([t, tp], t)
+
+    query =
+      case Keyword.get(params, :search_pattern, nil) do
+        nil ->
+          query
+
+        search_pattern ->
+          pattern = "%" <> search_pattern <> "%"
+
+          query
+          |> where(
+            [t],
+            ilike(t.name, ^pattern)
+          )
+      end
+
+    query =
+      case Keyword.get(params, :tournament_status, nil) do
+        nil ->
+          query
+
+        tournament_status ->
+          query
+          |> where([t], t.status == ^tournament_status)
+      end
+
+    Events.list_paginated(query, page_config, preload, order_by)
+  end
+
+  def get_tournament_details_by_id(tournament_id),
+    do:
+      Events.get_tournament_by([id: tournament_id], [
+        [tournament_players: [frobot: :user]],
+        [matches: [:battlelog, slots: [frobot: :user]]]
+      ])
+
+  def list_tournament_matches_by_id(tournament_id, "pool") do
+    {:ok, tournament} =
+      Events.get_tournament_by([id: tournament_id],
+        matches: [:battlelog, slots: [frobot: :user]]
+      )
+
+    matches =
+      Enum.filter(tournament.matches, fn m ->
+        m.tournament_match_type == :pool
+      end)
+      |> Enum.group_by(fn m ->
+        m.tournament_match_sub_type
+      end)
+
+    all_keys = Map.keys(matches)
+
+    Enum.reduce(all_keys |> Enum.sort(), [], fn key, acc ->
+      match = Map.get(matches, key)
+
+      [
+        %{
+          pool_name: get_pool_name(key + 96),
+          pool_id: key,
+          players: match |> get_players |> get_detailed_players(tournament_id),
+          matches: match
+        }
+        | acc
+      ]
+    end)
+  end
+
+  def list_tournament_matches_by_id(tournament_id, "knockout") do
+    {:ok, tournament} =
+      Events.get_tournament_by([id: tournament_id],
+        matches: [:battlelog, slots: [frobot: :user]]
+      )
+
+    matches =
+      Enum.filter(tournament.matches, fn m ->
+        m.tournament_match_type in [:qualifier, :semifinal, :final]
+      end)
+      |> Enum.group_by(fn m ->
+        m.tournament_match_type
+      end)
+
+    all_keys = Map.keys(matches)
+
+    Enum.reduce(all_keys |> Enum.sort(), [], fn key, acc ->
+      match = Map.get(matches, key)
+
+      [
+        %{
+          pool_name: key |> to_string() |> String.capitalize(),
+          pool_id: nil,
+          players: match |> get_players() |> get_detailed_players(tournament_id),
+          matches: match
+        }
+        | acc
+      ]
+    end)
+  end
+
+  defp get_pool_name(value), do: <<value::utf8>> |> String.upcase()
+
+  defp get_players(matches) do
+    Enum.reduce(matches, [], fn match, acc ->
+      acc ++ match.frobots
+    end)
+    |> Enum.uniq()
+  end
+
+  defp get_detailed_players(frobots_id, tournament_id) do
+    frobots = Frobots.Assets.get_frobot_by(frobots_id, [:user])
+
+    Enum.map(frobots, fn frobot ->
+      {:ok, stats} = player_stats(%{"tournament_id" => tournament_id, "frobot_id" => frobot.id})
+
+      %{
+        name: frobot.user.name,
+        id: frobot.id,
+        email: frobot.user.email
+      }
+      |> Map.merge(stats)
+    end)
+  end
+
+  # defp transform(matches) do
+  #   Enum.map(matches, fn match ->
+  #     Map.put(match, :battlelog, Map.get(match, :battlelog) |> Map.drop(:events))
+  #   end)
+  # end
 
   ## params = [search_pattern: "as", match_status: :done, match_type: :real]
   def list_paginated_matches(params \\ [], page_config \\ [], preload \\ [], order_by \\ []) do
@@ -174,6 +328,26 @@ defmodule Frobots.Api do
           |> where([match], match.match_time <= ^match_time)
       end
 
+    query =
+      case Keyword.get(params, :tournament_match_type, nil) do
+        nil ->
+          query
+
+        tournament_match_type ->
+          query
+          |> where([match], match.tournament_match_type == ^tournament_match_type)
+      end
+
+    query =
+      case Keyword.get(params, :tournament_id, nil) do
+        nil ->
+          query
+
+        tournament_id ->
+          query
+          |> where([match], match.tournament_id == ^tournament_id)
+      end
+
     Events.list_match_by(query, preload, order_by)
   end
 
@@ -212,9 +386,6 @@ defmodule Frobots.Api do
     end
   end
 
-  def join_match(_user, _match) do
-  end
-
   def create_frobot(user, name, brain_code, extra_params \\ %{})
 
   def create_frobot(user, _name, _brain_code, _extra_params) when user.sparks <= 0 do
@@ -223,7 +394,7 @@ defmodule Frobots.Api do
 
   def create_frobot(_user, name, brain_code, _extra_params)
       when name == "" or brain_code == "" do
-    # Logger.debug("Name and Braincode required to create frobot")
+    Logger.debug("Name and Braincode required to create frobot")
     {:error, "Frobot name and braincode are required."}
   end
 
@@ -514,10 +685,10 @@ defmodule Frobots.Api do
   """
   def get_frobot_details(id_or_name) do
     case Assets.get_frobot(id_or_name) do
-      nil ->
+      {:error, :not_found} ->
         {:error, "There are no frobots with given id/name"}
 
-      frobot ->
+      {:ok, frobot} ->
         _preload_equipment_instances(frobot)
     end
   end
@@ -535,6 +706,10 @@ defmodule Frobots.Api do
     s3_bucket = Application.get_env(:ex_aws, :s3)[:bucket]
 
     "https://#{s3_base_url}/#{s3_bucket}/"
+  end
+
+  def get_battle_background_audio() do
+    Application.get_env(:frobots_web, :battle_background)
   end
 
   def get_s3_bucket_name() do
