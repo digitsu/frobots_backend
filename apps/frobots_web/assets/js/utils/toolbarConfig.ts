@@ -22,7 +22,11 @@ export const MY_TOOLBOX = `
         <statement name="DO0"></statement>
       </block>
       <block type="exit_block" name="exit_block">
-        <value name="condition"></value>
+        <value name="condition">
+          <shadow type="logic_boolean">
+            <field name="BOOL">TRUE</field>
+          </shadow>
+        </value>
         <value name="state">
           <shadow type="text">
             <field name="TEXT">newstate</field>

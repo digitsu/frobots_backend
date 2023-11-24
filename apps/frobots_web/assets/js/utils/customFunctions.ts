@@ -44,19 +44,11 @@ export default () => {
   Blockly.Blocks['exit_block'] = {
     init: function () {
       this.appendDummyInput().appendField('Exit Block')
-      this.appendDummyInput('operator')
-        .appendField(
-          new Blockly.FieldDropdown([
-            ['if', 'if'],
-            ['else if', 'elseif'],
-            ['else', 'else'],
-          ]),
-          'operator'
-        )
+      this.appendDummyInput()
+        .appendField('if')
         .setAlign(Blockly.inputs.Align.LEFT)
       this.appendValueInput('condition')
         .setCheck('Boolean')
-        .appendField('condition')
         .setAlign(Blockly.inputs.Align.CENTRE)
       this.appendValueInput('state')
         .setCheck('String')
@@ -72,71 +64,19 @@ export default () => {
       this.setTooltip('')
       this.setHelpUrl('')
     },
-    onchange: function () {
-      var operator = this.getFieldValue('operator')
-      if (operator && operator === 'else') {
-        this.getInput('condition').setVisible(false)
-        this.getInput('state').setAlign(Blockly.inputs.Align.CENTRE)
-      } else {
-        this.getInput('condition')
-          .setAlign(Blockly.inputs.Align.CENTRE)
-          .setVisible(true)
-        this.getInput('state').setAlign(Blockly.inputs.Align.RIGHT)
-      }
-    },
   }
   luaGenerator.forBlock['exit_block'] = function (block: any) {
-    var operator = block.getFieldValue('operator') || 'if'
     var condition =
       luaGenerator.valueToCode(block, 'condition', luaGenerator.ORDER_NONE) ||
       'false'
     var new_state =
       luaGenerator.valueToCode(block, 'state', luaGenerator.ORDER_NONE) || ''
     var statements = luaGenerator.statementToCode(block, 'nested_blocks') || ''
-    let doesLoopEnd = true
 
-    // check if any other exit_block attached to this
-    var nextConnection = block.nextConnection
-    if (nextConnection.isConnected()) {
-      var nextBlock = nextConnection.targetBlock()
-      var nextBlockType = nextBlock.type
-      var fieldValue = nextBlock.getFieldValue('operator')
-
-      // if the next block exit_block
-      if (nextBlockType == 'exit_block') {
-        // if next block is a continuation, current loop should not end
-        if (['elseif', 'else'].includes(fieldValue)) {
-          doesLoopEnd = false
-        }
-
-        // make sure the loop ends if current operator is else
-        if (operator === 'else') {
-          doesLoopEnd = true
-        }
-      }
-    }
-
-    let code = ''
-
-    if (['if', 'elseif'].includes(operator)) {
-      code =
-        `${operator} ` +
-        condition +
-        ' then\n' +
-        '\tset_FSM_state(' +
-        new_state +
-        ')\n' +
-        statements +
-        `\treturn state \n${doesLoopEnd ? 'end\n' : ''}`
-    } else {
-      code =
-        `${operator}\n` +
-        '\tset_FSM_state(' +
-        new_state +
-        ')\n' +
-        statements +
-        `\treturn state \n${doesLoopEnd ? 'end\n' : ''}`
-    }
+    let code =
+      `if ${condition} then\n\tset_FSM_state(${new_state})\n` +
+      statements +
+      `\treturn state\nend\n`
 
     return code
   }
