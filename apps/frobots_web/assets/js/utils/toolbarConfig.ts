@@ -16,10 +16,11 @@ export const MY_TOOLBOX = `
       <block type="transition_if">
         <value name="IF0">
           <shadow type="text">
-          <field name="TEXT">newstate</field>
+          <field name="TEXT">state 1</field>
           </shadow>
         </value>
         <statement name="DO0"></statement>
+        <mutation elseif="2" else="1"></mutation>
       </block>
       <block type="exit_block" name="exit_block">
         <value name="condition">
