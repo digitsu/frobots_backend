@@ -1,6 +1,6 @@
 export const MY_TOOLBOX = `
 <xml id="toolbox" style="display: none">
-    <category name="Frobot Functions" colour="20" id="frobot-functions">
+    <category name="Frobot Blocks" colour="20" id="frobot-functions">
       <block type="frobot">
         <value name="initial_state"></value>
         <statement name="nested_blocks"></statement>
@@ -16,13 +16,18 @@ export const MY_TOOLBOX = `
       <block type="transition_if">
         <value name="IF0">
           <shadow type="text">
-          <field name="TEXT">newstate</field>
+          <field name="TEXT">state 1</field>
           </shadow>
         </value>
         <statement name="DO0"></statement>
+        <mutation elseif="2" else="1"></mutation>
       </block>
       <block type="exit_block" name="exit_block">
-        <value name="condition"></value>
+        <value name="condition">
+          <shadow type="logic_boolean">
+            <field name="BOOL">TRUE</field>
+          </shadow>
+        </value>
         <value name="state">
           <shadow type="text">
             <field name="TEXT">newstate</field>
@@ -72,6 +77,95 @@ export const MY_TOOLBOX = `
       </block>
     </category>
 
+    <category name="Variables" colour="330">
+    <category name="List Variables" id="catVariables" custom="VARIABLE"></category>
+    <category  name="Set Variable">
+    <block type="set_variable_type"></block>
+    </category>
+    </category>
+    <category name="Functions" id="catFunctions" custom="PROCEDURE" colour="290"></category>
+
+    <sep></sep>
+
+        <category name="Text" id="catText" colour="160">
+      <block type="text"></block>
+      <block type="text_join"></block>
+      <block type="text_append">
+        <value name="TEXT">
+          <shadow type="text"></shadow>
+        </value>
+      </block>
+      <block type="text_length">
+        <value name="VALUE">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_isEmpty">
+        <value name="VALUE">
+          <shadow type="text">
+            <field name="TEXT"></field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_indexOf">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">text</field>
+          </block>
+        </value>
+        <value name="FIND">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_charAt">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">text</field>
+          </block>
+        </value>
+      </block>
+      <block type="text_getSubstring">
+        <value name="STRING">
+          <block type="variables_get">
+            <field name="VAR">text</field>
+          </block>
+        </value>
+      </block>
+      <block type="text_changeCase">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_trim">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_print">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_prompt_ext">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+    </category>  
+
+
     <category name="Logic" id="catLogic" colour="210">
       <block type="controls_if"></block>
       <block type="logic_compare"></block>
@@ -81,44 +175,6 @@ export const MY_TOOLBOX = `
       <block type="logic_null"></block>
       <block type="logic_ternary"></block>
     </category>
-
-    <category name="Loops" id="catLoops" colour="120">
-      <block type="controls_repeat_ext">
-        <value name="TIMES">
-          <shadow type="math_number">
-            <field name="NUM">10</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="controls_whileUntil"></block>
-      <block type="repeat_until" namae="repeat_until">
-        <value name="CONDITION">
-        <shadow type="logic_boolean">
-            <field name="BOOL">FALSE</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="controls_for">
-        <value name="FROM">
-          <shadow type="math_number">
-            <field name="NUM">1</field>
-          </shadow>
-        </value>
-        <value name="TO">
-          <shadow type="math_number">
-            <field name="NUM">10</field>
-          </shadow>
-        </value>
-        <value name="BY">
-          <shadow type="math_number">
-            <field name="NUM">1</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="controls_forEach"></block>
-      <block type="controls_flow_statements"></block>
-    </category>
-
     <category name="Math" id="catMath" colour="230">
       <block type="math_number"></block>
       <block type="math_arithmetic">
@@ -232,83 +288,43 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
-    <category name="Text" id="catText" colour="160">
-      <block type="text"></block>
-      <block type="text_join"></block>
-      <block type="text_append">
-        <value name="TEXT">
-          <shadow type="text"></shadow>
-        </value>
-      </block>
-      <block type="text_length">
-        <value name="VALUE">
-          <shadow type="text">
-            <field name="TEXT">abc</field>
+    <category name="Loops" id="catLoops" colour="120">
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
           </shadow>
         </value>
       </block>
-      <block type="text_isEmpty">
-        <value name="VALUE">
-          <shadow type="text">
-            <field name="TEXT"></field>
+      <block type="controls_whileUntil"></block>
+      <block type="repeat_until" namae="repeat_until">
+        <value name="CONDITION">
+        <shadow type="logic_boolean">
+            <field name="BOOL">FALSE</field>
           </shadow>
         </value>
       </block>
-      <block type="text_indexOf">
-        <value name="VALUE">
-          <block type="variables_get">
-            <field name="VAR">text</field>
-          </block>
+      <block type="controls_for">
+        <value name="FROM">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
         </value>
-        <value name="FIND">
-          <shadow type="text">
-            <field name="TEXT">abc</field>
+        <value name="TO">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+        <value name="BY">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
           </shadow>
         </value>
       </block>
-      <block type="text_charAt">
-        <value name="VALUE">
-          <block type="variables_get">
-            <field name="VAR">text</field>
-          </block>
-        </value>
-      </block>
-      <block type="text_getSubstring">
-        <value name="STRING">
-          <block type="variables_get">
-            <field name="VAR">text</field>
-          </block>
-        </value>
-      </block>
-      <block type="text_changeCase">
-        <value name="TEXT">
-          <shadow type="text">
-            <field name="TEXT">abc</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="text_trim">
-        <value name="TEXT">
-          <shadow type="text">
-            <field name="TEXT">abc</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="text_print">
-        <value name="TEXT">
-          <shadow type="text">
-            <field name="TEXT">abc</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="text_prompt_ext">
-        <value name="TEXT">
-          <shadow type="text">
-            <field name="TEXT">abc</field>
-          </shadow>
-        </value>
-      </block>
+      <block type="controls_forEach"></block>
+      <block type="controls_flow_statements"></block>
     </category>
+
     <category name="List" id="catLists" colour="260">
       <block type="lists_create_with">
         <mutation items="0"></mutation>
@@ -370,13 +386,5 @@ export const MY_TOOLBOX = `
         </value>
       </block>
     </category>
-    <sep></sep>
-    <category name="Variables" colour="330">
-    <category name="List Variables" id="catVariables" custom="VARIABLE"></category>
-    <category  name="Set Variable">
-    <block type="set_variable_type"></block>
-    </category>
-    </category>
-    <category name="Functions" id="catFunctions" custom="PROCEDURE" colour="290"></category>
     </xml>
 `

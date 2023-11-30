@@ -25,8 +25,9 @@ config :frobots_web, FrobotsWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [view: FrobotsWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Frobots.PubSub,
-  live_view: [signing_salt: "WEFJDV5M"],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  live_view: [signing_salt: "WEFJDV5M"]
+
+#  cache_static_manifest: "priv/static/cache_manifest.json"
 
 config :tailwind,
   version: "3.1.6",
