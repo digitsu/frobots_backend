@@ -63,9 +63,7 @@ export default ({ tournament_initial_name }) => {
         .test('add-to-hundred', 'All the percentages should add to 100', () => {
           const sum =
             Number(commission_percent) +
-            Number(arena_fees_percent) +
-            Number(platform_fees) +
-            Number(entry_fees)
+            Number(arena_fees_percent)
           return sum === 100
         }),
       arena_fees_percent: Yup.number().positive(

@@ -130,6 +130,7 @@ defmodule Frobots.Assets do
 
   def get_frobot!(id), do: Repo.get!(Frobot, id)
 
+  @spec get_frobot_by(any(), atom() | maybe_improper_list()) :: any()
   def get_frobot_by(frobot_ids, preload \\ []) do
     from(f in Frobot, where: f.id in ^frobot_ids, preload: ^preload)
     |> Repo.all()
