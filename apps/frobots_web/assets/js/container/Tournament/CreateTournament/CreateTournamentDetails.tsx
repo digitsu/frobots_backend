@@ -69,8 +69,8 @@ export default ({ tournament_initial_name }) => {
       arena_fees_percent: Yup.number().positive(
         'Please enter a valid percentage.'
       ),
-      platform_fees: Yup.number().positive('Please enter a valid percentage.'),
-      entry_fees: Yup.number().positive('Please enter a valid percentage.'),
+      platform_fees: Yup.number().moreThan(-1, 'Please enter a non-negative number.'),
+      entry_fees: Yup.number().moreThan(-1, 'Entry fees cannot be negative.').required('Entry fees are required.'),
     }),
 
     onSubmit: async (): Promise<void> => {
@@ -125,7 +125,7 @@ export default ({ tournament_initial_name }) => {
         <Box my={2}>
           <TextField
             type={'number'}
-            label={'Partcipants count'}
+            label={'Max Participants'}
             fullWidth
             onChange={(evt) => {
               dispatch(setParticipants(evt.target.value))
