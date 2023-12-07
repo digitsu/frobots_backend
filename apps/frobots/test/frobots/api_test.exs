@@ -136,7 +136,7 @@ defmodule Frobots.ApiTest do
         prizes: [50, 30, 20],
         commission_percent: 0,
         arena_fees_percent: 0,
-        platform_fees: 0,
+        bonus_percent: 0,
         entry_fees: 0,
         participants: 64,
         status: :open

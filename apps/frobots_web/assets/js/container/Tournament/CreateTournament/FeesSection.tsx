@@ -5,9 +5,9 @@ import { createTournamentActions } from '../../../redux/slices/createTournament'
 
 export default ({ formik }) => {
   const dispatch = useDispatch()
-  const { setCommisionFee, setArenaFee, setPlatformFee, setEntryFee } =
+  const { setCommisionFee, setArenaFee, setBonusFee, setEntryFee } =
     createTournamentActions
-  const { commission_percent, arena_fees_percent, platform_fees, entry_fees } =
+  const { commission_percent, arena_fees_percent, bonus_percent, entry_fees } =
     useSelector((store: any) => store.createTournament)
 
   return (
@@ -16,7 +16,47 @@ export default ({ formik }) => {
         <Box my={2}>
           <TextField
             type={'number'}
-            label={`Commision Percent`}
+            label={`Entry Fee`}
+            fullWidth
+            onChange={(evt) => {
+              dispatch(setEntryFee(evt.target.value))
+              formik.handleChange(evt)
+            }}
+            value={entry_fees}
+            error={Boolean(
+              formik.touched.entry_fees && formik.errors.entry_fees
+            )}
+            helperText={formik.touched.entry_fees && formik.errors.entry_fees}
+            name={'entry_fees'}
+          />
+        </Box>
+      </Grid>
+      <Grid item md={3}>
+        <Box my={2}>
+          <TextField
+            type={'number'}
+            label={`Bonus %`}
+            fullWidth
+            onChange={(evt) => {
+              dispatch(setBonusFee(evt.target.value))
+              formik.handleChange(evt)
+            }}
+            value={bonus_percent}
+            error={Boolean(
+              formik.touched.bonus_percent && formik.errors.bonus_percent
+            )}
+            helperText={
+              formik.touched.bonus_percent && formik.errors.bonus_percent
+            }
+            name={'bonus_percent'}
+          />
+        </Box>
+      </Grid>
+      <Grid item md={3}>
+        <Box my={2}>
+          <TextField
+            type={'number'}
+            label={`Commission %`}
             fullWidth
             onChange={(evt) => {
               dispatch(setCommisionFee(evt.target.value))
@@ -39,7 +79,7 @@ export default ({ formik }) => {
         <Box my={2}>
           <TextField
             type={'number'}
-            label={`Arena Fees Percent`}
+            label={`Arena Fees %`}
             fullWidth
             onChange={(evt) => {
               dispatch(setArenaFee(evt.target.value))
@@ -58,46 +98,8 @@ export default ({ formik }) => {
           />
         </Box>
       </Grid>
-      <Grid item md={3}>
-        <Box my={2}>
-          <TextField
-            type={'number'}
-            label={`Platform Fee`}
-            fullWidth
-            onChange={(evt) => {
-              dispatch(setPlatformFee(evt.target.value))
-              formik.handleChange(evt)
-            }}
-            value={platform_fees}
-            error={Boolean(
-              formik.touched.platform_fees && formik.errors.platform_fees
-            )}
-            helperText={
-              formik.touched.platform_fees && formik.errors.platform_fees
-            }
-            name={'platform_fees'}
-          />
-        </Box>
-      </Grid>
-      <Grid item md={3}>
-        <Box my={2}>
-          <TextField
-            type={'number'}
-            label={`Entry Fee`}
-            fullWidth
-            onChange={(evt) => {
-              dispatch(setEntryFee(evt.target.value))
-              formik.handleChange(evt)
-            }}
-            value={entry_fees}
-            error={Boolean(
-              formik.touched.entry_fees && formik.errors.entry_fees
-            )}
-            helperText={formik.touched.entry_fees && formik.errors.entry_fees}
-            name={'entry_fees'}
-          />
-        </Box>
-      </Grid>
+
+
     </Grid>
   )
 }

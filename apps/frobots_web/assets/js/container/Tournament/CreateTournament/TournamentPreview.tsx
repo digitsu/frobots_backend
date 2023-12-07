@@ -15,7 +15,7 @@ export default ({ s3_base_url, createTournament }) => {
     prizes,
     commission_percent,
     arena_fees_percent,
-    platform_fees,
+    bonus_percent,
     entry_fees,
     starts_at,
   } = useSelector((store: any) => store.createTournament)
@@ -34,7 +34,7 @@ export default ({ s3_base_url, createTournament }) => {
       arena_id: mapSelected?.id || 1,
       commission_percent,
       arena_fees_percent,
-      platform_fees,
+      bonus_percent,
       entry_fees,
       participants,
       status: 'open',
@@ -152,7 +152,7 @@ export default ({ s3_base_url, createTournament }) => {
               <Typography fontSize={12} variant="body2">
                 Platform Fees
               </Typography>
-              <Typography>{platform_fees}</Typography>
+              <Typography>{bonus_percent}</Typography>
             </Box>
           </Grid>
           <Grid item md={3}>

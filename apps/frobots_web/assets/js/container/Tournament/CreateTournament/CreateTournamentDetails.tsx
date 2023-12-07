@@ -24,7 +24,7 @@ export default ({ tournament_initial_name }) => {
     prizes,
     commission_percent,
     arena_fees_percent,
-    platform_fees,
+    bonus_percent,
     entry_fees,
   } = useSelector((store: any) => store.createTournament)
   const formik = useFormik({
@@ -37,7 +37,7 @@ export default ({ tournament_initial_name }) => {
       ),
       commission_percent,
       arena_fees_percent,
-      platform_fees,
+      bonus_percent,
       entry_fees,
     },
     validationSchema: Yup.object({
@@ -59,18 +59,46 @@ export default ({ tournament_initial_name }) => {
         ])
       ),
       commission_percent: Yup.number()
-        .positive('Please enter a valid percentage.')
-        .test('add-to-hundred', 'All the percentages should add to 100', () => {
+        .moreThan(-1)
+        .test('add-to-hundred', 'All the percentages should add to less than 100', () => {
           const sum =
             Number(commission_percent) +
-            Number(arena_fees_percent)
-          return sum === 100
+            Number(arena_fees_percent) +
+            Number(bonus_percent)
+          return sum <= 100
         }),
-      arena_fees_percent: Yup.number().positive(
-        'Please enter a valid percentage.'
-      ),
-      platform_fees: Yup.number().moreThan(-1, 'Please enter a non-negative number.'),
-      entry_fees: Yup.number().moreThan(-1, 'Entry fees cannot be negative.').required('Entry fees are required.'),
+      arena_fees_percent: Yup.number()
+        .moreThan(-1)
+        .test('add-to-hundred', 'All the percentages should add to less than 100', () => {
+          const sum =
+            Number(commission_percent) +
+            Number(arena_fees_percent) +
+            Number(bonus_percent)
+          return sum <= 100
+        }),
+      bonus_percent: Yup.number()
+        .moreThan(-1)
+        .test('add-to-hundred', 'All the percentages should add to less than 100', () => {
+          const sum =
+            Number(commission_percent) +
+            Number(arena_fees_percent) +
+            Number(bonus_percent)
+          return sum <= 100
+        }),
+        //.required('Please enter a value'),
+        //.lessThan(entry_fees, 'Platform fee should be less than the entry fee'),
+      entry_fees: Yup.number()
+        .moreThan(-1, 'Entry fees cannot be negative.')
+        .positive('Entry fees are required.'),
+        /*       .test(
+        'add-to-sum-of-prizes',
+        'Entry fee should be the sum of all the prizes',
+        () => {
+          const prizes_sum = prizes.reduce((a, b) => Number(a) + Number(b), 0)
+          return entry_fees == prizes_sum
+        }
+      ), */
+        
     }),
 
     onSubmit: async (): Promise<void> => {
