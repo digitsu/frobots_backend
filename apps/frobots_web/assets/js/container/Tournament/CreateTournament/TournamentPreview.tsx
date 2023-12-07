@@ -11,7 +11,7 @@ export default ({ s3_base_url, createTournament }) => {
     mapSelected,
     name,
     description,
-    participants,
+    min_participants,
     prizes,
     commission_percent,
     arena_fees_percent,
@@ -36,7 +36,7 @@ export default ({ s3_base_url, createTournament }) => {
       arena_fees_percent,
       bonus_percent,
       entry_fees,
-      participants,
+      min_participants,
       status: 'open',
     })
   }
@@ -78,7 +78,7 @@ export default ({ s3_base_url, createTournament }) => {
         </Box>
         <Box display={'flex'} gap={1} alignItems={'center'} mb={2} ml={0.5}>
           <GroupIcon fontSize="medium" />
-          <Typography variant="body1">{participants} Participants</Typography>
+          <Typography variant="body1">{min_participants} Participants</Typography>
         </Box>
         <Grid container mb={2}>
           <Grid item md={3}>

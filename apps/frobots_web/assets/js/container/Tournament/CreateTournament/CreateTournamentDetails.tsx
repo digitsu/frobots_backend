@@ -20,7 +20,7 @@ export default ({ tournament_initial_name }) => {
     name,
     description,
     starts_at,
-    participants,
+    min_participants,
     prizes,
     commission_percent,
     arena_fees_percent,
@@ -31,7 +31,7 @@ export default ({ tournament_initial_name }) => {
     initialValues: {
       name: tournament_initial_name,
       description,
-      participants,
+      min_participants,
       ...Object.fromEntries(
         Array.from({ length: 3 }, (_, i) => [`prize${i}`, prizes[i]])
       ),
@@ -43,7 +43,7 @@ export default ({ tournament_initial_name }) => {
     validationSchema: Yup.object({
       name: Yup.string().required('Tournament Name is required'),
       description: Yup.string().required('Description is required'),
-      participants: Yup.number()
+      min_participants: Yup.number()
         .required()
         .min(8, 'Minimum 8 partipants are required to start the tournament')
         .max(
@@ -153,19 +153,19 @@ export default ({ tournament_initial_name }) => {
         <Box my={2}>
           <TextField
             type={'number'}
-            label={'Max Participants'}
+            label={'Min Participants'}
             fullWidth
             onChange={(evt) => {
               dispatch(setParticipants(evt.target.value))
               formik.handleChange(evt)
             }}
             error={Boolean(
-              formik.touched.participants && formik.errors.participants
+              formik.touched.min_participants && formik.errors.min_participants
             )}
-            name={'participants'}
-            value={participants}
+            name={'min_participants'}
+            value={min_participants}
             helperText={
-              formik.touched.participants && formik.errors.participants
+              formik.touched.min_participants && formik.errors.min_participants
             }
           />
         </Box>

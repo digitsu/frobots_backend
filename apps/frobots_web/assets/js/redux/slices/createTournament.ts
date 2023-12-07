@@ -7,7 +7,7 @@ const initialState = {
   description: '',
   starts_at: moment().add(1, 'day').format('YYYY-MM-DDTHH:mm'),
   mapSelected: null,
-  participants: 8,
+  min_participants: 8,
   prizes: [0, 0, 0],
   commission_percent: 0,
   arena_fees_percent: 0,
@@ -38,7 +38,7 @@ const createTournamentSlice = createSlice({
       state.mapSelected = action.payload
     },
     setParticipants: (state, action) => {
-      state.participants = action.payload
+      state.min_participants = action.payload
     },
     setPrizes: (state, action) => {
       state.prizes[action.payload.index] = action.payload.data
@@ -54,7 +54,7 @@ const createTournamentSlice = createSlice({
     },
     setEntryFee: (state, action) => {
       state.entry_fees = action.payload
-      //state.bonus_percent = action.payload * state.participants
+      //state.bonus_percent = action.payload * state.min_participants
     },
   },
 })

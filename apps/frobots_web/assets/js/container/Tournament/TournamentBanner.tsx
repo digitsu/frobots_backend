@@ -79,6 +79,9 @@ function TournamentBanner({
           Registration Fee: <b>{tournament_details.entry_fees} QDOS</b> per
           frobot
         </Typography>
+        <Typography className={classes.description} variant="body1">
+          Minimum Participants: <b>{tournament_details.min_participants} Frobots</b>
+        </Typography>
         <Box
           display={'flex'}
           alignItems={'end'}
