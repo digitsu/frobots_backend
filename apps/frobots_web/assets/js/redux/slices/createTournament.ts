@@ -11,7 +11,7 @@ const initialState = {
   prizes: [0, 0, 0],
   commission_percent: 0,
   arena_fees_percent: 0,
-  platform_fees: 0,
+  bonus_percent: 0,
   entry_fees: 0,
 }
 
@@ -49,11 +49,12 @@ const createTournamentSlice = createSlice({
     setArenaFee: (state, action) => {
       state.arena_fees_percent = action.payload
     },
-    setPlatformFee: (state, action) => {
-      state.platform_fees = action.payload
+    setBonusFee: (state, action) => {
+      state.bonus_percent = action.payload
     },
     setEntryFee: (state, action) => {
       state.entry_fees = action.payload
+      //state.bonus_percent = action.payload * state.participants
     },
   },
 })
