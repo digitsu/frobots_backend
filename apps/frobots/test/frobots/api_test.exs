@@ -138,7 +138,7 @@ defmodule Frobots.ApiTest do
         arena_fees_percent: 0,
         bonus_percent: 0,
         entry_fees: 0,
-        participants: 64,
+        min_participants: 64,
         status: :open
       }
 

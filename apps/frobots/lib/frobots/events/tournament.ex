@@ -22,7 +22,7 @@ defmodule Frobots.Events.Tournament do
     field(:arena_id, :integer)
     field(:bonus_percent, :integer)
     field(:entry_fees, :integer)
-    field(:participants, :integer)
+    field(:min_participants, :integer)
 
     ## Once the tournament is Over calculate these
     field(:final_ranking, :map)
@@ -41,7 +41,7 @@ defmodule Frobots.Events.Tournament do
     :starts_at,
     :description,
     :prizes,
-    :participants,
+    :min_participants,
     :commission_percent,
     :arena_fees_percent,
     :bonus_percent,
