@@ -24,6 +24,7 @@ function PrizeForm({ formik }) {
               onChange={(evt) => {
                 dispatch(setPrizes({ data: evt.target.value, index }))
                 formik.values[`prize${index}`] = evt.target.value
+                formik.handleChange(evt)
               }}
               value={prize}
               name={`prize${index}`}

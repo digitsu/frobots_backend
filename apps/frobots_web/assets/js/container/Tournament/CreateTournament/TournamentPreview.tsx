@@ -11,11 +11,11 @@ export default ({ s3_base_url, createTournament }) => {
     mapSelected,
     name,
     description,
-    participants,
+    min_participants,
     prizes,
     commission_percent,
     arena_fees_percent,
-    platform_fees,
+    bonus_percent,
     entry_fees,
     starts_at,
   } = useSelector((store: any) => store.createTournament)
@@ -34,9 +34,9 @@ export default ({ s3_base_url, createTournament }) => {
       arena_id: mapSelected?.id || 1,
       commission_percent,
       arena_fees_percent,
-      platform_fees,
+      bonus_percent,
       entry_fees,
-      participants,
+      min_participants,
       status: 'open',
     })
   }
@@ -78,7 +78,7 @@ export default ({ s3_base_url, createTournament }) => {
         </Box>
         <Box display={'flex'} gap={1} alignItems={'center'} mb={2} ml={0.5}>
           <GroupIcon fontSize="medium" />
-          <Typography variant="body1">{participants} Participants</Typography>
+          <Typography variant="body1">{min_participants} Participants</Typography>
         </Box>
         <Grid container mb={2}>
           <Grid item md={3}>
@@ -152,7 +152,7 @@ export default ({ s3_base_url, createTournament }) => {
               <Typography fontSize={12} variant="body2">
                 Platform Fees
               </Typography>
-              <Typography>{platform_fees}</Typography>
+              <Typography>{bonus_percent}</Typography>
             </Box>
           </Grid>
           <Grid item md={3}>

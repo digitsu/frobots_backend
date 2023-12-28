@@ -20,30 +20,30 @@ export default ({ tournament_initial_name }) => {
     name,
     description,
     starts_at,
-    participants,
+    min_participants,
     prizes,
     commission_percent,
     arena_fees_percent,
-    platform_fees,
+    bonus_percent,
     entry_fees,
   } = useSelector((store: any) => store.createTournament)
   const formik = useFormik({
     initialValues: {
       name: tournament_initial_name,
       description,
-      participants,
+      min_participants,
       ...Object.fromEntries(
         Array.from({ length: 3 }, (_, i) => [`prize${i}`, prizes[i]])
       ),
       commission_percent,
       arena_fees_percent,
-      platform_fees,
+      bonus_percent,
       entry_fees,
     },
     validationSchema: Yup.object({
       name: Yup.string().required('Tournament Name is required'),
       description: Yup.string().required('Description is required'),
-      participants: Yup.number()
+      min_participants: Yup.number()
         .required()
         .min(8, 'Minimum 8 partipants are required to start the tournament')
         .max(
@@ -59,20 +59,46 @@ export default ({ tournament_initial_name }) => {
         ])
       ),
       commission_percent: Yup.number()
-        .positive('Please enter a valid percentage.')
-        .test('add-to-hundred', 'All the percentages should add to 100', () => {
+        .moreThan(-1)
+        .test('add-to-hundred', 'All the percentages should add to less than 100', () => {
           const sum =
             Number(commission_percent) +
             Number(arena_fees_percent) +
-            Number(platform_fees) +
-            Number(entry_fees)
-          return sum === 100
+            Number(bonus_percent)
+          return sum <= 100
         }),
-      arena_fees_percent: Yup.number().positive(
-        'Please enter a valid percentage.'
-      ),
-      platform_fees: Yup.number().positive('Please enter a valid percentage.'),
-      entry_fees: Yup.number().positive('Please enter a valid percentage.'),
+      arena_fees_percent: Yup.number()
+        .moreThan(-1)
+        .test('add-to-hundred', 'All the percentages should add to less than 100', () => {
+          const sum =
+            Number(commission_percent) +
+            Number(arena_fees_percent) +
+            Number(bonus_percent)
+          return sum <= 100
+        }),
+      bonus_percent: Yup.number()
+        .moreThan(-1)
+        .test('add-to-hundred', 'All the percentages should add to less than 100', () => {
+          const sum =
+            Number(commission_percent) +
+            Number(arena_fees_percent) +
+            Number(bonus_percent)
+          return sum <= 100
+        }),
+        //.required('Please enter a value'),
+        //.lessThan(entry_fees, 'Platform fee should be less than the entry fee'),
+      entry_fees: Yup.number()
+        .moreThan(-1, 'Entry fees cannot be negative.')
+        .positive('Entry fees are required.'),
+        /*       .test(
+        'add-to-sum-of-prizes',
+        'Entry fee should be the sum of all the prizes',
+        () => {
+          const prizes_sum = prizes.reduce((a, b) => Number(a) + Number(b), 0)
+          return entry_fees == prizes_sum
+        }
+      ), */
+        
     }),
 
     onSubmit: async (): Promise<void> => {
@@ -127,19 +153,19 @@ export default ({ tournament_initial_name }) => {
         <Box my={2}>
           <TextField
             type={'number'}
-            label={'Partcipants count'}
+            label={'Min Participants'}
             fullWidth
             onChange={(evt) => {
               dispatch(setParticipants(evt.target.value))
               formik.handleChange(evt)
             }}
             error={Boolean(
-              formik.touched.participants && formik.errors.participants
+              formik.touched.min_participants && formik.errors.min_participants
             )}
-            name={'participants'}
-            value={participants}
+            name={'min_participants'}
+            value={min_participants}
             helperText={
-              formik.touched.participants && formik.errors.participants
+              formik.touched.min_participants && formik.errors.min_participants
             }
           />
         </Box>
