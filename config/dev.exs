@@ -104,3 +104,5 @@ battle_background_audio = System.get_env("BATTLE_BACKGROUND_AUDIO") || "audio/ma
 config :frobots_web,
        :battle_background,
        battle_background_audio
+
+config :appsignal, :config, active: true
