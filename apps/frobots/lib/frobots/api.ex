@@ -106,16 +106,12 @@ defmodule Frobots.Api do
         [matches: [:battlelog, slots: [frobot: :user]]]
       ])
 
-  def list_tournament_matches_by_id(tournament_id, "pool") do
-    {:ok, tournament} =
-      Events.get_tournament_by([id: tournament_id],
-        matches: [:battlelog, slots: [frobot: :user]]
-      )
-
+  def list_tournament_matches(tournament, "pool") do
     matches =
       Enum.filter(tournament.matches, fn m ->
         m.tournament_match_type == :pool
       end)
+      |> Enum.sort(fn m1, m2 -> m1.tournament_match_id < m2.tournament_match_id end)
       |> Enum.group_by(fn m ->
         m.tournament_match_sub_type
       end)
@@ -129,7 +125,7 @@ defmodule Frobots.Api do
         %{
           pool_name: get_pool_name(key + 96),
           pool_id: key,
-          players: match |> get_players |> get_detailed_players(tournament_id),
+          players: match |> get_players |> get_detailed_players(tournament.id),
           matches: match
         }
         | acc
@@ -137,22 +133,17 @@ defmodule Frobots.Api do
     end)
   end
 
-  def list_tournament_matches_by_id(tournament_id, "knockout") do
-    {:ok, tournament} =
-      Events.get_tournament_by([id: tournament_id],
-        matches: [:battlelog, slots: [frobot: :user]]
-      )
-
+  def list_tournament_matches(tournament, "knockout") do
     matches =
       Enum.filter(tournament.matches, fn m ->
-        m.tournament_match_type in [:qualifier, :semifinal, :final]
+        m.tournament_match_type in [:quarterfinal, :semifinal, :final]
       end)
       |> Enum.sort(fn m1, m2 -> m1.tournament_match_id < m2.tournament_match_id end)
       |> Enum.group_by(fn m ->
         m.tournament_match_type
       end)
 
-    Enum.reduce([:final, :semifinal, :qualifier], [], fn key, acc ->
+    Enum.reduce([:final, :semifinal, :quarterfinal], [], fn key, acc ->
       match =
         case key do
           # hack to ensure only 1 final match for now, FRO-678
@@ -164,7 +155,7 @@ defmodule Frobots.Api do
         %{
           pool_name: key |> to_string() |> String.capitalize(),
           pool_id: nil,
-          players: match |> get_players() |> get_detailed_players(tournament_id),
+          players: match |> get_players() |> get_detailed_players(tournament.id),
           matches: match
         }
         | acc
