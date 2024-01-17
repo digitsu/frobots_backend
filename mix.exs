@@ -33,7 +33,9 @@ defmodule FrobotsUmbrella.MixProject do
       {:excoveralls, "~> 0.5.5", only: :test},
       {:junit_formatter, "~> 3.3", only: [:test]},
       {:dialyxir, "~> 1.2"},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:appsignal, "~> 2.0"},
+      {:jason, "~> 1.1"}
     ]
   end
 

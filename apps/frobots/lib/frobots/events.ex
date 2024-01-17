@@ -690,8 +690,7 @@ defmodule Frobots.Events do
   end
 
   defp is_open?(tournament) do
-    tournament.status == :open and
-      length(tournament.tournament_players) < tournament.min_participants
+    tournament.status == :open
   end
 
   defp remove_tournament_players(tournament_player) do
