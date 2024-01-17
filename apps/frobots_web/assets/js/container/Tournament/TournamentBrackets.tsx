@@ -37,7 +37,7 @@ const CustomSeed = ({
     </Seed>
   )
 }
-/* export default ({ tournament_knockouts }) => {
+export default ({ tournament_knockouts }) => {
   const matches = tournament_knockouts.map(
     ({ pool_name, players, matches }) => ({
       title: pool_name,
@@ -55,8 +55,8 @@ const CustomSeed = ({
       <Bracket rounds={matches} renderSeedComponent={CustomSeed} />
     </>
   )
-} */
-
+}
+/* 
 export default ({ tournament_knockouts }) => {
   const matches = tournament_knockouts.map(({ pool_name, players, matches }) => ({
     title: pool_name,
@@ -81,4 +81,4 @@ export default ({ tournament_knockouts }) => {
     </>
   );
 };
-
+ */
