@@ -152,12 +152,12 @@ defmodule Frobots.Api do
       end)
 
     Enum.reduce([:final, :semifinal, :qualifier], [], fn key, acc ->
-      match = Map.get(matches, key)
-
-      if key == :final do
-        # hack to ensure only 1 final match for now, FRO-678
-        match = [hd(match)]
-      end
+      match =
+        case key do
+          # hack to ensure only 1 final match for now, FRO-678
+          :final -> [hd(Map.get(matches, key))]
+          _ -> Map.get(matches, key)
+        end
 
       [
         %{
