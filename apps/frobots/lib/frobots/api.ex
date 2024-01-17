@@ -136,14 +136,14 @@ defmodule Frobots.Api do
   def list_tournament_matches(tournament, "knockout") do
     matches =
       Enum.filter(tournament.matches, fn m ->
-        m.tournament_match_type in [:qualifier, :semifinal, :final]
+        m.tournament_match_type in [:quarterfinal, :semifinal, :final]
       end)
       |> Enum.sort(fn m1, m2 -> m1.tournament_match_id < m2.tournament_match_id end)
       |> Enum.group_by(fn m ->
         m.tournament_match_type
       end)
 
-    Enum.reduce([:final, :semifinal, :qualifier], [], fn key, acc ->
+    Enum.reduce([:final, :semifinal, :quarterfinal], [], fn key, acc ->
       match =
         case key do
           # hack to ensure only 1 final match for now, FRO-678

@@ -40,7 +40,7 @@ defmodule Frobots.Events.Match do
     field :type, Ecto.Enum, values: [:simulation, :real], default: :real
 
     field :tournament_match_type, Ecto.Enum,
-      values: [:pool, :knockout, :qualifier, :semifinal, :eliminator, :final]
+      values: [:pool, :knockout, :qualifier, :quarterfinal, :semifinal, :eliminator, :final]
 
     field :tournament_match_sub_type, :integer
     field :tournament_match_id, :integer
