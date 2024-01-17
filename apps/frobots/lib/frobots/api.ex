@@ -154,8 +154,8 @@ defmodule Frobots.Api do
     Enum.reduce([:final, :semifinal, :qualifier], [], fn key, acc ->
       match =
         case key do
-          # hack to ensure only 1 final match for now, FRO-678
-          :final -> [hd(Map.get(matches, key))]
+          # hack to ensure only 1 final match for now, FRO-678, due to :timeouts, take the last one
+          :final -> [hd(Enum.reverse(Map.get(matches, key)))]
           _ -> Map.get(matches, key)
         end
 
