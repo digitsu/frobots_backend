@@ -37,7 +37,7 @@ const CustomSeed = ({
     </Seed>
   )
 }
-export default ({ tournament_knockouts }) => {
+/* export default ({ tournament_knockouts }) => {
   const matches = tournament_knockouts.map(
     ({ pool_name, players, matches }) => ({
       title: pool_name,
@@ -55,4 +55,30 @@ export default ({ tournament_knockouts }) => {
       <Bracket rounds={matches} renderSeedComponent={CustomSeed} />
     </>
   )
-}
+} */
+
+export default ({ tournament_knockouts }) => {
+  const matches = tournament_knockouts.map(({ pool_name, players, matches }) => ({
+    title: pool_name,
+    seeds: matches.map((match, index) => ({
+      id: index,
+      date: new Date(match.match_time).toDateString(),
+      teams: match.frobots.map((frobot) => {
+        const player = players.find(({ id }) => id === frobot);
+        const isWinner = match.battlelog.winners.includes(frobot);
+        const playerName = isWinner ? `${player?.frobot_name} - Winner` : player?.frobot_name;
+
+        return {
+          name: playerName,
+        };
+      }),
+    })),
+  }));
+
+  return (
+    <>
+      <Bracket rounds={matches} renderSeedComponent={CustomSeed} />
+    </>
+  );
+};
+
