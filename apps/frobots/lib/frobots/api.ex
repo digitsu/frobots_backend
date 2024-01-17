@@ -147,6 +147,7 @@ defmodule Frobots.Api do
       Enum.filter(tournament.matches, fn m ->
         m.tournament_match_type in [:qualifier, :semifinal, :final]
       end)
+      |> Enum.sort(fn m1, m2 -> m1.tournament_match_id < m2.tournament_match_id end)
       |> Enum.group_by(fn m ->
         m.tournament_match_type
       end)
