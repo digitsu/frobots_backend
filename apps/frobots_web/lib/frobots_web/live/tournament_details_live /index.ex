@@ -30,7 +30,7 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
 
     case socket.assigns.tournament_details do
       {:ok, tournament} ->
-        tournament_pools = Api.list_tournament_matches_by_id(tournament.id, "pool")
+        tournament_pools = Api.list_tournament_matches(tournament, "pool")
 
         {:noreply,
          push_event(socket, "react.return_fetch_tournament_details", %{
@@ -92,7 +92,7 @@ defmodule FrobotsWeb.TournamentDetailsLive.Index do
                  players: players
                }
              end),
-           "tournament_knockouts" => Api.list_tournament_matches_by_id(tournament.id, "knockout")
+           "tournament_knockouts" => Api.list_tournament_matches(tournament, "knockout")
          })}
     end
   end

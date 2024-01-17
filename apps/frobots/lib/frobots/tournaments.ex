@@ -423,7 +423,7 @@ defmodule Frobots.Tournaments do
 
   defp create_match_type(_, _, 2), do: {:final, 1}
   defp create_match_type(_, _, 4), do: {:semifinal, 1}
-  defp create_match_type(_, _, 8), do: {:qualifier, 1}
+  defp create_match_type(_, _, 8), do: {:quarterfinal, 1}
   defp create_match_type(:pool, _, _), do: {:knockout, 1}
   defp create_match_type(:knockout, count, _), do: {:knockout, count + 1}
 
