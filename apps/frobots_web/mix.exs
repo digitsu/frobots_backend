@@ -61,7 +61,8 @@ defmodule FrobotsWeb.MixProject do
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:phoenix_client, "~> 0.3"},
       {:guardian, "~> 2.3"},
-      {:heroicons, "~> 0.3.0"}
+      {:heroicons, "~> 0.3.0"},
+      {:appsignal_phoenix, "~> 2.0"}
     ]
   end
 
