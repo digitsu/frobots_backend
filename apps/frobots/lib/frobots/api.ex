@@ -151,10 +151,13 @@ defmodule Frobots.Api do
         m.tournament_match_type
       end)
 
-    all_keys = Map.keys(matches)
-
-    Enum.reduce(all_keys |> Enum.sort(), [], fn key, acc ->
-      match = Map.get(matches, key)
+    Enum.reduce([:final, :semifinal, :qualifier], [], fn key, acc ->
+      match =
+        case key do
+          # hack to ensure only 1 final match for now, FRO-678
+          :final -> [hd(Map.get(matches, key))]
+          _ -> Map.get(matches, key)
+        end
 
       [
         %{
