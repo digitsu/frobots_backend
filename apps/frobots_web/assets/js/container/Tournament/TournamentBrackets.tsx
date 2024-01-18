@@ -56,9 +56,11 @@ const CustomSeed = ({
     </>
   )
 } */
+
+/* 
 export default ({ tournament_knockouts }) => {
   console.log(tournament_knockouts)
-  const matches = tournament_knockouts.map(({ pool_name, players, matches }) => ({
+  const matches = tournament_knockouts.map(({ pool_name, players, matches, winners }) => ({
     title: pool_name,
     seeds: matches.map((match, index) => {
       // Store the current match as a constant
@@ -87,6 +89,45 @@ export default ({ tournament_knockouts }) => {
   return (
     <>
       <Bracket rounds={matches} renderSeedComponent={CustomSeed} />
+    </>
+  );
+}; */
+
+export default ({ tournament_knockouts }) => {
+  console.log(tournament_knockouts);
+  const matches = tournament_knockouts.map(({ pool_name, players, matches, winners }) => ({
+    title: pool_name,
+    seeds: matches.map((match, index) => {
+      // Store the current match as a constant
+      const currentMatch = match;
+      console.log(currentMatch);
+
+      // Retrieve the winner ID for the current match
+      const winnerId = winners[index];
+
+      return {
+        id: index,
+        date: new Date(currentMatch.match_time).toDateString(),
+        teams: currentMatch.frobots.map((frobot) => {
+          console.log(frobot);
+
+          const player = players.find(({ id }) => id === frobot);
+          console.log(player);
+          const isWinner = winnerId.includes(frobot); // Check if the frobot is the winner
+          const playerName = isWinner ? `${player?.frobot_name} - Winner` : player?.frobot_name;
+
+          return {
+            name: playerName,
+          };
+        }),
+      };
+    }),
+  }));
+
+  return (
+    // ... (rest of your JSX)
+    <>
+    <Bracket rounds={matches} renderSeedComponent={CustomSeed} />
     </>
   );
 };
