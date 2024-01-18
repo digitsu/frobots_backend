@@ -126,7 +126,7 @@ defmodule Frobots.Api do
           pool_name: get_pool_name(key + 96),
           pool_id: key,
           players: match |> get_players() |> get_detailed_players(tournament.id),
-          matches: match |> set_winners_on_match()
+          matches: match
         }
         | acc
       ]
