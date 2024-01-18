@@ -57,6 +57,7 @@ const CustomSeed = ({
   )
 } */
 export default ({ tournament_knockouts }) => {
+  console.log(tournament_knockouts)
   const matches = tournament_knockouts.map(({ pool_name, players, matches }) => ({
     title: pool_name,
     seeds: matches.map((match, index) => {
