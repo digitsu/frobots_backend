@@ -59,29 +59,19 @@ const CustomSeed = ({
 export default ({ tournament_knockouts }) => {
   const matches = tournament_knockouts.map(({ pool_name, players, matches }) => ({
     title: pool_name,
-    seeds: matches.map((match, index) => {
-      // Store the current match as a constant
-      const currentMatch = match;
-      console.log(match);
-      console.log(currentMatch.battlelog);
-      console.log(currentMatch.battlelog.winners);
-      return {
-        id: index,
-        date: new Date(currentMatch.match_time).toDateString(),
-        teams: currentMatch.frobots.map((frobot) => {
-          console.log(frobot);
+    seeds: matches.map((match, index) => ({
+      id: index,
+      date: new Date(match.match_time).toDateString(),
+      teams: match.frobots.map((frobot) => {
+        const player = players.find(({ id }) => id === frobot);
+        const isWinner = match.winners.includes(frobot);
+        const playerName = isWinner ? `${player?.frobot_name} - Winner` : player?.frobot_name;
 
-          const player = players.find(({ id }) => id === frobot);
-          console.log(player);
-          const isWinner = currentMatch.battlelog.winners.includes(frobot);
-          const playerName = isWinner ? `${player?.frobot_name} - Winner` : player?.frobot_name;
-
-          return {
-            name: playerName,
-          };
-        }),
-      };
-    }),
+        return {
+          name: playerName,
+        };
+      }),
+    })),
   }));
 
   return (
@@ -90,3 +80,4 @@ export default ({ tournament_knockouts }) => {
     </>
   );
 };
+
