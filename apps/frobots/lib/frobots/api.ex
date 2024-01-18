@@ -164,7 +164,7 @@ defmodule Frobots.Api do
   end
 
   defp set_winners_on_match(matches) do
-    Enum.map(matches, fn m -> Map.put(m, :winners, get_in(m, [:battlelog, :winners])) end)
+    Enum.map(matches, fn m -> Map.put(m, :winners, Map.get(Map.get(m, :battlelog), :winners)) end)
   end
 
   defp get_pool_name(value), do: <<value::utf8>> |> String.upcase()
