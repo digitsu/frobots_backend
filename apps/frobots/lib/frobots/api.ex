@@ -156,16 +156,12 @@ defmodule Frobots.Api do
           pool_name: key |> to_string() |> String.capitalize(),
           pool_id: nil,
           players: match |> get_players() |> get_detailed_players(tournament.id),
-          matches: match |> set_winners_on_match(),
+          matches: match,
           winners: match |> get_winners_for_matches()
         }
         | acc
       ]
     end)
-  end
-
-  defp set_winners_on_match(matches) do
-    Enum.map(matches, fn m -> Map.put(m, :winners, Map.get(Map.get(m, :battlelog), :winners)) end)
   end
 
   defp get_winners_for_matches(matches) do
